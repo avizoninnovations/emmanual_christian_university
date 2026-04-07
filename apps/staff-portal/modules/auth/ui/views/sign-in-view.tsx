@@ -37,8 +37,9 @@ export const SignInView = () => {
         type="sign-in" 
         onSubmit={handleSignIn} 
         isLoading={isLoading}
-        title="Staff Portal"
-        description="Access your administrative and academic management dashboard."
+        title="ECU Staff Portal"
+        description="Emmanuel Christian University Administrative Login"
+        showSignUpLink={false}
       />
     </div>
   );

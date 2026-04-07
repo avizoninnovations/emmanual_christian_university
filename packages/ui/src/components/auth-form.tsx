@@ -32,9 +32,10 @@ interface AuthFormProps {
   isLoading?: boolean;
   title: string;
   description: string;
+  showSignUpLink?: boolean;
 }
 
-export function AuthForm({ type, onSubmit, isLoading, title, description }: AuthFormProps) {
+export function AuthForm({ type, onSubmit, isLoading, title, description, showSignUpLink = true }: AuthFormProps) {
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -114,25 +115,27 @@ export function AuthForm({ type, onSubmit, isLoading, title, description }: Auth
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex justify-center border-t border-muted/50 pt-6">
-        <p className="text-sm text-muted-foreground">
-          {type === "sign-in" ? (
-            <>
-              Don&apos;t have an account?{" "}
-              <a href="/sign-up" className="text-primary font-medium hover:underline underline-offset-4 decoration-primary/30">
-                Sign up instead
-              </a>
-            </>
-          ) : (
-            <>
-              Already have an account?{" "}
-              <a href="/sign-in" className="text-primary font-medium hover:underline underline-offset-4 decoration-primary/30">
-                Sign in instead
-              </a>
-            </>
-          )}
-        </p>
-      </CardFooter>
+      {showSignUpLink && (
+        <CardFooter className="flex justify-center border-t border-muted/50 pt-6">
+          <p className="text-sm text-muted-foreground">
+            {type === "sign-in" ? (
+              <>
+                Don&apos;t have an account?{" "}
+                <a href="/sign-up" className="text-primary font-medium hover:underline underline-offset-4 decoration-primary/30">
+                  Sign up instead
+                </a>
+              </>
+            ) : (
+              <>
+                Already have an account?{" "}
+                <a href="/sign-in" className="text-primary font-medium hover:underline underline-offset-4 decoration-primary/30">
+                  Sign in instead
+                </a>
+              </>
+            )}
+          </p>
+        </CardFooter>
+      )}
     </Card>
   );
 }

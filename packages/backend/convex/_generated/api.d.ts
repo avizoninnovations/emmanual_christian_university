@@ -46,9 +46,12 @@ import type * as reporting from "../reporting.js";
 import type * as roles from "../roles.js";
 import type * as schoolConfig from "../schoolConfig.js";
 import type * as schoolConfigInternal from "../schoolConfigInternal.js";
+import type * as seed from "../seed.js";
 import type * as studentManagement from "../studentManagement.js";
 import type * as students from "../students.js";
 import type * as timetable from "../timetable.js";
+import type * as user_actions from "../user_actions.js";
+import type * as user_internal from "../user_internal.js";
 import type * as users from "../users.js";
 
 import type {
@@ -96,9 +99,12 @@ declare const fullApi: ApiFromModules<{
   roles: typeof roles;
   schoolConfig: typeof schoolConfig;
   schoolConfigInternal: typeof schoolConfigInternal;
+  seed: typeof seed;
   studentManagement: typeof studentManagement;
   students: typeof students;
   timetable: typeof timetable;
+  user_actions: typeof user_actions;
+  user_internal: typeof user_internal;
   users: typeof users;
 }>;
 

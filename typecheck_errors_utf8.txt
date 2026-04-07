@@ -1,0 +1,71 @@
+﻿
+> shadcn-ui-monorepo@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1
+> turbo typecheck
+
+node.exe : ΓÇó turbo 2.9.4
+At C:\Users\Atiidu\AppData\Roaming\npm\pnpm.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/pnpm/bin/pnpm.cjs" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ΓÇó turbo 2.9.4:String) [],  
+   RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+   ΓÇó Packages in scope: @workspace/backend, @workspace/eslint-config, @workspace/math, @workspace/typescript-config, @workspace/ui, finance, inventory, library, lms, staff-portal, student-portal
+   ΓÇó Running typecheck in 11 packages
+   ΓÇó Remote caching disabled
+
+@workspace/backend:typecheck: cache hit, replaying logs f03abb16c91b5903
+@workspace/ui:typecheck: cache hit, replaying logs b5115bcae89c6afa
+@workspace/backend:typecheck: [6n[?9001h[?1004h[m]0;C:\WINDOWS\system32\cmd.exe[?25h[?25l
+@workspace/backend:typecheck: > @workspace/backend@ typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\packages\backend
+@workspace/backend:typecheck: > tsc --noEmit -p convex/tsconfig.json[7;1H[?25h[?9001l[?1004l
+@workspace/ui:typecheck: [6n[?9001h[?1004h[m]0;C:\WINDOWS\system32\cmd.exe[?25h[?25l
+@workspace/ui:typecheck: > @workspace/ui@0.0.0 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\packages\ui
+@workspace/ui:typecheck: > tsc --noEmit[7;1H[?25h[?9001l[?1004l
+finance:typecheck: cache miss, executing 9cf648abf9328453
+lms:typecheck: cache miss, executing 7eff030093124c0d
+staff-portal:typecheck: cache miss, executing 2fc278a20d139f1f
+library:typecheck: cache miss, executing 74c188f7bf8815e2
+student-portal:typecheck: cache miss, executing f1d0958e4ce90c81
+inventory:typecheck: cache miss, executing 4250db03ffa913fc
+finance:typecheck: 
+finance:typecheck: > finance@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\apps\finance
+finance:typecheck: > tsc --noEmit
+finance:typecheck: 
+student-portal:typecheck: 
+student-portal:typecheck: > student-portal@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\apps\student-portal
+student-portal:typecheck: > tsc --noEmit
+student-portal:typecheck: 
+library:typecheck: 
+library:typecheck: > library@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\apps\library
+library:typecheck: > tsc --noEmit
+library:typecheck: 
+inventory:typecheck: 
+inventory:typecheck: > inventory@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\apps\inventory
+inventory:typecheck: > tsc --noEmit
+inventory:typecheck: 
+lms:typecheck: 
+lms:typecheck: > lms@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\apps\lms
+lms:typecheck: > tsc --noEmit
+lms:typecheck: 
+staff-portal:typecheck: 
+staff-portal:typecheck: > staff-portal@0.0.1 typecheck D:\avizon_innovations\universitysystems\emmanual_christian_university1\apps\staff-portal
+staff-portal:typecheck: > tsc --noEmit
+staff-portal:typecheck: 
+finance:typecheck: .next/dev/types/routes.d.ts(58,35): error TS1005: ';' expected.
+finance:typecheck: .next/dev/types/routes.d.ts(59,3): error TS1128: Declaration or statement expected.
+finance:typecheck: .next/dev/types/routes.d.ts(60,1): error TS1128: Declaration or statement expected.
+finance:typecheck: ΓÇëELIFECYCLEΓÇë Command failed with exit code 2.
+ ERROR  finance#typecheck: command (D:\avizon_innovations\universitysystem
+s\emmanual_christian_university1\apps\finance) 
+C:\Users\Atiidu\AppData\Local\pnpm\.tools\pnpm\10.4.1\bin\pnpm.CMD run 
+typecheck exited (2)
+
+ Tasks:    2 successful, 8 total
+Cached:    2 cached, 8 total
+  Time:    24.096s 
+Failed:    finance#typecheck
+
+ ERROR  run failed: command  exited (2)
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 2.

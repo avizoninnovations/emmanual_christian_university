@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboardIcon, BookOpenIcon, UserIcon, SchoolIcon } from "lucide-react";
+import { LayoutDashboardIcon, BookOpenIcon, UserIcon, SchoolIcon, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -23,6 +23,11 @@ const mainItems = [
     title: "Dashboard",
     url: "/",
     icon: LayoutDashboardIcon,
+  },
+  {
+    title: "Staff Management",
+    url: "/staff",
+    icon: ShieldCheck,
   },
 ];
 

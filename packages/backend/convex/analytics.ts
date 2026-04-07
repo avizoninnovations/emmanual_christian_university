@@ -125,13 +125,15 @@ export const getParentAnalytics = query({
             ctx.db.query("programs").collect()
         ]);
 
-        const feeMap = new Map<string, any>(
-            feeStructures.filter(f => f.programId).map(f => [f.programId as string, f])
-        );
+        const feeMap = new Map<string, Doc<"feeStructures">>();
+        feeStructures.forEach(f => {
+            if (f.programId) feeMap.set(f.programId as string, f);
+        });
+
         const totalOutstanding = activeStudents.reduce((sum, s) => {
             const structure = s.programId ? feeMap.get(s.programId) : null;
             const expected = structure?.total ?? 0;
-            return sum + (s.balance || 0) + expected;
+            return sum + (s.balance) + expected;
         }, 0);
 
         const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
@@ -184,9 +186,10 @@ export const getDashboardMetrics = query({
             ctx.db.query("feeStructures").filter(q => q.eq(q.field("semesterNumber"), semester)).collect(),
         ]);
 
-        const feeMap = new Map<string, any>(
-            feeStructures.filter(f => f.programId).map(f => [f.programId as string, f])
-        );
+        const feeMap = new Map<string, Doc<"feeStructures">>();
+        feeStructures.forEach(f => {
+             if (f.programId) feeMap.set(f.programId as string, f);
+        });
         const totalStudents = activeStudents.length;
         const collected = payments.reduce((sum, p) => sum + p.amount, 0);
         const outstanding = activeStudents.reduce((sum, s) => {
@@ -610,7 +613,7 @@ export const getSubjectDetailedAnalytics = query({
         const isAdmin = userHasCapability(user, "access:faculties") || userHasCapability(user, "system:view_analytics");
 
         const prg = await ctx.db.get(allocation.programId);
-        const isRegistrationOfficer = (prg as any)?.teacherId === user._id; // University equivalent or still 'teacherId' for program lead?
+        const isRegistrationOfficer = prg?.coordinatorId === user._id;
 
         if (!isDean && !isAssigned && !isAdmin && !isRegistrationOfficer) {
             return { unauthorized: true };

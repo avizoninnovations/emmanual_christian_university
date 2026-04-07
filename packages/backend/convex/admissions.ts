@@ -321,7 +321,7 @@ export const enrollApplicant = action({
             sessionId: args.sessionId,
             requiredCapability: "access:admissions:registry:manage"
         });
-        let passwordHash: string | undefined = undefined;
+        let passwordHash: string | undefined;
 
         const newContact = args.contactData.newContact;
         if (newContact) {

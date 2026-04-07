@@ -674,4 +674,37 @@ export default defineSchema({
     authorId: v.id("users"),
   }).index("by_publishDate", ["publishDate"])
     .index("by_target_audience", ["targetAudience"]),
+
+  // ===== LEGACY / TEMPLATE TABLES =====
+  conversations: defineTable({
+    status: v.union(v.literal("unresolved"), v.literal("escalated"), v.literal("resolved")),
+    contactSessionId: v.optional(v.id("emergencyContacts")), // Example linking
+    lastMessageText: v.optional(v.string()),
+  }).index("by_status", ["status"]),
+
+  messages: defineTable({
+    conversationId: v.optional(v.id("conversations")),
+    senderId: v.id("users"),
+    text: v.optional(v.string()),
+    content: v.optional(v.string()),
+    subject: v.optional(v.string()),
+    recipients: v.optional(v.string()),
+    type: v.optional(v.union(v.literal("SMS"), v.literal("Email"))),
+    status: v.optional(v.string()),
+    date: v.optional(v.string()),
+    semester: v.optional(v.number()),
+    year: v.optional(v.number()),
+    createdAt: v.optional(v.number()),
+  }).index("by_conversation", ["conversationId"])
+    .index("by_sender", ["senderId"]),
+
+  borrowRecords: defineTable({
+    borrowerId: v.id("students"),
+    item: v.optional(v.string()),
+    ...academicPeriodFields,
+  }).index("by_borrower_period", ["borrowerId", "semester", "year"]),
+
+  channels: defineTable({
+    name: v.string(),
+  }),
 });

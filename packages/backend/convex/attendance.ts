@@ -62,7 +62,7 @@ export const getAll = query({
         const studentMap = new Map(students.filter(Boolean).map(s => [s!._id, s]));
 
         const page = results.page.map((record) => {
-            const student = studentMap.get(record.studentId) as any;
+            const student = studentMap.get(record.studentId);
             return {
                 ...record,
                 studentName: student
@@ -142,11 +142,11 @@ export const getRegistryHub = query({
             const status = r.status as AttendanceStatus
             bump(summary, status)
 
-            const programDoc = r.programId ? programMap.get(r.programId) : null
-            const programName = programDoc ? (programDoc as any).name : "Unknown"
-            const courseId = r.courseId as Id<"courses">
-            const markedBy = r.lecturerId ? lecturerMap.get(r.lecturerId) : null
-            const markedByName = markedBy ? `${markedBy.firstName} ${markedBy.lastName}` : undefined
+            const programDoc = r.programId ? programMap.get(r.programId) : null;
+            const programName = programDoc ? programDoc.name : "Unknown";
+            const courseId = r.courseId as Id<"courses">;
+            const markedBy = r.lecturerId ? lecturerMap.get(r.lecturerId) : null;
+            const markedByName = markedBy ? `${markedBy.firstName} ${markedBy.lastName}` : undefined;
 
             if (r.programId && !programBuckets.has(r.programId)) {
                 programBuckets.set(r.programId, {
@@ -328,8 +328,8 @@ export const getRegisterProgramCourse = query({
 
         const data = students
             .map((student: any) => {
-                const record = recordsMap.get(student._id) as any
-                const status = (record?.status || "Absent") as AttendanceStatus
+                const record = recordsMap.get(student._id);
+                const status = ((record as any)?.status || "Absent") as AttendanceStatus
                 if (status === "Present") summary.present += 1
                 if (status === "Absent") summary.absent += 1
                 if (status === "Late") summary.late += 1

@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "paths": {
       "@workspace/ui/*": ["./src/*"]
     }

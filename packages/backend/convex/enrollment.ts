@@ -59,11 +59,12 @@ export const enrollApplicantInternal = internalMutation({
 
                 if (existingUser) return { success: false, error: `A user with the email ${p.emailForLogin} already exists.` };
 
+                const userNames = p.name.split(" ");
                 userId = await ctx.db.insert("users", {
                     email: p.emailForLogin,
-                    passwordHash: p.passwordHash!,
-                    firstName: p.name.split(" ")[0] || "Parent",
-                    lastName: p.name.split(" ").slice(1).join(" ") || "Unknown",
+                    passwordHash: p.passwordHash,
+                    firstName: userNames[0] || "Parent",
+                    lastName: userNames.slice(1).join(" ") || "Guardian",
                     role: "Guardian",
                     isActive: true,
                     createdAt: Date.now(),
@@ -85,8 +86,8 @@ export const enrollApplicantInternal = internalMutation({
 
         // 3. Create Student
         const nameParts = applicant.applicantName.split(" ");
-        const firstName = nameParts[0];
-        const lastName = nameParts.slice(1).join(" ") || nameParts[0];
+        const firstName = nameParts[0] || "Student";
+        const lastName = nameParts.slice(1).join(" ") || firstName;
 
         // Auto-initialize balance based on fee structure
         let initialBalance = 0;

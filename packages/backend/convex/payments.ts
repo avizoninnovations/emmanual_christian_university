@@ -5,7 +5,7 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUser, logAction, checkCapability, checkRateLimit, checkQueryAuth } from "./authHelpers";
 import { paginationOptsValidator } from "convex/server";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 
 // ===== GET PAYMENTS (PAGINATED) =====
 
@@ -133,9 +133,9 @@ export const getPaginated = query({
                 .first();
             return structure ? { ...structure, programId } : null;
         }));
-        const feeMap = new Map<string, any>();
-        feeStructures.filter(Boolean).forEach(f => {
-            if (f) feeMap.set(f.programId, f);
+        const feeMap = new Map<string, Doc<"feeStructures">>();
+        feeStructures.forEach(f => {
+            if (f) feeMap.set(f.programId as string, f);
         });
 
         const enrichedPage = result.page.map((payment) => {
@@ -518,9 +518,8 @@ export const getRecent = query({
 export const getSchoolPayTransactions = query({
     args: { sessionId: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        // Simple auth check
-        const session = await ctx.db.get(args.sessionId);
-        if (!session) return [];
+        const user = await getAuthUser(ctx, args.sessionId);
+        if (!user) return [];
 
         const payments = await ctx.db.query("payments").collect();
         // Optimally: add index("by_provider", ["provider"])

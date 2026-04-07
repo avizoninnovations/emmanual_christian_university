@@ -1,14 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@workspace/ui"],
-  devIndicators: false,
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/conversations",
-        permanent: false,
-      },
+  devIndicators: false,,
     ]
   }
 }

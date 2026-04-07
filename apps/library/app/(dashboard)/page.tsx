@@ -1,37 +1,23 @@
 "use client";
 
-import { useMutation } from "convex/react";
-import { api } from "@workspace/backend/_generated/api";
-import { Button } from "@workspace/ui/components/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
-
-export default function Page() {
-  const addUser = useMutation(api.users.add);
-
+export default function DashboardPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4">
-      <Card className="w-full max-w-md shadow-lg border-primary/10">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Welcome to University Library
-          </CardTitle>
-          <CardDescription>
-            Explore a vast collection of knowledge and academic resources.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <div className="p-8 rounded-xl bg-muted/50 flex flex-col items-center gap-2 border border-dashed border-muted-foreground/20">
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Module Status</p>
-            <p className="text-lg font-semibold text-primary">Migration Successful</p>
-          </div>
-          <Button 
-            className="w-full h-11 text-base font-medium transition-all hover:scale-[1.02]"
-            onClick={() => addUser()}
-          >
-            Browse Collections
-          </Button>
-        </CardContent>
-      </Card>
+    <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+      <div className="flex items-center">
+        <h1 className="text-lg font-semibold md:text-2xl">LIBRARY Dashboard</h1>
+      </div>
+      <div
+        className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
+      >
+        <div className="flex flex-col items-center gap-1 text-center">
+          <h3 className="text-2xl font-bold tracking-tight">
+            Welcome to the LIBRARY Management System
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Start building your library modules here.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

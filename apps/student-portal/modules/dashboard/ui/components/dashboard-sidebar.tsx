@@ -24,11 +24,6 @@ const mainItems = [
     url: "/",
     icon: LayoutDashboardIcon,
   },
-  {
-    title: "LMS Classroom",
-    url: "http://localhost:3004", // The separate LMS app
-    icon: BookOpenIcon,
-  },
 ];
 
 export const DashboardSidebar = () => {
@@ -52,7 +47,7 @@ export const DashboardSidebar = () => {
                 <SchoolIcon className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-                <span className="font-semibold">University System</span>
+                <span className="font-semibold">University Student</span>
                 <span className="text-xs text-muted-foreground">Student Portal</span>
               </div>
             </SidebarMenuButton>

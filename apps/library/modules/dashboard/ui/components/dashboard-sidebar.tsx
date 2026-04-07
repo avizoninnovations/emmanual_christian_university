@@ -47,8 +47,8 @@ export const DashboardSidebar = () => {
                 <SchoolIcon className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-                <span className="font-semibold">University System</span>
-                <span className="text-xs text-muted-foreground">Admin Portal</span>
+                <span className="font-semibold">University Library</span>
+                <span className="text-xs text-muted-foreground">Resources Portal</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -101,3 +101,4 @@ export const DashboardSidebar = () => {
     </Sidebar>
   );
 };
+

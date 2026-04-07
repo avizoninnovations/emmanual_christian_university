@@ -1,3 +1,5 @@
+
+
 # 🎓 ECU Academic Flow — End-to-End System Blueprint
 
 > How our university management system will work — from an applicant knocking on ECU's door to a graduate walking out with a degree.

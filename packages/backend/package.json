@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "convex dev --local",
-    "setup": "convex dev --until-success"
+    "setup": "convex dev --until-success",
+    "typecheck": "tsc --noEmit -p convex/tsconfig.json"
   },
   "exports": {
     "./convex": "./convex/*.ts"

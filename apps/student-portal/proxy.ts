@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  // Simple pass-through for now, as Better Auth is handled via Client/Hooks mostly 
-  // and we'll protect specific academic routes as we build them.
+export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 

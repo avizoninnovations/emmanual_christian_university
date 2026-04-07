@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3004",
+    "dev": "next dev --port 3002",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,13 +12,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "better-auth": "^1.1.18",
     "@convex-dev/better-auth": "^0.11.4",
-    "@convex-dev/agent": "^0.1.16",
     "@hookform/resolvers": "^5.2.0",
     "@workspace/backend": "workspace:*",
     "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "better-auth": "^1.5.0",
     "bowser": "^2.12.0",
     "convex": "^1.25.4",
     "countries-and-timezones": "^3.8.0",

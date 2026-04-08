@@ -1,82 +1,48 @@
+import { mutation, query } from "./_generated/server.js";
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { findMany, create, deleteOne } from "./betterAuth/adapter.js";
+import { createAuth } from "./betterAuth/auth.js";
 
-export const getMany = query({
+export const getStaff = query({
   args: {},
   handler: async (ctx) => {
-    const users = await ctx.db.query("users").collect();
-
-    return users;
+    // Find many users. Better Auth manages the 'user' table.
+    const users = await findMany(ctx, "user", {});
+    // Filter by staff roles if needed. Better Auth 'user' table has a 'role' field in our schema.
+    return users.filter(u => u.role !== "Student" && u.role !== undefined);
   },
 });
 
-/**
- * Get all staff members (excluding students).
- */
-export const getStaff = query({
+export const createStaff = mutation({
   args: {
-    sessionId: v.optional(v.string()),
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    role: v.string(),
+    password: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // Note: We'll add auth checks here once we have a shared auth helper 
-    // that works well with Better Auth session IDs.
-    const users = await ctx.db
-      .query("users")
-      .filter((q) => q.neq(q.field("role"), "student"))
-      .collect();
-
-    return users;
-  },
-});
-
-export const add = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (identity === null) {
-      throw new Error("Not authenticated");
-    }
-
-    const names = (identity.name || "Antonio User").split(" ");
-    const firstName = names[0];
-    const lastName = names.slice(1).join(" ") || "User";
-
-    const userId = await ctx.db.insert("users", {
-      firstName,
-      lastName,
-      email: identity.email || "",
-      passwordHash: "external", // Better Auth users don't need a local hash
-      role: "student",
-      isActive: true,
-      createdAt: Date.now(),
+    // We use Better Auth instance to create the user so it handles password hashing etc.
+    const auth = createAuth(ctx);
+    
+    // Better Auth createUser api
+    const user = await auth.api.createUser({
+        body: {
+            email: args.email,
+            password: args.password || "UniSystem2026!", // Default password if none provided
+            name: `${args.firstName} ${args.lastName}`,
+            role: args.role,
+            emailVerified: true,
+        }
     });
 
-    return userId;
+    return user;
   },
 });
 
-/**
- * Admin-only mutation to delete a staff member.
- */
 export const deleteStaff = mutation({
-  args: {
-    id: v.id("users"),
-  },
+  args: { id: v.id("user") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
-
-    const caller = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email || ""))
-      .first();
-
-    if (!caller || (caller.role !== "SystemAdmin" && caller.role !== "systemadmin")) {
-       throw new Error("Only SystemAdmin can delete staff members");
-    }
-
-    await ctx.db.delete(args.id);
-    return { success: true };
+    return await deleteOne(ctx, "user", { id: args.id });
   },
 });

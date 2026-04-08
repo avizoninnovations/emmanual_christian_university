@@ -12,20 +12,24 @@ export const SignInView = () => {
 
   const handleSignIn = async (values: any) => {
     setIsLoading(true);
+    console.log("Attempting sign-in for:", values.email);
     try {
-      const { error } = await authClient.signIn.email({
+      const response = await authClient.signIn.email({
         email: values.email,
         password: values.password,
       });
 
-      if (error) {
-        toast.error(error.message || "Failed to sign in. Please check your credentials.");
+      console.log("Sign-in response:", response);
+
+      if (response.error) {
+        toast.error(response.error.message || "Failed to sign in. Please check your credentials.");
       } else {
         toast.success("Welcome back!");
         router.push("/");
       }
-    } catch (err) {
-      toast.error("An unexpected error occurred.");
+    } catch (err: any) {
+      console.error("Sign-in unexpected error:", err);
+      toast.error("An unexpected error occurred: " + (err.message || "Unknown error"));
     } finally {
       setIsLoading(false);
     }

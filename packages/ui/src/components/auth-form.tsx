@@ -4,6 +4,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { toast } from "sonner";
 import { Loader2, Mail, Lock, User } from "lucide-react";
 
 import { Button } from "./button";
@@ -21,7 +22,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 const authSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }).optional(),
+  name: z.string().optional().or(z.literal("")),
 });
 
 type AuthFormValues = z.infer<typeof authSchema>;
@@ -57,7 +58,13 @@ export function AuthForm({ type, onSubmit, isLoading, title, description, showSi
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, (errors) => {
+              console.log("Form validation errors:", errors);
+              toast.error("Please fill in all required fields correctly.");
+            })}
+            className="space-y-5"
+          >
             {type === "sign-up" && (
               <FormField
                 control={form.control}

@@ -4,16 +4,19 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
-    "lib": ["ESNext", "DOM", "WebWorker"],
+    "lib": ["ESNext", "DOM"],
     "types": ["node"],
     "jsx": "react-jsx",
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   },
   "include": [
-    "./**/*.ts",
-    "./**/*.tsx",
-    "*.ts"
+    "**/*.ts",
+    "**/*.tsx"
   ],
-  "exclude": ["_generated"]
+  "exclude": [
+    "_generated",
+    "node_modules"
+  ]
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { 
   Plus, 
@@ -70,10 +70,12 @@ type StaffFormValues = z.infer<typeof staffSchema>;
 export const StaffManagementView = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
+
+  // Natively bind to the database using useQuery for real-time updates!
   const staff = useQuery(api.users.getStaff);
-  const createStaff = useMutation(api.users.createStaff);
-  const deleteStaff = useMutation(api.users.deleteStaff);
+  
+  const createStaffAction = useAction(api.users.createStaff);
+  const deleteStaffAction = useMutation(api.users.deleteStaff);
 
   const form = useForm<StaffFormValues>({
     resolver: zodResolver(staffSchema),
@@ -88,23 +90,25 @@ export const StaffManagementView = () => {
 
   const onSubmit = async (values: StaffFormValues) => {
     try {
-      await createStaff({
+      await createStaffAction({
         ...values,
-        role: values.role as any,
+        role: values.role,
       });
       toast.success("Staff member created successfully");
       setIsCreateOpen(false);
       form.reset();
+      // No need to fetch manually anymore, `useQuery` updates instantly!
     } catch (error: any) {
       toast.error(error.message || "Failed to create staff member");
     }
   };
 
-  const handleDelete = async (id: any) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to remove this staff member?")) return;
     try {
-      await deleteStaff({ id });
+      await deleteStaffAction({ id });
       toast.success("Staff member removed");
+      // No need to fetch manually anymore, `useQuery` updates instantly!
     } catch (error: any) {
       toast.error(error.message || "Failed to remove staff member");
     }

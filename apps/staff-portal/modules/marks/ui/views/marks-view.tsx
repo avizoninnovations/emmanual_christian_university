@@ -17,19 +17,17 @@ import { Table, TableHead, TableHeader, TableRow, TableCell, TableBody } from "@
  * Uses mocked data pending schema updates for university grading blocks.
  */
 
-const MOCK_SUBMISSIONS = [
-  { id: "SUB-882", course: "Data Structures", code: "CSC211", lecturer: "Dr. Lule", status: "pending", date: "2026-04-09", type: "Midterm" },
-  { id: "SUB-881", course: "Old Testament Survey", code: "THE101", lecturer: "Rev. Okeny", status: "approved", date: "2026-04-08", type: "Final" },
-  { id: "SUB-880", course: "Accounting Principles", code: "ACC102", lecturer: "Ms. Nakato", status: "pending", date: "2026-04-08", type: "Coursework 1" },
-  { id: "SUB-879", course: "Software Engineering", code: "CSC312", lecturer: "Dr. Kizza", status: "rejected", date: "2026-04-07", type: "Final" },
-];
+import { useQuery } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
 
 export const MarksView = () => {
   const [search, setSearch] = useState("");
 
-  const filtered = MOCK_SUBMISSIONS.filter(s => 
-    s.course.toLowerCase().includes(search.toLowerCase()) || 
-    s.code.toLowerCase().includes(search.toLowerCase())
+  const submissions = useQuery(api.marks.getAssessmentBlocks, {});
+
+  const filtered = (submissions || []).filter(s => 
+    s.courseId.toLowerCase().includes(search.toLowerCase()) || 
+    s.lecturerId.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -112,25 +110,34 @@ export const MarksView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map(sub => (
-                <TableRow key={sub.id} className="group cursor-pointer hover:bg-muted/50">
-                  <TableCell className="pl-6 font-mono text-xs text-muted-foreground">{sub.id}</TableCell>
+              {submissions === undefined ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-24 text-center">Loading...</TableCell>
+                </TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">No submissions found.</TableCell>
+                </TableRow>
+              ) : (
+                filtered.map(sub => (
+                <TableRow key={sub._id} className="group cursor-pointer hover:bg-muted/50">
+                  <TableCell className="pl-6 font-mono text-xs text-muted-foreground">{sub._id.split('').slice(0,8).join('')}</TableCell>
                   <TableCell>
-                    <p className="font-medium text-sm">{sub.course}</p>
-                    <p className="text-xs text-muted-foreground font-mono">{sub.code}</p>
+                    <p className="font-medium text-sm">Course block</p>
+                    <p className="text-xs text-muted-foreground font-mono">{sub.courseId}</p>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{sub.type}</TableCell>
                   <TableCell className="text-sm">
                     <div className="flex items-center gap-2">
                       <UserCheck className="size-3.5 text-muted-foreground" />
-                      {sub.lecturer}
-                      <span className="text-[10px] text-muted-foreground">({sub.date})</span>
+                      {sub.lecturerId}
+                      <span className="text-[10px] text-muted-foreground">({new Date(sub.submissionDate).toLocaleDateString()})</span>
                     </div>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={
                       sub.status === "approved" ? "bg-emerald-500/10 text-emerald-600 border-emerald-200" :
-                      sub.status === "rejected" ? "bg-rose-500/10 text-rose-600 border-rose-200" :
+                      sub.status === "returned" ? "bg-rose-500/10 text-rose-600 border-rose-200" :
                       "bg-amber-500/10 text-amber-600 border-amber-200"
                     }>
                       {sub.status.toUpperCase()}
@@ -142,7 +149,7 @@ export const MarksView = () => {
                     </Button>
                   </TableCell>
                 </TableRow>
-              ))}
+              )))}
             </TableBody>
           </Table>
         </CardContent>

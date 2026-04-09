@@ -16,20 +16,18 @@ import { Table, TableHead, TableHeader, TableRow, TableCell, TableBody } from "@
  * Students View
  * Uses mocked data pending schema updates for `students`.
  */
-
-const MOCK_STUDENTS = [
-  { id: "STU-26-001", name: "John Bosco", email: "jbosco@ecu-ssd.org", program: "BSc Information Tech", year: 1, status: "active", finance: "cleared" },
-  { id: "STU-25-042", name: "Mary Achieng", email: "machieng@ecu-ssd.org", program: "Bachelor of Business Admin", year: 2, status: "active", finance: "pending" },
-  { id: "STU-24-118", name: "Simon Peter", email: "speter@ecu-ssd.org", program: "Diploma in Theology", year: 3, status: "graduating", finance: "cleared" },
-  { id: "STU-26-089", name: "Lucy Kiden", email: "lkiden@ecu-ssd.org", program: "BSc Computer Science", year: 1, status: "leave", finance: "cleared" },
-];
+import { useQuery } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
 
 export const StudentsView = () => {
   const [search, setSearch] = useState("");
+  
+  const students = useQuery(api.students.getStudents, {});
 
-  const filtered = MOCK_STUDENTS.filter(s => 
-    s.name.toLowerCase().includes(search.toLowerCase()) || 
-    s.id.toLowerCase().includes(search.toLowerCase())
+  const filtered = (students || []).filter(s => 
+    // Fallback names logic until we join better-auth profiles or add fields
+    "Student".toLowerCase().includes(search.toLowerCase()) || 
+    s.registrationNumber.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -115,23 +113,32 @@ export const StudentsView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map(stu => (
-                <TableRow key={stu.id} className="group cursor-pointer hover:bg-muted/50">
-                  <TableCell className="pl-6 font-mono text-xs font-medium">{stu.id}</TableCell>
+              {students === undefined ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center">Loading...</TableCell>
+                </TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">No students found.</TableCell>
+                </TableRow>
+              ) : (
+                filtered.map(stu => (
+                <TableRow key={stu._id} className="group cursor-pointer hover:bg-muted/50">
+                  <TableCell className="pl-6 font-mono text-xs font-medium">{stu.registrationNumber}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <div className="size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
-                        {stu.name[0]}
+                        U
                       </div>
                       <div>
-                        <p className="font-medium text-sm">{stu.name}</p>
-                        <p className="text-[10px] text-muted-foreground">{stu.email}</p>
+                        <p className="font-medium text-sm">Student Record</p>
+                        <p className="text-[10px] text-muted-foreground">{stu.userId}</p>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{stu.program}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{stu.programId}</TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className="font-mono">Yr {stu.year}</Badge>
+                    <Badge variant="secondary" className="font-mono">Yr {stu.yearOfStudy}</Badge>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={
@@ -144,10 +151,10 @@ export const StudentsView = () => {
                   </TableCell>
                   <TableCell>
                      <Badge variant="outline" className={
-                      stu.finance === "cleared" ? "text-emerald-600 border-emerald-200" :
+                      stu.financeStatus === "cleared" ? "text-emerald-600 border-emerald-200" :
                       "text-rose-600 border-rose-200 bg-rose-50"
                     }>
-                      {stu.finance === "cleared" ? "Cleared" : "Balance Due"}
+                      {stu.financeStatus === "cleared" ? "Cleared" : "Balance Due"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right pr-6">
@@ -156,7 +163,7 @@ export const StudentsView = () => {
                     </Button>
                   </TableCell>
                 </TableRow>
-              ))}
+              )))}
             </TableBody>
           </Table>
         </CardContent>

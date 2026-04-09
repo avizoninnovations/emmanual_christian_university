@@ -49,14 +49,11 @@ export function useCurrentUser() {
       const hasAdmin = roles.includes("admin");
       const hasStaff = roles.some((r) => r !== "admin");
 
-      if (hasAdmin && !hasStaff) {
-        // Only admin role
+      if (hasAdmin) {
         setActiveRole("admin");
-      } else if (!hasAdmin && hasStaff) {
-        // Only staff role(s), no admin
+      } else if (hasStaff) {
         setActiveRole("staff");
       }
-      // If both admin and staff → don't auto-select, show role picker
     }
   }, [user, activeRole]);
 

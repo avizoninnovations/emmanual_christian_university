@@ -7,7 +7,6 @@ import {
   Users,
   LogOut,
   ArrowLeftRight,
-  GraduationCap,
   ChevronUp,
   CalendarDays,
   ClipboardList,
@@ -17,8 +16,10 @@ import {
   BarChart3,
   Settings,
   UserCheck,
+  GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Sidebar,
@@ -166,8 +167,14 @@ export const AdminSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="w-full justify-start gap-2 px-2">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <GraduationCap className="size-4" />
+              <div className="flex aspect-square size-11 items-center justify-center overflow-hidden">
+                <Image 
+                  src="/icon.png" 
+                  alt="ECU Logo" 
+                  width={48} 
+                  height={48} 
+                  className="size-full object-contain"
+                />
               </div>
               <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
                 <span className="font-semibold text-sm">ECU Portal</span>
@@ -197,9 +204,6 @@ export const AdminSidebar = () => {
                       <SidebarMenuButton
                         asChild
                         isActive={active}
-                        className={cn(
-                          active && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                        )}
                         tooltip={item.title}
                       >
                         <Link href={item.url}>

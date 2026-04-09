@@ -59,6 +59,20 @@ export const getStudentLedger = query({
   },
 });
 
+export const getAllLedgers = query({
+  args: {
+    periodId: v.optional(v.id("academicPeriods")),
+  },
+  handler: async (ctx, args) => {
+    if (args.periodId) {
+      return await ctx.db.query("studentLedger")
+        .withIndex("by_period", (q) => q.eq("periodId", args.periodId!))
+        .collect();
+    }
+    return await ctx.db.query("studentLedger").collect();
+  },
+});
+
 export const recordTransaction = mutation({
   args: {
     studentId: v.id("students"),

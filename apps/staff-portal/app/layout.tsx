@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google"
+import { Metadata } from "next"
 
 import "@workspace/ui/globals.css"
 import { Providers } from "@/components/providers"
@@ -14,6 +15,15 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: "ECU Staff Portal | Emmanuel Christian University",
+  description: "Official staff portal for Emmanuel Christian University university management system.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
+}
 
 export default async function RootLayout({
   children,

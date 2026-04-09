@@ -1,24 +1,44 @@
-import { AuthGuard } from "@/modules/auth/ui/components/auth-guard"
-import { DashboardSidebar } from "@/modules/dashboard/ui/components/dashboard-sidebar";
+"use client";
+
+import { AuthGuard } from "@/modules/auth/ui/components/auth-guard";
+
 import { SidebarProvider } from "@workspace/ui/components/sidebar";
 import { Provider } from "jotai";
-import { cookies } from "next/headers";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { DashboardSidebar } from "../components/dashboard-sidebar";
 
-export const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
-  const cookieStore = await cookies();
-  // Using SIDEBAR_COOKIE_NAME from sidebar component does not work due to monorepo and SSR
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-
+/**
+ * Dashboard layout that wraps all authenticated pages.
+ * 
+ * When a multi-role user hasn't selected their active role yet,
+ * we render children without the sidebar (so the RoleSelector gets
+ * the full screen). Once a role is selected, the sidebar appears.
+ */
+export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthGuard>
       <Provider>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <DashboardSidebar />
-          <main className="flex flex-1 flex-col">
-            {children}
-          </main>
-        </SidebarProvider>
+        <DashboardLayoutInner>{children}</DashboardLayoutInner>
       </Provider>
     </AuthGuard>
   );
 };
+
+function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
+  const { needsRoleSelection, isLoading, activeRole } = useCurrentUser();
+
+  // While loading or if the user needs to select a role,
+  // render without sidebar so the RoleSelector gets full screen
+  if (isLoading || needsRoleSelection) {
+    return <>{children}</>;
+  }
+
+  return (
+    <SidebarProvider defaultOpen={true}>
+      <DashboardSidebar />
+      <main className="flex flex-1 flex-col">
+        {children}
+      </main>
+    </SidebarProvider>
+  );
+}

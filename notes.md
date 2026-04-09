@@ -1,6 +1,11 @@
 pnpm -r exec tsc --noEmit
 
-Email: admin@ecu.edu
+1. System Administrator
+Email: admin@ecu-ssd.org
+Password: Password123!
+
+2. Lecturer (Staff Member)
+Email: lecturer@ecu-ssd.org
 Password: Password123!
 
 http://127.0.0.1:6790

@@ -2,9 +2,10 @@
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
-      "@workspace/backend/*": ["./convex/*"],
-    },
+      "@workspace/backend/*": ["./convex/*"]
+    }
   },
   "include": ["."],
   "exclude": ["node_modules"]

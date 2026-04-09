@@ -2,6 +2,7 @@ import { action, query, mutation, internalMutation } from "./_generated/server.j
 import { v } from "convex/values";
 import { createAuth } from "./betterAuth/auth.js";
 import { components, internal } from "./_generated/api.js";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // QUERIES
@@ -115,7 +116,8 @@ export const createStaff = action({
     // Determine the Better Auth role — "admin" if roles include it, otherwise "user"
     const betterAuthRole = args.roles.includes("admin") ? "admin" : "user";
 
-    const user = await auth.api.createUser({
+    // @ts-ignore - The admin plugin is enabled but the InferAPI type is not picking it up in this context
+    const user = await (auth.api as any).admin.createUser({
       body: {
         email: args.email,
         password: args.password || "UniSystem2026!",
@@ -134,6 +136,17 @@ export const createStaff = action({
         roles: args.roles,
         title: args.title,
         phone: args.phone,
+      });
+
+      // LOG the action using the mutation-based helper
+      // Since this is an action, we run an internal mutation to log
+      await ctx.runMutation(internal.system._logAction, {
+          userId: user.user.id, // Or current admin ID if we had it, but createStaff is often used for self or by admin
+          userName: user.user.name || args.firstName,
+          userEmail: user.user.email,
+          action: "CREATE_STAFF",
+          resource: "users",
+          details: `Created staff member ${args.firstName} ${args.lastName} (${args.email})`
       });
     }
 
@@ -210,6 +223,13 @@ export const updateStaff = mutation({
     if (args.status !== undefined) updates.status = args.status;
 
     await ctx.db.patch(profile._id, updates);
+
+    await logAction(ctx, {
+      action: "UPDATE_STAFF",
+      resource: "staffProfiles",
+      details: `Updated staff profile for user ${args.userId}: ${Object.keys(updates).join(', ')}`
+    });
+
     return profile._id;
   },
 });
@@ -244,6 +264,12 @@ export const deleteStaff = mutation({
     if (profile) {
       await ctx.db.delete(profile._id);
     }
+
+    await logAction(ctx, {
+      action: "DELETE_STAFF",
+      resource: "users",
+      details: `Deleted staff member and profile with ID: ${args.id}`
+    });
 
     return { success: true };
   },

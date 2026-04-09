@@ -35,34 +35,17 @@ export const StudentsView = () => {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Student Directory</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage enrolled students, academic records, and profiles.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Student Directory Analytics</h1>
+          <p className="text-sm text-muted-foreground mt-1">Review enrollment trends, academic distributions, and student statuses.</p>
         </div>
       </div>
 
-      {/* ── Warning Notice for Backend ── */}
-      <Card className="border border-amber-200 bg-amber-500/5">
-        <CardContent className="pt-5 pb-4">
-          <div className="flex gap-3">
-            <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-amber-700 dark:text-amber-400">Backend schema required</p>
-              <p className="text-sm text-muted-foreground">
-                Currently using mock data. Implement the <code className="text-xs bg-muted px-1 py-0.5 rounded">students</code> schema 
-                to link admissions into actual enrolled student records with academic progression and finance ledgers.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* ── Stats ── */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total Students", val: 842, sub: "All time", icon: User, color: "text-blue-500" },
-          { label: "Currently Active", val: 760, sub: "Enrolled this semester", icon: CheckCircle2, color: "text-emerald-500" },
-          { label: "Financially Cleared", val: 610, sub: "Ready for exams", icon: CreditCard, color: "text-indigo-500" },
-          { label: "Graduating Class", val: 145, sub: "Final year students", icon: GraduationCap, color: "text-purple-500" },
+          { label: "Total Students", val: (students || []).length, sub: "Total enrolled", icon: User, color: "text-blue-500" },
+          { label: "Currently Active", val: (students || []).filter(s => s.status === 'active').length, sub: "Enrolled this semester", icon: CheckCircle2, color: "text-emerald-500" },
+          { label: "Financially Cleared", val: (students || []).filter(s => s.financeStatus === 'cleared').length, sub: "Ready for exams", icon: CreditCard, color: "text-indigo-500" },
+          { label: "Graduating Class", val: (students || []).filter(s => s.status === 'graduating').length, sub: "Final year students", icon: GraduationCap, color: "text-purple-500" },
         ].map(s => (
           <Card key={s.label} className="border shadow-sm">
             <CardContent className="pt-5 pb-4">
@@ -158,7 +141,7 @@ export const StudentsView = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right pr-6">
-                    <Button variant="ghost" size="sm" className="h-8 gap-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary">
+                    <Button variant="ghost" size="sm" className="h-8 gap-1 text-primary">
                       Profile <ChevronRight className="size-3" />
                     </Button>
                   </TableCell>

@@ -18,11 +18,9 @@ import { Table, TableHead, TableHeader, TableRow, TableCell, TableBody } from "@
  */
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
-import { BookForm } from "../components/book-form";
 
 export const LibraryView = () => {
   const [search, setSearch] = useState("");
-  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const books = useQuery(api.library.getBooks, {});
 
@@ -37,40 +35,16 @@ export const LibraryView = () => {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Library Catalog</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage physical resources, track loans, and process returns.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Library Catalog Overview</h1>
+          <p className="text-sm text-muted-foreground mt-1">Monitor physical resources, collection health, and borrowing trends.</p>
         </div>
         <div className="flex items-center gap-2">
-          {!isFormOpen && (
-            <>
-              <Button variant="outline" className="gap-2"><ScanLine className="size-4" /> Scan Barcode</Button>
-              <Button className="gap-2" onClick={() => setIsFormOpen(true)}><Plus className="size-4" /> Add Book</Button>
-            </>
-          )}
+           <Button variant="outline" className="gap-2"><ScanLine className="size-4" /> Filter Resources</Button>
         </div>
       </div>
 
-      {isFormOpen ? (
-        <BookForm onBack={() => setIsFormOpen(false)} />
-      ) : (
-        <>
-          {/* ── Warning Notice for Backend ── */}
-          <Card className="border border-amber-200 bg-amber-500/5">
-            <CardContent className="pt-5 pb-4">
-              <div className="flex gap-3">
-                <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-amber-700 dark:text-amber-400">Backend hooked up!</p>
-                  <p className="text-sm text-muted-foreground">
-                    Click "Add Book" above to populate your catalog and test the live Convex logic.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* ── Stats ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      {/* Stats and Table */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             {[
               { label: "Total Collection", val: (books || []).length, sub: "Books & resources", icon: Book, color: "text-blue-500" },
               { label: "Currently Borrowed", val: (books || []).reduce((acc, curr) => acc + (curr.totalCopies - curr.availableCopies), 0), sub: "Out with students", icon: BookCopy, color: "text-amber-500" },
@@ -161,8 +135,6 @@ export const LibraryView = () => {
               </Table>
             </CardContent>
           </Card>
-        </>
-      )}
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { Card, CardContent } from "@workspace/ui/components/card";
 import { Label } from "@workspace/ui/components/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { Textarea } from "@workspace/ui/components/textarea";
@@ -25,7 +24,6 @@ export const PaymentForm = ({ onBack }: PaymentFormProps) => {
   const [method, setMethod] = useState<"CASH" | "BANK" | "MOBILE">("CASH");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // We fetch students to populate the "Find Student" dropdown
   const students = useQuery(api.students.getStudents, {}) || [];
   const recordTransaction = useMutation(api.finance.recordTransaction);
 
@@ -55,7 +53,6 @@ export const PaymentForm = ({ onBack }: PaymentFormProps) => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 shadow-sm border bg-card rounded-xl overflow-hidden mt-4">
-      {/* Form Header matching the screenshot */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-6 sm:p-8 pb-6 border-b bg-muted/10">
         <div className="flex gap-4">
           <Button variant="outline" size="icon" className="rounded-full size-10 shrink-0" onClick={onBack}>
@@ -87,7 +84,6 @@ export const PaymentForm = ({ onBack }: PaymentFormProps) => {
 
       <div className="p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
-          {/* Find Student row */}
           <div className="space-y-2">
             <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Find Student</Label>
             <Select value={studentId} onValueChange={setStudentId}>

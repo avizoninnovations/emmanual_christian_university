@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // FACULTIES
@@ -20,10 +21,18 @@ export const createFaculty = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("faculties", {
+    const id = await ctx.db.insert("faculties", {
       ...args,
       status: "active",
     });
+
+    await logAction(ctx, {
+      action: "CREATE_FACULTY",
+      resource: "faculties",
+      details: `Created faculty ${args.name} (${args.code})`
+    });
+
+    return id;
   },
 });
 
@@ -39,6 +48,12 @@ export const updateFaculty = mutation({
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logAction(ctx, {
+      action: "UPDATE_FACULTY",
+      resource: "faculties",
+      details: `Updated faculty ${id}: ${Object.keys(updates).join(', ')}`
+    });
   },
 });
 
@@ -55,7 +70,14 @@ export const deleteFaculty = mutation({
       throw new Error(`Cannot delete faculty. It has ${departments.length} associated department(s).`);
     }
 
+    const faculty = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logAction(ctx, {
+      action: "DELETE_FACULTY",
+      resource: "faculties",
+      details: `Deleted faculty ${faculty?.name} (${faculty?.code})`
+    });
   },
 });
 
@@ -88,10 +110,18 @@ export const createDepartment = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("departments", {
+    const id = await ctx.db.insert("departments", {
       ...args,
       status: "active",
     });
+
+    await logAction(ctx, {
+      action: "CREATE_DEPARTMENT",
+      resource: "departments",
+      details: `Created department ${args.name} (${args.code}) under faculty ${args.facultyId}`
+    });
+
+    return id;
   },
 });
 
@@ -108,6 +138,12 @@ export const updateDepartment = mutation({
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logAction(ctx, {
+      action: "UPDATE_DEPARTMENT",
+      resource: "departments",
+      details: `Updated department ${id}: ${Object.keys(updates).join(', ')}`
+    });
   },
 });
 
@@ -124,7 +160,14 @@ export const deleteDepartment = mutation({
       throw new Error(`Cannot delete department. It has ${programs.length} associated program(s).`);
     }
 
+    const dept = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logAction(ctx, {
+      action: "DELETE_DEPARTMENT",
+      resource: "departments",
+      details: `Deleted department ${dept?.name} (${dept?.code})`
+    });
   },
 });
 
@@ -158,10 +201,18 @@ export const createProgram = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("programs", {
+    const id = await ctx.db.insert("programs", {
       ...args,
       status: "active",
     });
+
+    await logAction(ctx, {
+      action: "CREATE_PROGRAM",
+      resource: "programs",
+      details: `Created program ${args.name} (${args.code})`
+    });
+
+    return id;
   },
 });
 
@@ -179,13 +230,59 @@ export const updateProgram = mutation({
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logAction(ctx, {
+      action: "UPDATE_PROGRAM",
+      resource: "programs",
+      details: `Updated program ${id}: ${Object.keys(updates).join(', ')}`
+    });
   },
 });
 
 export const deleteProgram = mutation({
   args: { id: v.id("programs") },
   handler: async (ctx, args) => {
-    // In future: check for associated students before deleting
+    const prog = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
+
+    await logAction(ctx, {
+      action: "DELETE_PROGRAM",
+      resource: "programs",
+      details: `Deleted program ${prog?.name} (${prog?.code})`
+    });
+  },
+});
+
+// ─────────────────────────────────────────────────────────
+// ACADEMIC PERIODS
+// ─────────────────────────────────────────────────────────
+
+export const getPeriods = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("academicPeriods").order("desc").collect();
+  },
+});
+
+export const createPeriod = mutation({
+  args: {
+    name: v.string(),
+    year: v.number(),
+    startDate: v.string(),
+    endDate: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const id = await ctx.db.insert("academicPeriods", {
+      ...args,
+      status: "upcoming",
+    });
+
+    await logAction(ctx, {
+      action: "CREATE_PERIOD",
+      resource: "academicPeriods",
+      details: `Created academic period ${args.name} ${args.year}`
+    });
+
+    return id;
   },
 });

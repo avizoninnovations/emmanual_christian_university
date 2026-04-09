@@ -7,7 +7,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "staff": "turbo dev --filter=staff-portal --filter=@workspace/backend",
+    "student": "turbo dev --filter=student-portal --filter=@workspace/backend"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",

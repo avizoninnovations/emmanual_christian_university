@@ -13,10 +13,12 @@ import {
   BookOpen,
   DollarSign,
   Library,
-  BarChart3,
+  List,
   Settings,
   UserCheck,
   GraduationCap,
+  Building2,
+  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -32,8 +34,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@workspace/ui/components/collapsible";
 import { Separator } from "@workspace/ui/components/separator";
 import {
   DropdownMenu,
@@ -53,6 +63,11 @@ interface NavItem {
   url: string;
   icon: React.ElementType;
   exact?: boolean;
+  items?: {
+    title: string;
+    url: string;
+    icon?: React.ElementType;
+  }[];
 }
 
 interface NavGroup {
@@ -76,9 +91,26 @@ const navGroups: NavGroup[] = [
     label: "Academic",
     items: [
       {
-        title: "Academic Structure",
-        url: "/admin/academic-structure",
+        title: "Academic",
+        url: "/admin/academic",
         icon: SchoolIcon,
+        items: [
+          {
+            title: "Faculties",
+            url: "/admin/academic/faculties",
+            icon: SchoolIcon,
+          },
+          {
+            title: "Departments",
+            url: "/admin/academic/departments",
+            icon: Building2,
+          },
+          {
+            title: "Programs",
+            url: "/admin/academic/programs",
+            icon: BookOpen,
+          },
+        ],
       },
       {
         title: "Academic Calendar",
@@ -105,30 +137,30 @@ const navGroups: NavGroup[] = [
         url: "/admin/staff",
         icon: Users,
       },
-      {
-        title: "Marks & Assessments",
-        url: "/admin/marks",
-        icon: BookOpen,
-      },
-      {
-        title: "Finance",
-        url: "/admin/finance",
-        icon: DollarSign,
-      },
-      {
-        title: "Library",
-        url: "/admin/library",
-        icon: Library,
-      },
+      // {
+      //   title: "Marks & Assessments",
+      //   url: "/admin/marks",
+      //   icon: BookOpen,
+      // },
+      // {
+      //   title: "Finance",
+      //   url: "/admin/finance",
+      //   icon: DollarSign,
+      // },
+      // {
+      //   title: "Library",
+      //   url: "/admin/library",
+      //   icon: Library,
+      // },
     ],
   },
   {
     label: "System",
     items: [
       {
-        title: "Reports",
-        url: "/admin/reports",
-        icon: BarChart3,
+        title: "Audit Logs",
+        url: "/admin/audit-logs",
+        icon: List,
       },
       {
         title: "Settings",
@@ -163,24 +195,24 @@ export const AdminSidebar = () => {
   return (
     <Sidebar className="group" collapsible="icon">
       {/* ── Header / Brand ── */}
-      <SidebarHeader>
+      <SidebarHeader className="py-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" className="w-full justify-start gap-2 px-2">
-              <div className="flex aspect-square size-11 items-center justify-center overflow-hidden">
+            <SidebarMenuButton size="default" className="w-full justify-start gap-2 px-1.5 h-11">
+              <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-sm">
                 <Image 
                   src="/icon.png" 
                   alt="ECU Logo" 
-                  width={48} 
-                  height={48} 
+                  width={32} 
+                  height={32} 
                   className="size-full object-contain"
                 />
               </div>
-              <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-                <span className="font-semibold text-sm">ECU Portal</span>
+              <div className="flex flex-col gap-0 leading-none group-data-[collapsible=icon]:hidden">
+                <span className="font-bold text-[13px] tracking-tight">ECU Portal</span>
                 <Badge
                   variant="outline"
-                  className="text-[10px] h-4 px-1.5 w-fit font-medium bg-primary/10 text-primary border-primary/20"
+                  className="text-[9px] h-3 px-1 w-fit font-bold bg-primary/10 text-primary border-primary/20 uppercase"
                 >
                   Admin
                 </Badge>
@@ -190,25 +222,67 @@ export const AdminSidebar = () => {
         </SidebarMenu>
       </SidebarHeader>
 
+      <Separator className="opacity-50" />
+
       {/* ── Navigation ── */}
-      <SidebarContent>
+      <SidebarContent className="gap-0">
         {navGroups.map((group, idx) => (
-          <SidebarGroup key={group.label}>
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          <SidebarGroup key={group.label} className="py-2">
+            <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 h-6 px-3">
+              {group.label}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
                   const active = isActive(item.url, item.exact);
+                  const hasSubItems = item.items && item.items.length > 0;
+
+                  if (hasSubItems) {
+                    return (
+                      <Collapsible
+                        key={item.title}
+                        asChild
+                        defaultOpen={active}
+                        className="group/collapsible"
+                      >
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton tooltip={item.title} isActive={active}>
+                              <item.icon className="size-[14px]" />
+                              <span className="text-[13px] font-medium">{item.title}</span>
+                              <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items?.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton asChild isActive={isActive(subItem.url)}>
+                                    <Link href={subItem.url}>
+                                      <span className="text-[13px]">{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </SidebarMenuItem>
+                      </Collapsible>
+                    );
+                  }
+
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
                         asChild
                         isActive={active}
                         tooltip={item.title}
+                        size="sm"
+                        className="h-8 px-3"
                       >
                         <Link href={item.url}>
-                          <item.icon className="size-4" />
-                          <span>{item.title}</span>
+                          <item.icon className="size-[14px]" />
+                          <span className="text-[13px] font-medium">{item.title}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -216,17 +290,18 @@ export const AdminSidebar = () => {
                 })}
               </SidebarMenu>
             </SidebarGroupContent>
-            {idx < navGroups.length - 1 && <div className="px-3 mt-2"><Separator /></div>}
           </SidebarGroup>
         ))}
       </SidebarContent>
 
+      <Separator className="opacity-50" />
+
       {/* ── Footer / User Menu ── */}
-      <SidebarFooter>
+      <SidebarFooter className="py-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-1 group-data-[collapsible=icon]:hidden px-2 pb-1">
-              <span className="text-xs text-muted-foreground flex-1">Theme</span>
+            <div className="flex items-center gap-1 group-data-[collapsible=icon]:hidden px-2 pb-1.5">
+              <span className="text-[11px] text-muted-foreground flex-1 font-medium">Theme</span>
               <ModeToggle />
             </div>
           </SidebarMenuItem>

@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={true} style={{ "--sidebar-width": "210px" } as React.CSSProperties}>
       <AdminSidebar />
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="p-2 md:hidden">

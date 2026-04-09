@@ -42,21 +42,21 @@ function AdminDashboardContent() {
       value: faculties?.length ?? "—",
       sub: "Academic units",
       icon: Building2,
-      href: "/admin/academic-structure",
+      href: "/admin/academic/faculties",
     },
     {
       label: "Departments",
       value: departments?.length ?? "—",
       sub: "Under faculties",
       icon: GraduationCap,
-      href: "/admin/academic-structure",
+      href: "/admin/academic/departments",
     },
     {
       label: "Programs",
       value: programs?.length ?? "—",
       sub: "Degrees & diplomas",
       icon: BookOpen,
-      href: "/admin/academic-structure",
+      href: "/admin/academic/programs",
     },
   ];
 
@@ -106,7 +106,7 @@ function AdminDashboardContent() {
           <CardContent className="space-y-1.5">
             {[
               { label: "Manage Staff", href: "/admin/staff", icon: UserPlus },
-              { label: "Academic Structure", href: "/admin/academic-structure", icon: Building2 },
+              { label: "Academic Structure", href: "/admin/academic/faculties", icon: Building2 },
               { label: "Admissions", href: "/admin/admissions", icon: GraduationCap },
             ].map((action) => (
               <Link key={action.label} href={action.href}>

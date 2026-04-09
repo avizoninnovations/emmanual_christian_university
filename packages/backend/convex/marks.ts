@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // MARKS & ASSESSMENTS
@@ -20,7 +21,15 @@ export const createGradingScale = mutation({
     gpaValue: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("gradingScales", args);
+    const id = await ctx.db.insert("gradingScales", args);
+
+    await logAction(ctx, {
+      action: "CREATE_GRADING_SCALE",
+      resource: "gradingScales",
+      details: `Created grading scale: ${args.grade} (${args.minScore}-${args.maxScore})`
+    });
+
+    return id;
   },
 });
 
@@ -57,13 +66,23 @@ export const createAssessmentBlock = mutation({
     courseId: v.string(),
     lecturerId: v.string(),
     type: v.union(v.literal("Midterm"), v.literal("Final"), v.literal("Coursework")),
+    term: v.number(),
+    year: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("assessmentBlocks", {
+    const id = await ctx.db.insert("assessmentBlocks", {
       ...args,
       status: "draft",
       submissionDate: Date.now(),
     });
+
+    await logAction(ctx, {
+      action: "CREATE_ASSESSMENT_BLOCK",
+      resource: "assessmentBlocks",
+      details: `Created assessment block for course ${args.courseId} (Term ${args.term}, ${args.year})`
+    });
+
+    return id;
   },
 });
 
@@ -77,6 +96,12 @@ export const updateAssessmentBlockStatus = mutation({
       status: args.status,
       // If submitted, update the timestamp
       ...(args.status === "submitted" ? { submissionDate: Date.now() } : {})
+    });
+
+    await logAction(ctx, {
+      action: "UPDATE_ASSESSMENT_STATUS",
+      resource: "assessmentBlocks",
+      details: `Updated assessment block ${args.id} status to ${args.status.toUpperCase()}`
     });
   },
 });

@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // LIBRARY CATALOG & LOANS
@@ -20,10 +21,18 @@ export const createBook = mutation({
     totalCopies: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("books", {
+    const id = await ctx.db.insert("books", {
       ...args,
       availableCopies: args.totalCopies,
     });
+
+    await logAction(ctx, {
+      action: "CREATE_BOOK",
+      resource: "books",
+      details: `Added new book to catalog: ${args.title} (ISBN: ${args.isbn})`
+    });
+
+    return id;
   },
 });
 
@@ -68,17 +77,33 @@ export const issueLoan = mutation({
       throw new Error("Book is not available for loan.");
     }
 
-    // 2. Decrement available copies
+    // 2. Get student context for term/year tracking
+    const student = await ctx.db.get(args.studentId);
+    if (!student || student.term === undefined || student.year === undefined) {
+      throw new Error("Student enrollment period not found.");
+    }
+
+    // 3. Decrement available copies
     await ctx.db.patch(args.bookId, {
       availableCopies: book.availableCopies - 1,
     });
 
-    // 3. Create loan record
-    return await ctx.db.insert("loans", {
+    // 4. Create loan record
+    const id = await ctx.db.insert("loans", {
       ...args,
+      term: student.term,
+      year: student.year,
       borrowDate: Date.now(),
       status: "active",
     });
+
+    await logAction(ctx, {
+      action: "ISSUE_LOAN",
+      resource: "loans",
+      details: `Issued book ${args.bookId} to student ${args.studentId} (Term ${student.term}, ${student.year}). Due: ${new Date(args.dueDate).toLocaleDateString()}`
+    });
+
+    return id;
   },
 });
 
@@ -104,6 +129,12 @@ export const returnLoan = mutation({
     await ctx.db.patch(args.loanId, {
       status: "returned",
       returnDate: Date.now(),
+    });
+
+    await logAction(ctx, {
+      action: "RETURN_LOAN",
+      resource: "loans",
+      details: `Book returned and loan ${args.loanId} cleared.`
     });
   },
 });

@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // ENROLLED STUDENTS
@@ -51,11 +52,19 @@ export const createStudent = mutation({
     currentPeriodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("students", {
+    const id = await ctx.db.insert("students", {
       ...args,
       status: "active",
       financeStatus: "pending",
     });
+
+    await logAction(ctx, {
+      action: "ENROLL_STUDENT",
+      resource: "students",
+      details: `Enrolled student ${args.registrationNumber} (User: ${args.userId})`
+    });
+
+    return id;
   },
 });
 
@@ -68,5 +77,11 @@ export const updateStudentStatus = mutation({
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
+
+    await logAction(ctx, {
+      action: "UPDATE_STUDENT_STATUS",
+      resource: "students",
+      details: `Updated student ${id}: ${Object.keys(updates).map(k => `${k}=${(updates as any)[k]}`).join(', ')}`
+    });
   },
 });

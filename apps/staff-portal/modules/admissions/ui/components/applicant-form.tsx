@@ -25,12 +25,18 @@ export const ApplicantForm = ({ onBack }: ApplicantFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const programs = useQuery(api.academic.getPrograms, {}) || [];
+  const activePeriod = useQuery(api.calendar.getActivePeriod);
   const createApplicant = useMutation(api.admissions.createApplicant);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !programId) {
       toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    if (!activePeriod) {
+      toast.error("No active academic period found. Please contact the administrator.");
       return;
     }
 
@@ -42,6 +48,8 @@ export const ApplicantForm = ({ onBack }: ApplicantFormProps) => {
         phone,
         programId: programId as Id<"programs">,
         admissionType,
+        term: activePeriod.term,
+        year: activePeriod.year,
       });
       toast.success("Applicant recorded successfully.");
       onBack();

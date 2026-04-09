@@ -34,7 +34,7 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={true} style={{ "--sidebar-width": "210px" } as React.CSSProperties}>
       <DashboardSidebar />
       <main className="flex flex-1 flex-col">
         {children}

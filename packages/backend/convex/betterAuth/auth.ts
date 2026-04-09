@@ -33,17 +33,35 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         convex({ authConfig }),
         admin(),
     ],
-    hooks: {
-        before: async (authCtx) => {
-            const body = authCtx.body as any;
-            const headers = new Headers(authCtx.headers);
-            const url = new URL(body?.callbackURL || headers.get("referer") || "http://localhost");
-            if (url.pathname.includes("/sign-up")) {
-                throw new Error("Self-registration is disabled. Please contact an administrator.");
+    events: {
+        session: {
+            create: async (data: { user: any; session: any }, _authCtx: any) => {
+                const { user } = data;
+                // @ts-ignore
+                await ctx.runMutation(internal.system._logAction, {
+                    userId: user.id,
+                    userName: user.name,
+                    userEmail: user.email,
+                    action: "SIGN_IN",
+                    resource: "auth",
+                    details: `User signed in successfully. Session created.`
+                });
+            },
+            revoked: async (data: { user: any; session: any }, _authCtx: any) => {
+                const { user } = data;
+                // @ts-ignore
+                await ctx.runMutation(internal.system._logAction, {
+                    userId: user.id,
+                    userName: user.name,
+                    userEmail: user.email,
+                    action: "SIGN_OUT",
+                    resource: "auth",
+                    details: `User signed out. Session revoked.`
+                });
             }
         }
     }
-  } satisfies BetterAuthOptions;
+  } as any;
 };
 
 // For `auth` CLI

@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // FINANCE (Structures, Ledgers, Transactions)
@@ -31,6 +32,8 @@ export const createFeeStructure = mutation({
   args: {
     programId: v.id("programs"),
     periodId: v.id("academicPeriods"),
+    term: v.number(),
+    year: v.number(),
     tuitionFee: v.number(),
     registrationFee: v.number(),
     libraryFee: v.number(),
@@ -38,7 +41,15 @@ export const createFeeStructure = mutation({
     activityFee: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("feeStructures", args);
+    const id = await ctx.db.insert("feeStructures", args);
+
+    await logAction(ctx, {
+      action: "CREATE_FEE_STRUCTURE",
+      resource: "feeStructures",
+      details: `Created fee structure for program ${args.programId} in period ${args.periodId}`
+    });
+
+    return id;
   },
 });
 
@@ -81,9 +92,26 @@ export const recordTransaction = mutation({
     reference: v.string(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("transactions", {
+    // Lookup student to get their current period context if not provided
+    const student = await ctx.db.get(args.studentId);
+    if (!student) throw new Error("Student not found");
+    if (!student.currentPeriodId || student.term === undefined || student.year === undefined) {
+      throw new Error("Student is not enrolled in an active academic period");
+    }
+
+    const id = await ctx.db.insert("transactions", {
       ...args,
+      term: student.term,
+      year: student.year,
       date: Date.now(),
     });
+
+    await logAction(ctx, {
+      action: "RECORD_TRANSACTION",
+      resource: "transactions",
+      details: `${args.type.toUpperCase()}: UGX ${args.amount.toLocaleString()} for student ${args.studentId} (${student.year} T${student.term})`
+    });
+
+    return id;
   },
 });

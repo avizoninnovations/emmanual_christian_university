@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
+import { logAction } from "./audit_logger";
 
 // ─────────────────────────────────────────────────────────
 // ADMISSIONS PIPELINE
@@ -34,13 +35,23 @@ export const createApplicant = mutation({
     phone: v.string(),
     programId: v.id("programs"),
     admissionType: v.union(v.literal("National"), v.literal("Direct")),
+    term: v.number(),
+    year: v.number(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("applicants", {
+    const id = await ctx.db.insert("applicants", {
       ...args,
       status: "new",
       applicationDate: Date.now(),
     });
+
+    await logAction(ctx, {
+      action: "CREATE_APPLICANT",
+      resource: "applicants",
+      details: `New application: ${args.name} (${args.email}) for program ${args.programId} (Term ${args.term}, ${args.year})`
+    });
+
+    return id;
   },
 });
 
@@ -51,5 +62,11 @@ export const updateApplicantStatus = mutation({
   },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.id, { status: args.status });
+
+    await logAction(ctx, {
+      action: "UPDATE_APPLICANT_STATUS",
+      resource: "applicants",
+      details: `Updated applicant ${args.id} status to ${args.status.toUpperCase()}`
+    });
   },
 });

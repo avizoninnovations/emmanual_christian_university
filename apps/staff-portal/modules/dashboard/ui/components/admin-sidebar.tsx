@@ -9,6 +9,14 @@ import {
   ArrowLeftRight,
   GraduationCap,
   ChevronUp,
+  CalendarDays,
+  ClipboardList,
+  BookOpen,
+  DollarSign,
+  Library,
+  BarChart3,
+  Settings,
+  UserCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -25,6 +33,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
+import { Separator } from "@workspace/ui/components/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,22 +45,96 @@ import { cn } from "@workspace/ui/lib/utils";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@workspace/ui/components/badge";
 import { authClient } from "@/lib/auth-client";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
-const adminMenuItems = [
+interface NavItem {
+  title: string;
+  url: string;
+  icon: React.ElementType;
+  exact?: boolean;
+}
+
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
   {
-    title: "Overview",
-    url: "/admin",
-    icon: LayoutDashboardIcon,
+    label: "Overview",
+    items: [
+      {
+        title: "Dashboard",
+        url: "/admin",
+        icon: LayoutDashboardIcon,
+        exact: true,
+      },
+    ],
   },
   {
-    title: "Academic Structure",
-    url: "/admin/academic-structure",
-    icon: SchoolIcon,
+    label: "Academic",
+    items: [
+      {
+        title: "Academic Structure",
+        url: "/admin/academic-structure",
+        icon: SchoolIcon,
+      },
+      {
+        title: "Academic Calendar",
+        url: "/admin/academic-calendar",
+        icon: CalendarDays,
+      },
+      {
+        title: "Admissions",
+        url: "/admin/admissions",
+        icon: ClipboardList,
+      },
+      {
+        title: "Students",
+        url: "/admin/students",
+        icon: GraduationCap,
+      },
+    ],
   },
   {
-    title: "Staff Management",
-    url: "/admin/staff",
-    icon: Users,
+    label: "Operations",
+    items: [
+      {
+        title: "Staff",
+        url: "/admin/staff",
+        icon: Users,
+      },
+      {
+        title: "Marks & Assessments",
+        url: "/admin/marks",
+        icon: BookOpen,
+      },
+      {
+        title: "Finance",
+        url: "/admin/finance",
+        icon: DollarSign,
+      },
+      {
+        title: "Library",
+        url: "/admin/library",
+        icon: Library,
+      },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      {
+        title: "Reports",
+        url: "/admin/reports",
+        icon: BarChart3,
+      },
+      {
+        title: "Settings",
+        url: "/admin/settings",
+        icon: Settings,
+      },
+    ],
   },
 ];
 
@@ -60,12 +143,9 @@ export const AdminSidebar = () => {
   const router = useRouter();
   const { user, isMultiRole, clearActiveRole } = useCurrentUser();
 
-  const isActive = (url: string) => {
-    if (url === "/admin" && pathname === "/admin") return true;
-    if (url !== "/admin") {
-      return pathname.startsWith(url);
-    }
-    return false;
+  const isActive = (url: string, exact = false) => {
+    if (exact) return pathname === url;
+    return pathname.startsWith(url);
   };
 
   const handleLogout = async () => {
@@ -81,17 +161,21 @@ export const AdminSidebar = () => {
 
   return (
     <Sidebar className="group" collapsible="icon">
+      {/* ── Header / Brand ── */}
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="w-full justify-start gap-2 px-2">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-700 text-primary-foreground shadow-sm">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <GraduationCap className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
                 <span className="font-semibold text-sm">ECU Portal</span>
-                <Badge variant="outline" className="text-[10px] h-4 px-1.5 w-fit font-medium bg-violet-500/10 text-violet-600 border-violet-200">
-                  Admin Portal
+                <Badge
+                  variant="outline"
+                  className="text-[10px] h-4 px-1.5 w-fit font-medium bg-primary/10 text-primary border-primary/20"
+                >
+                  Admin
                 </Badge>
               </div>
             </SidebarMenuButton>
@@ -99,36 +183,49 @@ export const AdminSidebar = () => {
         </SidebarMenu>
       </SidebarHeader>
 
+      {/* ── Navigation ── */}
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Administration</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {adminMenuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    className={cn(
-                      isActive(item.url) &&
-                        "bg-gradient-to-r from-violet-600 to-indigo-700 text-primary-foreground! hover:from-violet-600/"
-                    )}
-                    tooltip={item.title}
-                  >
-                    <Link href={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {navGroups.map((group, idx) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => {
+                  const active = isActive(item.url, item.exact);
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        className={cn(
+                          active && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                        )}
+                        tooltip={item.title}
+                      >
+                        <Link href={item.url}>
+                          <item.icon className="size-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+            {idx < navGroups.length - 1 && <div className="px-3 mt-2"><Separator /></div>}
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
+      {/* ── Footer / User Menu ── */}
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <div className="flex items-center gap-1 group-data-[collapsible=icon]:hidden px-2 pb-1">
+              <span className="text-xs text-muted-foreground flex-1">Theme</span>
+              <ModeToggle />
+            </div>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -136,7 +233,7 @@ export const AdminSidebar = () => {
                   size="lg"
                   className="w-full justify-start gap-2 px-2 data-[state=open]:bg-sidebar-accent"
                 >
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sidebar-accent to-sidebar-accent/80 text-sidebar-accent-foreground">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                     <UserIcon className="size-4" />
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden flex-1 min-w-0">
@@ -160,7 +257,10 @@ export const AdminSidebar = () => {
                     <DropdownMenuSeparator />
                   </>
                 )}
-                <DropdownMenuItem onClick={handleLogout} className="gap-2 text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="gap-2 text-destructive focus:text-destructive"
+                >
                   <LogOut className="size-4" />
                   Sign Out
                 </DropdownMenuItem>

@@ -52,6 +52,7 @@ export const getCurrentUser = query({
       staffNumber: staffProfile?.staffNumber,
       profileStatus: staffProfile?.status ?? "active",
       profileId: staffProfile?._id,
+      banned: authUser.banned ?? false,
     };
   },
 });

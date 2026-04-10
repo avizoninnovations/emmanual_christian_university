@@ -35,6 +35,24 @@ export const SignInView = () => {
   const stats = useQuery(api.system.getPublicStats);
 
   useEffect(() => {
+    // Intercept forced logouts
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const err = params.get("error");
+      
+      if (err === "inactive") {
+        toast.error("Account Inactive", { 
+          description: "Your staff account has been deactivated. Please contact an administrator." 
+        });
+        window.history.replaceState({}, '', '/sign-in');
+      } else if (err === "banned") {
+        toast.error("Account Suspended", { 
+          description: "Your account is currently banned from accessing the system." 
+        });
+        window.history.replaceState({}, '', '/sign-in');
+      }
+    }
+
     const today = new Date();
     const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // Sunday
     setWeekDays(Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i)));
@@ -85,29 +103,29 @@ export const SignInView = () => {
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" /> 
       </div>
 
-      <div className="z-10 w-full max-w-5xl bg-[#FDF8E1] rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-white/50">
+      <div className="z-10 w-full max-w-5xl bg-muted/50 rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-white/20">
         {/* Left Section: Form */}
-        <div className="flex-[0.9] p-8 md:p-12 flex flex-col justify-between relative bg-white">
+        <div className="flex-[0.9] p-8 md:p-12 flex flex-col justify-between relative bg-card">
           <div>
-            <div className="inline-flex items-center px-6 py-2 border border-gray-300 rounded-full mb-10">
-              <span className="text-lg font-semibold text-gray-800">ECU Staff</span>
+            <div className="inline-flex items-center px-6 py-2 border border-input rounded-full mb-10">
+              <span className="text-lg font-semibold text-foreground">ECU Staff</span>
             </div>
 
             <div className="max-w-sm mx-auto md:mx-0">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome back</h1>
-              <p className="text-gray-500 mb-8">Sign in to your administrative account</p>
+              <h1 className="text-4xl font-bold text-foreground mb-2">Welcome back</h1>
+              <p className="text-muted-foreground mb-8">Sign in to your administrative account</p>
 
               <Form {...form}>
                 <form className="space-y-6" onSubmit={form.handleSubmit(handleSignIn)}>
                   
                   <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem className="space-y-2">
-                       <Label className="text-gray-800 font-semibold">Email Address</Label>
+                       <Label className="text-foreground font-semibold">Email Address</Label>
                        <FormControl>
                          <Input 
                            type="email"
                            placeholder="staff@ecu.edu" 
-                           className="h-14 bg-white border border-gray-300 shadow-sm rounded-2xl px-6 text-gray-900 placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-[#8b0000] focus-visible:border-[#8b0000] transition-all"
+                           className="h-14 bg-background border border-input shadow-sm rounded-2xl px-6 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition-all"
                            {...field}
                          />
                        </FormControl>
@@ -117,13 +135,13 @@ export const SignInView = () => {
 
                   <FormField control={form.control} name="password" render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <Label className="text-gray-800 font-semibold">Password</Label>
+                      <Label className="text-foreground font-semibold">Password</Label>
                       <FormControl>
                         <div className="relative">
                           <Input 
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••••••••••" 
-                            className="h-14 bg-white border border-gray-300 shadow-sm rounded-2xl px-6 pr-12 text-gray-900 placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-[#8b0000] focus-visible:border-[#8b0000] transition-all"
+                            className="h-14 bg-background border border-input shadow-sm rounded-2xl px-6 pr-12 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition-all"
                             {...field}
                           />
                           <button 
@@ -141,7 +159,7 @@ export const SignInView = () => {
 
                   <Button 
                     type="submit" 
-                    className="w-full h-14 bg-[#8b0000] hover:bg-[#6c0000] text-white font-bold text-lg rounded-2xl shadow-lg transition-all active:scale-[0.98]"
+                    className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg rounded-2xl shadow-lg transition-all active:scale-[0.98]"
                     disabled={isLoading}
                   >
                     {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
@@ -154,7 +172,7 @@ export const SignInView = () => {
         </div>
 
         {/* Right Section: Visual Panel */}
-        <div className="flex-[1.1] relative p-6 hidden md:block bg-[#FDF8E1]">
+        <div className="flex-[1.1] relative p-6 hidden md:block bg-muted/50">
           <div className="relative h-full w-full rounded-[32px] overflow-hidden">
             {/* Background Image (login-page.jpg) */}
             <Image 
@@ -169,29 +187,29 @@ export const SignInView = () => {
             <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
 
             {/* Custom Edge Cutout (Empty Tab) */}
-            <div className="absolute top-0 right-0 w-[72px] h-[72px] bg-[#FDF8E1] rounded-bl-[32px] z-30 flex items-center justify-center">
+            <div className="absolute top-0 right-0 w-[72px] h-[72px] bg-muted/50 rounded-bl-[32px] z-30 flex items-center justify-center">
               {/* Left blending curve */}
               <div className="absolute top-0 -left-[28px] w-[28px] h-[28px]">
                 <svg width="28" height="28" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 0H30V30C30 13.4315 16.5685 0 0 0Z" fill="#FDF8E1" />
+                  <path d="M0 0H30V30C30 13.4315 16.5685 0 0 0Z" className="fill-muted/50" />
                 </svg>
               </div>
               {/* Bottom blending curve */}
               <div className="absolute -bottom-[28px] right-0 w-[28px] h-[28px]">
                 <svg width="28" height="28" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 0H30V30C30 13.4315 16.5685 0 0 0Z" fill="#FDF8E1" />
+                  <path d="M0 0H30V30C30 13.4315 16.5685 0 0 0Z" className="fill-muted/50" />
                 </svg>
               </div>
             </div>
 
             {/* Floating Cards */}
             <div className="absolute top-12 left-12 z-10 transition-all duration-300 hover:translate-x-2">
-              <Card className="bg-[#FFD66B] border-none p-4 rounded-2xl shadow-xl w-48">
+              <Card className="bg-[#FFD66B] dark:bg-yellow-500/90 border-none p-4 rounded-2xl shadow-xl w-48">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-gray-800" />
-                  <p className="text-[10px] font-bold text-gray-800 uppercase tracking-wider">Active Term</p>
+                  <div className="w-2 h-2 rounded-full bg-gray-800 dark:bg-gray-100" />
+                  <p className="text-[10px] font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wider">Active Term</p>
                 </div>
-                <p className="text-[10px] text-gray-600">{stats ? stats.currentPeriod : "Loading..."}</p>
+                <p className="text-[10px] text-gray-600 dark:text-gray-200">{stats ? stats.currentPeriod : "Loading..."}</p>
               </Card>
               <Card className="bg-black/60 backdrop-blur-md border-none p-4 rounded-2xl shadow-xl w-48 mt-2 ml-8">
                 <div className="flex items-center gap-2 mb-1">
@@ -238,16 +256,16 @@ export const SignInView = () => {
 
             {/* Daily Meeting Card */}
             <div className="absolute bottom-12 left-12 z-10 hover:scale-105 transition-transform duration-300">
-              <Card className="bg-white/95 backdrop-blur-sm border-none p-5 rounded-3xl shadow-2xl w-56">
+              <Card className="bg-card/95 backdrop-blur-sm border-none p-5 rounded-3xl shadow-2xl w-56">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                  <p className="text-[11px] font-bold text-gray-800">Faculty Overview</p>
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <p className="text-[11px] font-bold text-foreground">Faculty Overview</p>
                 </div>
-                <p className="text-[10px] text-gray-500 mb-4 font-medium">{stats?.activeFaculties !== undefined ? `${stats.activeFaculties} Total Faculties Online` : "Loading..."}</p>
+                <p className="text-[10px] text-muted-foreground mb-4 font-medium">{stats?.activeFaculties !== undefined ? `${stats.activeFaculties} Total Faculties Online` : "Loading..."}</p>
                 <div className="flex -space-x-3">
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-700">TRS</div>
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-green-100 flex items-center justify-center text-[10px] font-bold text-green-700">BMA</div>
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-orange-100 flex items-center justify-center text-[10px] font-bold text-orange-700">SCT</div>
+                  <div className="w-8 h-8 rounded-full border-2 border-background bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-[10px] font-bold text-blue-700 dark:text-blue-200">TRS</div>
+                  <div className="w-8 h-8 rounded-full border-2 border-background bg-green-100 dark:bg-green-900 flex items-center justify-center text-[10px] font-bold text-green-700 dark:text-green-200">BMA</div>
+                  <div className="w-8 h-8 rounded-full border-2 border-background bg-orange-100 dark:bg-orange-900 flex items-center justify-center text-[10px] font-bold text-orange-700 dark:text-orange-200">SCT</div>
                 </div>
               </Card>
             </div>
@@ -255,19 +273,19 @@ export const SignInView = () => {
             {/* Floating Live Clock */}
             <div className="absolute top-1/2 right-12 z-10 flex flex-col gap-4 animate-[bounce_5s_infinite]">
               {/* Hours */}
-              <div className="w-12 h-12 rounded-full border-2 border-white shadow-lg bg-pink-100/90 flex flex-col items-center justify-center font-extrabold text-sm text-pink-700 backdrop-blur-sm">
+              <div className="w-12 h-12 rounded-full border-2 border-white dark:border-white/20 shadow-lg bg-pink-100/90 dark:bg-pink-900/40 flex flex-col items-center justify-center font-extrabold text-sm text-pink-700 dark:text-pink-300 backdrop-blur-sm">
                 <span>{currentTime ? format(currentTime, 'HH') : '00'}</span>
-                <span className="text-[6px] tracking-widest uppercase opacity-70 -mt-1 font-bold">HR</span>
+                <span className="text-[6px] tracking-widest uppercase opacity-70 dark:opacity-60 -mt-1 font-bold">HR</span>
               </div>
               {/* Minutes */}
-              <div className="w-16 h-16 rounded-full border-4 border-white shadow-xl ml-6 bg-indigo-100/90 flex flex-col items-center justify-center font-extrabold text-lg text-indigo-700 backdrop-blur-sm">
+              <div className="w-16 h-16 rounded-full border-4 border-white dark:border-white/20 shadow-xl ml-6 bg-indigo-100/90 dark:bg-indigo-900/40 flex flex-col items-center justify-center font-extrabold text-lg text-indigo-700 dark:text-indigo-300 backdrop-blur-sm">
                 <span>{currentTime ? format(currentTime, 'mm') : '00'}</span>
-                <span className="text-[7px] tracking-widest uppercase opacity-70 -mt-1 font-bold">MIN</span>
+                <span className="text-[7px] tracking-widest uppercase opacity-70 dark:opacity-60 -mt-1 font-bold">MIN</span>
               </div>
               {/* Seconds */}
-              <div className="w-10 h-10 rounded-full border-2 border-white shadow-lg bg-teal-100/90 flex flex-col items-center justify-center font-extrabold text-xs text-teal-700 backdrop-blur-sm">
+              <div className="w-10 h-10 rounded-full border-2 border-white dark:border-white/20 shadow-lg bg-teal-100/90 dark:bg-teal-900/40 flex flex-col items-center justify-center font-extrabold text-xs text-teal-700 dark:text-teal-300 backdrop-blur-sm">
                 <span>{currentTime ? format(currentTime, 'ss') : '00'}</span>
-                <span className="text-[5px] tracking-widest uppercase opacity-70 -mt-[2px] font-bold">SEC</span>
+                <span className="text-[5px] tracking-widest uppercase opacity-70 dark:opacity-60 -mt-[2px] font-bold">SEC</span>
               </div>
             </div>
           </div>

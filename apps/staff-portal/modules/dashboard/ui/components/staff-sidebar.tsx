@@ -84,7 +84,7 @@ export const StaffSidebar = () => {
                 />
               </div>
               <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-                <span className="font-semibold text-sm">ECU Portal</span>
+                <span className="font-semibold text-sm">ECU Staff</span>
                 <Badge variant="outline" className="text-[10px] h-4 px-1.5 w-fit font-medium bg-primary/10 text-primary border-primary/20">
                   Staff Workspace
                 </Badge>

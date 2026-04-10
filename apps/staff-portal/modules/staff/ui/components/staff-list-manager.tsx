@@ -31,7 +31,7 @@ import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@workspace/ui/components/form";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import {
@@ -56,6 +56,9 @@ const staffSchema = z.object({
 });
 
 const editSchema = z.object({
+  firstName: z.string().min(2, "Required"),
+  lastName:  z.string().min(2, "Required"),
+  email:     z.string().email("Invalid email"),
   roles:    z.array(z.string()).min(1, "Select at least one role"),
   title:    z.string().optional(),
   phone:    z.string().optional(),
@@ -134,7 +137,15 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
 
   const openEdit = (person: any) => {
     setEditTarget(person);
+    const existingName = person.name || "";
+    const split = existingName.split(" ");
+    const first = split[0] || "";
+    const last = split.slice(1).join(" ") || "";
+
     editForm.reset({
+      firstName: first,
+      lastName: last,
+      email: person.email || "",
       roles:  person.roles ?? ["staff"],
       title:  person.title  ?? "",
       phone:  person.phone  ?? "",
@@ -147,6 +158,9 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
     try {
       await updateStaff({
         userId: editTarget._id,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
         roles:  values.roles,
         title:  values.title  || undefined,
         phone:  values.phone  || undefined,
@@ -414,35 +428,40 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <FormItem><FormLabel>Phone <span className="text-muted-foreground font-normal">(opt)</span></FormLabel><FormControl><Input placeholder="+211 ..." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>
-              <FormField control={createForm.control} name="roles" render={() => (
-                <FormItem>
+              <FormField control={createForm.control} name="roles" render={({ field }) => (
+                <FormItem className="flex flex-col">
                   <FormLabel>Roles</FormLabel>
-                   {!systemRoles ? (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground py-2"><Loader2 className="size-3 animate-spin"/> Loading roles...</div>
-                   ) : (
-                    <div className="grid grid-cols-1 gap-2 pt-1">
-                      {systemRoles.map(role => (
-                        <FormField key={role.code} control={createForm.control} name="roles" render={({ field }) => (
-                          <label className={cn(
-                            "flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
-                            field.value?.includes(role.code) ? "border-primary/30 bg-primary/5" : "border-border hover:bg-muted/50"
-                          )}>
-                            <Checkbox
-                              checked={field.value?.includes(role.code)}
-                              onCheckedChange={checked => {
-                                const cur = field.value || [];
-                                field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
-                              }}
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-medium leading-tight">{role.name}</p>
-                              {role.description && <p className="text-[11px] text-muted-foreground mt-0.5">{role.description}</p>}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <FormControl>
+                        <Button variant="outline" role="combobox" className={cn("w-full justify-between font-normal", !field.value?.length && "text-muted-foreground")}>
+                          {field.value?.length > 0 ? `${field.value.length} Role(s) Selected` : "Select roles"}
+                          <MoreHorizontal className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[--radix-dropdown-menu-trigger-width] min-w-[200px]">
+                      {!systemRoles ? (
+                        <div className="p-2 text-sm text-muted-foreground"><Loader2 className="size-3 animate-spin"/> Loading...</div>
+                      ) : (
+                        systemRoles.map(role => (
+                          <DropdownMenuCheckboxItem
+                            key={role.code}
+                            checked={field.value?.includes(role.code)}
+                            onCheckedChange={(checked) => {
+                               const cur = field.value || [];
+                               field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
+                            }}
+                          >
+                            <div className="flex flex-col gap-0.5 max-w-[250px]">
+                              <span>{role.name}</span>
+                              {role.description && <span className="text-[10px] text-muted-foreground leading-tight truncate overflow-hidden">{role.description}</span>}
                             </div>
-                          </label>
-                        )} />
-                      ))}
-                    </div>
-                   )}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -472,6 +491,17 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
           <Form {...editForm}>
             <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-5 mt-6 pb-8">
               <div className="grid grid-cols-2 gap-4">
+                <FormField control={editForm.control} name="firstName" render={({ field }) => (
+                  <FormItem><FormLabel>First Name</FormLabel><FormControl><Input placeholder="John" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={editForm.control} name="lastName" render={({ field }) => (
+                  <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input placeholder="Doe" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+              </div>
+              <FormField control={editForm.control} name="email" render={({ field }) => (
+                <FormItem><FormLabel>Email</FormLabel><FormControl><Input placeholder="j.doe@ecu-ssd.org" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <div className="grid grid-cols-2 gap-4">
                 <FormField control={editForm.control} name="title" render={({ field }) => (
                   <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Dr., Prof." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
@@ -492,35 +522,40 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={editForm.control} name="roles" render={() => (
-                <FormItem>
+              <FormField control={editForm.control} name="roles" render={({ field }) => (
+                <FormItem className="flex flex-col">
                   <FormLabel>Roles</FormLabel>
-                  {!systemRoles ? (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground py-2"><Loader2 className="size-3 animate-spin"/> Loading roles...</div>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-2 pt-1">
-                      {systemRoles.map(role => (
-                        <FormField key={role.code} control={editForm.control} name="roles" render={({ field }) => (
-                          <label className={cn(
-                            "flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
-                            field.value?.includes(role.code) ? "border-primary/30 bg-primary/5" : "border-border hover:bg-muted/50"
-                          )}>
-                            <Checkbox
-                              checked={field.value?.includes(role.code)}
-                              onCheckedChange={checked => {
-                                const cur = field.value || [];
-                                field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
-                              }}
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-medium leading-tight">{role.name}</p>
-                              {role.description && <p className="text-[11px] text-muted-foreground mt-0.5">{role.description}</p>}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <FormControl>
+                        <Button variant="outline" role="combobox" className={cn("w-full justify-between font-normal", !field.value?.length && "text-muted-foreground")}>
+                          {field.value?.length > 0 ? `${field.value.length} Role(s) Selected` : "Select roles"}
+                          <MoreHorizontal className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[--radix-dropdown-menu-trigger-width] min-w-[200px]">
+                      {!systemRoles ? (
+                        <div className="p-2 text-sm text-muted-foreground"><Loader2 className="size-3 animate-spin"/> Loading...</div>
+                      ) : (
+                        systemRoles.map(role => (
+                          <DropdownMenuCheckboxItem
+                            key={role.code}
+                            checked={field.value?.includes(role.code)}
+                            onCheckedChange={(checked) => {
+                               const cur = field.value || [];
+                               field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
+                            }}
+                          >
+                            <div className="flex flex-col gap-0.5 max-w-[250px]">
+                              <span>{role.name}</span>
+                              {role.description && <span className="text-[10px] text-muted-foreground leading-tight truncate overflow-hidden">{role.description}</span>}
                             </div>
-                          </label>
-                        )} />
-                      ))}
-                    </div>
-                  )}
+                          </DropdownMenuCheckboxItem>
+                        ))
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <FormMessage />
                 </FormItem>
               )} />

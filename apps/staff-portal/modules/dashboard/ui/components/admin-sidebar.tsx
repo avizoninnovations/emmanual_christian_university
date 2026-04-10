@@ -223,7 +223,7 @@ export const AdminSidebar = () => {
                 />
               </div>
               <div className="flex flex-col gap-0 leading-none group-data-[collapsible=icon]:hidden">
-                <span className="font-bold text-[13px] tracking-tight">ECU Portal</span>
+                <span className="font-bold text-[13px] tracking-tight">ECU Admin</span>
                 <Badge
                   variant="outline"
                   className="text-[9px] h-3 px-1 w-fit font-bold bg-primary/10 text-primary border-primary/20 uppercase"

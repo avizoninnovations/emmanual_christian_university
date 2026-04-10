@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, User } from "lucide-react";
+import { cn } from "../lib/utils";
 
 import { Button } from "./button";
 import {
@@ -34,9 +35,10 @@ interface AuthFormProps {
   title: string;
   description: string;
   showSignUpLink?: boolean;
+  className?: string;
 }
 
-export function AuthForm({ type, onSubmit, isLoading, title, description, showSignUpLink = true }: AuthFormProps) {
+export function AuthForm({ type, onSubmit, isLoading, title, description, showSignUpLink = true, className }: AuthFormProps) {
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -47,7 +49,7 @@ export function AuthForm({ type, onSubmit, isLoading, title, description, showSi
   });
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-2xl border-primary/5 bg-background/60 backdrop-blur-xl">
+    <Card className={cn("w-full max-w-md mx-auto shadow-2xl border-primary/5 bg-background/60 backdrop-blur-xl", className)}>
       <CardHeader className="space-y-2 text-center">
         <CardTitle className="text-3xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
           {title}

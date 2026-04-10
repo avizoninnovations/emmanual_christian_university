@@ -201,3 +201,35 @@ export const migrateAcademicPeriods = mutation({
     return { patchedCount };
   },
 });
+
+/**
+ * Public query to fetch non-sensitive, high-level university statistics.
+ * This is used purely for aesthetic widgets on the login page to show live data.
+ */
+export const getPublicStats = query({
+  args: {},
+  handler: async (ctx) => {
+    const activePeriod = await ctx.db
+      .query("academicPeriods")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .first();
+
+    // In a real large-scale system, counts would use aggregate/count queries,
+    // but faculties and programs are generally small tables (< 100).
+    const programs = await ctx.db
+      .query("programs")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .collect();
+
+    const faculties = await ctx.db
+      .query("faculties")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .collect();
+
+    return {
+      currentPeriod: activePeriod ? `${activePeriod.name} (${activePeriod.year})` : "Planning Phase",
+      activePrograms: programs.length,
+      activeFaculties: faculties.length,
+    };
+  },
+});

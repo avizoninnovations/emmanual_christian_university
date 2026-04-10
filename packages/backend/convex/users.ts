@@ -238,6 +238,40 @@ async function updateStaffLogic(ctx: any, args: any) {
 
   await ctx.db.patch(profile._id, updates);
 
+  // Cross-patch the Better Auth User Record (lives in component storage, NOT main db)
+  const authUpdates: Record<string, any> = {};
+  
+  if (args.firstName !== undefined || args.lastName !== undefined) {
+    // Fetch existing user from the Better Auth component table
+    const userRow = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+      model: "user",
+      where: [{ field: "_id", value: args.userId, operator: "eq" }],
+    }) as any;
+
+    if (userRow) {
+      const existingName = userRow.name || "";
+      const split = existingName.split(" ");
+      const oldFirst = split[0] || "";
+      const oldLast = split.slice(1).join(" ") || "";
+      
+      const newFirst = args.firstName !== undefined ? args.firstName : oldFirst;
+      const newLast = args.lastName !== undefined ? args.lastName : oldLast;
+      authUpdates.name = `${newFirst} ${newLast}`.trim();
+    }
+  }
+
+  if (args.email !== undefined) authUpdates.email = args.email;
+
+  if (Object.keys(authUpdates).length > 0) {
+    await ctx.runMutation(components.betterAuth.adapter.updateOne, {
+      input: {
+        model: "user",
+        where: [{ field: "_id", value: args.userId, operator: "eq" }],
+        update: authUpdates,
+      },
+    });
+  }
+
   await logAction(ctx, {
     action: "UPDATE_STAFF",
     resource: "staffProfiles",
@@ -257,8 +291,14 @@ export const _patchAuthUserInternal = internalMutation({
     updates: v.any(), // Type safe inside handler
   },
   handler: async (ctx, args) => {
-    // Better Auth users in Convex use their ID as the document ID
-    await ctx.db.patch(args.userId as any, args.updates);
+    // Better Auth users live in the component's isolated storage
+    await ctx.runMutation(components.betterAuth.adapter.updateOne, {
+      input: {
+        model: "user",
+        where: [{ field: "_id", value: args.userId, operator: "eq" }],
+        update: args.updates,
+      },
+    });
   },
 });
 
@@ -268,12 +308,23 @@ export const _patchAuthUserInternal = internalMutation({
 export const _revokeSessionsInternal = internalMutation({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
-    const sessions = await ctx.db
-      .query("session")
-      .withIndex("userId", (q) => q.eq("userId", args.userId))
-      .collect();
+    // Sessions live in component storage — use the adapter to find and delete them
+    const result = await ctx.runQuery(components.betterAuth.adapter.findMany, {
+      model: "session",
+      paginationOpts: { cursor: null, numItems: 1000 },
+    }) as any;
+
+    const sessions = (result?.page || []).filter(
+      (s: any) => s.userId === args.userId
+    );
+
     for (const s of sessions) {
-      await ctx.db.delete(s._id);
+      await ctx.runMutation(components.betterAuth.adapter.deleteOne, {
+        input: {
+          model: "session",
+          where: [{ field: "_id", value: s._id, operator: "eq" }],
+        },
+      });
     }
   },
 });
@@ -284,6 +335,9 @@ export const _revokeSessionsInternal = internalMutation({
 export const updateStaff = mutation({
   args: {
     userId: v.string(),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    email: v.optional(v.string()),
     roles: v.optional(v.array(v.string())),
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
@@ -303,6 +357,9 @@ export const updateStaff = mutation({
 export const _updateStaffInternal = internalMutation({
   args: {
     userId: v.string(),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    email: v.optional(v.string()),
     roles: v.optional(v.array(v.string())),
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
@@ -369,7 +426,6 @@ export const banStaff = action({
   },
   handler: async (ctx, args) => {
     await assertAdmin(ctx);
-    const auth = createAuth(ctx);
 
     // 1. Kick the user out (revoke all sessions)
     await ctx.runMutation(internal.users._revokeSessionsInternal, {
@@ -414,7 +470,6 @@ export const unbanStaff = action({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
     await assertAdmin(ctx);
-    const auth = createAuth(ctx);
 
     // 1. Remove ban in Better Auth
     await ctx.runMutation(internal.users._patchAuthUserInternal, {

@@ -128,7 +128,6 @@ export const deleteRole = mutation({
 export const seedDefaultRoles = mutation({
   args: {},
   handler: async (ctx) => {
-    await assertAdmin(ctx);
     const existing = await ctx.db.query("systemRoles").collect();
     if (existing.length > 0) return;
 

@@ -156,6 +156,7 @@ export const seedDemoStaff = action({
     const auth = createAuth(ctx);
     
     const demoStaff = [
+      { firstName: "System", lastName: "Admin", email: "admin@ecu-ssd.org", roles: ["admin", "staff"], title: "Dr." },
       { firstName: "James", lastName: "Carter", email: "james.carter@ecu-ssd.org", roles: ["staff"], title: "Mr." },
       { firstName: "Sarah", lastName: "Miller", email: "sarah.miller@ecu-ssd.org", roles: ["registrar", "staff"], title: "Ms." },
       { firstName: "Robert", lastName: "Fox", email: "robert.fox@ecu-ssd.org", roles: ["finance", "staff"], title: "Mr." },

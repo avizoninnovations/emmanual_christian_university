@@ -23,8 +23,8 @@ export const authComponent = createClient<DataModel, typeof schema>(
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
     appName: "Emmanuel Christian University",
-    baseURL: process.env.SITE_URL,
-    secret: process.env.BETTER_AUTH_SECRET,
+    baseURL: process.env.SITE_URL || "http://localhost:3004",
+    secret: process.env.BETTER_AUTH_SECRET || "87h2gks9f2kxl09z1m4p6q8r3t5v7y9x",
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,

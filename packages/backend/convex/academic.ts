@@ -264,9 +264,11 @@ export const getPeriods = query({
   },
 });
 
+
 export const createPeriod = mutation({
   args: {
     name: v.string(),
+    term: v.number(),
     year: v.number(),
     startDate: v.string(),
     endDate: v.string(),

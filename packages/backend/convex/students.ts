@@ -49,6 +49,8 @@ export const createStudent = mutation({
     registrationNumber: v.string(),
     programId: v.id("programs"),
     yearOfStudy: v.number(),
+    term: v.number(),
+    year: v.number(),
     currentPeriodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {

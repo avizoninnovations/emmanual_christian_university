@@ -136,6 +136,20 @@ const navGroups: NavGroup[] = [
         title: "Staff",
         url: "/admin/staff",
         icon: Users,
+        items: [
+          {
+            title: "Active Staff",
+            url: "/admin/staff/active",
+          },
+          {
+            title: "Inactive Staff",
+            url: "/admin/staff/inactive",
+          },
+          {
+            title: "System Roles",
+            url: "/admin/staff/roles",
+          },
+        ],
       },
       // {
       //   title: "Marks & Assessments",

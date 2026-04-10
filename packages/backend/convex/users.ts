@@ -87,6 +87,10 @@ export const getStaff = query({
           staffNumber: profile?.staffNumber,
           profileStatus: profile?.status ?? "active",
           profileId: profile?._id,
+          // Banning fields from Better Auth user table
+          banned: u.banned ?? false,
+          banReason: u.banReason,
+          banExpires: u.banExpires,
         };
       });
   },
@@ -184,6 +188,82 @@ export const _createStaffProfile = internalMutation({
  * Update an existing staff member's profile.
  * Can update roles, title, phone, department, status.
  */
+/**
+ * Shared logic for updating staff profile.
+ */
+async function updateStaffLogic(ctx: any, args: any) {
+  const profile = await ctx.db
+    .query("staffProfiles")
+    .withIndex("by_userId", (q: any) => q.eq("userId", args.userId))
+    .unique();
+
+  if (!profile) {
+    // Create a new profile if one doesn't exist yet
+    return await ctx.db.insert("staffProfiles", {
+      userId: args.userId,
+      roles: args.roles ?? ["staff"],
+      title: args.title,
+      phone: args.phone,
+      departmentId: args.departmentId,
+      staffNumber: args.staffNumber,
+      status: args.status ?? "active",
+    });
+  }
+
+  // Patch the existing profile
+  const updates: Record<string, any> = {};
+  if (args.roles !== undefined) updates.roles = args.roles;
+  if (args.title !== undefined) updates.title = args.title;
+  if (args.phone !== undefined) updates.phone = args.phone;
+  if (args.departmentId !== undefined) updates.departmentId = args.departmentId;
+  if (args.staffNumber !== undefined) updates.staffNumber = args.staffNumber;
+  if (args.status !== undefined) updates.status = args.status;
+
+  await ctx.db.patch(profile._id, updates);
+
+  await logAction(ctx, {
+    action: "UPDATE_STAFF",
+    resource: "staffProfiles",
+    details: `Updated staff profile for user ${args.userId}: ${Object.keys(updates).join(", ")}`,
+  });
+
+  return profile._id;
+}
+
+/**
+ * Internal mutation to patch the auth user record directly.
+ * Used for banning/unbanning to avoid Better Auth adapter type issues.
+ */
+export const _patchAuthUserInternal = internalMutation({
+  args: {
+    userId: v.string(),
+    updates: v.any(), // Type safe inside handler
+  },
+  handler: async (ctx, args) => {
+    // Better Auth users in Convex use their ID as the document ID
+    await ctx.db.patch(args.userId as any, args.updates);
+  },
+});
+
+/**
+ * Internal mutation to revoke all sessions for a user.
+ */
+export const _revokeSessionsInternal = internalMutation({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const sessions = await ctx.db
+      .query("session")
+      .withIndex("userId", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const s of sessions) {
+      await ctx.db.delete(s._id);
+    }
+  },
+});
+
+/**
+ * Public mutation to update a staff member's profile.
+ */
 export const updateStaff = mutation({
   args: {
     userId: v.string(),
@@ -195,42 +275,25 @@ export const updateStaff = mutation({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
-    const profile = await ctx.db
-      .query("staffProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
-      .unique();
+    return await updateStaffLogic(ctx, args);
+  },
+});
 
-    if (!profile) {
-      // Create a new profile if one doesn't exist yet
-      return await ctx.db.insert("staffProfiles", {
-        userId: args.userId,
-        roles: args.roles ?? ["staff"],
-        title: args.title,
-        phone: args.phone,
-        departmentId: args.departmentId,
-        staffNumber: args.staffNumber,
-        status: args.status ?? "active",
-      });
-    }
-
-    // Patch the existing profile
-    const updates: Record<string, any> = {};
-    if (args.roles !== undefined) updates.roles = args.roles;
-    if (args.title !== undefined) updates.title = args.title;
-    if (args.phone !== undefined) updates.phone = args.phone;
-    if (args.departmentId !== undefined) updates.departmentId = args.departmentId;
-    if (args.staffNumber !== undefined) updates.staffNumber = args.staffNumber;
-    if (args.status !== undefined) updates.status = args.status;
-
-    await ctx.db.patch(profile._id, updates);
-
-    await logAction(ctx, {
-      action: "UPDATE_STAFF",
-      resource: "staffProfiles",
-      details: `Updated staff profile for user ${args.userId}: ${Object.keys(updates).join(', ')}`
-    });
-
-    return profile._id;
+/**
+ * Internal mutation that does the actual work.
+ */
+export const _updateStaffInternal = internalMutation({
+  args: {
+    userId: v.string(),
+    roles: v.optional(v.array(v.string())),
+    title: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    departmentId: v.optional(v.string()),
+    staffNumber: v.optional(v.string()),
+    status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
+  },
+  handler: async (ctx, args) => {
+    return await updateStaffLogic(ctx, args);
   },
 });
 
@@ -269,6 +332,93 @@ export const deleteStaff = mutation({
       action: "DELETE_STAFF",
       resource: "users",
       details: `Deleted staff member and profile with ID: ${args.id}`
+    });
+
+    return { success: true };
+  },
+});
+
+/**
+ * Ban a staff member.
+ * Sets banned status in Better Auth and revokes all sessions.
+ */
+export const banStaff = action({
+  args: {
+    userId: v.string(),
+    reason: v.string(),
+    expires: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const auth = createAuth(ctx);
+
+    // 1. Kick the user out (revoke all sessions)
+    await ctx.runMutation(internal.users._revokeSessionsInternal, {
+      userId: args.userId,
+    });
+
+    // 2. Set the ban settings in Better Auth
+    // We do this via a native mutation to ensure type safety and reliability
+    await ctx.runMutation(internal.users._patchAuthUserInternal, {
+      userId: args.userId,
+      updates: {
+        banned: true,
+        banReason: args.reason,
+        banExpires: args.expires ?? null,
+      },
+    });
+
+    // 3. Update staff profile to inactive
+    await ctx.runMutation(internal.users._updateStaffInternal, {
+      userId: args.userId,
+      status: "inactive",
+    });
+
+    // 4. Log
+    await ctx.runMutation(internal.system._logAction, {
+        userId: args.userId,
+        userName: "ADMIN", // Simplified
+        userEmail: "admin@ecu-ssd.org",
+        action: "BAN_STAFF",
+        resource: "users",
+        details: `Banned staff member ${args.userId}. Reason: ${args.reason}`
+    });
+
+    return { success: true };
+  },
+});
+
+/**
+ * Unban a staff member.
+ */
+export const unbanStaff = action({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const auth = createAuth(ctx);
+
+    // 1. Remove ban in Better Auth
+    await ctx.runMutation(internal.users._patchAuthUserInternal, {
+      userId: args.userId,
+      updates: {
+        banned: false,
+        banReason: null,
+        banExpires: null,
+      },
+    });
+
+    // 2. Restore staff profile to active
+    await ctx.runMutation(internal.users._updateStaffInternal, {
+      userId: args.userId,
+      status: "active",
+    });
+
+    // 3. Log
+    await ctx.runMutation(internal.system._logAction, {
+        userId: args.userId,
+        userName: "ADMIN",
+        userEmail: "admin@ecu-ssd.org",
+        action: "UNBAN_STAFF",
+        resource: "users",
+        details: `Unbanned staff member ${args.userId}`
     });
 
     return { success: true };

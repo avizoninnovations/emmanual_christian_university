@@ -1,6 +1,8 @@
-import { mutation } from "./_generated/server.js";
+import { mutation, action } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { createAuth } from "./betterAuth/auth.js";
+import { internal } from "./_generated/api.js";
 
 /**
  * seeding script to populate ECU with initial data.
@@ -102,6 +104,7 @@ export const seedData = mutation({
     if (!activePeriod) {
       periodId = await ctx.db.insert("academicPeriods", {
         name: "Semester 1",
+        term: 1,
         year: 2026,
         startDate: "2026-01-15",
         endDate: "2026-05-30",
@@ -140,5 +143,72 @@ export const seedData = mutation({
     });
 
     return { success: true };
+  },
+});
+
+/**
+ * Seed demo staff users into the system.
+ * Uses Better Auth to create actual accounts.
+ */
+export const seedDemoStaff = action({
+  args: {},
+  handler: async (ctx) => {
+    const auth = createAuth(ctx);
+    
+    const demoStaff = [
+      { firstName: "James", lastName: "Carter", email: "james.carter@ecu-ssd.org", roles: ["staff"], title: "Mr." },
+      { firstName: "Sarah", lastName: "Miller", email: "sarah.miller@ecu-ssd.org", roles: ["registrar", "staff"], title: "Ms." },
+      { firstName: "Robert", lastName: "Fox", email: "robert.fox@ecu-ssd.org", roles: ["finance", "staff"], title: "Mr." },
+      { firstName: "Emily", lastName: "Stone", email: "emily.stone@ecu-ssd.org", roles: ["hod", "staff"], title: "Dr." },
+      { firstName: "Michael", lastName: "Brown", email: "michael.brown@ecu-ssd.org", roles: ["dean", "staff"], title: "Prof." },
+      { firstName: "Alice", lastName: "Johnson", email: "alice.johnson@ecu-ssd.org", roles: ["librarian", "staff"], title: "Mrs." },
+      { firstName: "David", lastName: "Wilson", email: "david.wilson@ecu-ssd.org", roles: ["staff"], title: "Mr." },
+      { firstName: "Sophia", lastName: "Garcia", email: "sophia.garcia@ecu-ssd.org", roles: ["registrar", "staff"], title: "Dr." },
+      { firstName: "Chris", lastName: "Lee", email: "chris.lee@ecu-ssd.org", roles: ["staff"], title: "Mr." },
+      { firstName: "Anna", lastName: "White", email: "anna.white@ecu-ssd.org", roles: ["staff"], title: "Ms." },
+    ];
+
+    let createdCount = 0;
+
+    for (const s of demoStaff) {
+      try {
+        const betterAuthRole = s.roles.includes("admin") ? "admin" : "user";
+        
+        // @ts-ignore
+        const user = await auth.api.createUser({
+          body: {
+            email: s.email,
+            password: "UniSystem2026!",
+            name: `${s.firstName} ${s.lastName}`,
+            role: betterAuthRole,
+            data: { emailVerified: true },
+          },
+        });
+
+        if (user?.user?.id) {
+          // Create the staff profile
+          await ctx.runMutation(internal.users._createStaffProfile, {
+            userId: user.user.id,
+            roles: s.roles,
+            title: s.title,
+          });
+          createdCount++;
+        }
+      } catch (e) {
+        console.error(`Failed to seed user ${s.email}:`, e);
+      }
+    }
+
+    // Log the event
+    await ctx.runMutation(internal.system._logAction, {
+        userId: "system",
+        userName: "ECU System",
+        userEmail: "system@ecu-ssd.org",
+        action: "DEMO_USER_SEED",
+        resource: "users",
+        details: `Seeded ${createdCount} demo staff users into the system.`
+    });
+
+    return { createdCount };
   },
 });

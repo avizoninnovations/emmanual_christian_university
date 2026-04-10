@@ -140,6 +140,7 @@ export const seedData = mutation({
     if (!activePeriod) {
       periodId = await ctx.db.insert("academicPeriods", {
         name: "Semester 1",
+        term: 1,
         year: 2026,
         startDate: "2026-01-15",
         endDate: "2026-05-30",
@@ -178,5 +179,25 @@ export const seedData = mutation({
     });
 
     return { success: true };
+  },
+});
+
+/**
+ * MIGRATION: Patch academicPeriods missing the required 'term' field.
+ */
+export const migrateAcademicPeriods = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const periods = await ctx.db.query("academicPeriods").collect();
+    let patchedCount = 0;
+
+    for (const period of periods) {
+      if ((period as any).term === undefined) {
+        await ctx.db.patch(period._id, { term: 1 });
+        patchedCount++;
+      }
+    }
+
+    return { patchedCount };
   },
 });

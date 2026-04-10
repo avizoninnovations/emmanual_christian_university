@@ -35,7 +35,7 @@ function AdminDashboardContent() {
       value: staff?.length ?? "—",
       sub: "University personnel",
       icon: Users,
-      href: "/admin/staff",
+      href: "/admin/staff/active",
     },
     {
       label: "Faculties",
@@ -105,7 +105,7 @@ function AdminDashboardContent() {
           </CardHeader>
           <CardContent className="space-y-1.5">
             {[
-              { label: "Manage Staff", href: "/admin/staff", icon: UserPlus },
+              { label: "Manage Staff", href: "/admin/staff/active", icon: UserPlus },
               { label: "Academic Structure", href: "/admin/academic/faculties", icon: Building2 },
               { label: "Admissions", href: "/admin/admissions", icon: GraduationCap },
             ].map((action) => (
@@ -126,7 +126,7 @@ function AdminDashboardContent() {
         <Card className="lg:col-span-2 shadow-sm">
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Recent Staff</CardTitle>
-            <Link href="/admin/staff">
+            <Link href="/admin/staff/active">
               <Button variant="ghost" size="sm" className="text-xs gap-1 h-7">
                 View all <ArrowRight className="size-3" />
               </Button>

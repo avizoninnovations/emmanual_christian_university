@@ -16,6 +16,7 @@ import type * as finance from "../finance.js";
 import type * as http from "../http.js";
 import type * as library from "../library.js";
 import type * as marks from "../marks.js";
+import type * as roles from "../roles.js";
 import type * as seed from "../seed.js";
 import type * as students from "../students.js";
 import type * as system from "../system.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   library: typeof library;
   marks: typeof marks;
+  roles: typeof roles;
   seed: typeof seed;
   students: typeof students;
   system: typeof system;

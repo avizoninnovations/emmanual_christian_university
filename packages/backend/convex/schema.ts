@@ -215,5 +215,15 @@ export default defineSchema({
     .index("by_timestamp", ["timestamp"])
     .index("by_userId", ["userId"])
     .index("by_action", ["action"]),
+
+  /**
+   * 11. Custom System Roles
+   */
+  systemRoles: defineTable({
+    name: v.string(),
+    code: v.string(), // Unique slug like 'registrar', 'dean'
+    description: v.optional(v.string()),
+  })
+    .index("by_code", ["code"]),
 });
 

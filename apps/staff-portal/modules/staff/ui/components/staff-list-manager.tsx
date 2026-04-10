@@ -6,8 +6,12 @@ import { api } from "@workspace/backend/_generated/api";
 import {
   Trash2, UserPlus, Users, ShieldCheck, Search, Mail,
   Shield, Loader2, Pencil, Phone, MoreHorizontal, Activity,
+  Ban, Gavel, Calendar, Info
 } from "lucide-react";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
@@ -35,32 +39,11 @@ import {
 } from "@workspace/ui/components/select";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import { Separator } from "@workspace/ui/components/separator";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { cn } from "@workspace/ui/lib/utils";
 
 // ─────────────────────────────────────────────────────────
-// CONSTANTS & SCHEMA
+// SCHEMA
 // ─────────────────────────────────────────────────────────
-
-const AVAILABLE_ROLES = [
-  { value: "admin",     label: "Administrator",    description: "Full system access" },
-  { value: "staff",     label: "Staff / Lecturer", description: "General staff member" },
-  { value: "registrar", label: "Registrar",        description: "Student records" },
-  { value: "finance",   label: "Finance Officer",  description: "Financial operations" },
-  { value: "hod",       label: "Head of Dept",     description: "Department management" },
-  { value: "dean",      label: "Dean",             description: "Faculty leadership" },
-] as const;
-
-const ROLE_BADGE: Record<string, string> = {
-  admin:     "bg-primary/10 text-primary border-primary/20",
-  staff:     "bg-sky-500/10 text-sky-600 border-sky-200",
-  registrar: "bg-emerald-500/10 text-emerald-600 border-emerald-200",
-  finance:   "bg-amber-500/10 text-amber-600 border-amber-200",
-  hod:       "bg-rose-500/10 text-rose-600 border-rose-200",
-  dean:      "bg-indigo-500/10 text-indigo-600 border-indigo-200",
-};
 
 const staffSchema = z.object({
   firstName: z.string().min(2, "Required"),
@@ -79,24 +62,44 @@ const editSchema = z.object({
   status:   z.enum(["active", "inactive"]),
 });
 
+const banSchema = z.object({
+  reason:  z.string().min(5, "Please provide a more detailed reason (min 5 chars)"),
+  expires: z.string().optional(), // Date string from picker
+  indefinite: z.boolean(),
+});
+
 type StaffFormValues = z.infer<typeof staffSchema>;
 type EditFormValues  = z.infer<typeof editSchema>;
+type BanFormValues  = z.infer<typeof banSchema>;
 
-// ─────────────────────────────────────────────────────────
-// MAIN VIEW
-// ─────────────────────────────────────────────────────────
+const ROLE_BADGE: Record<string, string> = {
+  admin:     "bg-primary/10 text-primary border-primary/20",
+  staff:     "bg-sky-500/10 text-sky-600 border-sky-200",
+  registrar: "bg-emerald-500/10 text-emerald-600 border-emerald-200",
+  finance:   "bg-amber-500/10 text-amber-600 border-amber-200",
+  hod:       "bg-rose-500/10 text-rose-600 border-rose-200",
+  dean:      "bg-indigo-500/10 text-indigo-600 border-indigo-200",
+};
 
-export const StaffManagementView = () => {
-  const [search, setSearch]           = useState("");
+interface StaffListManagerProps {
+  statusFilter: "active" | "inactive";
+}
+
+export function StaffListManager({ statusFilter }: StaffListManagerProps) {
+  const [search, setSearch]             = useState("");
   const [roleFilter, setRoleFilter]   = useState("all");
   const [createOpen, setCreateOpen]   = useState(false);
   const [editTarget, setEditTarget]   = useState<any | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
+  const [banTarget, setBanTarget]     = useState<any | null>(null);
 
   const staff             = useQuery(api.users.getStaff);
+  const systemRoles       = useQuery(api.roles.getRoles);
   const createStaffAction = useAction(api.users.createStaff);
   const updateStaff       = useMutation(api.users.updateStaff);
   const deleteStaff       = useMutation(api.users.deleteStaff);
+  const banStaff          = useAction(api.users.banStaff);
+  const unbanStaff        = useAction(api.users.unbanStaff);
 
   // ── Create form ──
   const createForm = useForm<StaffFormValues>({
@@ -156,7 +159,37 @@ export const StaffManagementView = () => {
     }
   };
 
-  // ── Delete ──
+  // ── Ban ──
+  const banForm = useForm<BanFormValues>({
+    resolver: zodResolver(banSchema),
+    defaultValues: { reason: "", indefinite: true, expires: "" },
+  });
+
+  const onBanSubmit = async (values: BanFormValues) => {
+    if (!banTarget) return;
+    try {
+      await banStaff({
+        userId:  banTarget._id,
+        reason:  values.reason,
+        expires: values.indefinite ? undefined : (values.expires ? new Date(values.expires).getTime() : undefined),
+      });
+      toast.success("Staff member banned and logged out");
+      setBanTarget(null);
+      banForm.reset();
+    } catch (e: any) {
+      toast.error(e.message || "Failed to ban staff");
+    }
+  };
+
+  const handleUnban = async (person: any) => {
+    try {
+      await unbanStaff({ userId: person._id });
+      toast.success("Ban lifted. Member is now active.");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to lift ban");
+    }
+  };
+
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
@@ -171,30 +204,20 @@ export const StaffManagementView = () => {
 
   // ── Filter ──
   const filtered = staff?.filter((s: any) => {
+    const matchStatus = s.profileStatus === statusFilter;
     const matchSearch = `${s.name} ${s.email}`.toLowerCase().includes(search.toLowerCase());
     const matchRole   = roleFilter === "all" || s.roles?.includes(roleFilter);
-    return matchSearch && matchRole;
+    return matchStatus && matchSearch && matchRole;
   });
 
   const stats = {
     total:  staff?.length ?? 0,
     admins: staff?.filter((s: any) => s.roles?.includes("admin")).length ?? 0,
-    active: staff?.filter((s: any) => s.profileStatus !== "inactive").length ?? staff?.length ?? 0,
+    active: staff?.filter((s: any) => s.profileStatus !== "inactive").length ?? 0,
   };
 
   return (
-    <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
-      {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Staff Management</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage university personnel accounts and roles.</p>
-        </div>
-        <Button className="gap-2 shrink-0" onClick={() => setCreateOpen(true)}>
-          <UserPlus className="size-4" /> Add Staff Member
-        </Button>
-      </div>
-
+    <div className="space-y-6">
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
@@ -223,7 +246,7 @@ export const StaffManagementView = () => {
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              Personnel ({filtered?.length ?? "..."})
+              {statusFilter === "active" ? "Active" : "Inactive"} Personnel ({filtered?.length ?? "..."})
             </CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative w-56">
@@ -232,15 +255,20 @@ export const StaffManagementView = () => {
               </div>
               <Select value={roleFilter} onValueChange={setRoleFilter}>
                 <SelectTrigger className="w-36 h-9">
-                  <SelectValue />
+                  <SelectValue placeholder="All Roles" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
-                  {AVAILABLE_ROLES.map(r => (
-                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                  {systemRoles?.map(r => (
+                    <SelectItem key={r.code} value={r.code}>{r.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {statusFilter === "active" && (
+                <Button size="sm" className="gap-1.5" onClick={() => setCreateOpen(true)}>
+                    <UserPlus className="size-4" /> Add Staff
+                </Button>
+              )}
             </div>
           </div>
         </CardHeader>
@@ -302,13 +330,20 @@ export const StaffManagementView = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={
-                        person.profileStatus === "inactive"
-                          ? "bg-muted text-muted-foreground"
-                          : "bg-emerald-500/10 text-emerald-600 border-emerald-200"
-                      }>
-                        {person.profileStatus === "inactive" ? "Inactive" : "Active"}
-                      </Badge>
+                      <div className="flex flex-col gap-1 items-start">
+                        <Badge variant="outline" className={
+                          statusFilter === "inactive"
+                            ? "bg-muted text-muted-foreground"
+                            : "bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                        }>
+                          {statusFilter === "inactive" ? "Inactive" : "Active"}
+                        </Badge>
+                        {person.banned && (
+                           <Badge variant="destructive" className="text-[10px] py-0 h-4 flex items-center gap-1">
+                             <Ban className="size-2.5" /> BANNED
+                           </Badge>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {new Date(person._creationTime).toLocaleDateString()}
@@ -324,6 +359,18 @@ export const StaffManagementView = () => {
                           <DropdownMenuItem className="gap-2" onClick={() => openEdit(person)}>
                             <Pencil className="size-3.5" /> Edit
                           </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {statusFilter === "active" ? (
+                             <DropdownMenuItem className="gap-2 text-warning" onClick={() => setBanTarget(person)}>
+                               <Gavel className="size-3.5" /> Ban Personnel
+                             </DropdownMenuItem>
+                          ) : (
+                            person.banned && (
+                              <DropdownMenuItem className="gap-2 text-emerald-600" onClick={() => handleUnban(person)}>
+                                <Activity className="size-3.5" /> Lift Ban
+                              </DropdownMenuItem>
+                            )
+                          )}
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive" onClick={() => setDeleteTarget(person)}>
                             <Trash2 className="size-3.5" /> Remove
@@ -341,13 +388,13 @@ export const StaffManagementView = () => {
 
       {/* ── Create Sheet ── */}
       <Sheet open={createOpen} onOpenChange={setCreateOpen}>
-        <SheetContent className="overflow-y-auto">
+        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
           <SheetHeader>
             <SheetTitle>Add Staff Member</SheetTitle>
             <SheetDescription>Create a new account for university personnel.</SheetDescription>
           </SheetHeader>
           <Form {...createForm}>
-            <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-5 mt-6">
+            <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-5 mt-6 pb-8">
               <div className="grid grid-cols-2 gap-4">
                 <FormField control={createForm.control} name="firstName" render={({ field }) => (
                   <FormItem><FormLabel>First Name</FormLabel><FormControl><Input placeholder="John" {...field} /></FormControl><FormMessage /></FormItem>
@@ -370,28 +417,32 @@ export const StaffManagementView = () => {
               <FormField control={createForm.control} name="roles" render={() => (
                 <FormItem>
                   <FormLabel>Roles</FormLabel>
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    {AVAILABLE_ROLES.map(role => (
-                      <FormField key={role.value} control={createForm.control} name="roles" render={({ field }) => (
-                        <label className={cn(
-                          "flex items-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-colors",
-                          field.value?.includes(role.value) ? "border-primary/30 bg-primary/5" : "border-border hover:bg-muted/50"
-                        )}>
-                          <Checkbox
-                            checked={field.value?.includes(role.value)}
-                            onCheckedChange={checked => {
-                              const cur = field.value || [];
-                              field.onChange(checked ? [...cur, role.value] : cur.filter(v => v !== role.value));
-                            }}
-                          />
-                          <div>
-                            <p className="text-xs font-medium leading-tight">{role.label}</p>
-                            <p className="text-[10px] text-muted-foreground">{role.description}</p>
-                          </div>
-                        </label>
-                      )} />
-                    ))}
-                  </div>
+                   {!systemRoles ? (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground py-2"><Loader2 className="size-3 animate-spin"/> Loading roles...</div>
+                   ) : (
+                    <div className="grid grid-cols-1 gap-2 pt-1">
+                      {systemRoles.map(role => (
+                        <FormField key={role.code} control={createForm.control} name="roles" render={({ field }) => (
+                          <label className={cn(
+                            "flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                            field.value?.includes(role.code) ? "border-primary/30 bg-primary/5" : "border-border hover:bg-muted/50"
+                          )}>
+                            <Checkbox
+                              checked={field.value?.includes(role.code)}
+                              onCheckedChange={checked => {
+                                const cur = field.value || [];
+                                field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
+                              }}
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium leading-tight">{role.name}</p>
+                              {role.description && <p className="text-[11px] text-muted-foreground mt-0.5">{role.description}</p>}
+                            </div>
+                          </label>
+                        )} />
+                      ))}
+                    </div>
+                   )}
                   <FormMessage />
                 </FormItem>
               )} />
@@ -413,13 +464,13 @@ export const StaffManagementView = () => {
 
       {/* ── Edit Sheet ── */}
       <Sheet open={!!editTarget} onOpenChange={open => !open && setEditTarget(null)}>
-        <SheetContent className="overflow-y-auto">
+        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
           <SheetHeader>
             <SheetTitle>Edit Staff Member</SheetTitle>
             <SheetDescription>{editTarget?.name}</SheetDescription>
           </SheetHeader>
           <Form {...editForm}>
-            <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-5 mt-6">
+            <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-5 mt-6 pb-8">
               <div className="grid grid-cols-2 gap-4">
                 <FormField control={editForm.control} name="title" render={({ field }) => (
                   <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Dr., Prof." {...field} /></FormControl><FormMessage /></FormItem>
@@ -444,28 +495,32 @@ export const StaffManagementView = () => {
               <FormField control={editForm.control} name="roles" render={() => (
                 <FormItem>
                   <FormLabel>Roles</FormLabel>
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    {AVAILABLE_ROLES.map(role => (
-                      <FormField key={role.value} control={editForm.control} name="roles" render={({ field }) => (
-                        <label className={cn(
-                          "flex items-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-colors",
-                          field.value?.includes(role.value) ? "border-primary/30 bg-primary/5" : "border-border hover:bg-muted/50"
-                        )}>
-                          <Checkbox
-                            checked={field.value?.includes(role.value)}
-                            onCheckedChange={checked => {
-                              const cur = field.value || [];
-                              field.onChange(checked ? [...cur, role.value] : cur.filter(v => v !== role.value));
-                            }}
-                          />
-                          <div>
-                            <p className="text-xs font-medium leading-tight">{role.label}</p>
-                            <p className="text-[10px] text-muted-foreground">{role.description}</p>
-                          </div>
-                        </label>
-                      )} />
-                    ))}
-                  </div>
+                  {!systemRoles ? (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground py-2"><Loader2 className="size-3 animate-spin"/> Loading roles...</div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-2 pt-1">
+                      {systemRoles.map(role => (
+                        <FormField key={role.code} control={editForm.control} name="roles" render={({ field }) => (
+                          <label className={cn(
+                            "flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                            field.value?.includes(role.code) ? "border-primary/30 bg-primary/5" : "border-border hover:bg-muted/50"
+                          )}>
+                            <Checkbox
+                              checked={field.value?.includes(role.code)}
+                              onCheckedChange={checked => {
+                                const cur = field.value || [];
+                                field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
+                              }}
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium leading-tight">{role.name}</p>
+                              {role.description && <p className="text-[11px] text-muted-foreground mt-0.5">{role.description}</p>}
+                            </div>
+                          </label>
+                        )} />
+                      ))}
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )} />
@@ -495,6 +550,70 @@ export const StaffManagementView = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* ── Ban Sheet ── */}
+      <Sheet open={!!banTarget} onOpenChange={open => !open && setBanTarget(null)}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              <Gavel className="size-5 text-destructive" /> Ban Personnel
+            </SheetTitle>
+            <SheetDescription>
+              {banTarget?.name} will be immediately logged out and blocked from access.
+            </SheetDescription>
+          </SheetHeader>
+
+          <Form {...banForm}>
+            <form onSubmit={banForm.handleSubmit(onBanSubmit)} className="space-y-6 mt-6">
+              <FormField control={banForm.control} name="reason" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ban Reason</FormLabel>
+                  <FormControl>
+                    <textarea 
+                      {...field}
+                      className="w-full h-24 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      placeholder="e.g. Violation of security protocols, Misconduct..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
+              <div className="space-y-4 pt-2">
+                <FormField control={banForm.control} name="indefinite" render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 space-y-0">
+                    <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                    <FormLabel className="font-medium cursor-pointer">Ban Indefinitely</FormLabel>
+                  </FormItem>
+                )} />
+
+                {!banForm.watch("indefinite") && (
+                   <FormField control={banForm.control} name="expires" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ban Expiry Date</FormLabel>
+                      <FormControl><Input type="date" {...field} /></FormControl>
+                      <p className="text-[11px] text-muted-foreground">User will be unblocked automatically after this date.</p>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                )}
+              </div>
+
+              <div className="bg-destructive/10 p-4 rounded-lg flex gap-3 border border-destructive/20">
+                 <Info className="size-5 text-destructive shrink-0" />
+                 <p className="text-xs text-destructive leading-relaxed">
+                   <strong>IMPORTANT:</strong> This action will revoke all active sessions for this staff member immediately.
+                 </p>
+              </div>
+
+              <Button type="submit" variant="destructive" className="w-full flex gap-2" disabled={banForm.formState.isSubmitting}>
+                {banForm.formState.isSubmitting && <Loader2 className="size-4 animate-spin" />}
+                Execute Ban
+              </Button>
+            </form>
+          </Form>
+        </SheetContent>
+      </Sheet>
     </div>
   );
-};
+}

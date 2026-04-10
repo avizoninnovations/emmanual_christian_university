@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertRole, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // MARKS & ASSESSMENTS
@@ -9,6 +10,7 @@ import { logAction } from "./audit_logger";
 export const getGradingScales = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.query("gradingScales").order("desc").collect();
   },
 });
@@ -21,6 +23,7 @@ export const createGradingScale = mutation({
     gpaValue: v.number(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "staff"]);
     const id = await ctx.db.insert("gradingScales", args);
 
     await logAction(ctx, {
@@ -39,6 +42,7 @@ export const getAssessmentBlocks = query({
     lecturerId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.status) {
       const blocks = await ctx.db.query("assessmentBlocks")
         .withIndex("by_status", (q) => q.eq("status", args.status!))
@@ -70,6 +74,7 @@ export const createAssessmentBlock = mutation({
     year: v.number(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "staff", "lecturer"]);
     const id = await ctx.db.insert("assessmentBlocks", {
       ...args,
       status: "draft",
@@ -92,6 +97,7 @@ export const updateAssessmentBlockStatus = mutation({
     status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "staff", "lecturer"]);
     await ctx.db.patch(args.id, { 
       status: args.status,
       // If submitted, update the timestamp

@@ -15,9 +15,10 @@ Use this workflow whenever you are introducing a new table to the schema or addi
 
 ## 2. Backend Implementation
 - Create or update the service file in `packages/backend/convex/`.
-- **Queries**: Implement `query({ ... })`. Use `withIndex()` and `paginate()`.
-- **Mutations**: Implement `mutation({ ... })` for user actions.
-- **Internal Workers**: Use `internalMutation` for background tasks (e.g. `audit_logger`).
+- **Security Pass**: Every public function MUST start with a permission check from `lib/utils.ts` (e.g., `await assertAdmin(ctx)`).
+- **Atomic Writes**: If a mutation involves multiple tables, group them into a single `internalMutation` to ensure all-or-nothing completion.
+- **Fail-Fast**: Use `ConvexError` for all rejections to provide clean UI feedback.
+- **Queries**: Use `withIndex()` and `paginate()`. Never use `.collect()` for indexed tables.
 
 ## 3. Atomic UI Components
 - Check `packages/ui/src/components` for existing primitives.

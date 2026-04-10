@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertAdmin, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // FACULTIES
@@ -9,6 +10,7 @@ import { logAction } from "./audit_logger";
 export const getFaculties = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.query("faculties").order("desc").collect();
   },
 });
@@ -21,6 +23,7 @@ export const createFaculty = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const id = await ctx.db.insert("faculties", {
       ...args,
       status: "active",
@@ -46,6 +49,7 @@ export const updateFaculty = mutation({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
 
@@ -60,6 +64,7 @@ export const updateFaculty = mutation({
 export const deleteFaculty = mutation({
   args: { id: v.id("faculties") },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     // Check for dependent departments
     const departments = await ctx.db
       .query("departments")
@@ -90,6 +95,7 @@ export const getDepartments = query({
     facultyId: v.optional(v.id("faculties")),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.facultyId) {
       return await ctx.db
         .query("departments")
@@ -110,6 +116,7 @@ export const createDepartment = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const id = await ctx.db.insert("departments", {
       ...args,
       status: "active",
@@ -136,6 +143,7 @@ export const updateDepartment = mutation({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
 
@@ -150,6 +158,7 @@ export const updateDepartment = mutation({
 export const deleteDepartment = mutation({
   args: { id: v.id("departments") },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     // Check for dependent programs
     const programs = await ctx.db
       .query("programs")
@@ -180,6 +189,7 @@ export const getPrograms = query({
     departmentId: v.optional(v.id("departments")),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.departmentId) {
       return await ctx.db
         .query("programs")
@@ -201,6 +211,7 @@ export const createProgram = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const id = await ctx.db.insert("programs", {
       ...args,
       status: "active",
@@ -228,6 +239,7 @@ export const updateProgram = mutation({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
 
@@ -242,6 +254,7 @@ export const updateProgram = mutation({
 export const deleteProgram = mutation({
   args: { id: v.id("programs") },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const prog = await ctx.db.get(args.id);
     await ctx.db.delete(args.id);
 
@@ -260,6 +273,7 @@ export const deleteProgram = mutation({
 export const getPeriods = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.query("academicPeriods").order("desc").collect();
   },
 });
@@ -274,6 +288,7 @@ export const createPeriod = mutation({
     endDate: v.string(),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const id = await ctx.db.insert("academicPeriods", {
       ...args,
       status: "upcoming",

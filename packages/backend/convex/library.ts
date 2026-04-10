@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertRole, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // LIBRARY CATALOG & LOANS
@@ -9,6 +10,7 @@ import { logAction } from "./audit_logger";
 export const getBooks = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.query("books").order("desc").collect();
   },
 });
@@ -21,6 +23,7 @@ export const createBook = mutation({
     totalCopies: v.number(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "librarian"]);
     const id = await ctx.db.insert("books", {
       ...args,
       availableCopies: args.totalCopies,
@@ -42,6 +45,7 @@ export const getLoans = query({
     status: v.optional(v.union(v.literal("active"), v.literal("returned"), v.literal("overdue"))),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.studentId) {
       const loans = await ctx.db.query("loans")
         .withIndex("by_student", (q) => q.eq("studentId", args.studentId!))
@@ -71,6 +75,7 @@ export const issueLoan = mutation({
     dueDate: v.number(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "librarian"]);
     // 1. Get book and check availability
     const book = await ctx.db.get(args.bookId);
     if (!book || book.availableCopies <= 0) {
@@ -112,6 +117,7 @@ export const returnLoan = mutation({
     loanId: v.id("loans"),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "librarian"]);
     const loan = await ctx.db.get(args.loanId);
     if (!loan || loan.status === "returned") {
       throw new Error("Invalid or already returned loan.");

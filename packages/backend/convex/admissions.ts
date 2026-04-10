@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertRole, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // ADMISSIONS PIPELINE
@@ -12,6 +13,7 @@ export const getApplicants = query({
     programId: v.optional(v.id("programs")),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.status) {
       return await ctx.db.query("applicants")
         .withIndex("by_status", (q) => q.eq("status", args.status!))
@@ -39,6 +41,7 @@ export const createApplicant = mutation({
     year: v.number(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "registrar"]);
     const id = await ctx.db.insert("applicants", {
       ...args,
       status: "new",
@@ -61,6 +64,7 @@ export const updateApplicantStatus = mutation({
     status: v.union(v.literal("new"), v.literal("reviewing"), v.literal("accepted"), v.literal("rejected"), v.literal("enrolled")),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "registrar"]);
     await ctx.db.patch(args.id, { status: args.status });
 
     await logAction(ctx, {

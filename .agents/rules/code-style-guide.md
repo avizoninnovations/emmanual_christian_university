@@ -13,11 +13,13 @@ Our monorepo is divided into three distinct layers:
     - `ui`: The design system (Shadcn/Tailwind). Contains atomic primitives only.
 - **Domain Modules**: Located within `apps/*/modules/`. Use domain-driven design to organize UI by feature (e.g., admissions, finance).
 
-## 2. Convex & DSA Best Practices
-Performance is not optional. Every query must follow these Data Structures and Algorithms principles:
+## 2. Convex & DSA Best Practices (The Guardrails)
+Performance and Security are not optional. Every function must follow these "Agent-Proof" principles:
+- **Zero-Trust Entry**: Every public query/mutation MUST start with an `assertAuthenticated` or `assertRole` check from `packages/backend/convex/lib/utils.ts`.
 - **Indexed-Only Reads**: Never use `.filter()` without first prefixing it with `.withIndex()`. Every lookup must be O(1) or O(log N).
-- **Mandatory Pagination**: For any list expected to grow beyond 50 records, use `usePaginatedQuery` (frontend) and `paginate()` (backend).
-- **Internal Security**: System-critical changes (logging, status updates) must be performed via `internalMutation` to ensure they can only be called from verified backend actions.
+- **Mandatory Pagination**: For any table expected to grow beyond 50 records, use `paginate()` + `cursor`. Forbidding `.collect()` on datasets like Students, Transcripts, or Audit Logs.
+- **Atomic Integrity**: Group multiple `db` writes into a single `internalMutation` to ensure state consistency. Never perform two separate `db.insert/patch` calls from an action—wrap them.
+- **Fail-Fast with ConvexError**: Usage of standard `Error` is discouraged. All rejections must use `ConvexError` to provide structured feedback to the UI.
 
 ## 3. Identity & Better Auth Patterns
 Better Auth is our identity provider, living in `packages/backend/convex/betterAuth`.

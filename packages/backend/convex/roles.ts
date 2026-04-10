@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { logAction } from "./audit_logger";
+import { assertAdmin, assertAuthenticated } from "./lib/utils";
 
 /**
  * Get all available system roles.
@@ -8,6 +9,7 @@ import { logAction } from "./audit_logger";
 export const getRoles = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.query("systemRoles").collect();
   },
 });
@@ -22,6 +24,7 @@ export const createRole = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const existing = await ctx.db
       .query("systemRoles")
       .withIndex("by_code", (q) => q.eq("code", args.code))
@@ -58,6 +61,7 @@ export const updateRole = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const role = await ctx.db.get(args.id);
     if (!role) throw new Error("Role not found");
 
@@ -99,6 +103,7 @@ export const updateRole = mutation({
 export const deleteRole = mutation({
   args: { id: v.id("systemRoles") },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const role = await ctx.db.get(args.id);
     if (!role) throw new Error("Role not found");
 
@@ -123,6 +128,7 @@ export const deleteRole = mutation({
 export const seedDefaultRoles = mutation({
   args: {},
   handler: async (ctx) => {
+    await assertAdmin(ctx);
     const existing = await ctx.db.query("systemRoles").collect();
     if (existing.length > 0) return;
 

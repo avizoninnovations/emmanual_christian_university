@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertAdmin, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // ACADEMIC CALENDAR / PERIODS
@@ -9,6 +10,7 @@ import { logAction } from "./audit_logger";
 export const getPeriods = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.query("academicPeriods").order("desc").collect();
   },
 });
@@ -16,6 +18,7 @@ export const getPeriods = query({
 export const getActivePeriod = query({
   args: {},
   handler: async (ctx) => {
+    await assertAuthenticated(ctx);
     return await ctx.db
       .query("academicPeriods")
       .withIndex("by_status", (q) => q.eq("status", "active"))
@@ -32,6 +35,7 @@ export const createPeriod = mutation({
     endDate: v.string(),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const id = await ctx.db.insert("academicPeriods", {
       ...args,
       status: "upcoming",
@@ -52,6 +56,7 @@ export const activatePeriod = mutation({
     id: v.id("academicPeriods"),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     // 1. Get the period to activate
     const targetPeriod = await ctx.db.get(args.id);
     if (!targetPeriod) throw new Error("Period not found");

@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertRole, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // FINANCE (Structures, Ledgers, Transactions)
@@ -12,6 +13,7 @@ export const getFeeStructures = query({
     periodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.programId) {
       return await ctx.db.query("feeStructures")
         .withIndex("by_program", (q) => q.eq("programId", args.programId!))
@@ -41,6 +43,7 @@ export const createFeeStructure = mutation({
     activityFee: v.number(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
     const id = await ctx.db.insert("feeStructures", args);
 
     await logAction(ctx, {
@@ -59,6 +62,7 @@ export const getStudentLedger = query({
     periodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     const ledgers = await ctx.db.query("studentLedger")
       .withIndex("by_student", (q) => q.eq("studentId", args.studentId))
       .collect();
@@ -75,6 +79,7 @@ export const getAllLedgers = query({
     periodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.periodId) {
       return await ctx.db.query("studentLedger")
         .withIndex("by_period", (q) => q.eq("periodId", args.periodId!))
@@ -92,6 +97,7 @@ export const recordTransaction = mutation({
     reference: v.string(),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
     // Lookup student to get their current period context if not provided
     const student = await ctx.db.get(args.studentId);
     if (!student) throw new Error("Student not found");

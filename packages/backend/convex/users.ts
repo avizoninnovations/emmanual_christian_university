@@ -1,8 +1,9 @@
-import { action, query, mutation, internalMutation } from "./_generated/server.js";
+import { action, query, mutation, internalMutation, internalQuery } from "./_generated/server.js";
 import { v } from "convex/values";
 import { createAuth } from "./betterAuth/auth.js";
 import { components, internal } from "./_generated/api.js";
 import { logAction } from "./audit_logger";
+import { assertAdmin, assertRole, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // QUERIES
@@ -62,6 +63,7 @@ export const getCurrentUser = query({
 export const getStaff = query({
   args: {},
   handler: async (ctx): Promise<any[]> => {
+    await assertRole(ctx, ["admin", "staff"]);
     // Fetch users from Better Auth component
     const result = await ctx.runQuery(components.betterAuth.adapter.findMany, {
       model: "user",
@@ -115,6 +117,7 @@ export const createStaff = action({
     password: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const auth = createAuth(ctx);
 
     // Determine the Better Auth role — "admin" if roles include it, otherwise "user"
@@ -181,6 +184,20 @@ export const _createStaffProfile = internalMutation({
       phone: args.phone,
       status: "active",
     });
+  },
+});
+
+/**
+ * Internal query to check staff profile. 
+ * Used by lib/utils for action-based role checks.
+ */
+export const _getStaffProfileInternal = internalQuery({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("staffProfiles")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .unique();
   },
 });
 
@@ -275,6 +292,7 @@ export const updateStaff = mutation({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "staff"]);
     return await updateStaffLogic(ctx, args);
   },
 });
@@ -304,6 +322,7 @@ export const _updateStaffInternal = internalMutation({
 export const deleteStaff = mutation({
   args: { id: v.string() },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     // Delete the Better Auth user record
     await ctx.runMutation(components.betterAuth.adapter.deleteOne, {
       input: {
@@ -349,6 +368,7 @@ export const banStaff = action({
     expires: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const auth = createAuth(ctx);
 
     // 1. Kick the user out (revoke all sessions)
@@ -393,6 +413,7 @@ export const banStaff = action({
 export const unbanStaff = action({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const auth = createAuth(ctx);
 
     // 1. Remove ban in Better Auth

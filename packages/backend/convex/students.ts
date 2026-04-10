@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server.js";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
+import { assertRole, assertAuthenticated } from "./lib/utils";
 
 // ─────────────────────────────────────────────────────────
 // ENROLLED STUDENTS
@@ -12,6 +13,7 @@ export const getStudents = query({
     status: v.optional(v.union(v.literal("active"), v.literal("suspended"), v.literal("deferred"), v.literal("graduating"), v.literal("discontinued"))),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     if (args.programId) {
       const students = await ctx.db.query("students")
         .withIndex("by_program", (q) => q.eq("programId", args.programId!))
@@ -39,6 +41,7 @@ export const getStudentById = query({
     id: v.id("students"),
   },
   handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
     return await ctx.db.get(args.id);
   },
 });
@@ -54,6 +57,7 @@ export const createStudent = mutation({
     currentPeriodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "staff"]);
     const id = await ctx.db.insert("students", {
       ...args,
       status: "active",
@@ -77,6 +81,7 @@ export const updateStudentStatus = mutation({
     financeStatus: v.optional(v.union(v.literal("cleared"), v.literal("partial"), v.literal("pending"))),
   },
   handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "staff"]);
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
 

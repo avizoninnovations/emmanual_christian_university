@@ -1,4 +1,5 @@
-import { mutation, action } from "./_generated/server.js";
+import { action } from "./_generated/server.js";
+import { mutation } from "./lib/mutations";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
 import { createAuth } from "./betterAuth/auth.js";

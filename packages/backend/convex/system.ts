@@ -1,22 +1,150 @@
 import { v } from "convex/values";
-import { internalMutation, mutation, query } from "./_generated/server.js";
+import { mutation, internalMutation } from "./lib/mutations";
+import { query } from "./_generated/server.js";
 import { logAction } from "./audit_logger";
+import { paginationOptsValidator } from "convex/server";
 
 /**
- * Get all audit logs for the System view.
- * Ordered by timestamp descending.
+ * Robust paginated query for audit logs with backend filtering.
  */
 export const getAuditLogs = query({
-  args: {
-    limit: v.optional(v.number()),
+  args: { 
+    paginationOpts: paginationOptsValidator,
+    search: v.optional(v.string()),
+    actions: v.optional(v.array(v.string())),
+    resource: v.optional(v.string()),
+    location: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+    pageSize: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db
-      .query("auditLogs")
-      .withIndex("by_timestamp")
-      .order("desc")
-      .take(args.limit ?? 100);
+    let query = ctx.db.query("auditLogs").order("desc");
+
+    // ── Efficient Filtering ──
+    if (args.startDate !== undefined || args.endDate !== undefined) {
+      const start = args.startDate ?? 0;
+      const end = args.endDate ?? Date.now();
+      query = ctx.db.query("auditLogs")
+        .withIndex("by_createdAt", q => 
+          q.gte("createdAt", start).lte("createdAt", end)
+        )
+        .order("desc");
+    }
+
+    const { paginationOpts, ...filters } = args;
+    const results = await query.paginate(paginationOpts);
+
+    // Filter current page
+    let filteredPage = results.page;
+    if (filters.actions && filters.actions.length > 0) {
+      filteredPage = filteredPage.filter(l => filters.actions!.includes(l.action));
+    }
+    if (filters.resource && filters.resource !== "all") {
+      filteredPage = filteredPage.filter(l => l.resource === filters.resource);
+    }
+    if (filters.search) {
+      const s = filters.search.toLowerCase();
+      filteredPage = filteredPage.filter(l => 
+        l.userName.toLowerCase().includes(s) ||
+        l.userEmail.toLowerCase().includes(s) ||
+        l.details.toLowerCase().includes(s) ||
+        (l as any).staffId?.toLowerCase().includes(s)
+      );
+    }
+    if (filters.location) {
+      const loc = filters.location.toLowerCase();
+      filteredPage = filteredPage.filter(l => 
+        (l as any).location?.toLowerCase().includes(loc) ||
+        (l as any).ipAddress?.toLowerCase().includes(loc)
+      );
+    }
+
+    const userIds = Array.from(new Set(filteredPage.map(l => l.userId)));
+    const profiles = await Promise.all(
+      userIds.map(uid => 
+        ctx.db.query("staffProfiles")
+          .withIndex("by_userId", q => q.eq("userId", uid))
+          .unique()
+      )
+    );
+
+    const staffIdMap = new Map();
+    profiles.forEach(p => {
+      if (p) staffIdMap.set(p.userId, p.staffId);
+    });
+
+    return {
+      ...results,
+      page: filteredPage.map(l => ({
+        ...l,
+        staffId: staffIdMap.get(l.userId) || "SYSTEM"
+      }))
+    };
   },
+});
+
+/**
+ * Global Aggregation Query for Audit Overview
+ */
+export const getAuditStats = query({
+  args: {
+    search: v.optional(v.string()),
+    actions: v.optional(v.array(v.string())),
+    resource: v.optional(v.string()),
+    location: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const query = (args.startDate !== undefined || args.endDate !== undefined)
+      ? ctx.db.query("auditLogs")
+          .withIndex("by_createdAt", q => 
+            q.gte("createdAt", args.startDate ?? 0).lte("createdAt", args.endDate ?? Date.now())
+          )
+      : ctx.db.query("auditLogs").order("desc");
+
+    // Exhaustive match (Note: Scale-limited by .collect())
+    const allMatching = await query.collect();
+    
+    // Apply exhaustive secondary filters
+    let filtered = allMatching;
+    if (args.actions && args.actions.length > 0) {
+      filtered = filtered.filter(l => args.actions!.includes(l.action));
+    }
+    if (args.resource && args.resource !== "all") {
+      filtered = filtered.filter(l => l.resource === args.resource);
+    }
+    if (args.search) {
+      const s = args.search.toLowerCase();
+      filtered = filtered.filter(l => 
+        l.userName.toLowerCase().includes(s) ||
+        l.userEmail.toLowerCase().includes(s) ||
+        l.details.toLowerCase().includes(s)
+      );
+    }
+    if (args.location) {
+      const loc = args.location.toLowerCase();
+      filtered = filtered.filter(l => 
+        (l as any).location?.toLowerCase().includes(loc) ||
+        (l as any).ipAddress?.toLowerCase().includes(loc)
+      );
+    }
+
+    const highImpact = filtered.filter(l => 
+       l.action.includes("CREATE") || 
+       l.action.includes("DELETE") ||
+       l.action.includes("BAN")
+    );
+
+    const admins = new Set(filtered.map(l => l.userId));
+
+    return {
+       totalMatched: filtered.length,
+       adminActions: highImpact.length,
+       activeAdmins: admins.size
+    };
+  }
 });
 
 /**
@@ -31,11 +159,13 @@ export const _logAction = internalMutation({
     action: v.string(),
     resource: v.string(),
     details: v.string(),
+    ipAddress: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    location: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("auditLogs", {
       ...args,
-      timestamp: Date.now(),
     });
   },
 });
@@ -171,7 +301,19 @@ export const seedData = mutation({
       }
     }
 
-    // 6. Log the seed event
+    // 6. Seed System Configurations
+    const systemConfig = await ctx.db.query("systemConfigurations").first();
+    if (!systemConfig) {
+      await ctx.db.insert("systemConfigurations", {
+        universityName: "Emmanuel Christian University",
+        universityMotto: "Excellence in Service",
+        contactEmail: "info@ecu.edu.ug",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+    }
+
+    // 7. Log the seed event
     await logAction(ctx, {
       action: "SYSTEM_SEED",
       resource: "system",
@@ -231,5 +373,50 @@ export const getPublicStats = query({
       activePrograms: programs.length,
       activeFaculties: faculties.length,
     };
+  },
+});
+
+/**
+ * ── Settings Configuration ──
+ */
+
+export const getSystemConfig = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("systemConfigurations").first();
+  },
+});
+
+export const updateSystemConfig = mutation({
+  args: {
+    id: v.optional(v.id("systemConfigurations")),
+    universityName: v.string(),
+    universityMotto: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...data } = args;
+    const now = Date.now();
+    
+    if (id) {
+      await ctx.db.patch(id, { ...data, updatedAt: now });
+    } else {
+      const existing = await ctx.db.query("systemConfigurations").first();
+      if (existing) {
+        await ctx.db.patch(existing._id, { ...data, updatedAt: now });
+      } else {
+        await ctx.db.insert("systemConfigurations", { ...data, createdAt: now, updatedAt: now });
+      }
+    }
+    
+    await logAction(ctx, {
+      action: "UPDATE_SYSTEM_CONFIG",
+      resource: "system",
+      details: `Administrative settings updated: branding & metadata for ${args.universityName}`
+    });
+    
+    return { success: true };
   },
 });

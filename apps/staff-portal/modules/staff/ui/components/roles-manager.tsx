@@ -262,7 +262,7 @@ export function RolesManager() {
             </SheetDescription>
           </SheetHeader>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-8 pr-2 space-y-4 overflow-y-auto  custom-scrollbar">
             {!allStaff ? (
               <div className="flex items-center justify-center py-10"><Loader2 className="size-6 animate-spin text-primary" /></div>
             ) : (() => {

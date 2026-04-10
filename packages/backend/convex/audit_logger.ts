@@ -12,6 +12,9 @@ export async function logAction(
     action: string;
     resource: string;
     details: string;
+    ipAddress?: string;
+    userAgent?: string;
+    location?: string;
   }
 ) {
   const identity = await ctx.auth.getUserIdentity();
@@ -27,5 +30,8 @@ export async function logAction(
     action: args.action,
     resource: args.resource,
     details: args.details,
+    ipAddress: args.ipAddress,
+    userAgent: args.userAgent,
+    location: args.location,
   });
 }

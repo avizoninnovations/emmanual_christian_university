@@ -57,6 +57,8 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@workspace/ui/components/badge";
 import { authClient } from "@/lib/auth-client";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { useQuery } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
 
 interface NavItem {
   title: string;
@@ -112,21 +114,21 @@ const navGroups: NavGroup[] = [
           },
         ],
       },
-      {
-        title: "Academic Calendar",
-        url: "/admin/academic-calendar",
-        icon: CalendarDays,
-      },
-      {
-        title: "Admissions",
-        url: "/admin/admissions",
-        icon: ClipboardList,
-      },
-      {
-        title: "Students",
-        url: "/admin/students",
-        icon: GraduationCap,
-      },
+      // {
+      //   title: "Academic Calendar",
+      //   url: "/admin/academic-calendar",
+      //   icon: CalendarDays,
+      // },
+      // {
+      //   title: "Admissions",
+      //   url: "/admin/admissions",
+      //   icon: ClipboardList,
+      // },
+      // {
+      //   title: "Students",
+      //   url: "/admin/students",
+      //   icon: GraduationCap,
+      // },
     ],
   },
   {
@@ -189,6 +191,7 @@ export const AdminSidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isMultiRole, clearActiveRole } = useCurrentUser();
+  const config = useQuery(api.system.getSystemConfig);
 
   const isActive = (url: string, exact = false) => {
     if (exact) return pathname === url;
@@ -213,23 +216,31 @@ export const AdminSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="default" className="w-full justify-start gap-2 px-1.5 h-11">
-              <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-sm">
+              <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-sm bg-background border shadow-sm">
                 <Image 
-                  src="/icon.png" 
-                  alt="ECU Logo" 
+                  src={config?.logoUrl || "/icon.png"} 
+                  alt={config?.universityName || "ECU Logo"} 
                   width={32} 
                   height={32} 
                   className="size-full object-contain"
                 />
               </div>
-              <div className="flex flex-col gap-0 leading-none group-data-[collapsible=icon]:hidden">
-                <span className="font-bold text-[13px] tracking-tight">ECU Admin</span>
-                <Badge
-                  variant="outline"
-                  className="text-[9px] h-3 px-1 w-fit font-bold bg-primary/10 text-primary border-primary/20 uppercase"
-                >
-                  Admin
-                </Badge>
+              <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
+                <span className="font-bold text-[13px] tracking-tight truncate max-w-[120px]">
+                   {config?.universityName || "ECU Admin"}
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <Badge
+                    variant="outline"
+                    className="text-[9px] h-3 px-1 w-fit font-bold bg-primary/10 text-primary border-primary/20 uppercase"
+                  >
+                    Admin
+                  </Badge>
+                  <div className="flex items-center gap-1 px-1.5 py-0 rounded-full bg-emerald-500/5 border border-emerald-500/10 h-3">
+                    <span className="size-1 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
+                    <span className="text-[8px] font-bold uppercase tracking-tighter text-emerald-600/70">Realtime</span>
+                  </div>
+                </div>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

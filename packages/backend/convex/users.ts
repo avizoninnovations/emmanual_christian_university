@@ -1,4 +1,5 @@
-import { action, query, mutation, internalMutation, internalQuery } from "./_generated/server.js";
+import { action, query, internalQuery } from "./_generated/server.js";
+import { mutation, internalMutation } from "./lib/mutations";
 import { v } from "convex/values";
 import { createAuth } from "./betterAuth/auth.js";
 import { components, internal } from "./_generated/api.js";
@@ -76,6 +77,10 @@ export const getStaff = query({
     const allProfiles = await ctx.db.query("staffProfiles").collect();
     const profileMap = new Map(allProfiles.map((p) => [p.userId, p]));
 
+    // Fetch departments for name resolution
+    const departments = await ctx.db.query("departments").collect();
+    const deptMap = new Map(departments.map((d) => [d._id, d.name]));
+
     // Filter out students and enrich with profile data
     return users
       .filter((u: any) => u.role !== "student")
@@ -87,9 +92,12 @@ export const getStaff = query({
           title: profile?.title,
           phone: profile?.phone,
           departmentId: profile?.departmentId,
+          departmentName: profile?.departmentId ? deptMap.get(profile.departmentId as any) : undefined,
           staffNumber: profile?.staffNumber,
+          staffId: profile?.staffId,
           profileStatus: profile?.status ?? "active",
           profileId: profile?._id,
+          updatedAt: profile?.updatedAt,
           // Banning fields from Better Auth user table
           banned: u.banned ?? false,
           banReason: u.banReason,
@@ -113,6 +121,7 @@ export const createStaff = action({
     lastName: v.string(),
     email: v.string(),
     roles: v.array(v.string()),
+    staffId: v.optional(v.string()),
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
     password: v.optional(v.string()),
@@ -142,6 +151,7 @@ export const createStaff = action({
       await ctx.runMutation(internal.users._createStaffProfile, {
         userId: user.user.id,
         roles: args.roles,
+        staffId: args.staffId,
         title: args.title,
         phone: args.phone,
       });
@@ -174,6 +184,7 @@ export const _createStaffProfile = internalMutation({
   args: {
     userId: v.string(),
     roles: v.array(v.string()),
+    staffId: v.optional(v.string()),
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
   },
@@ -181,6 +192,7 @@ export const _createStaffProfile = internalMutation({
     return await ctx.db.insert("staffProfiles", {
       userId: args.userId,
       roles: args.roles,
+      staffId: args.staffId,
       title: args.title,
       phone: args.phone,
       status: "active",
@@ -242,13 +254,13 @@ async function updateStaffLogic(ctx: any, args: any) {
   // Cross-patch the Better Auth User Record (lives in component storage, NOT main db)
   const authUpdates: Record<string, any> = {};
   
-  if (args.firstName !== undefined || args.lastName !== undefined) {
-    // Fetch existing user from the Better Auth component table
-    const userRow = await ctx.runQuery(components.betterAuth.adapter.findOne, {
-      model: "user",
-      where: [{ field: "_id", value: args.userId, operator: "eq" }],
-    }) as any;
+  // Fetch existing user for both name resolution and audit logging
+  const userRow = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+    model: "user",
+    where: [{ field: "_id", value: args.userId, operator: "eq" }],
+  }) as any;
 
+  if (args.firstName !== undefined || args.lastName !== undefined) {
     if (userRow) {
       const existingName = userRow.name || "";
       const split = existingName.split(" ");
@@ -273,10 +285,19 @@ async function updateStaffLogic(ctx: any, args: any) {
     });
   }
 
+  // Resolve name for readable logging
+  const targetName = userRow?.name || args.userId;
+
+  // Fetch profile for official Staff ID
+  const staffProfile = await ctx.db
+    .query("staffProfiles")
+    .withIndex("by_userId", (q: any) => q.eq("userId", args.userId))
+    .unique();
+
   await logAction(ctx, {
     action: "UPDATE_STAFF",
     resource: "staffProfiles",
-    details: `Updated staff profile for user ${args.userId}: ${Object.keys(updates).join(", ")}`,
+    details: `Updated staff profile for ${targetName} (ID: ${staffProfile?.staffId || "N/A"}): ${Object.keys(updates).join(", ")}`,
   });
 
   return profile._id;
@@ -340,6 +361,7 @@ export const updateStaff = mutation({
     lastName: v.optional(v.string()),
     email: v.optional(v.string()),
     roles: v.optional(v.array(v.string())),
+    staffId: v.optional(v.string()),
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
     departmentId: v.optional(v.string()),
@@ -362,6 +384,7 @@ export const _updateStaffInternal = internalMutation({
     lastName: v.optional(v.string()),
     email: v.optional(v.string()),
     roles: v.optional(v.array(v.string())),
+    staffId: v.optional(v.string()),
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
     departmentId: v.optional(v.string()),
@@ -401,6 +424,13 @@ export const deleteStaff = mutation({
       .withIndex("by_userId", (q) => q.eq("userId", args.id))
       .unique();
 
+    // Resolve name/ID for logging before deletion
+    const userRow = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+      model: "user",
+      where: [{ field: "_id", value: args.id, operator: "eq" }],
+    }) as any;
+    const targetInfo = userRow?.name ? `${userRow.name} (${profile?.staffId || "N/A"})` : args.id;
+
     if (profile) {
       await ctx.db.delete(profile._id);
     }
@@ -408,7 +438,7 @@ export const deleteStaff = mutation({
     await logAction(ctx, {
       action: "DELETE_STAFF",
       resource: "users",
-      details: `Deleted staff member and profile with ID: ${args.id}`
+      details: `Permanently removed staff member record for ${targetInfo}`
     });
 
     return { success: true };
@@ -451,13 +481,19 @@ export const banStaff = action({
     });
 
     // 4. Log
+    const userRow = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+      model: "user",
+      where: [{ field: "_id", value: args.userId, operator: "eq" }],
+    }) as any;
+    const profile = await ctx.runQuery(internal.users._getStaffProfileInternal, { userId: args.userId });
+
     await ctx.runMutation(internal.system._logAction, {
         userId: args.userId,
-        userName: "ADMIN", // Simplified
+        userName: "ADMIN", 
         userEmail: "admin@ecu-ssd.org",
         action: "BAN_STAFF",
         resource: "users",
-        details: `Banned staff member ${args.userId}. Reason: ${args.reason}`
+        details: `Banned staff member ${userRow?.name || "Personnel"} (ID: ${profile?.staffId || "N/A"}). Reason: ${args.reason}`
     });
 
     return { success: true };
@@ -489,13 +525,19 @@ export const unbanStaff = action({
     });
 
     // 3. Log
+    const userRow = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+      model: "user",
+      where: [{ field: "_id", value: args.userId, operator: "eq" }],
+    }) as any;
+    const profile = await ctx.runQuery(internal.users._getStaffProfileInternal, { userId: args.userId });
+
     await ctx.runMutation(internal.system._logAction, {
         userId: args.userId,
         userName: "ADMIN",
         userEmail: "admin@ecu-ssd.org",
         action: "UNBAN_STAFF",
         resource: "users",
-        details: `Unbanned staff member ${args.userId}`
+        details: `Lifted ban for staff member ${userRow?.name || "Personnel"} (ID: ${profile?.staffId || "N/A"})`
     });
 
     return { success: true };

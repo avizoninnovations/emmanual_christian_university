@@ -4,7 +4,7 @@ import type { GenericCtx } from "@convex-dev/better-auth/utils";
 import type { BetterAuthOptions } from "better-auth";
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins";
-import { components } from "../_generated/api.js";
+import { components, internal } from "../_generated/api.js";
 import type { DataModel } from "../_generated/dataModel.js";
 import authConfig from "../auth.config.js";
 import schema from "./schema.js";
@@ -20,7 +20,7 @@ export const authComponent = createClient<DataModel, typeof schema>(
 );
 
 // Better Auth Options
-export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
+export const createAuthOptions = (ctx: any) => {
   return {
     appName: "Emmanuel Christian University",
     baseURL: process.env.SITE_URL || "http://localhost:3004",
@@ -33,31 +33,80 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         convex({ authConfig }),
         admin(),
     ],
-    events: {
+    databaseHooks: {
         session: {
-            create: async (data: { user: any; session: any }, _authCtx: any) => {
-                const { user } = data;
-                // @ts-ignore
-                await ctx.runMutation(internal.system._logAction, {
-                    userId: user.id,
-                    userName: user.name,
-                    userEmail: user.email,
-                    action: "SIGN_IN",
-                    resource: "auth",
-                    details: `User signed in successfully. Session created.`
-                });
+            create: {
+                after: async (session: any) => {
+                    // Resolve user details for a readable log
+                    const user = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+                        model: "user",
+                        where: [{ field: "_id", value: session.userId, operator: "eq" }],
+                    }) as any;
+
+                    // ── Geolocation Resolution ──
+                    let location = "Unknown";
+                    if (session.ipAddress && !session.ipAddress.match(/^(127\.0\.0\.1|::1|localhost)$/)) {
+                        try {
+                            const response = await fetch(`http://ip-api.com/json/${session.ipAddress}?fields=city,country,status`);
+                            const geo = await response.json();
+                            if (geo.status === "success") {
+                                location = `${geo.city}, ${geo.country}`;
+                            } else {
+                                location = "Remote (Location Blocked)";
+                            }
+                        } catch (e) {
+                            location = "Remote (Resolution Failed)";
+                        }
+                    } else if (session.ipAddress) {
+                        location = "Local Environment";
+                    }
+
+                    await ctx.runMutation(internal.system._logAction, {
+                        userId: session.userId,
+                        userName: user?.name || "Unknown",
+                        userEmail: user?.email || "N/A",
+                        action: "SIGN_IN",
+                        resource: "auth",
+                        details: `User signed in. Session: ${session.token.slice(0, 8)}...`,
+                        ipAddress: session.ipAddress,
+                        userAgent: session.userAgent,
+                        location,
+                    });
+                }
             },
-            revoked: async (data: { user: any; session: any }, _authCtx: any) => {
-                const { user } = data;
-                // @ts-ignore
-                await ctx.runMutation(internal.system._logAction, {
-                    userId: user.id,
-                    userName: user.name,
-                    userEmail: user.email,
-                    action: "SIGN_OUT",
-                    resource: "auth",
-                    details: `User signed out. Session revoked.`
-                });
+            delete: {
+                after: async (session: any) => {
+                    // Resolve user details for a readable log
+                    const user = await ctx.runQuery(components.betterAuth.adapter.findOne, {
+                        model: "user",
+                        where: [{ field: "_id", value: session.userId, operator: "eq" }],
+                    }) as any;
+
+                    await ctx.runMutation(internal.system._logAction, {
+                        userId: session.userId,
+                        userName: user?.name || "Unknown",
+                        userEmail: user?.email || "N/A",
+                        action: "SIGN_OUT",
+                        resource: "auth",
+                        details: `User signed out or session revoked.`,
+                        ipAddress: session.ipAddress,
+                        userAgent: session.userAgent,
+                    });
+                }
+            }
+        },
+        user: {
+            create: {
+                after: async (user: any) => {
+                    await ctx.runMutation(internal.system._logAction, {
+                        userId: user.id,
+                        userName: user.name,
+                        userEmail: user.email,
+                        action: "SIGN_UP",
+                        resource: "auth",
+                        details: `New user account created: ${user.email}`
+                    });
+                }
             }
         }
     }

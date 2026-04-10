@@ -7,6 +7,11 @@ const academicPeriodFields = {
   year: v.number(), // e.g. 2026
 };
 
+const timestamps = {
+  createdAt: v.number(),
+  updatedAt: v.number(),
+};
+
 export default defineSchema({
   ...authTables,
 
@@ -19,10 +24,13 @@ export default defineSchema({
     title: v.optional(v.string()),
     phone: v.optional(v.string()),
     departmentId: v.optional(v.string()),
-    staffNumber: v.optional(v.string()),
+    staffNumber: v.optional(v.string()), // Legacy/Phone
+    staffId: v.string(),     // Official University ID
     status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
   })
     .index("by_userId", ["userId"])
+    .index("by_staffId", ["staffId"])
     .index("by_status", ["status"]),
 
   faculties: defineTable({
@@ -31,6 +39,7 @@ export default defineSchema({
     deanId: v.optional(v.string()),
     description: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
   })
     .index("by_code", ["code"])
     .index("by_status", ["status"]),
@@ -42,6 +51,7 @@ export default defineSchema({
     hodId: v.optional(v.string()),
     description: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
   })
     .index("by_faculty", ["facultyId"])
     .index("by_status", ["status"]),
@@ -54,6 +64,7 @@ export default defineSchema({
     durationYears: v.number(),
     description: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
   })
     .index("by_department", ["departmentId"])
     .index("by_level", ["level"])
@@ -69,11 +80,13 @@ export default defineSchema({
     startDate: v.string(),
     endDate: v.string(),
     status: v.union(v.literal("upcoming"), v.literal("active"), v.literal("completed")),
+    ...timestamps,
   })
     .index("by_status", ["status"])
     .index("by_year", ["year"])
     .index("by_term_year", ["term", "year"]),
 
+  
   /**
    * 5. Admissions Pipeline
    */
@@ -86,6 +99,7 @@ export default defineSchema({
     status: v.union(v.literal("new"), v.literal("reviewing"), v.literal("accepted"), v.literal("rejected"), v.literal("enrolled")),
     applicationDate: v.number(),
     ...academicPeriodFields,
+    ...timestamps,
   })
     .index("by_program", ["programId"])
     .index("by_status", ["status"])
@@ -103,6 +117,7 @@ export default defineSchema({
     ...academicPeriodFields, // Representing current active session
     status: v.union(v.literal("active"), v.literal("suspended"), v.literal("deferred"), v.literal("graduating"), v.literal("discontinued")),
     financeStatus: v.union(v.literal("cleared"), v.literal("partial"), v.literal("pending")),
+    ...timestamps,
   })
     .index("by_userId", ["userId"])
     .index("by_regNumber", ["registrationNumber"])
@@ -122,6 +137,7 @@ export default defineSchema({
     libraryFee: v.number(),
     ictFee: v.number(),
     activityFee: v.number(),
+    ...timestamps,
   })
     .index("by_program", ["programId"])
     .index("by_period", ["periodId"])
@@ -133,6 +149,7 @@ export default defineSchema({
     ...academicPeriodFields,
     totalDue: v.number(),
     totalPaid: v.number(),
+    ...timestamps,
   })
     .index("by_student", ["studentId"])
     .index("by_period", ["periodId"])
@@ -145,6 +162,7 @@ export default defineSchema({
     type: v.union(v.literal("payment"), v.literal("charge"), v.literal("waiver")),
     date: v.number(),
     reference: v.string(),
+    ...timestamps,
   })
     .index("by_student", ["studentId"])
     .index("by_date", ["date"])
@@ -158,6 +176,7 @@ export default defineSchema({
     minScore: v.number(),
     maxScore: v.number(),
     gpaValue: v.number(),
+    ...timestamps,
   })
     .index("by_grade", ["grade"]),
 
@@ -168,6 +187,7 @@ export default defineSchema({
     status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
     submissionDate: v.number(),
     ...academicPeriodFields,
+    ...timestamps,
   })
     .index("by_status", ["status"])
     .index("by_lecturer", ["lecturerId"])
@@ -182,6 +202,7 @@ export default defineSchema({
     isbn: v.string(),
     totalCopies: v.number(),
     availableCopies: v.number(),
+    ...timestamps,
   })
     .index("by_isbn", ["isbn"])
     .index("by_title", ["title"]),
@@ -194,6 +215,7 @@ export default defineSchema({
     dueDate: v.number(),
     returnDate: v.optional(v.number()),
     status: v.union(v.literal("active"), v.literal("returned"), v.literal("overdue")),
+    ...timestamps,
   })
     .index("by_student", ["studentId"])
     .index("by_book", ["bookId"])
@@ -210,9 +232,12 @@ export default defineSchema({
     action: v.string(),
     resource: v.string(),
     details: v.string(),
-    timestamp: v.number(),
+    ipAddress: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    location: v.optional(v.string()),
+    ...timestamps,
   })
-    .index("by_timestamp", ["timestamp"])
+    .index("by_createdAt", ["createdAt"])
     .index("by_userId", ["userId"])
     .index("by_action", ["action"]),
 
@@ -223,7 +248,20 @@ export default defineSchema({
     name: v.string(),
     code: v.string(), // Unique slug like 'registrar', 'dean'
     description: v.optional(v.string()),
+    ...timestamps,
   })
     .index("by_code", ["code"]),
+
+  /**
+   * 12. Global System Configurations
+   */
+  systemConfigurations: defineTable({
+    universityName: v.string(),
+    universityMotto: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+    ...timestamps,
+  }),
 });
 

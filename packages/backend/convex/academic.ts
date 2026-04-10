@@ -1,4 +1,5 @@
-import { query, mutation } from "./_generated/server.js";
+import { query } from "./_generated/server.js";
+import { mutation } from "./lib/mutations";
 import { v } from "convex/values";
 import { logAction } from "./audit_logger";
 import { assertAdmin, assertAuthenticated } from "./lib/utils";

@@ -6,7 +6,7 @@ import { api } from "@workspace/backend/_generated/api";
 import {
   Trash2, UserPlus, Users, ShieldCheck, Search, Mail,
   Shield, Loader2, Pencil, Phone, MoreHorizontal, Activity,
-  Ban, Gavel, Calendar, Info
+  Ban, Gavel, Calendar, Info, Eye
 } from "lucide-react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -50,6 +50,7 @@ const staffSchema = z.object({
   lastName:  z.string().min(2, "Required"),
   email:     z.string().email("Invalid email"),
   roles:     z.array(z.string()).min(1, "Select at least one role"),
+  staffId:   z.string().optional(),
   title:     z.string().optional(),
   phone:     z.string().optional(),
   password:  z.string().min(6, "Min 6 characters").optional().or(z.literal("")),
@@ -60,6 +61,7 @@ const editSchema = z.object({
   lastName:  z.string().min(2, "Required"),
   email:     z.string().email("Invalid email"),
   roles:    z.array(z.string()).min(1, "Select at least one role"),
+  staffId:  z.string().optional(),
   title:    z.string().optional(),
   phone:    z.string().optional(),
   status:   z.enum(["active", "inactive"]),
@@ -95,6 +97,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
   const [editTarget, setEditTarget]   = useState<any | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
   const [banTarget, setBanTarget]     = useState<any | null>(null);
+  const [viewTarget, setViewTarget]   = useState<any | null>(null);
 
   const staff             = useQuery(api.users.getStaff);
   const systemRoles       = useQuery(api.roles.getRoles);
@@ -107,7 +110,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
   // ── Create form ──
   const createForm = useForm<StaffFormValues>({
     resolver: zodResolver(staffSchema),
-    defaultValues: { firstName: "", lastName: "", email: "", roles: ["staff"], title: "", phone: "", password: "" },
+    defaultValues: { firstName: "", lastName: "", email: "", roles: ["staff"], staffId: "", title: "", phone: "", password: "" },
   });
 
   const onCreateSubmit = async (values: StaffFormValues) => {
@@ -117,6 +120,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
         lastName:  values.lastName,
         email:     values.email,
         roles:     values.roles,
+        staffId:   values.staffId || undefined,
         title:     values.title  || undefined,
         phone:     values.phone  || undefined,
         password:  values.password || undefined,
@@ -147,6 +151,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
       lastName: last,
       email: person.email || "",
       roles:  person.roles ?? ["staff"],
+      staffId: person.staffId ?? "",
       title:  person.title  ?? "",
       phone:  person.phone  ?? "",
       status: person.profileStatus === "inactive" ? "inactive" : "active",
@@ -162,6 +167,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
         lastName: values.lastName,
         email: values.email,
         roles:  values.roles,
+        staffId: values.staffId || undefined,
         title:  values.title  || undefined,
         phone:  values.phone  || undefined,
         status: values.status,
@@ -316,8 +322,8 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                           <p className="font-medium text-sm">
                             {person.title ? `${person.title} ` : ""}{person.name}
                           </p>
-                          {person.staffNumber && (
-                            <p className="text-[11px] text-muted-foreground">{person.staffNumber}</p>
+                          {person.staffId && (
+                            <p className="text-[11px] text-muted-foreground font-mono">{person.staffId}</p>
                           )}
                         </div>
                       </div>
@@ -370,6 +376,10 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuItem className="gap-2" onClick={() => setViewTarget(person)}>
+                            <Eye className="size-3.5" /> View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem className="gap-2" onClick={() => openEdit(person)}>
                             <Pencil className="size-3.5" /> Edit
                           </DropdownMenuItem>
@@ -421,13 +431,16 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                 <FormItem><FormLabel>Email</FormLabel><FormControl><Input placeholder="j.doe@ecu-ssd.org" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <div className="grid grid-cols-2 gap-4">
+                <FormField control={createForm.control} name="staffId" render={({ field }) => (
+                  <FormItem><FormLabel>Staff ID <span className="text-muted-foreground font-normal">(opt)</span></FormLabel><FormControl><Input placeholder="ECU-2026-001" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
                 <FormField control={createForm.control} name="title" render={({ field }) => (
                   <FormItem><FormLabel>Title <span className="text-muted-foreground font-normal">(opt)</span></FormLabel><FormControl><Input placeholder="Dr., Prof." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={createForm.control} name="phone" render={({ field }) => (
-                  <FormItem><FormLabel>Phone <span className="text-muted-foreground font-normal">(opt)</span></FormLabel><FormControl><Input placeholder="+211 ..." {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
               </div>
+              <FormField control={createForm.control} name="phone" render={({ field }) => (
+                <FormItem><FormLabel>Phone <span className="text-muted-foreground font-normal">(opt)</span></FormLabel><FormControl><Input placeholder="+211 ..." {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
               <FormField control={createForm.control} name="roles" render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Roles</FormLabel>
@@ -502,13 +515,16 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                 <FormItem><FormLabel>Email</FormLabel><FormControl><Input placeholder="j.doe@ecu-ssd.org" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <div className="grid grid-cols-2 gap-4">
+                <FormField control={editForm.control} name="staffId" render={({ field }) => (
+                  <FormItem><FormLabel>Staff ID</FormLabel><FormControl><Input placeholder="ECU-2026-001" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
                 <FormField control={editForm.control} name="title" render={({ field }) => (
                   <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Dr., Prof." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={editForm.control} name="phone" render={({ field }) => (
-                  <FormItem><FormLabel>Phone</FormLabel><FormControl><Input placeholder="+211 ..." {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
               </div>
+              <FormField control={editForm.control} name="phone" render={({ field }) => (
+                <FormItem><FormLabel>Phone</FormLabel><FormControl><Input placeholder="+211 ..." {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
               <FormField control={editForm.control} name="status" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
@@ -647,6 +663,133 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
               </Button>
             </form>
           </Form>
+        </SheetContent>
+      </Sheet>
+
+      {/* ── View Details Sheet ── */}
+      <Sheet open={!!viewTarget} onOpenChange={open => !open && setViewTarget(null)}>
+        <SheetContent className="overflow-y-auto w-full sm:max-w-lg">
+          <SheetHeader className="pb-6">
+            <div className="flex items-center gap-4">
+              <div className="size-16 rounded-full bg-primary/10 text-primary font-bold text-xl flex items-center justify-center shrink-0 border-4 border-background shadow-sm">
+                {(viewTarget?.name || "?")[0]?.toUpperCase()}
+              </div>
+              <div className="space-y-1">
+                <SheetTitle className="text-2xl pt-2">
+                  {viewTarget?.title ? `${viewTarget.title} ` : ""}{viewTarget?.name}
+                </SheetTitle>
+                <Badge variant="outline" className="text-xs font-mono text-muted-foreground bg-muted/50 border-primary/20">
+                  ID: {viewTarget?.staffId || "NOT ASSIGNED"}
+                </Badge>
+              </div>
+            </div>
+          </SheetHeader>
+
+          <div className="space-y-8 py-4">
+            {/* ── Contact Info ── */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                <Mail className="size-3" /> Contact Information
+              </h4>
+              <Card className="bg-muted/30 border-none shadow-none">
+                <CardContent className="p-4 space-y-4">
+                  <div className="grid grid-cols-1 gap-1">
+                    <p className="text-[11px] text-muted-foreground uppercase font-medium">Email Address</p>
+                    <p className="text-sm font-medium">{viewTarget?.email}</p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-1">
+                    <p className="text-[11px] text-muted-foreground uppercase font-medium">Phone Number</p>
+                    <p className="text-sm font-medium">{viewTarget?.phone || "Not Provided"}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* ── Work Info ── */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                <Shield className="size-3" /> Employment & Roles
+              </h4>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-1">
+                  <p className="text-[11px] text-muted-foreground uppercase font-medium">Department</p>
+                  <p className="text-sm font-semibold text-primary">{viewTarget?.departmentName || "General Staff / Independent"}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[11px] text-muted-foreground uppercase font-medium">Assigned Roles</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(viewTarget?.roles || []).map((role: string) => (
+                      <Badge key={role} className={cn("px-3 py-1 capitalize border shadow-sm", ROLE_BADGE[role] ?? "")}>
+                        {role}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Status ── */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                <Activity className="size-3" /> Account Status
+              </h4>
+              <div className="flex items-center gap-2">
+                <Badge className={cn("px-4 py-1", 
+                  viewTarget?.profileStatus === "active" 
+                    ? "bg-emerald-500/10 text-emerald-600 border-emerald-200" 
+                    : "bg-muted text-muted-foreground"
+                )}>
+                  {viewTarget?.profileStatus === "active" ? "ACTIVE PERSONNEL" : "INACTIVE"}
+                </Badge>
+                {viewTarget?.banned && (
+                  <Badge variant="destructive" className="px-3 py-1 animate-pulse">
+                    BANNED / SUSPENDED
+                  </Badge>
+                )}
+              </div>
+
+              {viewTarget?.banned && (
+                <div className="mt-4 p-4 rounded-lg bg-destructive/5 border border-destructive/20 space-y-3">
+                  <div className="flex items-start gap-2">
+                    <Ban className="size-4 text-destructive shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="text-xs font-bold text-destructive uppercase">Ban Reason</p>
+                      <p className="text-sm italic text-destructive/80 leading-relaxed">"{viewTarget.banReason || "No reason specified"}"</p>
+                    </div>
+                  </div>
+                  {viewTarget.banExpires && (
+                    <div className="flex items-center gap-2 text-xs text-destructive/60 border-t border-destructive/10 pt-2">
+                      <Calendar className="size-3" />
+                      Expires: {new Date(viewTarget.banExpires).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ── Account History ── */}
+            <Separator />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1 text-center py-2 bg-muted/20 rounded-lg">
+                <p className="text-[10px] text-muted-foreground uppercase font-medium">Joined On</p>
+                <p className="text-xs font-medium">
+                  {viewTarget?._creationTime ? new Date(viewTarget._creationTime).toLocaleDateString() : "Unknown"}
+                </p>
+              </div>
+              <div className="space-y-1 text-center py-2 bg-muted/20 rounded-lg">
+                <p className="text-[10px] text-muted-foreground uppercase font-medium">Last Updated</p>
+                <p className="text-xs font-medium">
+                  {viewTarget?.updatedAt ? new Date(viewTarget.updatedAt).toLocaleDateString() : "Just Now"}
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Button variant="outline" className="w-full" onClick={() => { setViewTarget(null); openEdit(viewTarget); }}>
+                <Pencil className="mr-2 size-3.5" /> Modify Information
+              </Button>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
     </div>

@@ -10,6 +10,7 @@ import { Badge } from "@workspace/ui/components/badge";
 export const facultySchema = z.object({
   name: z.string().min(2, "Name is required"),
   code: z.string().min(1, "Code is required").max(10, "Code too long"),
+  deanId: z.string().optional(),
   description: z.string().optional(),
 });
 
@@ -17,6 +18,7 @@ export const departmentSchema = z.object({
   name: z.string().min(2, "Name is required"),
   code: z.string().min(1, "Code is required").max(10, "Code too long"),
   facultyId: z.string().min(1, "Faculty is required"),
+  hodId: z.string().optional(),
   description: z.string().optional(),
 });
 

@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import {
   Trash2, Plus, BookOpen, Loader2,
-  Search, Pencil, MoreHorizontal,
+  Search, Pencil, MoreHorizontal, Eye, Building2, School, GraduationCap
 } from "lucide-react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -18,6 +18,7 @@ import {
   Table, TableBody, TableCell, TableHead,
   TableHeader, TableRow,
 } from "@workspace/ui/components/table";
+import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@workspace/ui/components/sheet";
@@ -37,13 +38,15 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@workspace/ui/components/alert-dialog";
 
-import { programSchema, LevelBadge } from "./shared";
+import { programSchema, LevelBadge, StatusBadge } from "./shared";
 
 export function ProgramsManager() {
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
+  const [viewing, setViewing] = useState<any | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
 
   const departments = useQuery(api.academic.getDepartments, {});
@@ -184,15 +187,19 @@ export function ProgramsManager() {
                               <MoreHorizontal className="size-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem className="gap-2" onClick={() => openEdit(program)}>
-                              <Pencil className="size-3.5" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive" onClick={() => setDeleteTarget(program)}>
-                              <Trash2 className="size-3.5" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
+                          <DropdownMenuContent align="end" className="w-52">
+                          <DropdownMenuItem className="gap-2" onClick={() => { setViewing(program); setViewOpen(true); }}>
+                            <Eye className="size-3.5" /> View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="gap-2" onClick={() => openEdit(program)}>
+                            <Pencil className="size-3.5" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive" onClick={() => setDeleteTarget(program)}>
+                            <Trash2 className="size-3.5" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
@@ -283,6 +290,90 @@ export function ProgramsManager() {
               </Button>
             </form>
           </Form>
+        </SheetContent>
+      </Sheet>
+
+      {/* ── View Details Sheet ── */}
+      <Sheet open={viewOpen} onOpenChange={setViewOpen}>
+        <SheetContent className="sm:max-w-xl overflow-y-auto">
+           <SheetHeader className="pb-4">
+              <SheetTitle className="flex items-center gap-2">
+                 <GraduationCap className="size-5 text-primary" />
+                 Program Details
+              </SheetTitle>
+              <SheetDescription>
+                 Academic level, duration and hierarchy for {viewing?.name}
+              </SheetDescription>
+           </SheetHeader>
+           
+           {viewing && (
+              <ScrollArea className="h-[calc(100vh-140px)] pr-4 mt-6">
+                 <div className="space-y-8">
+                    <div className="grid grid-cols-2 gap-4">
+                       <Card className="border shadow-none bg-muted/20">
+                          <CardContent className="p-4">
+                             <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Code</p>
+                             <p className="font-mono font-bold text-lg">{viewing.code}</p>
+                          </CardContent>
+                       </Card>
+                       <Card className="border shadow-none bg-muted/20">
+                          <CardContent className="p-4">
+                             <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Status</p>
+                             <StatusBadge status={viewing.status || "active"} />
+                          </CardContent>
+                       </Card>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                       <Card className="border shadow-none">
+                          <CardContent className="p-4">
+                             <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Internal Level</p>
+                             <LevelBadge level={viewing.level} />
+                          </CardContent>
+                       </Card>
+                       <Card className="border shadow-none">
+                          <CardContent className="p-4">
+                             <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Standard Duration</p>
+                             <p className="text-sm font-bold">{viewing.durationYears} Year{viewing.durationYears > 1 ? "s" : ""}</p>
+                          </CardContent>
+                       </Card>
+                    </div>
+
+                    <div className="space-y-4">
+                       <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest">Parental Hierarchy</p>
+                       {(() => {
+                          const dept = deptMap.get(viewing.departmentId);
+                          const faculty = dept ? facultyMap.get(dept.facultyId) : null;
+                          return (
+                            <div className="space-y-3">
+                               <div className="flex items-center gap-3 p-3 rounded-lg border bg-primary/[0.03] border-primary/10">
+                                  <Building2 className="size-4 text-primary" />
+                                  <div>
+                                     <p className="text-[10px] font-bold text-muted-foreground uppercase leading-none mb-1">Department</p>
+                                     <p className="text-sm font-semibold">{dept?.name ?? "—"} ({dept?.code ?? "—"})</p>
+                                  </div>
+                               </div>
+                               <div className="flex items-center gap-3 p-3 rounded-lg border bg-primary/[0.01] border-muted/50 ml-4 border-dashed">
+                                  <School className="size-4 text-muted-foreground" />
+                                  <div>
+                                     <p className="text-[10px] font-bold text-muted-foreground uppercase leading-none mb-1">Faculty</p>
+                                     <p className="text-sm font-semibold">{faculty?.name ?? "—"} ({faculty?.code ?? "—"})</p>
+                                  </div>
+                               </div>
+                            </div>
+                          );
+                       })()}
+                    </div>
+
+                    <div className="space-y-2">
+                       <p className="text-xs font-bold uppercase text-muted-foreground tracking-widest">Description</p>
+                       <p className="text-sm leading-relaxed text-foreground/80 bg-muted/10 p-4 rounded-lg border italic">
+                          {viewing.description || "No description provided for this academic program."}
+                       </p>
+                    </div>
+                 </div>
+              </ScrollArea>
+           )}
         </SheetContent>
       </Sheet>
 

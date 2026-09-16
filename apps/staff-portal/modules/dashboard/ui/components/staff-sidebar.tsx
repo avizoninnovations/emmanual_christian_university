@@ -6,6 +6,7 @@ import {
   LogOut,
   ArrowLeftRight,
   ChevronUp,
+  DollarSign,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -47,7 +48,8 @@ const staffMenuItems = [
 export const StaffSidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isMultiRole, clearActiveRole } = useCurrentUser();
+  const { user, roles, isMultiRole, clearActiveRole } = useCurrentUser();
+  const hasFinanceRole = roles?.some((r: string) => ["finance", "admin"].includes(r.toLowerCase()));
 
   const isActive = (url: string) => {
     if (url === "/staff" && pathname === "/staff") return true;
@@ -113,6 +115,20 @@ export const StaffSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {hasFinanceRole && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/admin/finance")}
+                    tooltip="Finance Office"
+                  >
+                    <Link href="/admin/finance">
+                      <DollarSign className="size-4 text-emerald-600" />
+                      <span>Finance Operations</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

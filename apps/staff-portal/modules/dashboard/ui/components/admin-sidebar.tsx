@@ -158,11 +158,11 @@ const navGroups: NavGroup[] = [
       //   url: "/admin/marks",
       //   icon: BookOpen,
       // },
-      // {
-      //   title: "Finance",
-      //   url: "/admin/finance",
-      //   icon: DollarSign,
-      // },
+      {
+        title: "Finance",
+        url: "/admin/finance",
+        icon: DollarSign,
+      },
       // {
       //   title: "Library",
       //   url: "/admin/library",

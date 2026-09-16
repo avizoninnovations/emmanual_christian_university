@@ -5,12 +5,18 @@ import { ShieldOff } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { useRouter } from "next/navigation";
 
+interface AdminGuardProps {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}
+
 /**
- * Route guard component for admin-only pages.
- * If the user's active role is not "admin", shows an access denied message.
+ * Route guard component for admin and authorized role pages.
+ * If allowedRoles is specified, checks if the user has any of those roles or is admin.
+ * Otherwise, requires activeRole to be "admin".
  */
-export const AdminGuard = ({ children }: { children: React.ReactNode }) => {
-  const { activeRole, isLoading, isAdmin } = useCurrentUser();
+export const AdminGuard = ({ children, allowedRoles }: AdminGuardProps) => {
+  const { roles, activeRole, isLoading, isAdmin } = useCurrentUser();
   const router = useRouter();
 
   if (isLoading) {
@@ -24,7 +30,11 @@ export const AdminGuard = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (activeRole !== "admin" || !isAdmin) {
+  const hasAccess = allowedRoles
+    ? roles?.some((r) => allowedRoles.includes(r.toLowerCase())) || isAdmin
+    : activeRole === "admin" && isAdmin;
+
+  if (!hasAccess) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="text-center space-y-4 max-w-md">
@@ -33,7 +43,7 @@ export const AdminGuard = ({ children }: { children: React.ReactNode }) => {
           </div>
           <h2 className="text-2xl font-bold">Access Denied</h2>
           <p className="text-muted-foreground">
-            This area is restricted to administrators. You don't have the required permissions to view this page.
+            This area is restricted. You don't have the required permissions to view this page.
           </p>
           <Button variant="outline" onClick={() => router.push("/")}>
             Go to Dashboard

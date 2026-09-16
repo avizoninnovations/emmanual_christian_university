@@ -5,7 +5,7 @@ import { FinanceView } from "@/modules/finance/ui/views/finance-view";
 
 export default function FinancePage() {
   return (
-    <AdminGuard>
+    <AdminGuard allowedRoles={["admin", "finance"]}>
       <FinanceView />
     </AdminGuard>
   );

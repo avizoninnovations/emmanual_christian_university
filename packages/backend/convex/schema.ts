@@ -71,6 +71,56 @@ export default defineSchema({
     .index("by_status", ["status"]),
 
   /**
+   * Course Catalog (Unit Curriculum)
+   */
+  courses: defineTable({
+    code: v.string(), // e.g. "BBA 101", "CMP 102"
+    title: v.string(),
+    creditUnits: v.number(), // e.g. 3
+    departmentId: v.id("departments"),
+    programId: v.id("programs"),
+    yearOfStudy: v.number(), // 1, 2, 3, 4
+    semester: v.number(), // 1, 2
+    description: v.optional(v.string()),
+    status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
+  })
+    .index("by_code", ["code"])
+    .index("by_department", ["departmentId"])
+    .index("by_program", ["programId"])
+    .index("by_status", ["status"])
+    .index("by_program_year_sem", ["programId", "yearOfStudy", "semester"]),
+
+  /**
+   * Course Allocations (Lecturer teaching assignments per semester)
+   */
+  courseAllocations: defineTable({
+    courseId: v.id("courses"),
+    lecturerId: v.string(), // staff userId
+    periodId: v.id("academicPeriods"),
+    departmentId: v.id("departments"),
+    ...timestamps,
+  })
+    .index("by_lecturer", ["lecturerId"])
+    .index("by_course_period", ["courseId", "periodId"])
+    .index("by_period", ["periodId"])
+    .index("by_department_period", ["departmentId", "periodId"]),
+
+  /**
+   * Student Course Registrations (Semester enrollments in specific courses)
+   */
+  studentCourseRegistrations: defineTable({
+    studentId: v.id("students"),
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    status: v.union(v.literal("registered"), v.literal("dropped"), v.literal("completed")),
+    ...timestamps,
+  })
+    .index("by_student", ["studentId"])
+    .index("by_course_period", ["courseId", "periodId"])
+    .index("by_student_period", ["studentId", "periodId"]),
+
+  /**
    * 4. Academic Calendar (Periods/Semesters)
    */
   academicPeriods: defineTable({
@@ -137,11 +187,14 @@ export default defineSchema({
     libraryFee: v.number(),
     ictFee: v.number(),
     activityFee: v.number(),
+    otherFees: v.optional(v.number()),
+    currency: v.optional(v.string()), // e.g. "SSP", "USD"
     ...timestamps,
   })
     .index("by_program", ["programId"])
     .index("by_period", ["periodId"])
-    .index("by_term_year", ["term", "year"]),
+    .index("by_term_year", ["term", "year"])
+    .index("by_program_period", ["programId", "periodId"]),
 
   studentLedger: defineTable({
     studentId: v.id("students"),
@@ -149,23 +202,35 @@ export default defineSchema({
     ...academicPeriodFields,
     totalDue: v.number(),
     totalPaid: v.number(),
+    balance: v.optional(v.number()),
+    status: v.optional(v.union(v.literal("cleared"), v.literal("partial"), v.literal("pending"))),
+    lastPaymentDate: v.optional(v.number()),
+    lastPaymentAmount: v.optional(v.number()),
     ...timestamps,
   })
     .index("by_student", ["studentId"])
     .index("by_period", ["periodId"])
-    .index("by_term_year", ["term", "year"]),
+    .index("by_status", ["status"])
+    .index("by_term_year", ["term", "year"])
+    .index("by_student_period", ["studentId", "periodId"]),
 
   transactions: defineTable({
     studentId: v.id("students"),
+    periodId: v.optional(v.id("academicPeriods")),
     ...academicPeriodFields,
     amount: v.number(),
     type: v.union(v.literal("payment"), v.literal("charge"), v.literal("waiver")),
+    method: v.optional(v.union(v.literal("cash"), v.literal("bank"), v.literal("mobile_money"), v.literal("other"))),
+    receiptNumber: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    recordedBy: v.optional(v.string()),
     date: v.number(),
     reference: v.string(),
     ...timestamps,
   })
     .index("by_student", ["studentId"])
     .index("by_date", ["date"])
+    .index("by_receiptNumber", ["receiptNumber"])
     .index("by_period", ["term", "year"]),
 
   /**
@@ -192,6 +257,51 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_lecturer", ["lecturerId"])
     .index("by_period", ["term", "year"]),
+
+  /**
+   * Individual Student Gradebook Marks
+   */
+  studentAssessments: defineTable({
+    studentId: v.id("students"),
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    lecturerId: v.string(),
+    courseworkMarks: v.number(), // 0 - 30
+    examMarks: v.number(),       // 0 - 70
+    finalScore: v.number(),      // 0 - 100
+    grade: v.string(),           // "A", "B+", etc.
+    gradePoints: v.number(),     // 0.0 - 4.0
+    status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
+    returnReason: v.optional(v.string()),
+    isUnlocked: v.optional(v.boolean()),
+    unlockedBy: v.optional(v.string()),
+    unlockedAt: v.optional(v.number()),
+    ...timestamps,
+  })
+    .index("by_course_period", ["courseId", "periodId"])
+    .index("by_student", ["studentId"])
+    .index("by_student_course_period", ["studentId", "courseId", "periodId"])
+    .index("by_status", ["status"]),
+
+  /**
+   * Class Lecture Session Attendance
+   */
+  attendanceRecords: defineTable({
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    lecturerId: v.string(),
+    date: v.string(), // YYYY-MM-DD
+    topic: v.optional(v.string()),
+    records: v.array(
+      v.object({
+        studentId: v.id("students"),
+        status: v.union(v.literal("present"), v.literal("absent"), v.literal("late")),
+      })
+    ),
+    ...timestamps,
+  })
+    .index("by_course_period", ["courseId", "periodId"])
+    .index("by_course_period_date", ["courseId", "periodId", "date"]),
 
   /**
    * 9. Library Catalog

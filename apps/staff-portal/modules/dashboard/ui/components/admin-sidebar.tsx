@@ -112,6 +112,11 @@ const navGroups: NavGroup[] = [
             url: "/admin/academic/programs",
             icon: BookOpen,
           },
+          {
+            title: "Course Catalog",
+            url: "/admin/academic/courses",
+            icon: Library,
+          },
         ],
       },
       // {

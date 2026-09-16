@@ -1,7 +1,7 @@
 import { action } from "./_generated/server.js";
-import { mutation } from "./lib/mutations";
+import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
-import { logAction } from "./audit_logger";
+import { logAction } from "./audit_logger.js";
 import { createAuth } from "./betterAuth/auth.js";
 import { internal } from "./_generated/api.js";
 
@@ -92,6 +92,37 @@ export const seedData = mutation({
         });
       } else {
         programIds[p.code] = existing._id;
+      }
+    }
+
+    // 3.5. Seed Courses
+    const courses = [
+      { code: "BBA 101", title: "Principles of Management", credits: 3, pCode: "BBA", dCode: "ACF", year: 1, sem: 1 },
+      { code: "BBA 102", title: "Financial Accounting I", credits: 3, pCode: "BBA", dCode: "ACF", year: 1, sem: 1 },
+      { code: "BBA 103", title: "Business Mathematics & Statistics", credits: 3, pCode: "BBA", dCode: "ACF", year: 1, sem: 1 },
+      { code: "THE 101", title: "Old Testament Survey", credits: 3, pCode: "BTH", dCode: "BST", year: 1, sem: 1 },
+      { code: "THE 102", title: "Christian Ethics & Discipleship", credits: 3, pCode: "BTH", dCode: "BST", year: 1, sem: 1 },
+      { code: "CMP 101", title: "Introduction to Computer Science", credits: 3, pCode: "BCS", dCode: "CMP", year: 1, sem: 1 },
+      { code: "CMP 102", title: "Structured Programming (C/C++)", credits: 4, pCode: "BCS", dCode: "CMP", year: 1, sem: 1 },
+    ];
+
+    for (const c of courses) {
+      const existing = await ctx.db
+        .query("courses")
+        .withIndex("by_code", (q) => q.eq("code", c.code))
+        .first();
+
+      if (!existing && programIds[c.pCode] && deptIds[c.dCode]) {
+        await ctx.db.insert("courses", {
+          code: c.code,
+          title: c.title,
+          creditUnits: c.credits,
+          departmentId: deptIds[c.dCode],
+          programId: programIds[c.pCode],
+          yearOfStudy: c.year,
+          semester: c.sem,
+          status: "active",
+        });
       }
     }
 

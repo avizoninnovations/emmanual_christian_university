@@ -1,12 +1,12 @@
 "use client";
 
 import { AdminGuard } from "@/modules/auth/ui/components/admin-guard";
-import { MarksView } from "@/modules/marks/ui/views/marks-view";
+import { MarksReviewQueueView } from "@/modules/hod/ui/views/marks-review-queue-view";
 
 export default function MarksPage() {
   return (
     <AdminGuard>
-      <MarksView />
+      <MarksReviewQueueView />
     </AdminGuard>
   );
 }

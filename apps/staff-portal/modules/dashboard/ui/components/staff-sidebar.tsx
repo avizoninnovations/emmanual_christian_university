@@ -7,6 +7,10 @@ import {
   ArrowLeftRight,
   ChevronUp,
   DollarSign,
+  BookOpen,
+  ClipboardCheck,
+  Layers,
+  FileSpreadsheet,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -37,11 +41,35 @@ import { Badge } from "@workspace/ui/components/badge";
 import { authClient } from "@/lib/auth-client";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 
-const staffMenuItems = [
+const lecturerMenuItems = [
   {
     title: "My Dashboard",
     url: "/staff",
     icon: LayoutDashboardIcon,
+    exact: true,
+  },
+  {
+    title: "Teaching Courses",
+    url: "/staff/courses",
+    icon: BookOpen,
+  },
+  {
+    title: "Class Attendance",
+    url: "/staff/attendance",
+    icon: ClipboardCheck,
+  },
+];
+
+const hodMenuItems = [
+  {
+    title: "Course Allocations",
+    url: "/staff/hod/allocations",
+    icon: Layers,
+  },
+  {
+    title: "Marks Review Queue",
+    url: "/staff/hod/review-queue",
+    icon: FileSpreadsheet,
   },
 ];
 
@@ -50,13 +78,11 @@ export const StaffSidebar = () => {
   const router = useRouter();
   const { user, roles, isMultiRole, clearActiveRole } = useCurrentUser();
   const hasFinanceRole = roles?.some((r: string) => ["finance", "admin"].includes(r.toLowerCase()));
+  const hasHodRole = roles?.some((r: string) => ["hod", "dean", "admin"].includes(r.toLowerCase()));
 
-  const isActive = (url: string) => {
-    if (url === "/staff" && pathname === "/staff") return true;
-    if (url !== "/staff") {
-      return pathname.startsWith(url);
-    }
-    return false;
+  const isActive = (url: string, exact = false) => {
+    if (exact || url === "/staff") return pathname === url;
+    return pathname.startsWith(url);
   };
 
   const handleLogout = async () => {
@@ -98,14 +124,14 @@ export const StaffSidebar = () => {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>My Workspace</SidebarGroupLabel>
+          <SidebarGroupLabel>Lecturer Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {staffMenuItems.map((item) => (
+              {lecturerMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    isActive={isActive(item.url)}
+                    isActive={isActive(item.url, item.exact)}
                     tooltip={item.title}
                   >
                     <Link href={item.url}>
@@ -115,12 +141,44 @@ export const StaffSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {hasFinanceRole && (
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {hasHodRole && (
+          <SidebarGroup>
+            <SidebarGroupLabel>HOD Management</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {hodMenuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(item.url)}
+                      tooltip={item.title}
+                    >
+                      <Link href={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {hasFinanceRole && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Finance</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
                     isActive={isActive("/admin/finance")}
-                    tooltip="Finance Office"
+                    tooltip="Finance Operations"
                   >
                     <Link href="/admin/finance">
                       <DollarSign className="size-4 text-emerald-600" />
@@ -128,10 +186,10 @@ export const StaffSidebar = () => {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter>

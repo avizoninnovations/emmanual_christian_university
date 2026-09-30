@@ -1,9 +1,13 @@
 ---
-description: How to read, create, update, and delete Better Auth user records in this Convex project. CRITICAL: auth data lives in a component, NOT the main database.
+description: How to read, create, update, and delete Better Auth user records in the ECU Convex project. CRITICAL: auth data lives in a component, NOT the main database.
 ---
-# Workflow: Better Auth Adapter Pattern
+# Workflow: Better Auth Adapter Pattern — ECU
 
-Better Auth user records live in an **isolated Convex component** (`components.betterAuth`), NOT the main database. You **CANNOT** use `ctx.db.get()`, `ctx.db.patch()`, or `ctx.db.delete()` on auth records. You MUST use the component adapter API.
+Better Auth user records for **Emmanuel Christian University** live in
+an **isolated Convex component** (`components.betterAuth`), NOT the
+main database. You **CANNOT** use `ctx.db.get()`, `ctx.db.patch()`,
+or `ctx.db.delete()` on auth records. You MUST use the component
+adapter API.
 
 ## 1. Key Architecture Rule
 

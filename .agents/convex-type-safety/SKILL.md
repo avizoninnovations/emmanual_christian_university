@@ -1,172 +1,285 @@
 ---
 name: convex-type-safety
 description: >-
-  Standardizes Convex API type safety, Convex search best practices, backend DSA patterns, preventing TS2589 deep union recursion errors, multi-tenant auth validation, and high-performance database indexing.
+  Standardizes Convex API type safety, indexed reads, backend DSA patterns,
+  preventing TS2589 deep-union recursion, single-tenant authorization, and
+  high-performance pagination across the Emmanuel Christian University
+  monorepo.
 ---
 
-# Convex Type Safety, Search & Backend DSA Performance Standards
+# Convex Type Safety, Indexing & Backend DSA Standards — ECU
 
-To guarantee strict TypeScript safety, high scalability, and $O(\log N)$ search/database query performance across **School Manager Uganda**, all Convex queries, mutations, and actions MUST adhere to these backend engineering and Data Structure & Algorithm (DSA) standards.
+To guarantee strict TypeScript safety, predictable performance, and
+O(log N) database queries across the **Emmanuel Christian University**
+monorepo, all Convex queries, mutations, and actions MUST follow the
+rules below. ECU is **single-tenant** (one university) — there is no
+`schoolId` partitioning. All authorization is via role checks on the
+`staffProfiles` table and authentication via Better Auth.
 
 ---
 
 ## 1. Preventing Convex TS2589 Recursion
 
 ### Problem
-Passing client-side dynamic parameters into monolithic `api.path.to.function` query hooks can cause TypeScript to attempt infinite union resolution (`TS2589: Type instantiation is excessively deep and possibly infinite`).
+Passing client-side dynamic parameters into monolithic
+`api.path.to.function` query hooks can cause TypeScript to attempt
+infinite union resolution
+(`TS2589: Type instantiation is excessively deep and possibly infinite`).
 
 ### Solution
 1. **Never use `api as any` or `: any`.**
-2. **Always register typed function references in `@/core/api/`:**
-   - `src/core/api/queryRefs.ts` for queries.
-   - `src/core/api/mutationRefs.ts` for mutations.
+2. **Always import typed function references from
+   `@workspace/backend/_generated/api`** — Convex generates these.
+3. **For shared cross-portal reads, prefer a thin wrapper query in
+   `packages/backend/convex/<domain>.ts`** rather than reaching into
+   `_generated` directly.
 
-### Example Function Registration
-
+### Example Usage
 ```typescript
-// src/core/api/queryRefs.ts
-import { makeFunctionReference } from "convex/server";
-import { Doc, Id } from "@/convex/_generated/dataModel";
-
-export const getStudentsQuery = makeFunctionReference<
-  "query",
-  { schoolId: Id<"schools">; classId?: Id<"classes"> },
-  Doc<"students">[]
->("students:getStudents");
-```
-
-```typescript
-// Usage in Custom Hook
 import { useQuery } from "convex/react";
-import { getStudentsQuery } from "@/core/api/queryRefs";
+import { api } from "@workspace/backend/_generated/api";
 
-export function useStudents(schoolId: Id<"schools">, classId?: Id<"classes">) {
-  const students = useQuery(getStudentsQuery, { schoolId, classId });
+export function useStudentLedgers(args: { periodId?: Id<"academicPeriods"> }) {
+  const ledgers = useQuery(api.finance.getStudentLedgers, args);
   return {
-    students: students ?? [],
-    isLoading: students === undefined,
+    ledgers: ledgers ?? [],
+    isLoading: ledgers === undefined,
   };
 }
 ```
 
+If TS2589 appears, split the query into smaller typed arguments
+(pass `Id<"...">` instead of raw `string`), or move the call into a
+typed wrapper in `packages/backend`.
+
 ---
 
-## 2. Convex Full-Text Search Best Practices
+## 2. Convex Indexing Rules (No Full-Table Scans)
 
-### Schema Definition (`convex/schema.ts`)
-Always include multi-tenant filter fields (e.g., `schoolId`, `status`) in the search index definition so filtering occurs at the database index level ($O(\log N)$) rather than scanning documents in memory ($O(N)$).
+ECU has tables that grow unbounded: `students`, `transactions`,
+`studentLedger`, `auditLogs`, `attendanceRecords`. **Never** allow a
+query against those tables without an index.
 
+### Pattern
 ```typescript
-// convex/schema.ts
-export default defineSchema({
-  students: defineTable({
-    schoolId: v.id("schools"),
-    fullName: v.string(),
-    lin: v.optional(v.string()),
-    status: v.string(),
-    // ...
-  })
-    .index("by_school", ["schoolId"])
-    .index("by_school_status", ["schoolId", "status"])
-    .searchIndex("search_students", {
-      searchField: "fullName",
-      filterFields: ["schoolId", "status"],
-    }),
-});
+// ✅ CORRECT — indexed read
+const student = await ctx.db
+  .query("students")
+  .withIndex("by_userId", (q) => q.eq("userId", userId))
+  .unique();
+
+// ✅ CORRECT — indexed + paginated
+const txs = await ctx.db
+  .query("transactions")
+  .withIndex("by_student", (q) => q.eq("studentId", studentId))
+  .order("desc")
+  .paginate(args.paginationOpts);
+
+// ❌ WRONG — full table scan
+const student = await ctx.db
+  .query("students")
+  .filter((q) => q.eq(q.field("userId"), userId))
+  .unique();
 ```
 
-### Backend Search Function Implementation
+### Always-Paginate Tables
+For these tables, queries that return more than 50 rows MUST use
+`paginate()`:
+
+- `students`
+- `transactions`
+- `studentLedger`
+- `attendanceRecords`
+- `auditLogs`
+- `studentAssessments`
+- `loans`
+- `studentCourseRegistrations`
+
+Other tables (`faculties`, `departments`, `programs`, `courses`,
+`academicPeriods`, `sponsors`, `staffProfiles`, `feeStructures`,
+`gradingScales`) are bounded config data and `collect()` is fine.
+
+---
+
+## 3. Backend DSA — O(1) Lookups for Enrichment
+
+When enriching query results with related records (program names,
+sponsor names, user names), **never** issue a `ctx.db.get()` per row.
+
+### Pattern — Build a Map
 ```typescript
-// convex/students.ts
-export const searchStudents = query({
-  args: {
-    sessionId: v.id("sessions"),
-    query: v.string(),
-    status: v.optional(v.string()),
-  },
+// 1. Collect unique IDs
+const uniqueProgramIds = Array.from(
+  new Set(students.map((s) => s.programId).filter(Boolean))
+);
+
+// 2. Parallel batch fetch (single round trip per ID, parallel)
+const programs = await Promise.all(
+  uniqueProgramIds.map((id) => ctx.db.get(id))
+);
+
+// 3. O(1) hash map for enrichment
+const programMap = new Map(
+  programs.filter(Boolean).map((p) => [p!._id.toString(), p!])
+);
+
+// 4. Enrich in O(N)
+const enriched = students.map((s) => ({
+  ...s,
+  programName: s.programId
+    ? programMap.get(s.programId.toString())?.name ?? "Unknown Program"
+    : null,
+}));
+```
+
+This is the standard for every `getStudentLedgers`,
+`getAllTransactions`, `getFinancialSummary`, and
+`getMyRegisteredCourses` style query.
+
+---
+
+## 4. Chunked Mutations (Batches > 100 Items)
+
+Operations like **bulk semester invoicing**, **annual rollover**, and
+**batch promotion** can touch hundreds of students. Never run those in
+a single unbounded mutation.
+
+```typescript
+const CHUNK_SIZE = 100;
+
+for (let i = 0; i < students.length; i += CHUNK_SIZE) {
+  const chunk = students.slice(i, i + CHUNK_SIZE);
+  await ctx.runMutation(internal.<domain>._bulkProcessChunk, {
+    periodId,
+    studentIds: chunk.map((s) => s._id),
+  });
+}
+```
+
+Keeps transaction time and memory under Convex's per-mutation limits.
+
+---
+
+## 5. Single-Tenant Authorization
+
+ECU is **one** university. There is no `schoolId`. Authorization is
+purely role-based via `assertRole(ctx, [...])` and
+`assertAuthenticated(ctx)` from `packages/backend/convex/lib/utils.ts`.
+
+Every public function MUST start with one of:
+
+```typescript
+import { assertAuthenticated, assertRole, assertAdmin } from "./lib/utils";
+
+await assertAuthenticated(ctx);                              // any signed-in user
+await assertRole(ctx, ["admin", "finance", "bursar"]);       // role list
+await assertAdmin(ctx);                                       // admin-only shortcut
+```
+
+### Role codes currently used by `assertRole(...)` calls
+`admin`, `finance`, `hod`, `dean`, `registrar`, `lecturer`,
+`librarian`, `staff`. New codes (e.g. `bursar`, `cashier`,
+`vice_chancellor`, `chaplain`) must be added to
+`PROTECTED_ROLE_CODES` in `packages/backend/convex/roles.ts` and to
+`ECU_DEFAULT_ROLES` before use.
+
+---
+
+## 6. Atomic Mutations for Multi-Table Writes
+
+When a single business action must update multiple tables (e.g.
+**record payment** → `transactions` + `studentLedger` +
+`students.financeStatus`), wrap the writes in a single `internalMutation`
+to guarantee all-or-nothing semantics:
+
+```typescript
+// packages/backend/convex/finance.ts (public action entrypoint)
+export const recordPayment = action({
+  args: { ... },
   handler: async (ctx, args) => {
-    const session = await validateSession(ctx, args.sessionId);
-    
-    // Bounds check search query length to avoid empty scans
-    if (!args.query || args.query.trim().length < 2) {
-      return [];
-    }
+    await assertRole(ctx, ["admin", "finance", "cashier"]);
+    const result = await ctx.runMutation(internal.finance._recordPayment, {
+      ...args,
+      recordedBy: await assertAuthenticated(ctx),
+    });
+    await ctx.runMutation(internal.system._logAction, { ... });
+    return result;
+  },
+});
 
-    return await ctx.db
-      .query("students")
-      .withSearchIndex("search_students", (q) => {
-        let search = q.search("fullName", args.query).eq("schoolId", session.schoolId);
-        if (args.status) {
-          search = search.eq("status", args.status);
-        }
-        return search;
-      })
-      .take(50); // Bound result set for latency optimization
+// Same file — internal mutation
+export const _recordPayment = internalMutation({
+  args: { ... },
+  handler: async (ctx, args) => {
+    // Insert transaction + update ledger + update student.financeStatus
+    // all in one tx.
   },
 });
 ```
 
-### Frontend Search Best Practices
-- **Debounce**: Always debounce search inputs (300–400ms) to avoid executing a Convex query on every keystroke.
-- **Minimum Length**: Do not dispatch full-text search queries for strings with fewer than 2 characters.
+Actions that wrap multiple separate public mutations are fragile and
+forbidden — use `internalMutation` instead.
 
 ---
 
-## 3. Backend DSA & Database Scalability Rules
+## 7. Fail-Fast with ConvexError
 
-### Rule 1: Multi-Tenant Compound Indexing ($O(\log N)$ Complexity)
-- ❌ **NEVER** write `ctx.db.query("table").collect()` followed by JS `.filter(r => r.schoolId === schoolId)`. This causes $O(N)$ full table scans that crash under heavy production loads.
-- ✅ **ALWAYS** use indexed queries:
-  ```typescript
-  const classStudents = await ctx.db
-    .query("students")
-    .withIndex("by_school_class", (q) => 
-      q.eq("schoolId", schoolId).eq("classId", classId)
-    )
-    .collect();
-  ```
+Never throw `new Error(...)` from a Convex function. Always use:
 
-### Rule 2: Solve N+1 Query Problems with $O(1)$ Hash Maps
-- ❌ **NEVER** execute Convex DB calls inside loops (`for (const item of list) await ctx.db.get(item.id)`). This results in $N$ sequential network roundtrips.
-- ✅ **ALWAYS** batch fetch and build an $O(1)$ lookup Map:
-  ```typescript
-  // 1. Extract unique IDs (O(N))
-  const uniqueClassIds = Array.from(new Set(students.map((s) => s.classId).filter(Boolean)));
+```typescript
+import { ConvexError } from "convex/values";
 
-  // 2. Parallel batch fetch (O(1) roundtrip)
-  const classDocs = await Promise.all(uniqueClassIds.map((id) => ctx.db.get(id)));
+throw new ConvexError({
+  message: "Student record not found.",
+  code: "NOT_FOUND",
+  tip: "Verify the registration number and re-try.",
+});
+```
 
-  // 3. Create O(1) HashMap index
-  const classMap = new Map(
-    classDocs.filter(Boolean).map((cls) => [cls!._id.toString(), cls!])
-  );
-
-  // 4. Enrich students in O(N) linear time
-  const enrichedStudents = students.map((s) => ({
-    ...s,
-    className: s.classId ? classMap.get(s.classId.toString())?.name ?? "Unassigned" : "Unassigned",
-  }));
-  ```
-
-### Rule 3: Batch Processing & Mutation Chunking
-- When executing heavy operations (bulk promotion, annual fee balance rollover, batch attendance creation), process records in chunks of 100–250 items to keep transaction execution time and memory well under Convex limits.
+The UI can then `useQuery` error responses and render the structured
+message + tip without string parsing.
 
 ---
 
-## 4. Multi-Tenant Authorization & Security Rules
+## 8. Better Auth vs Main Database (CRITICAL)
 
-In every Convex mutation or query:
-1. **Always authenticate user**:
-   ```typescript
-   const identity = await ctx.auth.getUserIdentity();
-   if (!identity) {
-     throw new Error("Unauthenticated call");
-   }
-   ```
-2. **Always enforce School Tenancy**:
-   ```typescript
-   // Ensure record belongs to caller's school
-   if (record.schoolId !== schoolId) {
-     throw new Error("Unauthorized tenant access");
-   }
-   ```
+This is **NOT** a multi-tenant pattern but is unique to this codebase
+and must be respected:
+
+```
+┌─────────────────────────────────────────┐
+│  Main Database (ctx.db)                 │
+│  ✅ staffProfiles, students, faculties  │
+│  ❌ user, session, account              │
+└─────────────────────────────────────────┘
+
+┌─────────────────────────────────────────┐
+│  Component Storage (adapter API)        │
+│  ✅ user, session, account, verification│
+└─────────────────────────────────────────┘
+```
+
+Even though `schema.ts` spreads `...authTables`, the auth data lives
+in the `components.betterAuth` component. For full details see
+`.agents/workflows/better-auth-adapter-pattern.md`.
+
+---
+
+## 9. Backend Search (Full-Text)
+
+For full-text search on `students`, `staffProfiles`, and `applicants`,
+always define a `searchIndex` in `schema.ts` with the right
+`filterFields` to keep filtering O(log N):
+
+```typescript
+students: defineTable({ ... })
+  .searchIndex("search_students", {
+    searchField: "registrationNumber",
+    filterFields: ["programId", "yearOfStudy", "status"],
+  });
+```
+
+Frontend rules:
+- **Debounce** search inputs (300–400 ms) to avoid a query per keystroke.
+- **Minimum length**: do not dispatch search for strings < 2 chars.
+- **Bound results** to 50 items per query for latency.

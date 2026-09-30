@@ -743,6 +743,10 @@ export const getMyFinancialStatement = query({
       .order("desc")
       .collect();
 
+    const sponsor = student.sponsorId
+      ? ((await ctx.db.get(student.sponsorId as Id<"sponsors">)) as any)
+      : null;
+
     let totalBilledAll = 0;
     let totalPaidAll = 0;
     let balanceAll = 0;
@@ -765,6 +769,42 @@ export const getMyFinancialStatement = query({
       })
     );
 
+    // South Sudan 3-Stage Installment Milestone calculation
+    const regTarget = Math.round(totalBilledAll * 0.40);
+    const midTarget = Math.round(totalBilledAll * 0.75);
+    const examTarget = totalBilledAll;
+
+    const installments = {
+      registration: {
+        target: regTarget,
+        percentage: 40,
+        cleared: totalPaidAll >= regTarget && totalBilledAll > 0,
+        balanceToClear: Math.max(0, regTarget - totalPaidAll),
+      },
+      midterm: {
+        target: midTarget,
+        percentage: 75,
+        cleared: totalPaidAll >= midTarget && totalBilledAll > 0,
+        balanceToClear: Math.max(0, midTarget - totalPaidAll),
+      },
+      finalExam: {
+        target: examTarget,
+        percentage: 100,
+        cleared: totalPaidAll >= examTarget && totalBilledAll > 0,
+        balanceToClear: Math.max(0, examTarget - totalPaidAll),
+      },
+      currentStage:
+        totalPaidAll >= examTarget && totalBilledAll > 0
+          ? "Exam Cleared (100%)"
+          : totalPaidAll >= midTarget && totalBilledAll > 0
+          ? "Midterms Cleared (75%)"
+          : totalPaidAll >= regTarget && totalBilledAll > 0
+          ? "Registration Cleared (40%)"
+          : "Below Registration (Pending)",
+      progressPercentage:
+        totalBilledAll > 0 ? Math.min(100, Math.round((totalPaidAll / totalBilledAll) * 100)) : 100,
+    };
+
     return {
       summary: {
         totalBilled: totalBilledAll,
@@ -772,6 +812,15 @@ export const getMyFinancialStatement = query({
         balance: balanceAll,
         currency: "SSP",
         status: balanceAll <= 0 ? "cleared" : totalPaidAll > 0 ? "partial" : "pending",
+        installments,
+        sponsor: sponsor
+          ? {
+              name: sponsor.name,
+              code: sponsor.code,
+              category: sponsor.category,
+              coveragePercentage: sponsor.coveragePercentage ?? 100,
+            }
+          : null,
       },
       semesterLedgers,
       transactions: transactions.map((t) => ({
@@ -780,6 +829,10 @@ export const getMyFinancialStatement = query({
         amount: t.amount,
         currency: "SSP",
         method: t.method || "cash",
+        channel: t.channel || (t.method === "cash" ? "cash" : t.method === "mobile_money" ? "m_gurush" : "bank_deposit"),
+        bankBranch: t.bankBranch,
+        slipNumber: t.slipNumber,
+        depositDate: t.depositDate,
         notes: t.notes,
         createdAt: t._creationTime,
       })),

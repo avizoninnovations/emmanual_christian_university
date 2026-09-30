@@ -22,6 +22,10 @@ export interface ReceiptData {
   amount: number;
   currency?: string;
   method: string;
+  channel?: string;
+  bankBranch?: string;
+  slipNumber?: string;
+  depositDate?: string;
   reference: string;
   notes?: string;
   balance?: number;
@@ -58,6 +62,16 @@ export const ReceiptPreviewModal = ({
     minute: "2-digit",
   });
 
+  const getChannelLabel = (ch?: string, m?: string) => {
+    if (ch === "equity_bank") return "Equity Bank South Sudan";
+    if (ch === "kcb_bank") return "KCB Bank South Sudan";
+    if (ch === "stanbic_bank") return "Stanbic Bank South Sudan";
+    if (ch === "m_gurush") return "m-GURUSH Mobile Money";
+    if (ch === "bank_deposit") return "Bank Deposit Slip";
+    if (ch === "cash" || m === "cash") return "Cash Office (Campus Bursar)";
+    return (ch || m || "Cash").replace("_", " ");
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl p-0 overflow-hidden print:border-none print:shadow-none">
@@ -72,7 +86,12 @@ export const ReceiptPreviewModal = ({
         </DialogHeader>
 
         {/* ── Printable Content Area ── */}
-        <div ref={printRef} className="p-6 sm:p-8 space-y-6 text-foreground bg-background">
+        <div ref={printRef} className="p-6 sm:p-8 space-y-6 text-foreground bg-background relative">
+          {/* Watermark */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
+            <span className="text-8xl font-black rotate-[-30deg] tracking-widest text-foreground">ECU PAID</span>
+          </div>
+
           {/* Header & Logo */}
           <div className="flex items-center justify-between border-b pb-5">
             <div className="flex items-center gap-3">
@@ -154,13 +173,25 @@ export const ReceiptPreviewModal = ({
           {/* Method & References */}
           <div className="grid grid-cols-2 gap-4 text-xs border-t pt-4">
             <div>
-              <span className="text-muted-foreground block text-[10px] uppercase">Payment Method</span>
-              <span className="font-medium capitalize">{receipt.method.replace("_", " ")}</span>
+              <span className="text-muted-foreground block text-[10px] uppercase">Payment Channel</span>
+              <span className="font-medium capitalize text-foreground">{getChannelLabel(receipt.channel, receipt.method)}</span>
             </div>
             <div>
-              <span className="text-muted-foreground block text-[10px] uppercase">Transaction Ref / Slip</span>
-              <span className="font-mono font-medium">{receipt.reference}</span>
+              <span className="text-muted-foreground block text-[10px] uppercase">Transaction Ref / Slip No.</span>
+              <span className="font-mono font-medium text-foreground">{receipt.slipNumber || receipt.reference}</span>
             </div>
+            {receipt.bankBranch && (
+              <div>
+                <span className="text-muted-foreground block text-[10px] uppercase">Bank Branch</span>
+                <span className="font-medium text-foreground">{receipt.bankBranch}</span>
+              </div>
+            )}
+            {receipt.depositDate && (
+              <div>
+                <span className="text-muted-foreground block text-[10px] uppercase">Bank Deposit Date</span>
+                <span className="font-medium text-foreground">{receipt.depositDate}</span>
+              </div>
+            )}
             {receipt.notes && (
               <div className="col-span-2">
                 <span className="text-muted-foreground block text-[10px] uppercase">Notes</span>

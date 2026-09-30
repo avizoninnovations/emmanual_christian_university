@@ -65,6 +65,8 @@ import { StudentStatementModal } from "../components/student-statement-modal";
 import { FeeWaiverDialog } from "../components/fee-waiver-dialog";
 import { FeeStructureDialog } from "../components/fee-structure-dialog";
 import { InvoiceGeneratorDialog } from "../components/invoice-generator-dialog";
+import { CashierReconciliationView } from "./cashier-reconciliation-view";
+import { SponsorsManagerView } from "./sponsors-manager-view";
 
 export const FinanceView = () => {
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -146,6 +148,54 @@ export const FinanceView = () => {
     setIsReceiptOpen(true);
   };
 
+  const handleExportDebtorsCSV = () => {
+    if (!studentLedgers || studentLedgers.length === 0) {
+      toast.error("No student records to export.");
+      return;
+    }
+
+    const headers = [
+      "Reg Number",
+      "Student Name",
+      "Email",
+      "Program",
+      "Total Billed (SSP)",
+      "Total Paid (SSP)",
+      "Outstanding Balance (SSP)",
+      "Clearance Status",
+      "Installment Stage",
+      "Sponsor",
+    ];
+
+    const rows = studentLedgers.map((l: any) => [
+      `"${l.studentRegNumber}"`,
+      `"${l.studentName}"`,
+      `"${l.studentEmail}"`,
+      `"${l.programCode}"`,
+      l.totalDue,
+      l.totalPaid,
+      l.balance,
+      `"${l.status}"`,
+      `"${l.installments?.currentStage || "Pending"}"`,
+      `"${l.sponsor?.name || "Self-Sponsored"}"`,
+    ]);
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `ECU_Student_Debtors_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Student Debtors CSV exported successfully.");
+  };
+
   return (
     <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
       {/* ── Page Header ── */}
@@ -164,6 +214,15 @@ export const FinanceView = () => {
 
         {/* Global Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+            onClick={handleExportDebtorsCSV}
+          >
+            <Download className="size-3.5 text-emerald-600" /> Export Debtors (CSV)
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -201,17 +260,23 @@ export const FinanceView = () => {
       {/* ── Tabs Navigation ── */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-3">
-          <TabsList className="grid grid-cols-4 w-full sm:w-[580px]">
-            <TabsTrigger value="overview" className="gap-2">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-6 w-full max-w-4xl">
+            <TabsTrigger value="overview" className="gap-1.5 text-xs">
               <TrendingUp className="size-3.5" /> Overview
             </TabsTrigger>
-            <TabsTrigger value="ledgers" className="gap-2">
-              <UserCheck className="size-3.5" /> Student Clearance
+            <TabsTrigger value="ledgers" className="gap-1.5 text-xs">
+              <UserCheck className="size-3.5" /> Clearance & Ledgers
             </TabsTrigger>
-            <TabsTrigger value="structures" className="gap-2">
-              <Coins className="size-3.5" /> Fee Structures
+            <TabsTrigger value="reconciliation" className="gap-1.5 text-xs">
+              <ShieldAlert className="size-3.5" /> Cashier Closing
             </TabsTrigger>
-            <TabsTrigger value="transactions" className="gap-2">
+            <TabsTrigger value="sponsors" className="gap-1.5 text-xs">
+              <Award className="size-3.5" /> Sponsors
+            </TabsTrigger>
+            <TabsTrigger value="structures" className="gap-1.5 text-xs">
+              <Coins className="size-3.5" /> Fee Schedules
+            </TabsTrigger>
+            <TabsTrigger value="transactions" className="gap-1.5 text-xs">
               <Receipt className="size-3.5" /> Transactions
             </TabsTrigger>
           </TabsList>
@@ -517,19 +582,20 @@ export const FinanceView = () => {
                     <TableHead className="text-right">Paid (SSP)</TableHead>
                     <TableHead className="text-right">Outstanding (SSP)</TableHead>
                     <TableHead>Clearance</TableHead>
+                    <TableHead>Stage & Sponsor</TableHead>
                     <TableHead className="text-right pr-6">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="text-xs">
                   {!studentLedgers ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                      <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                         Loading student ledgers...
                       </TableCell>
                     </TableRow>
                   ) : studentLedgers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                      <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                         No student billing ledgers found matching your filters.
                         <div className="mt-2">
                           <Button
@@ -544,7 +610,7 @@ export const FinanceView = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    studentLedgers.map((l) => (
+                    studentLedgers.map((l: any) => (
                       <TableRow key={l._id} className="hover:bg-muted/40">
                         <TableCell className="pl-6 font-mono font-bold text-foreground">
                           {l.studentRegNumber}
@@ -579,6 +645,20 @@ export const FinanceView = () => {
                           >
                             {l.status?.toUpperCase() || "PENDING"}
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-foreground block">
+                              {l.installments?.currentStage || "Pending"}
+                            </span>
+                            {l.sponsor ? (
+                              <Badge variant="outline" className="text-[9px] bg-amber-500/10 text-amber-700 border-amber-200">
+                                {l.sponsor.code} ({l.sponsor.coveragePercentage}%)
+                              </Badge>
+                            ) : (
+                              <span className="text-[10px] text-muted-foreground">Self-Sponsored</span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-right pr-6">
                           <DropdownMenu>
@@ -826,6 +906,16 @@ export const FinanceView = () => {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* ── TAB 3: DAILY CASHIER RECONCILIATION ── */}
+        <TabsContent value="reconciliation">
+          <CashierReconciliationView />
+        </TabsContent>
+
+        {/* ── TAB 4: SPONSORS & BURSARIES ── */}
+        <TabsContent value="sponsors">
+          <SponsorsManagerView />
         </TabsContent>
       </Tabs>
 

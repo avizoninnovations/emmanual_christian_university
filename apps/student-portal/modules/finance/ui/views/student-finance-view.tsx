@@ -16,6 +16,8 @@ import {
   CreditCard,
   Loader2,
   Calendar,
+  Award,
+  TrendingUp,
 } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
@@ -46,6 +48,16 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
+const channelLabels: Record<string, string> = {
+  cash: "Cash Office",
+  m_gurush: "m-GURUSH Mobile Money",
+  equity_bank: "Equity Bank South Sudan",
+  kcb_bank: "KCB Bank South Sudan",
+  stanbic_bank: "Stanbic Bank South Sudan",
+  bank_deposit: "Direct Bank Deposit",
+  other: "Other Transfer",
+};
+
 export function StudentFinanceView() {
   const statement = useQuery(api.student_portal.getMyFinancialStatement);
   const profile = useQuery(api.student_portal.getMyProfile);
@@ -62,6 +74,8 @@ export function StudentFinanceView() {
   }
 
   const { summary, semesterLedgers, transactions } = statement;
+  const installments = summary.installments;
+  const sponsor = summary.sponsor;
   const isCleared = summary.balance <= 0 || summary.status === "cleared";
 
   const handlePrint = () => {
@@ -167,6 +181,163 @@ export function StudentFinanceView() {
         </Card>
       </div>
 
+      {/* ── Sponsor / Scholarship Information Banner (if sponsored) ── */}
+      {sponsor && (
+        <Card className="border-emerald-200 bg-emerald-500/5 shadow-sm">
+          <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="size-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                <Award className="size-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-foreground">
+                    Tuition Sponsorship: {sponsor.name}
+                  </h3>
+                  <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-700 border-emerald-300 capitalize">
+                    {sponsor.category}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Coverage: <strong className="text-foreground">{sponsor.coveragePercentage}%</strong> of eligible university tuition fees.
+                  {sponsor.code && ` (Code: ${sponsor.code})`}
+                </p>
+              </div>
+            </div>
+            <Badge className="bg-emerald-600 text-white hover:bg-emerald-700 text-xs shrink-0">
+              Active Beneficiary
+            </Badge>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ── 3-Stage South Sudan Tuition Installment Milestones ── */}
+      {installments && (
+        <Card className="shadow-sm border">
+          <CardHeader className="pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="size-4 text-primary" />
+                  <CardTitle className="text-base font-semibold">
+                    South Sudan Higher Education Installment Milestones
+                  </CardTitle>
+                </div>
+                <CardDescription className="text-xs mt-0.5">
+                  Official clearance thresholds: Course Registration (40%), Continuous Assessments (75%), and Final Examination Cards (100%).
+                </CardDescription>
+              </div>
+              <Badge variant="secondary" className="text-xs font-mono w-fit">
+                {installments.progressPercentage}% Cumulative Paid • {installments.currentStage}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
+              <div
+                className="bg-primary h-2.5 rounded-full transition-all"
+                style={{ width: `${Math.min(100, installments.progressPercentage)}%` }}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+              {/* Stage 1 */}
+              <div
+                className={`p-3 rounded-lg border text-xs space-y-1.5 ${
+                  installments.registration.cleared
+                    ? "bg-emerald-500/5 border-emerald-200"
+                    : "bg-amber-500/5 border-amber-200"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-foreground">Stage 1: Registration (40%)</span>
+                  <Badge
+                    variant="outline"
+                    className={`text-[10px] ${
+                      installments.registration.cleared
+                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                        : "bg-amber-500/10 text-amber-600 border-amber-200"
+                    }`}
+                  >
+                    {installments.registration.cleared ? "Eligible" : "Pending"}
+                  </Badge>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Target: <strong>SSP {installments.registration.target.toLocaleString()}</strong>
+                </p>
+                {installments.registration.balanceToClear > 0 && (
+                  <p className="text-[11px] text-amber-600 font-medium">
+                    Shortfall: SSP {installments.registration.balanceToClear.toLocaleString()}
+                  </p>
+                )}
+              </div>
+
+              {/* Stage 2 */}
+              <div
+                className={`p-3 rounded-lg border text-xs space-y-1.5 ${
+                  installments.midterm.cleared
+                    ? "bg-emerald-500/5 border-emerald-200"
+                    : "bg-muted/40 border-muted"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-foreground">Stage 2: Midterm / CA (75%)</span>
+                  <Badge
+                    variant="outline"
+                    className={`text-[10px] ${
+                      installments.midterm.cleared
+                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {installments.midterm.cleared ? "Eligible" : "Pending"}
+                  </Badge>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Target: <strong>SSP {installments.midterm.target.toLocaleString()}</strong>
+                </p>
+                {installments.midterm.balanceToClear > 0 && (
+                  <p className="text-[11px] text-muted-foreground font-medium">
+                    Shortfall: SSP {installments.midterm.balanceToClear.toLocaleString()}
+                  </p>
+                )}
+              </div>
+
+              {/* Stage 3 */}
+              <div
+                className={`p-3 rounded-lg border text-xs space-y-1.5 ${
+                  installments.finalExam.cleared
+                    ? "bg-emerald-500/5 border-emerald-200"
+                    : "bg-rose-500/5 border-rose-200"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-foreground">Stage 3: Final Exams (100%)</span>
+                  <Badge
+                    variant="outline"
+                    className={`text-[10px] ${
+                      installments.finalExam.cleared
+                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                        : "bg-rose-500/10 text-rose-600 border-rose-200"
+                    }`}
+                  >
+                    {installments.finalExam.cleared ? "Exam Card Active" : "Blocked"}
+                  </Badge>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Target: <strong>SSP {installments.finalExam.target.toLocaleString()}</strong>
+                </p>
+                {installments.finalExam.balanceToClear > 0 && (
+                  <p className="text-[11px] text-rose-600 font-medium">
+                    Shortfall: SSP {installments.finalExam.balanceToClear.toLocaleString()}
+                  </p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* ── Semester Breakdown Table ── */}
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
@@ -241,7 +412,7 @@ export function StudentFinanceView() {
             <div>
               <CardTitle className="text-base font-semibold">Official University Payment Receipts</CardTitle>
               <CardDescription className="text-xs">
-                Verified payment transactions recorded by the ECU Finance Office.
+                Verified payment transactions recorded by the ECU Finance Office across South Sudan banking & cash channels.
               </CardDescription>
             </div>
           </div>
@@ -253,7 +424,7 @@ export function StudentFinanceView() {
               <TableRow>
                 <TableHead className="pl-6">Receipt Number</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Method</TableHead>
+                <TableHead>Channel & Details</TableHead>
                 <TableHead className="text-right">Amount Paid</TableHead>
                 <TableHead className="text-right pr-6">Action</TableHead>
               </TableRow>
@@ -266,7 +437,7 @@ export function StudentFinanceView() {
                   </TableCell>
                 </TableRow>
               ) : (
-                transactions.map((t) => (
+                transactions.map((t: any) => (
                   <TableRow key={t._id} className="hover:bg-muted/20">
                     <TableCell className="pl-6 font-mono font-bold text-sm text-primary">
                       {t.receiptNumber || `ECU-REC-${new Date(t.createdAt).getFullYear()}-001`}
@@ -279,9 +450,16 @@ export function StudentFinanceView() {
                       })}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="capitalize text-xs">
-                        {t.method}
-                      </Badge>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-xs">
+                          {channelLabels[t.channel] || t.channel || t.method}
+                        </span>
+                        {t.slipNumber && (
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            Slip: #{t.slipNumber} {t.bankBranch ? `(${t.bankBranch})` : ""}
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right font-mono font-bold text-sm text-emerald-600">
                       SSP {t.amount.toLocaleString()}
@@ -348,8 +526,28 @@ export function StudentFinanceView() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Payment Channel:</span>
-                <span className="capitalize font-medium">{selectedReceipt?.method}</span>
+                <span className="capitalize font-medium">
+                  {channelLabels[selectedReceipt?.channel] || selectedReceipt?.channel || selectedReceipt?.method}
+                </span>
               </div>
+              {selectedReceipt?.slipNumber && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Bank Deposit Slip #:</span>
+                  <span className="font-mono font-bold">{selectedReceipt.slipNumber}</span>
+                </div>
+              )}
+              {selectedReceipt?.bankBranch && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Bank Branch:</span>
+                  <span>{selectedReceipt.bankBranch}</span>
+                </div>
+              )}
+              {selectedReceipt?.depositDate && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Bank Deposit Date:</span>
+                  <span>{selectedReceipt.depositDate}</span>
+                </div>
+              )}
             </div>
 
             <div className="border-t border-b py-3 text-center space-y-0.5">

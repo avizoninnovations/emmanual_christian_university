@@ -11,6 +11,10 @@ import {
   ClipboardCheck,
   Layers,
   FileSpreadsheet,
+  Calendar,
+  UserCheck,
+  Award,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -58,6 +62,16 @@ const lecturerMenuItems = [
     url: "/staff/attendance",
     icon: ClipboardCheck,
   },
+  {
+    title: "Teaching Timetable",
+    url: "/staff/timetable",
+    icon: Calendar,
+  },
+  {
+    title: "Teaching Cover",
+    url: "/staff/cover-requests",
+    icon: UserCheck,
+  },
 ];
 
 const hodMenuItems = [
@@ -70,6 +84,16 @@ const hodMenuItems = [
     title: "Marks Review Queue",
     url: "/staff/hod/review-queue",
     icon: FileSpreadsheet,
+  },
+  {
+    title: "Senate Broadsheet",
+    url: "/staff/hod/broadsheet",
+    icon: Award,
+  },
+  {
+    title: "Supplementary Exams",
+    url: "/staff/hod/supplementaries",
+    icon: FileText,
   },
 ];
 

@@ -162,6 +162,7 @@ export default defineSchema({
     userId: v.string(),
     registrationNumber: v.string(),
     programId: v.id("programs"),
+    sponsorId: v.optional(v.id("sponsors")),
     yearOfStudy: v.number(),
     currentPeriodId: v.optional(v.id("academicPeriods")),
     ...academicPeriodFields, // Representing current active session
@@ -172,8 +173,27 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_regNumber", ["registrationNumber"])
     .index("by_program", ["programId"])
+    .index("by_sponsor", ["sponsorId"])
     .index("by_status", ["status"])
     .index("by_period", ["term", "year"]),
+
+  /**
+   * Institutional Sponsors & Bursaries (Church Dioceses, UNHCR, NGOs, MoHEST)
+   */
+  sponsors: defineTable({
+    name: v.string(), // e.g. "Diocese of Yei", "UNHCR South Sudan", "ECU Alumni Foundation"
+    code: v.string(), // e.g. "DOY", "UNHCR-SSD"
+    category: v.union(v.literal("church"), v.literal("ngo"), v.literal("government"), v.literal("private")),
+    contactPerson: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+    coveragePercentage: v.optional(v.number()), // e.g. 100 for full, 50 for half
+    status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
+  })
+    .index("by_code", ["code"])
+    .index("by_category", ["category"])
+    .index("by_status", ["status"]),
 
   /**
    * 7. Finance (Fee Structures, Ledger, Transactions)
@@ -221,6 +241,18 @@ export default defineSchema({
     amount: v.number(),
     type: v.union(v.literal("payment"), v.literal("charge"), v.literal("waiver")),
     method: v.optional(v.union(v.literal("cash"), v.literal("bank"), v.literal("mobile_money"), v.literal("other"))),
+    channel: v.optional(v.union(
+      v.literal("cash"),
+      v.literal("bank_deposit"),
+      v.literal("m_gurush"),
+      v.literal("equity_bank"),
+      v.literal("kcb_bank"),
+      v.literal("stanbic_bank"),
+      v.literal("other")
+    )),
+    bankBranch: v.optional(v.string()),
+    slipNumber: v.optional(v.string()), // Bank Teller Slip / Receipt Number
+    depositDate: v.optional(v.string()), // Bank Deposit Date (YYYY-MM-DD)
     receiptNumber: v.optional(v.string()),
     notes: v.optional(v.string()),
     recordedBy: v.optional(v.string()),
@@ -230,6 +262,7 @@ export default defineSchema({
   })
     .index("by_student", ["studentId"])
     .index("by_date", ["date"])
+    .index("by_channel", ["channel"])
     .index("by_receiptNumber", ["receiptNumber"])
     .index("by_period", ["term", "year"]),
 
@@ -266,8 +299,10 @@ export default defineSchema({
     courseId: v.id("courses"),
     periodId: v.id("academicPeriods"),
     lecturerId: v.string(),
-    courseworkMarks: v.number(), // 0 - 30
-    examMarks: v.number(),       // 0 - 70
+    assignmentMarks: v.optional(v.number()), // 0 - 10 (South Sudan CA Component 1: Assignment)
+    testMarks: v.optional(v.number()),       // 0 - 20 (South Sudan CA Component 2: CAT/Midterm)
+    courseworkMarks: v.number(), // 0 - 30 (Combined CA)
+    examMarks: v.number(),       // 0 - 70 (Final Exam)
     finalScore: v.number(),      // 0 - 100
     grade: v.string(),           // "A", "B+", etc.
     gradePoints: v.number(),     // 0.0 - 4.0
@@ -276,6 +311,11 @@ export default defineSchema({
     isUnlocked: v.optional(v.boolean()),
     unlockedBy: v.optional(v.string()),
     unlockedAt: v.optional(v.number()),
+    isSupplementary: v.optional(v.boolean()),
+    supplementaryScore: v.optional(v.number()), // Raw supplementary exam score out of 100
+    originalScore: v.optional(v.number()),
+    originalGrade: v.optional(v.string()),
+    isSpecialExam: v.optional(v.boolean()),
     ...timestamps,
   })
     .index("by_course_period", ["courseId", "periodId"])
@@ -302,6 +342,56 @@ export default defineSchema({
   })
     .index("by_course_period", ["courseId", "periodId"])
     .index("by_course_period_date", ["courseId", "periodId", "date"]),
+
+  /**
+   * 8B. University Lecture Timetable & Room Scheduling
+   */
+  timetables: defineTable({
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    lecturerId: v.string(),
+    dayOfWeek: v.union(
+      v.literal("monday"),
+      v.literal("tuesday"),
+      v.literal("wednesday"),
+      v.literal("thursday"),
+      v.literal("friday"),
+      v.literal("saturday")
+    ),
+    startTime: v.string(), // e.g. "08:00"
+    endTime: v.string(),   // e.g. "10:00"
+    room: v.string(),      // e.g. "Main Hall A", "Theology Block Rm 3"
+    building: v.optional(v.string()),
+    capacity: v.optional(v.number()),
+    ...timestamps,
+  })
+    .index("by_course_period", ["courseId", "periodId"])
+    .index("by_lecturer_period", ["lecturerId", "periodId"])
+    .index("by_period_day", ["periodId", "dayOfWeek"]),
+
+  /**
+   * 8C. Lecturer Absence & Teaching Cover Arrangements
+   */
+  teachingCoverRequests: defineTable({
+    requesterId: v.string(),
+    coveringLecturerId: v.string(),
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    date: v.string(), // YYYY-MM-DD
+    startTime: v.optional(v.string()),
+    endTime: v.optional(v.string()),
+    topic: v.string(),
+    reason: v.string(), // Ministry travel, church diocese assignment, research, medical
+    status: v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected")),
+    hodReviewNotes: v.optional(v.string()),
+    reviewedBy: v.optional(v.string()),
+    reviewedAt: v.optional(v.number()),
+    ...timestamps,
+  })
+    .index("by_requester", ["requesterId"])
+    .index("by_covering", ["coveringLecturerId"])
+    .index("by_course", ["courseId"])
+    .index("by_status", ["status"]),
 
   /**
    * 9. Library Catalog
@@ -353,14 +443,32 @@ export default defineSchema({
 
   /**
    * 11. Custom System Roles
+   *
+   * `tier` orders roles in the UI (1 = top leadership, 5 = support).
+   * `category` groups roles for filtering in the roles manager UI.
+   * `isProtected` marks roles whose codes are referenced by built-in
+   * `assertRole(...)` checks — those cannot be deleted from the UI.
    */
   systemRoles: defineTable({
     name: v.string(),
     code: v.string(), // Unique slug like 'registrar', 'dean'
     description: v.optional(v.string()),
+    tier: v.optional(v.number()),
+    category: v.optional(
+      v.union(
+        v.literal("leadership"),
+        v.literal("academic"),
+        v.literal("finance"),
+        v.literal("support"),
+        v.literal("system")
+      )
+    ),
+    isProtected: v.optional(v.boolean()),
     ...timestamps,
   })
-    .index("by_code", ["code"]),
+    .index("by_code", ["code"])
+    .index("by_category", ["category"])
+    .index("by_tier", ["tier"]),
 
   /**
    * 12. Global System Configurations

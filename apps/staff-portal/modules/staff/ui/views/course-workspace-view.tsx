@@ -90,8 +90,9 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
 
   // Local state for grade edits
   const [marksState, setMarksState] = useState<
-    Map<string, { coursework: number; exam: number }>
+    Map<string, { coursework: number; assignment?: number; test?: number; exam: number }>
   >(new Map());
+  const [isDetailedCAMode, setIsDetailedCAMode] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
@@ -110,14 +111,24 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
   // Sync gradebook to local state on initial load
   useEffect(() => {
     if (gradebook?.students) {
-      const initialMap = new Map<string, { coursework: number; exam: number }>();
+      const initialMap = new Map<
+        string,
+        { coursework: number; assignment?: number; test?: number; exam: number }
+      >();
+      let hasDetailed = false;
       gradebook.students.forEach((s) => {
+        if (s.assignmentMarks !== undefined || s.testMarks !== undefined) {
+          hasDetailed = true;
+        }
         initialMap.set(s.studentId, {
           coursework: s.courseworkMarks,
+          assignment: s.assignmentMarks,
+          test: s.testMarks,
           exam: s.examMarks,
         });
       });
       setMarksState(initialMap);
+      if (hasDetailed) setIsDetailedCAMode(true);
 
       // Default attendance to present
       const defaultAtt = new Map<string, "present" | "absent" | "late">();
@@ -145,20 +156,34 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
   // Handlers for marks input
   const handleMarkChange = (
     studentId: string,
-    field: "coursework" | "exam",
+    field: "coursework" | "assignment" | "test" | "exam",
     valueStr: string
   ) => {
     const raw = Number(valueStr);
     const num = isNaN(raw) ? 0 : raw;
-    const capped = field === "coursework" ? Math.min(30, Math.max(0, num)) : Math.min(70, Math.max(0, num));
 
     setMarksState((prev) => {
       const next = new Map(prev);
       const current = next.get(studentId) || { coursework: 0, exam: 0 };
-      next.set(studentId, {
-        ...current,
-        [field]: capped,
-      });
+      const updated = { ...current };
+
+      if (field === "assignment") {
+        const capped = Math.min(10, Math.max(0, num));
+        updated.assignment = capped;
+        updated.coursework = Math.min(30, (capped || 0) + (updated.test || 0));
+      } else if (field === "test") {
+        const capped = Math.min(20, Math.max(0, num));
+        updated.test = capped;
+        updated.coursework = Math.min(30, (updated.assignment || 0) + (capped || 0));
+      } else if (field === "coursework") {
+        const capped = Math.min(30, Math.max(0, num));
+        updated.coursework = capped;
+      } else if (field === "exam") {
+        const capped = Math.min(70, Math.max(0, num));
+        updated.exam = capped;
+      }
+
+      next.set(studentId, updated);
       return next;
     });
     setHasUnsavedChanges(true);
@@ -170,6 +195,8 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
       setIsSaving(true);
       const marks = Array.from(marksState.entries()).map(([studentId, m]) => ({
         studentId: studentId as Id<"students">,
+        assignmentMarks: m.assignment,
+        testMarks: m.test,
         courseworkMarks: m.coursework,
         examMarks: m.exam,
       }));
@@ -222,7 +249,72 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
     }
   };
 
-  // Roll Call Save
+  const handleExportCSV = () => {
+    if (!gradebook.students || gradebook.students.length === 0) return;
+
+    const headers = [
+      "Registration Number",
+      "Student Name",
+      "Assignment (10%)",
+      "CAT / Midterm (20%)",
+      "Coursework (30%)",
+      "Exam (70%)",
+      "Total Score (100%)",
+      "Letter Grade",
+      "Grade Points",
+      "Status",
+    ];
+
+    const rows = gradebook.students.map((s) => {
+      const local = marksState.get(s.studentId) || {
+        coursework: s.courseworkMarks,
+        assignment: s.assignmentMarks,
+        test: s.testMarks,
+        exam: s.examMarks,
+      };
+      const total = Math.round(local.coursework + local.exam);
+      const { grade, gradePoints } = calculateGrade(total);
+
+      return [
+        `"${s.studentRegNumber}"`,
+        `"${s.studentName}"`,
+        local.assignment ?? "",
+        local.test ?? "",
+        local.coursework,
+        local.exam,
+        total,
+        grade,
+        gradePoints.toFixed(1),
+        s.status,
+      ].join(",");
+    });
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `ECU_${course?.code}_Gradebook_${gradebook.period?.name || "Term"}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Roll call attendance handlers
+  const handleRollCallToggle = (
+    studentId: string,
+    status: "present" | "absent" | "late"
+  ) => {
+    setRollCallStatus((prev) => {
+      const next = new Map(prev);
+      next.set(studentId, status);
+      return next;
+    });
+  };
+
   const handleSaveAttendance = async () => {
     if (!gradebook.period) return;
     try {
@@ -242,93 +334,57 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
         records,
       });
 
-      toast.success(`Attendance saved for ${rollCallDate}`);
+      toast.success("Roll call session recorded successfully");
       setRollCallTopic("");
     } catch (err: any) {
-      toast.error(err.message || "Failed to save roll call");
+      toast.error(err.message || "Failed to record roll call session");
     } finally {
       setIsSavingRollCall(false);
     }
   };
 
-  // Export CSV
-  const handleExportCSV = () => {
-    const headers = [
-      "Registration Number",
-      "Student Name",
-      "Coursework (30)",
-      "Exam (70)",
-      "Final Score (100)",
-      "Grade",
-      "Grade Points",
-      "Status",
-    ];
-
-    const rows = gradebook.students.map((s) => {
-      const local = marksState.get(s.studentId) || {
-        coursework: s.courseworkMarks,
-        exam: s.examMarks,
-      };
-      const total = Math.round(local.coursework + local.exam);
-      const { grade, gradePoints } = calculateGrade(total);
-      return [
-        `"${s.studentRegNumber}"`,
-        `"${s.studentName}"`,
-        local.coursework,
-        local.exam,
-        total,
-        grade,
-        gradePoints,
-        s.status,
-      ].join(",");
-    });
-
-    const csvContent = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${course?.code}_Gradebook_${gradebook.period?.name || "Semester"}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Calculate gradebook statistics
   const totalStudents = gradebook.students.length;
-  let totalScoreSum = 0;
-  let passCount = 0;
-
-  gradebook.students.forEach((s) => {
+  const passedStudents = gradebook.students.filter((s) => {
     const local = marksState.get(s.studentId) || {
       coursework: s.courseworkMarks,
       exam: s.examMarks,
     };
-    const total = Math.round(local.coursework + local.exam);
-    totalScoreSum += total;
-    if (total >= 50) passCount++;
-  });
+    return local.coursework + local.exam >= 50;
+  }).length;
+  const passRate =
+    totalStudents > 0 ? Math.round((passedStudents / totalStudents) * 100) : 0;
 
-  const avgScore = totalStudents > 0 ? Math.round(totalScoreSum / totalStudents) : 0;
-  const passRate = totalStudents > 0 ? Math.round((passCount / totalStudents) * 100) : 0;
+  const averageScore =
+    totalStudents > 0
+      ? Math.round(
+          gradebook.students.reduce((acc, s) => {
+            const local = marksState.get(s.studentId) || {
+              coursework: s.courseworkMarks,
+              exam: s.examMarks,
+            };
+            return acc + (local.coursework + local.exam);
+          }, 0) / totalStudents
+        )
+      : 0;
 
   return (
     <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
-      {/* ── Back button & Header ── */}
-      <div>
-        <Button variant="ghost" size="sm" asChild className="mb-2 -ml-2 gap-1 text-muted-foreground">
-          <Link href="/staff/courses">
-            <ArrowLeft className="size-4" /> Back to My Courses
-          </Link>
-        </Button>
+      {/* ── Header ── */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2">
+            <Link href="/staff/courses">
+              <ArrowLeft className="size-4" /> Back to Teaching Courses
+            </Link>
+          </Button>
+        </div>
 
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="secondary" className="font-mono text-sm font-bold">
-                {course?.code}
-              </Badge>
-              <h1 className="text-2xl font-bold tracking-tight">{course?.title}</h1>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-2xl font-bold tracking-tight">
+                {course?.code}: {course?.title}
+              </h1>
               {gradebook.overallStatus === "approved" && (
                 <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-200">
                   <CheckCircle2 className="size-3 mr-1" /> HOD Approved
@@ -478,12 +534,12 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">{avgScore}%</p>
+                <p className="text-2xl font-bold">{passRate}%</p>
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mt-1">
-                  Class Average
+                  Pass Rate (&ge; 50%)
                 </p>
               </div>
-              <div className="size-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
+              <div className="size-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                 <Award className="size-5" />
               </div>
             </div>
@@ -494,13 +550,13 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-emerald-600">{passRate}%</p>
+                <p className="text-2xl font-bold">{averageScore}</p>
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mt-1">
-                  Passing Rate (&ge; 50%)
+                  Class Mean Score
                 </p>
               </div>
-              <div className="size-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                <CheckCircle2 className="size-5" />
+              <div className="size-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
+                <BookOpen className="size-5" />
               </div>
             </div>
           </CardContent>
@@ -510,13 +566,13 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold text-amber-600">{attendanceHistory.length}</p>
+                <p className="text-2xl font-bold capitalize">{gradebook.overallStatus}</p>
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mt-1">
-                  Recorded Sessions
+                  Workflow State
                 </p>
               </div>
               <div className="size-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600">
-                <CalendarCheck className="size-5" />
+                <Clock className="size-5" />
               </div>
             </div>
           </CardContent>
@@ -544,20 +600,33 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
         <TabsContent value="gradebook">
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <CardTitle className="text-base font-semibold">
                     Continuous Assessment & Examination Sheet
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    South Sudan Higher Education Standard: Coursework out of 30, Final Examination out of 70.
+                    South Sudan Standard: Coursework out of 30 (10% Assignment + 20% CAT), Final Examination out of 70.
                   </CardDescription>
                 </div>
-                {hasUnsavedChanges && (
-                  <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-300 w-fit">
-                    Unsaved Changes Present
-                  </Badge>
-                )}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsDetailedCAMode(!isDetailedCAMode)}
+                    className="h-7 text-xs gap-1.5"
+                  >
+                    {isDetailedCAMode
+                      ? "Switch to Combined CW (30)"
+                      : "Detailed CA (10% Assign + 20% CAT)"}
+                  </Button>
+                  {hasUnsavedChanges && (
+                    <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-300 w-fit text-[11px]">
+                      Unsaved Changes Present
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
 
@@ -567,18 +636,26 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
                   <TableRow>
                     <TableHead className="pl-6 w-36">Reg Number</TableHead>
                     <TableHead>Student Name</TableHead>
-                    <TableHead className="w-36 text-center">CW (Max 30)</TableHead>
-                    <TableHead className="w-36 text-center">Exam (Max 70)</TableHead>
-                    <TableHead className="w-28 text-center font-bold">Total (100)</TableHead>
+                    {isDetailedCAMode ? (
+                      <>
+                        <TableHead className="w-24 text-center">Assign (10)</TableHead>
+                        <TableHead className="w-24 text-center">CAT (20)</TableHead>
+                        <TableHead className="w-24 text-center bg-muted/30">CW (30)</TableHead>
+                      </>
+                    ) : (
+                      <TableHead className="w-36 text-center">CW (Max 30)</TableHead>
+                    )}
+                    <TableHead className="w-32 text-center">Exam (Max 70)</TableHead>
+                    <TableHead className="w-24 text-center font-bold">Total (100)</TableHead>
                     <TableHead className="w-20 text-center">Grade</TableHead>
-                    <TableHead className="w-20 text-center">GP</TableHead>
+                    <TableHead className="w-16 text-center">GP</TableHead>
                     <TableHead className="text-right pr-6 w-28">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {gradebook.students.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
+                      <TableCell colSpan={isDetailedCAMode ? 10 : 8} className="h-32 text-center text-muted-foreground">
                         No registered students found for this course in the active period.
                       </TableCell>
                     </TableRow>
@@ -586,6 +663,8 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
                     gradebook.students.map((student) => {
                       const local = marksState.get(student.studentId) || {
                         coursework: student.courseworkMarks,
+                        assignment: student.assignmentMarks,
+                        test: student.testMarks,
                         exam: student.examMarks,
                       };
                       const total = Math.round(local.coursework + local.exam);
@@ -605,23 +684,64 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
                                   <Unlock className="size-2.5" /> Unlocked
                                 </Badge>
                               )}
+                              {student.isSupplementary && (
+                                <Badge variant="outline" className="text-[10px] bg-blue-500/10 text-blue-600 border-blue-300">
+                                  Supplementary
+                                </Badge>
+                              )}
                             </div>
                           </TableCell>
 
-                          {/* Coursework Input */}
-                          <TableCell className="text-center">
-                            <Input
-                              type="number"
-                              min={0}
-                              max={30}
-                              disabled={!canEditThisRow}
-                              value={local.coursework}
-                              onChange={(e) =>
-                                handleMarkChange(student.studentId, "coursework", e.target.value)
-                              }
-                              className="w-24 mx-auto text-center font-mono text-sm h-8"
-                            />
-                          </TableCell>
+                          {/* Coursework / Detailed CA Inputs */}
+                          {isDetailedCAMode ? (
+                            <>
+                              <TableCell className="text-center">
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  max={10}
+                                  disabled={!canEditThisRow}
+                                  value={local.assignment ?? ""}
+                                  placeholder="0"
+                                  onChange={(e) =>
+                                    handleMarkChange(student.studentId, "assignment", e.target.value)
+                                  }
+                                  className="w-16 mx-auto text-center font-mono text-sm h-8"
+                                />
+                              </TableCell>
+                              <TableCell className="text-center">
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  max={20}
+                                  disabled={!canEditThisRow}
+                                  value={local.test ?? ""}
+                                  placeholder="0"
+                                  onChange={(e) =>
+                                    handleMarkChange(student.studentId, "test", e.target.value)
+                                  }
+                                  className="w-16 mx-auto text-center font-mono text-sm h-8"
+                                />
+                              </TableCell>
+                              <TableCell className="text-center font-mono font-semibold text-sm bg-muted/20">
+                                {local.coursework}
+                              </TableCell>
+                            </>
+                          ) : (
+                            <TableCell className="text-center">
+                              <Input
+                                type="number"
+                                min={0}
+                                max={30}
+                                disabled={!canEditThisRow}
+                                value={local.coursework}
+                                onChange={(e) =>
+                                  handleMarkChange(student.studentId, "coursework", e.target.value)
+                                }
+                                className="w-24 mx-auto text-center font-mono text-sm h-8"
+                              />
+                            </TableCell>
+                          )}
 
                           {/* Exam Input */}
                           <TableCell className="text-center">
@@ -656,15 +776,13 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
                             <Badge
                               variant="outline"
                               className={
-                                grade === "A"
-                                  ? "bg-emerald-500/10 text-emerald-600 border-emerald-200 font-bold"
-                                  : grade.startsWith("B")
+                                grade === "A" || grade === "B+" || grade === "B"
+                                  ? "bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                                  : grade === "C+" || grade === "C"
                                   ? "bg-blue-500/10 text-blue-600 border-blue-200"
-                                  : grade.startsWith("C")
-                                  ? "bg-amber-500/10 text-amber-600 border-amber-200"
                                   : grade === "D"
-                                  ? "bg-orange-500/10 text-orange-600 border-orange-200"
-                                  : "bg-rose-500/10 text-rose-600 border-rose-200 font-bold"
+                                  ? "bg-amber-500/10 text-amber-600 border-amber-200"
+                                  : "bg-rose-500/10 text-rose-600 border-rose-200"
                               }
                             >
                               {grade}

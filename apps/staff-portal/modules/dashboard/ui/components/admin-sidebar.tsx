@@ -19,6 +19,9 @@ import {
   GraduationCap,
   Building2,
   ChevronRight,
+  Award,
+  FileSpreadsheet,
+  Calendar,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -93,7 +96,7 @@ const navGroups: NavGroup[] = [
     label: "Academic",
     items: [
       {
-        title: "Academic",
+        title: "Academic Structure",
         url: "/admin/academic",
         icon: SchoolIcon,
         items: [
@@ -118,6 +121,21 @@ const navGroups: NavGroup[] = [
             icon: Library,
           },
         ],
+      },
+      {
+        title: "Senate Broadsheet",
+        url: "/staff/hod/broadsheet",
+        icon: Award,
+      },
+      {
+        title: "Supplementary Exams",
+        url: "/staff/hod/supplementaries",
+        icon: FileSpreadsheet,
+      },
+      {
+        title: "Lecture Timetable",
+        url: "/staff/timetable",
+        icon: Calendar,
       },
       // {
       //   title: "Academic Calendar",

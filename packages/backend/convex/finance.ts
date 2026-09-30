@@ -252,6 +252,48 @@ export const getFinancialSummary = query({
 });
 
 // ─────────────────────────────────────────────────────────
+// INSTALLMENT MILESTONES HELPER (South Sudan 3-Stage Model)
+// ─────────────────────────────────────────────────────────
+export function calculateInstallmentMilestones(totalDue: number, totalPaid: number) {
+  const regTarget = Math.round(totalDue * 0.40);
+  const midTarget = Math.round(totalDue * 0.75);
+  const examTarget = totalDue;
+
+  const regCleared = totalPaid >= regTarget && totalDue > 0;
+  const midCleared = totalPaid >= midTarget && totalDue > 0;
+  const examCleared = totalPaid >= examTarget && totalDue > 0;
+
+  let currentStage = "None";
+  if (examCleared) currentStage = "Exam Cleared (100%)";
+  else if (midCleared) currentStage = "Midterms Cleared (75%)";
+  else if (regCleared) currentStage = "Registration Cleared (40%)";
+  else currentStage = "Below Registration (Pending)";
+
+  return {
+    registration: {
+      target: regTarget,
+      percentage: 40,
+      cleared: regCleared,
+      balanceToClear: Math.max(0, regTarget - totalPaid),
+    },
+    midterm: {
+      target: midTarget,
+      percentage: 75,
+      cleared: midCleared,
+      balanceToClear: Math.max(0, midTarget - totalPaid),
+    },
+    finalExam: {
+      target: examTarget,
+      percentage: 100,
+      cleared: examCleared,
+      balanceToClear: Math.max(0, examTarget - totalPaid),
+    },
+    currentStage,
+    paymentProgressPercentage: totalDue > 0 ? Math.min(100, Math.round((totalPaid / totalDue) * 100)) : 100,
+  };
+}
+
+// ─────────────────────────────────────────────────────────
 // 3. STUDENT LEDGERS (Directory & Clearance List)
 // ─────────────────────────────────────────────────────────
 
@@ -259,6 +301,7 @@ export const getStudentLedgers = query({
   args: {
     periodId: v.optional(v.id("academicPeriods")),
     programId: v.optional(v.id("programs")),
+    sponsorId: v.optional(v.id("sponsors")),
     status: v.optional(v.union(v.literal("cleared"), v.literal("partial"), v.literal("pending"))),
     search: v.optional(v.string()),
   },
@@ -272,13 +315,14 @@ export const getStudentLedgers = query({
       ledgers = ledgers.filter((l) => l.periodId === args.periodId);
     }
 
-    // Enrich ledgers with Student, Program, and Period information
+    // Enrich ledgers with Student, Program, Sponsor, and Milestone information
     const enriched = await Promise.all(
       ledgers.map(async (l) => {
         const student = await ctx.db.get(l.studentId);
         const program = student?.programId ? await ctx.db.get(student.programId) : null;
         const period = await ctx.db.get(l.periodId);
         const user = student?.userId ? usersMap.get(student.userId) : null;
+        const sponsor = student?.sponsorId ? ((await ctx.db.get(student.sponsorId)) as any) : null;
 
         const due = l.totalDue || 0;
         const paid = l.totalPaid || 0;
@@ -289,6 +333,8 @@ export const getStudentLedgers = query({
             : paid > 0
             ? "partial"
             : "pending";
+
+        const installments = calculateInstallmentMilestones(due, paid);
 
         return {
           _id: l._id,
@@ -309,6 +355,17 @@ export const getStudentLedgers = query({
           programName: program?.name ?? "Unknown Program",
           programCode: program?.code ?? "—",
           periodName: period?.name ?? `Semester ${l.term}, ${l.year}`,
+          sponsorId: student?.sponsorId,
+          sponsor: sponsor
+            ? {
+                _id: sponsor._id,
+                name: sponsor.name,
+                code: sponsor.code,
+                category: sponsor.category,
+                coveragePercentage: sponsor.coveragePercentage ?? 100,
+              }
+            : null,
+          installments,
         };
       })
     );
@@ -318,6 +375,10 @@ export const getStudentLedgers = query({
 
     if (args.programId) {
       results = results.filter((item) => item.programId === args.programId);
+    }
+
+    if (args.sponsorId) {
+      results = results.filter((item) => item.sponsorId === args.sponsorId);
     }
 
     if (args.status) {
@@ -356,6 +417,7 @@ export const getStudentFinancialProfile = query({
     const usersMap = await getUsersMap(ctx);
     const user = student.userId ? usersMap.get(student.userId) : null;
     const program = student.programId ? await ctx.db.get(student.programId) : null;
+    const sponsor = student.sponsorId ? ((await ctx.db.get(student.sponsorId)) as any) : null;
 
     // Fetch all ledgers for this student
     const ledgers = await ctx.db
@@ -381,6 +443,7 @@ export const getStudentFinancialProfile = query({
           periodName: period?.name ?? `Semester ${l.term}, ${l.year}`,
           balance,
           status,
+          installments: calculateInstallmentMilestones(due, paid),
         };
       })
     );
@@ -419,11 +482,21 @@ export const getStudentFinancialProfile = query({
         yearOfStudy: student.yearOfStudy,
         term: student.term,
         year: student.year,
+        sponsor: sponsor
+          ? {
+              _id: sponsor._id,
+              name: sponsor.name,
+              code: sponsor.code,
+              category: sponsor.category,
+              coveragePercentage: sponsor.coveragePercentage ?? 100,
+            }
+          : null,
       },
       cumulativeDue,
       cumulativePaid,
       cumulativeBalance,
       overallStatus,
+      installments: calculateInstallmentMilestones(cumulativeDue, cumulativePaid),
       ledgers: enrichedLedgers,
       transactions,
     };
@@ -476,6 +549,10 @@ export const getAllTransactions = query({
           studentName: user?.name ?? "Student",
           programName: program?.name ?? "—",
           method: t.method || "cash",
+          channel: t.channel || (t.method === "cash" ? "cash" : t.method === "mobile_money" ? "m_gurush" : "bank_deposit"),
+          bankBranch: t.bankBranch,
+          slipNumber: t.slipNumber,
+          depositDate: t.depositDate,
           receiptNumber: t.receiptNumber || `ECU-TX-${t._id.slice(-6).toUpperCase()}`,
         };
       })
@@ -491,6 +568,20 @@ export const recordPayment = mutation({
     periodId: v.optional(v.id("academicPeriods")),
     amount: v.number(),
     method: v.union(v.literal("cash"), v.literal("bank"), v.literal("mobile_money"), v.literal("other")),
+    channel: v.optional(
+      v.union(
+        v.literal("cash"),
+        v.literal("bank_deposit"),
+        v.literal("m_gurush"),
+        v.literal("equity_bank"),
+        v.literal("kcb_bank"),
+        v.literal("stanbic_bank"),
+        v.literal("other")
+      )
+    ),
+    bankBranch: v.optional(v.string()),
+    slipNumber: v.optional(v.string()),
+    depositDate: v.optional(v.string()),
     reference: v.string(),
     notes: v.optional(v.string()),
   },
@@ -520,6 +611,14 @@ export const recordPayment = mutation({
     // Get current staff user for audit tracking
     const callerId = await assertAuthenticated(ctx);
 
+    const effectiveChannel =
+      args.channel ||
+      (args.method === "cash"
+        ? "cash"
+        : args.method === "mobile_money"
+        ? "m_gurush"
+        : "bank_deposit");
+
     // 1. Insert transaction
     const transactionId = await ctx.db.insert("transactions", {
       studentId: args.studentId,
@@ -529,6 +628,10 @@ export const recordPayment = mutation({
       amount: args.amount,
       type: "payment",
       method: args.method,
+      channel: effectiveChannel,
+      bankBranch: args.bankBranch,
+      slipNumber: args.slipNumber,
+      depositDate: args.depositDate,
       receiptNumber,
       reference: args.reference || `REF-${Date.now()}`,
       notes: args.notes,
@@ -627,6 +730,10 @@ export const recordPayment = mutation({
       transactionId,
       receiptNumber,
       amount: args.amount,
+      channel: effectiveChannel,
+      bankBranch: args.bankBranch,
+      slipNumber: args.slipNumber,
+      depositDate: args.depositDate,
       balance: Math.max(0, totalDue - newTotalPaid),
     };
   },
@@ -818,6 +925,351 @@ export const applySemesterInvoices = mutation({
       invoicedCount,
       skippedCount,
       periodName: period.name,
+    };
+  },
+});
+
+// ─────────────────────────────────────────────────────────
+// 7. SPONSOR & BURSARY MANAGEMENT (Church, NGO, Government)
+// ─────────────────────────────────────────────────────────
+
+export const getSponsors = query({
+  args: {
+    status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+
+    let sponsors = await ctx.db.query("sponsors").collect();
+    if (args.status) {
+      sponsors = sponsors.filter((s) => s.status === args.status);
+    }
+
+    const students = await ctx.db.query("students").collect();
+    const ledgers = await ctx.db.query("studentLedger").collect();
+
+    const enriched = sponsors.map((s) => {
+      const sponsoredStudents = students.filter((stud) => stud.sponsorId === s._id);
+      const studentIds = new Set(sponsoredStudents.map((stud) => stud._id));
+
+      let totalBilled = 0;
+      let totalPaid = 0;
+
+      for (const l of ledgers) {
+        if (studentIds.has(l.studentId)) {
+          totalBilled += l.totalDue || 0;
+          totalPaid += l.totalPaid || 0;
+        }
+      }
+
+      return {
+        _id: s._id,
+        name: s.name,
+        code: s.code,
+        category: s.category,
+        contactPerson: s.contactPerson ?? "—",
+        contactEmail: s.contactEmail ?? "—",
+        contactPhone: s.contactPhone ?? "—",
+        coveragePercentage: s.coveragePercentage ?? 100,
+        status: s.status,
+        studentCount: sponsoredStudents.length,
+        totalBilled,
+        totalPaid,
+        totalBalance: Math.max(0, totalBilled - totalPaid),
+      };
+    });
+
+    return enriched;
+  },
+});
+
+export const createSponsor = mutation({
+  args: {
+    name: v.string(),
+    code: v.string(),
+    category: v.union(v.literal("church"), v.literal("ngo"), v.literal("government"), v.literal("private")),
+    contactPerson: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+    coveragePercentage: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+
+    const existing = await ctx.db
+      .query("sponsors")
+      .withIndex("by_code", (q) => q.eq("code", args.code.toUpperCase().trim()))
+      .first();
+
+    if (existing) {
+      throw new Error(`A sponsor with code '${args.code}' already exists.`);
+    }
+
+    const id = await ctx.db.insert("sponsors", {
+      name: args.name.trim(),
+      code: args.code.toUpperCase().trim(),
+      category: args.category,
+      contactPerson: args.contactPerson?.trim(),
+      contactEmail: args.contactEmail?.trim(),
+      contactPhone: args.contactPhone?.trim(),
+      coveragePercentage: args.coveragePercentage ?? 100,
+      status: "active",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    await logAction(ctx, {
+      action: "CREATE_SPONSOR",
+      resource: "sponsors",
+      details: `Created sponsor ${args.name} (${args.code})`,
+    });
+
+    return id;
+  },
+});
+
+export const updateSponsor = mutation({
+  args: {
+    id: v.id("sponsors"),
+    name: v.optional(v.string()),
+    contactPerson: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    contactPhone: v.optional(v.string()),
+    coveragePercentage: v.optional(v.number()),
+    status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+    const { id, ...updates } = args;
+
+    await ctx.db.patch(id, {
+      ...updates,
+      updatedAt: Date.now(),
+    });
+
+    await logAction(ctx, {
+      action: "UPDATE_SPONSOR",
+      resource: "sponsors",
+      details: `Updated sponsor ${id}`,
+    });
+  },
+});
+
+export const deleteSponsor = mutation({
+  args: { id: v.id("sponsors") },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+
+    // Unlink any students
+    const students = await ctx.db
+      .query("students")
+      .withIndex("by_sponsor", (q) => q.eq("sponsorId", args.id))
+      .collect();
+
+    for (const s of students) {
+      await ctx.db.patch(s._id, { sponsorId: undefined });
+    }
+
+    await ctx.db.delete(args.id);
+
+    await logAction(ctx, {
+      action: "DELETE_SPONSOR",
+      resource: "sponsors",
+      details: `Deleted sponsor ${args.id} and unlinked ${students.length} students`,
+    });
+  },
+});
+
+export const assignStudentSponsor = mutation({
+  args: {
+    studentId: v.id("students"),
+    sponsorId: v.optional(v.id("sponsors")),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+
+    const student = await ctx.db.get(args.studentId);
+    if (!student) throw new Error("Student not found.");
+
+    await ctx.db.patch(args.studentId, {
+      sponsorId: args.sponsorId || undefined,
+    });
+
+    await logAction(ctx, {
+      action: "ASSIGN_STUDENT_SPONSOR",
+      resource: "students",
+      details: `Updated sponsor for student ${student.registrationNumber}`,
+    });
+
+    return { success: true };
+  },
+});
+
+export const getSponsoredStudents = query({
+  args: {
+    sponsorId: v.optional(v.id("sponsors")),
+    periodId: v.optional(v.id("academicPeriods")),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+
+    let students = await ctx.db.query("students").collect();
+    if (args.sponsorId) {
+      students = students.filter((s) => s.sponsorId === args.sponsorId);
+    } else {
+      students = students.filter((s) => Boolean(s.sponsorId));
+    }
+
+    const usersMap = await getUsersMap(ctx);
+    const sponsors = await ctx.db.query("sponsors").collect();
+    const sponsorMap = new Map(sponsors.map((sp) => [sp._id, sp]));
+
+    const enriched = await Promise.all(
+      students.map(async (st) => {
+        const user = st.userId ? usersMap.get(st.userId) : null;
+        const program = st.programId ? await ctx.db.get(st.programId) : null;
+        const sponsor = st.sponsorId ? sponsorMap.get(st.sponsorId) : null;
+
+        // Active period ledger
+        let ledger = null;
+        if (args.periodId || st.currentPeriodId) {
+          const targetPId = args.periodId || st.currentPeriodId!;
+          ledger = await ctx.db
+            .query("studentLedger")
+            .withIndex("by_student_period", (q) =>
+              q.eq("studentId", st._id).eq("periodId", targetPId)
+            )
+            .first();
+        }
+
+        const due = ledger?.totalDue || 0;
+        const paid = ledger?.totalPaid || 0;
+        const balance = due - paid;
+
+        return {
+          studentId: st._id,
+          registrationNumber: st.registrationNumber,
+          name: user?.name ?? "Student",
+          email: user?.email ?? "—",
+          programName: program?.name ?? "—",
+          sponsorName: sponsor?.name ?? "—",
+          sponsorCode: sponsor?.code ?? "—",
+          coveragePercentage: sponsor?.coveragePercentage ?? 100,
+          totalDue: due,
+          totalPaid: paid,
+          balance,
+          status: ledger?.status ?? st.financeStatus,
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+// ─────────────────────────────────────────────────────────
+// 8. DAILY CASHIER RECONCILIATION & CLOSING AUDIT
+// ─────────────────────────────────────────────────────────
+
+export const getDailyCashierReconciliation = query({
+  args: {
+    date: v.optional(v.string()), // YYYY-MM-DD
+    cashierId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "finance"]);
+
+    // Determine target day timestamps
+    let startOfDay: number;
+    let endOfDay: number;
+
+    if (args.date) {
+      const [year, month, day] = args.date.split("-").map(Number);
+      const d = new Date(year ?? 2026, (month ?? 1) - 1, day ?? 1);
+      startOfDay = d.setHours(0, 0, 0, 0);
+      endOfDay = d.setHours(23, 59, 59, 999);
+    } else {
+      const now = new Date();
+      startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime();
+      endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
+    }
+
+    let transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_date")
+      .filter((q) =>
+        q.and(
+          q.gte(q.field("date"), startOfDay),
+          q.lte(q.field("date"), endOfDay),
+          q.eq(q.field("type"), "payment")
+        )
+      )
+      .collect();
+
+    if (args.cashierId) {
+      transactions = transactions.filter((t) => t.recordedBy === args.cashierId);
+    }
+
+    const usersMap = await getUsersMap(ctx);
+
+    // Channel Totals
+    const channelSummary = {
+      cash: 0,
+      m_gurush: 0,
+      equity_bank: 0,
+      kcb_bank: 0,
+      stanbic_bank: 0,
+      bank_deposit: 0,
+      other: 0,
+    };
+
+    let totalCollected = 0;
+
+    const enrichedTransactions = await Promise.all(
+      transactions.map(async (t) => {
+        const student = await ctx.db.get(t.studentId);
+        const user = student?.userId ? usersMap.get(student.userId) : null;
+        const cashier = t.recordedBy ? usersMap.get(t.recordedBy) : null;
+
+        const ch = (t.channel || (t.method === "cash" ? "cash" : t.method === "mobile_money" ? "m_gurush" : "bank_deposit")) as keyof typeof channelSummary;
+
+        if (ch in channelSummary) {
+          channelSummary[ch] += t.amount;
+        } else {
+          channelSummary.other += t.amount;
+        }
+
+        totalCollected += t.amount;
+
+        return {
+          _id: t._id,
+          receiptNumber: t.receiptNumber || `ECU-TX-${t._id.slice(-6).toUpperCase()}`,
+          date: t.date,
+          amount: t.amount,
+          channel: ch,
+          bankBranch: t.bankBranch,
+          slipNumber: t.slipNumber,
+          depositDate: t.depositDate,
+          reference: t.reference,
+          studentRegNumber: student?.registrationNumber ?? "—",
+          studentName: user?.name ?? "Student",
+          cashierName: cashier?.name ?? "Finance Cashier",
+          notes: t.notes,
+        };
+      })
+    );
+
+    const totalCashOnHand = channelSummary.cash;
+    const totalDigitalAndBank = totalCollected - totalCashOnHand;
+
+    return {
+      date: args.date || new Date().toISOString().split("T")[0],
+      totalCollected,
+      totalCashOnHand,
+      totalDigitalAndBank,
+      receiptCount: enrichedTransactions.length,
+      channelSummary,
+      transactions: enrichedTransactions,
     };
   },
 });

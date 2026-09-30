@@ -107,6 +107,8 @@ export const getCourseGradebook = query({
 
         const coursework = mark?.courseworkMarks ?? 0;
         const exam = mark?.examMarks ?? 0;
+        const assignment = mark?.assignmentMarks;
+        const test = mark?.testMarks;
         const finalScore = mark ? mark.finalScore : Math.round(coursework + exam);
         const derived = calculateGrade(finalScore);
 
@@ -114,6 +116,8 @@ export const getCourseGradebook = query({
           studentId: sid,
           studentName: user?.name ?? "Student",
           studentRegNumber: student?.registrationNumber ?? "—",
+          assignmentMarks: assignment,
+          testMarks: test,
           courseworkMarks: coursework,
           examMarks: exam,
           finalScore,
@@ -122,6 +126,10 @@ export const getCourseGradebook = query({
           status: mark?.status ?? "draft",
           returnReason: mark?.returnReason,
           isUnlocked: mark?.isUnlocked ?? false,
+          isSupplementary: mark?.isSupplementary ?? false,
+          supplementaryScore: mark?.supplementaryScore,
+          originalScore: mark?.originalScore,
+          originalGrade: mark?.originalGrade,
           assessmentId: mark?._id,
         };
       })
@@ -174,8 +182,10 @@ export const saveGradebookDraft = mutation({
     marks: v.array(
       v.object({
         studentId: v.id("students"),
-        courseworkMarks: v.number(),
-        examMarks: v.number(),
+        assignmentMarks: v.optional(v.number()), // 0 - 10
+        testMarks: v.optional(v.number()),       // 0 - 20
+        courseworkMarks: v.number(),             // 0 - 30
+        examMarks: v.number(),                   // 0 - 70
       })
     ),
   },
@@ -183,7 +193,21 @@ export const saveGradebookDraft = mutation({
     const userId = await assertAuthenticated(ctx);
 
     for (const item of args.marks) {
-      const coursework = Math.min(30, Math.max(0, item.courseworkMarks));
+      const assignment =
+        item.assignmentMarks !== undefined
+          ? Math.min(10, Math.max(0, item.assignmentMarks))
+          : undefined;
+      const test =
+        item.testMarks !== undefined
+          ? Math.min(20, Math.max(0, item.testMarks))
+          : undefined;
+
+      // If assignment and test provided, compute coursework as their sum (capped at 30)
+      const coursework =
+        assignment !== undefined || test !== undefined
+          ? Math.min(30, Math.max(0, (assignment ?? 0) + (test ?? 0)))
+          : Math.min(30, Math.max(0, item.courseworkMarks));
+
       const exam = Math.min(70, Math.max(0, item.examMarks));
       const finalScore = Math.min(100, Math.round(coursework + exam));
       const { grade, gradePoints } = calculateGrade(finalScore);
@@ -205,6 +229,8 @@ export const saveGradebookDraft = mutation({
         }
 
         await ctx.db.patch(existing._id, {
+          assignmentMarks: assignment,
+          testMarks: test,
           courseworkMarks: coursework,
           examMarks: exam,
           finalScore,
@@ -219,6 +245,8 @@ export const saveGradebookDraft = mutation({
           courseId: args.courseId,
           periodId: args.periodId,
           lecturerId: userId,
+          assignmentMarks: assignment,
+          testMarks: test,
           courseworkMarks: coursework,
           examMarks: exam,
           finalScore,
@@ -448,6 +476,134 @@ export const grantSingleStudentUnlock = mutation({
     });
 
     return { success: true };
+  },
+});
+
+// ─────────────────────────────────────────────────────────
+// 3B. SUPPLEMENTARY & SPECIAL EXAMINATION WORKFLOW
+// ─────────────────────────────────────────────────────────
+
+export const getSupplementaryCandidates = query({
+  args: {
+    periodId: v.optional(v.id("academicPeriods")),
+    courseId: v.optional(v.id("courses")),
+  },
+  handler: async (ctx, args) => {
+    await assertAuthenticated(ctx);
+
+    let periodId = args.periodId;
+    if (!periodId) {
+      const activePeriod = await ctx.db
+        .query("academicPeriods")
+        .withIndex("by_status", (q) => q.eq("status", "active"))
+        .first();
+      periodId = activePeriod?._id;
+    }
+    if (!periodId) return [];
+
+    let assessments = await ctx.db
+      .query("studentAssessments")
+      .filter((q) => q.eq(q.field("periodId"), periodId))
+      .collect();
+
+    if (args.courseId) {
+      assessments = assessments.filter((a) => a.courseId === args.courseId);
+    }
+
+    // In South Sudan, Grade D (40 - 49%) or explicit special exam qualification qualifies for supplementary
+    const candidates = assessments.filter(
+      (a) => a.grade === "D" || a.isSupplementary || a.isSpecialExam
+    );
+
+    const usersMap = await getUsersMap(ctx);
+
+    const enriched = await Promise.all(
+      candidates.map(async (c) => {
+        const student = await ctx.db.get(c.studentId);
+        const user = student?.userId ? usersMap.get(student.userId) : null;
+        const course = await ctx.db.get(c.courseId);
+
+        return {
+          assessmentId: c._id,
+          studentId: c.studentId,
+          studentName: user?.name ?? "Student",
+          studentRegNumber: student?.registrationNumber ?? "—",
+          courseId: c.courseId,
+          courseCode: course?.code ?? "—",
+          courseTitle: course?.title ?? "—",
+          creditUnits: course?.creditUnits ?? 3,
+          originalScore: c.originalScore ?? c.finalScore,
+          originalGrade: c.originalGrade ?? c.grade,
+          supplementaryScore: c.supplementaryScore,
+          currentScore: c.finalScore,
+          currentGrade: c.grade,
+          isSupplementary: c.isSupplementary ?? false,
+          isSpecialExam: c.isSpecialExam ?? false,
+          status: c.status,
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+export const recordSupplementaryMark = mutation({
+  args: {
+    assessmentId: v.id("studentAssessments"),
+    rawScore: v.number(), // 0 - 100
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, ["admin", "hod", "lecturer", "staff"]);
+
+    const assessment = await ctx.db.get(args.assessmentId);
+    if (!assessment) throw new Error("Assessment record not found");
+
+    const raw = Math.min(100, Math.max(0, args.rawScore));
+
+    // South Sudan MoHEST Regulation:
+    // Capped at Grade C (50%, 2.0 GP) if student passes (raw >= 50).
+    // If student fails (raw < 50), remains Grade F (raw score, 0.0 GP).
+    let finalScore: number;
+    let grade: string;
+    let gradePoints: number;
+
+    if (raw >= 50) {
+      finalScore = 50;
+      grade = "C";
+      gradePoints = 2.0;
+    } else {
+      finalScore = raw;
+      grade = "F";
+      gradePoints = 0.0;
+    }
+
+    await ctx.db.patch(args.assessmentId, {
+      originalScore: assessment.originalScore ?? assessment.finalScore,
+      originalGrade: assessment.originalGrade ?? assessment.grade,
+      supplementaryScore: raw,
+      finalScore,
+      grade,
+      gradePoints,
+      isSupplementary: true,
+      status: "approved",
+    });
+
+    const course = await ctx.db.get(assessment.courseId);
+    const student = await ctx.db.get(assessment.studentId);
+
+    await logAction(ctx, {
+      action: "RECORD_SUPPLEMENTARY_MARK",
+      resource: "studentAssessments",
+      details: `Supplementary exam recorded for ${student?.registrationNumber} in ${course?.code}. Raw: ${raw}%, Capped: ${finalScore}% (${grade})`,
+    });
+
+    return {
+      success: true,
+      finalScore,
+      grade,
+      gradePoints,
+    };
   },
 });
 

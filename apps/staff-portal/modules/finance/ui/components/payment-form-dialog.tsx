@@ -42,7 +42,10 @@ export const PaymentFormDialog = ({
 }: PaymentFormDialogProps) => {
   const [selectedStudentId, setSelectedStudentId] = useState<string>(preselectedStudentId || "");
   const [amount, setAmount] = useState<string>("");
-  const [method, setMethod] = useState<"cash" | "bank" | "mobile_money" | "other">("cash");
+  const [channel, setChannel] = useState<"cash" | "bank_deposit" | "m_gurush" | "equity_bank" | "kcb_bank" | "stanbic_bank" | "other">("cash");
+  const [bankBranch, setBankBranch] = useState("Juba Main Branch");
+  const [slipNumber, setSlipNumber] = useState("");
+  const [depositDate, setDepositDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
   const [studentSearch, setStudentSearch] = useState("");
@@ -66,6 +69,15 @@ export const PaymentFormDialog = ({
     );
   });
 
+  const getMethodFromChannel = (ch: string): "cash" | "bank" | "mobile_money" | "other" => {
+    if (ch === "cash") return "cash";
+    if (ch === "m_gurush") return "mobile_money";
+    if (["equity_bank", "kcb_bank", "stanbic_bank", "bank_deposit"].includes(ch)) return "bank";
+    return "other";
+  };
+
+  const isBankChannel = ["equity_bank", "kcb_bank", "stanbic_bank", "bank_deposit"].includes(channel);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -80,13 +92,33 @@ export const PaymentFormDialog = ({
       return;
     }
 
+    if (isBankChannel && !slipNumber.trim()) {
+      toast.error("Please enter the bank deposit slip / teller receipt number.");
+      return;
+    }
+
+    if (channel === "m_gurush" && !slipNumber.trim()) {
+      toast.error("Please enter the m-GURUSH transaction reference ID.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      const computedMethod = getMethodFromChannel(channel);
+      const effectiveRef =
+        reference.trim() ||
+        slipNumber.trim() ||
+        `${channel.toUpperCase()}-${Date.now().toString().slice(-6)}`;
+
       const res = await recordPayment({
         studentId: activeStudentId as Id<"students">,
         amount: numAmount,
-        method,
-        reference: reference.trim() || `CASH-${Date.now().toString().slice(-6)}`,
+        method: computedMethod,
+        channel,
+        bankBranch: isBankChannel ? bankBranch.trim() : undefined,
+        slipNumber: slipNumber.trim() || undefined,
+        depositDate: isBankChannel ? depositDate : undefined,
+        reference: effectiveRef,
         notes: notes.trim() || undefined,
       });
 
@@ -101,14 +133,19 @@ export const PaymentFormDialog = ({
         programName: currentLedger?.programName || "—",
         amount: numAmount,
         currency: "SSP",
-        method,
-        reference: reference.trim() || `REF-${Date.now().toString().slice(-6)}`,
+        method: computedMethod,
+        channel,
+        bankBranch: isBankChannel ? bankBranch.trim() : undefined,
+        slipNumber: slipNumber.trim() || undefined,
+        depositDate: isBankChannel ? depositDate : undefined,
+        reference: effectiveRef,
         notes: notes.trim() || undefined,
         balance: res.balance,
       };
 
       // Reset form
       setAmount("");
+      setSlipNumber("");
       setReference("");
       setNotes("");
       onOpenChange(false);
@@ -232,61 +269,155 @@ export const PaymentFormDialog = ({
             />
           </div>
 
-          {/* Payment Method Selector */}
+          {/* South Sudan Payment Channels Selector */}
           <div className="space-y-2">
-            <Label>Payment Method</Label>
+            <Label>Payment Channel</Label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all ${
-                  method === "cash"
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border text-xs font-medium transition-all ${
+                  channel === "cash"
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border hover:bg-muted/40"
                 }`}
-                onClick={() => setMethod("cash")}
+                onClick={() => setChannel("cash")}
               >
-                <Banknote className="size-4" />
-                <span>Cash</span>
+                <Banknote className="size-4 text-emerald-600" />
+                <span>Cash Office</span>
               </button>
               <button
                 type="button"
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all ${
-                  method === "bank"
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border text-xs font-medium transition-all ${
+                  channel === "m_gurush"
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border hover:bg-muted/40"
                 }`}
-                onClick={() => setMethod("bank")}
+                onClick={() => setChannel("m_gurush")}
               >
-                <Landmark className="size-4" />
-                <span>Bank Deposit</span>
+                <Smartphone className="size-4 text-amber-600" />
+                <span>m-GURUSH</span>
               </button>
               <button
                 type="button"
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border text-xs font-medium transition-all ${
-                  method === "mobile_money"
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border text-xs font-medium transition-all ${
+                  channel === "equity_bank"
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border hover:bg-muted/40"
                 }`}
-                onClick={() => setMethod("mobile_money")}
+                onClick={() => setChannel("equity_bank")}
               >
-                <Smartphone className="size-4" />
-                <span>Mobile Money</span>
+                <Landmark className="size-4 text-rose-600" />
+                <span>Equity Bank</span>
+              </button>
+              <button
+                type="button"
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border text-xs font-medium transition-all ${
+                  channel === "kcb_bank"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border hover:bg-muted/40"
+                }`}
+                onClick={() => setChannel("kcb_bank")}
+              >
+                <Landmark className="size-4 text-emerald-700" />
+                <span>KCB Bank</span>
+              </button>
+              <button
+                type="button"
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border text-xs font-medium transition-all ${
+                  channel === "stanbic_bank"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border hover:bg-muted/40"
+                }`}
+                onClick={() => setChannel("stanbic_bank")}
+              >
+                <Landmark className="size-4 text-sky-600" />
+                <span>Stanbic Bank</span>
+              </button>
+              <button
+                type="button"
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border text-xs font-medium transition-all ${
+                  channel === "bank_deposit"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border hover:bg-muted/40"
+                }`}
+                onClick={() => setChannel("bank_deposit")}
+              >
+                <CreditCard className="size-4 text-indigo-600" />
+                <span>Other Bank</span>
               </button>
             </div>
           </div>
 
-          {/* Reference & Slip Number */}
+          {/* Conditional Bank Deposit Fields */}
+          {isBankChannel && (
+            <div className="p-3 bg-muted/30 rounded-lg border space-y-3">
+              <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                <Landmark className="size-3.5 text-primary" /> Bank Deposit Slip Details
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="bankBranch" className="text-xs">Bank Branch</Label>
+                  <Input
+                    id="bankBranch"
+                    placeholder="e.g. Juba Main, Yei Branch"
+                    value={bankBranch}
+                    onChange={(e) => setBankBranch(e.target.value)}
+                    className="h-8 text-xs"
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="depositDate" className="text-xs">Date of Deposit</Label>
+                  <Input
+                    id="depositDate"
+                    type="date"
+                    value={depositDate}
+                    onChange={(e) => setDepositDate(e.target.value)}
+                    className="h-8 text-xs"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="slipNumber" className="text-xs">Teller / Deposit Slip Number *</Label>
+                <Input
+                  id="slipNumber"
+                  placeholder="e.g. SLIP-892011 / Teller #491"
+                  value={slipNumber}
+                  onChange={(e) => setSlipNumber(e.target.value)}
+                  className="h-8 text-xs font-mono"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Conditional m-GURUSH Fields */}
+          {channel === "m_gurush" && (
+            <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-200/50 space-y-2">
+              <p className="text-xs font-semibold text-amber-900 flex items-center gap-1.5">
+                <Smartphone className="size-3.5 text-amber-600" /> m-GURUSH Mobile Money
+              </p>
+              <div className="space-y-1.5">
+                <Label htmlFor="slipNumber" className="text-xs">m-GURUSH Tx Reference ID *</Label>
+                <Input
+                  id="slipNumber"
+                  placeholder="e.g. MG-2026-9810234"
+                  value={slipNumber}
+                  onChange={(e) => setSlipNumber(e.target.value)}
+                  className="h-8 text-xs font-mono bg-white"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Optional Internal Reference / Notes */}
           <div className="space-y-2">
-            <Label htmlFor="reference">Reference / Slip Number</Label>
+            <Label htmlFor="reference">Internal Reference (Optional)</Label>
             <Input
               id="reference"
-              placeholder={
-                method === "bank"
-                  ? "e.g. Stanbic Bank Slip #128940"
-                  : method === "mobile_money"
-                  ? "e.g. m-GURUSH / MTN Tx ID #49281"
-                  : "e.g. Cash Receipt or Book Voucher"
-              }
+              placeholder="e.g. Bursar Book Voucher #402"
               value={reference}
               onChange={(e) => setReference(e.target.value)}
             />

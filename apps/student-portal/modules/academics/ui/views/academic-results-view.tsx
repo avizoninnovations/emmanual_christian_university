@@ -1,18 +1,12 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { useMemo, useState } from "react";
 import { api } from "@workspace/backend/_generated/api";
 import {
   Award,
-  BookOpen,
   Printer,
-  CheckCircle2,
-  AlertCircle,
-  AlertTriangle,
-  GraduationCap,
-  Download,
   Loader2,
-  Calendar,
 } from "lucide-react";
 
 import { Button } from "@workspace/ui/components/button";
@@ -34,6 +28,8 @@ import {
 } from "@workspace/ui/components/table";
 
 export function AcademicResultsView() {
+  const [transcriptView, setTranscriptView] = useState<"semester" | "curriculum">("semester");
+  const [showInfo, setShowInfo] = useState(false);
   const data = useQuery(api.student_portal.getMyAcademicResults);
 
   if (!data) {
@@ -46,6 +42,37 @@ export function AcademicResultsView() {
   }
 
   const { student, semesters, cumulative } = data;
+  const curriculumGroups = useMemo(() => {
+    const groups = new Map<number, typeof semesters>();
+    semesters.forEach((semester) => semester.courses.forEach((course) => {
+      const year = course.yearOfStudy ?? 1;
+      const rows = groups.get(year) ?? [];
+      const existing = rows.find((row) => row.periodId === semester.periodId);
+      if (existing) existing.courses.push(course);
+      else rows.push({ ...semester, courses: [course] });
+      groups.set(year, rows);
+    }));
+    return Array.from(groups.entries()).sort(([a], [b]) => a - b);
+  }, [semesters]);
+  const displaySemesters = transcriptView === "semester"
+    ? semesters
+    : curriculumGroups.map(([year, rows]) => {
+        const first = rows[0]!;
+        const courses = rows.flatMap((row) => row.courses);
+        const approved = courses.filter((course) => course.status === "approved");
+        const credits = approved.reduce((total, course) => total + course.creditUnits, 0);
+        const gradePoints = credits > 0
+          ? approved.reduce((total, course) => total + course.gradePoints * course.creditUnits, 0) / credits
+          : 0;
+        return {
+          ...first,
+          periodId: `curriculum-year-${year}`,
+          periodName: `Year ${year}`,
+          courses,
+          semesterCreditUnits: credits,
+          semesterGPA: Number(gradePoints.toFixed(2)),
+        };
+      });
 
   const handlePrint = () => {
     window.print();
@@ -57,121 +84,54 @@ export function AcademicResultsView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">Academic Results & Transcripts</h1>
-            <Badge variant="outline" className="text-xs">
-              4.0 GPA Standard
-            </Badge>
+            <h1 className="text-2xl font-bold tracking-tight">My Transcripts</h1>
+            <Badge variant="outline" className="text-xs">{student.programName}</Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Continuous assessment (30%) and final examination (70%) performance record.
+            View your partial transcript by semester or curriculum year.
           </p>
         </div>
 
         <Button variant="outline" size="sm" onClick={handlePrint} className="gap-1.5 print:hidden">
-          <Printer className="size-3.5" /> Print Unofficial Transcript
+          <Printer className="size-3.5" /> Print Transcript
         </Button>
       </div>
 
-      {/* ── Academic Standing & Cumulative Summary Card ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* CGPA Card */}
-        <Card className="border-l-4 border-l-primary shadow-sm">
-          <CardContent className="pt-5 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl font-extrabold text-foreground">
-                  {cumulative.cgpa > 0 ? cumulative.cgpa.toFixed(2) : "—"}{" "}
-                  <span className="text-sm font-normal text-muted-foreground">/ 4.00</span>
-                </p>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-1">
-                  Cumulative GPA (CGPA)
-                </p>
-              </div>
-              <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                <Award className="size-5" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <Card className="shadow-sm print:hidden">
+        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold">Important Information to Note</p>
+            <p className="text-xs text-muted-foreground">View your partial transcript and academic progress.</p>
+            {showInfo && <p className="mt-2 max-w-2xl text-sm text-slate-600">Only results released by the university are shown here. Contact the Academic Registrar if a published result appears to be missing.</p>}
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setShowInfo((value) => !value)} aria-expanded={showInfo}>
+            {showInfo ? "Hide information" : "Show important information"}
+          </Button>
+        </CardContent>
+      </Card>
 
-        {/* Degree Honours Classification */}
-        <Card className="border-l-4 border-l-blue-500 shadow-sm">
-          <CardContent className="pt-5 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-lg font-bold text-blue-600 line-clamp-1">
-                  {cumulative.cgpa > 0 ? cumulative.degreeClassification : "Under Review"}
-                </p>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-1">
-                  Projected Degree Honours
-                </p>
-              </div>
-              <div className="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
-                <GraduationCap className="size-5" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Cumulative Credit Units */}
-        <Card className="border-l-4 border-l-emerald-500 shadow-sm">
-          <CardContent className="pt-5 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl font-extrabold text-emerald-600">
-                  {cumulative.totalCreditUnits}{" "}
-                  <span className="text-sm font-normal text-muted-foreground">CU</span>
-                </p>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-1">
-                  Cumulative Credit Units Earned
-                </p>
-              </div>
-              <div className="size-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                <BookOpen className="size-5" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex w-fit rounded-lg border border-slate-200 bg-white p-1 shadow-sm print:hidden" role="tablist" aria-label="Transcript views">
+        {(["semester", "curriculum"] as const).map((view) => (
+          <Button key={view} variant="ghost" role="tab" aria-selected={transcriptView === view} onClick={() => setTranscriptView(view)} className={transcriptView === view ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-slate-600"}>
+            {view === "semester" ? "Semester Based" : "Curriculum Based"}
+          </Button>
+        ))}
       </div>
 
-      {/* ── South Sudan Higher Education Grading Scale Legend ── */}
-      <Card className="border shadow-sm print:hidden">
-        <CardContent className="pt-4 pb-4">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              South Sudan National University Grading Scale (4.0 GPA Model)
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-center text-xs">
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-emerald-600">A (4.0)</span>
-                <span className="text-[10px] text-muted-foreground block">&ge; 80% (Excellent)</span>
-              </div>
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-blue-600">B+ (3.5)</span>
-                <span className="text-[10px] text-muted-foreground block">70 – 79% (Very Good)</span>
-              </div>
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-blue-600">B (3.0)</span>
-                <span className="text-[10px] text-muted-foreground block">60 – 69% (Good)</span>
-              </div>
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-amber-600">C+ (2.5)</span>
-                <span className="text-[10px] text-muted-foreground block">55 – 59% (Fairly Good)</span>
-              </div>
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-amber-600">C (2.0)</span>
-                <span className="text-[10px] text-muted-foreground block">50 – 54% (Pass Mark)</span>
-              </div>
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-orange-600">D (1.0)</span>
-                <span className="text-[10px] text-muted-foreground block">40 – 49% (Supplementary)</span>
-              </div>
-              <div className="bg-muted/40 p-2 rounded-md">
-                <span className="font-bold text-rose-600">F (0.0)</span>
-                <span className="text-[10px] text-muted-foreground block">&lt; 40% (Repeat)</span>
-              </div>
-            </div>
+      <Card className="border-0 shadow-sm ring-1 ring-slate-200/70">
+        <CardContent className="p-5 sm:p-6">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-slate-900">{student.name}</h2>
+            <p className="text-sm text-slate-500">{student.programName}</p>
           </div>
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t pt-4 text-sm sm:grid-cols-3 lg:grid-cols-6">
+            <div><dt className="text-xs text-slate-500">Registration number</dt><dd className="mt-1 font-medium text-slate-800">{student.registrationNumber}</dd></div>
+            <div><dt className="text-xs text-slate-500">Faculty</dt><dd className="mt-1 font-medium text-slate-800">{student.facultyName}</dd></div>
+            <div><dt className="text-xs text-slate-500">Current year</dt><dd className="mt-1 font-medium text-slate-800">Year {student.yearOfStudy}</dd></div>
+            <div><dt className="text-xs text-slate-500">Current semester</dt><dd className="mt-1 font-medium text-slate-800">{student.currentSemester}</dd></div>
+            <div><dt className="text-xs text-slate-500">Current CGPA</dt><dd className="mt-1 font-medium text-slate-800">{cumulative.cgpa.toFixed(2)}</dd></div>
+            <div><dt className="text-xs text-slate-500">Academic standing</dt><dd className="mt-1 font-medium text-slate-800">{cumulative.academicStanding}</dd></div>
+          </dl>
         </CardContent>
       </Card>
 
@@ -185,24 +145,24 @@ export function AcademicResultsView() {
           </p>
         </Card>
       ) : (
-        semesters.map((sem) => (
+        displaySemesters.map((sem) => (
           <Card key={sem.periodId} className="shadow-sm">
             <CardHeader className="pb-3 border-b bg-muted/20">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <CardTitle className="text-base font-semibold">
-                    {sem.periodName} ({sem.year})
+                    {transcriptView === "semester" ? `${sem.periodName} (${sem.year})` : sem.periodName}
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    Term {sem.term} Examination Session
+                    {transcriptView === "semester" ? `Term ${sem.term} Examination Session` : "Curriculum year results"}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
                   <Badge variant="outline" className="bg-background">
-                    Semester Credits: {sem.semesterCreditUnits} CU
+                    {transcriptView === "semester" ? "Semester Credits" : "Year Credits"}: {sem.semesterCreditUnits} CU
                   </Badge>
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 font-bold">
-                    Semester GPA: {sem.semesterGPA.toFixed(2)}
+                    {transcriptView === "semester" ? "Semester GPA" : "Year GPA"}: {sem.semesterGPA.toFixed(2)}
                   </Badge>
                 </div>
               </div>
@@ -212,75 +172,29 @@ export function AcademicResultsView() {
               <Table>
                 <TableHeader className="bg-muted/40">
                   <TableRow>
-                    <TableHead className="pl-6 w-32">Course Code</TableHead>
-                    <TableHead>Course Title</TableHead>
-                    <TableHead className="w-16 text-center">CU</TableHead>
-                    <TableHead className="w-24 text-center">CW (30)</TableHead>
-                    <TableHead className="w-24 text-center">Exam (70)</TableHead>
-                    <TableHead className="w-24 text-center font-bold">Total (100)</TableHead>
-                    <TableHead className="w-16 text-center">Grade</TableHead>
-                    <TableHead className="w-16 text-center">GP</TableHead>
-                    <TableHead className="text-right pr-6 w-32">Status</TableHead>
+                    <TableHead className="pl-6">Course</TableHead>
+                    <TableHead className="w-28 text-center">Mark</TableHead>
+                    <TableHead className="w-20 text-center">CU</TableHead>
+                    <TableHead className="w-20 text-center">GP</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sem.courses.map((course) => (
                     <TableRow key={course.assessmentId || course.courseId} className="hover:bg-muted/20">
-                      <TableCell className="pl-6 font-mono font-bold text-sm">
-                        {course.code}
+                      <TableCell className="pl-6">
+                        <span className="block font-medium text-sm text-foreground">{course.title}</span>
+                        <span className="font-mono text-xs text-muted-foreground">{course.code}</span>
                       </TableCell>
-                      <TableCell className="font-medium text-sm text-foreground">
-                        {course.title}
+                      <TableCell className="text-center font-mono font-bold text-sm">
+                        <span className={course.status === "approved" ? "text-foreground" : "text-slate-400"}>
+                          {course.status === "approved" ? course.finalScore : "—"}
+                        </span>
                       </TableCell>
                       <TableCell className="text-center font-mono text-xs">
                         {course.creditUnits}
                       </TableCell>
-                      <TableCell className="text-center font-mono text-xs">
-                        {course.courseworkMarks}
-                      </TableCell>
-                      <TableCell className="text-center font-mono text-xs">
-                        {course.examMarks}
-                      </TableCell>
-                      <TableCell className="text-center font-mono font-bold text-sm">
-                        <span className={course.finalScore >= 50 ? "text-foreground" : "text-rose-600 font-bold"}>
-                          {course.finalScore}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge
-                          variant="outline"
-                          className={
-                            course.grade === "A"
-                              ? "bg-emerald-500/10 text-emerald-600 border-emerald-200 font-bold"
-                              : course.grade.startsWith("B")
-                              ? "bg-blue-500/10 text-blue-600 border-blue-200"
-                              : course.grade.startsWith("C")
-                              ? "bg-amber-500/10 text-amber-600 border-amber-200"
-                              : course.grade === "D"
-                              ? "bg-orange-500/10 text-orange-600 border-orange-200"
-                              : "bg-rose-500/10 text-rose-600 border-rose-200 font-bold"
-                          }
-                        >
-                          {course.grade}
-                        </Badge>
-                      </TableCell>
                       <TableCell className="text-center font-mono text-xs text-muted-foreground">
-                        {course.gradePoints.toFixed(1)}
-                      </TableCell>
-                      <TableCell className="text-right pr-6">
-                        {course.isSupplementaryEligible ? (
-                          <Badge variant="outline" className="bg-orange-500/10 text-orange-600 border-orange-200 text-[10px]">
-                            Supplementary Eligible
-                          </Badge>
-                        ) : course.isRetakeRequired ? (
-                          <Badge variant="outline" className="bg-rose-500/10 text-rose-600 border-rose-200 text-[10px]">
-                            Retake Required
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-200 text-[10px]">
-                            Passed
-                          </Badge>
-                        )}
+                        {course.status === "approved" ? course.gradePoints.toFixed(1) : "—"}
                       </TableCell>
                     </TableRow>
                   ))}

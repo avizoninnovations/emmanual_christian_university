@@ -1,0 +1,316 @@
+{
+  "formatVersion": 1,
+  "sourceUrl": "https://ecu-ssd.org/faculties.html",
+  "retrievedAt": "2026-10-16T13:04:37.797110+00:00",
+  "purpose": "Published academic catalog for review before preparing database seed records.",
+  "counts": {
+    "faculties": 4,
+    "programs": 19,
+    "courseUnits": 0
+  },
+  "missingPublishedFields": [
+    "faculty codes",
+    "departments",
+    "program codes",
+    "program durations",
+    "course unit titles and codes",
+    "credit units",
+    "curriculum years and semesters"
+  ],
+  "sourcesChecked": [
+    {
+      "url": "https://ecu-ssd.org/faculties.html",
+      "status": "fetched",
+      "documentLinks": [],
+      "curriculumLinks": []
+    },
+    {
+      "url": "https://ecu-ssd.org/admission.html",
+      "status": "fetched",
+      "documentLinks": [],
+      "curriculumLinks": []
+    },
+    {
+      "url": "https://ecu-ssd.org/apply.html",
+      "status": "fetched",
+      "documentLinks": [],
+      "curriculumLinks": []
+    },
+    {
+      "url": "https://ecu-ssd.org/index.html",
+      "status": "fetched",
+      "documentLinks": [],
+      "curriculumLinks": []
+    }
+  ],
+  "faculties": [
+    {
+      "key": "theology",
+      "name": "Faculty of theology",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+      "officialCode": null,
+      "departmentsStatus": "not_published_on_faculty_page",
+      "departments": [],
+      "programs": [
+        {
+          "key": "bachelor-of-arts-in-theology",
+          "facultyKey": "theology",
+          "name": "Bachelor of Arts in Theology",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "diploma-in-theology",
+          "facultyKey": "theology",
+          "name": "Diploma in Theology",
+          "level": "Diploma",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "certificate-in-theology",
+          "facultyKey": "theology",
+          "name": "Certificate in Theology",
+          "level": "Certificate",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        }
+      ]
+    },
+    {
+      "key": "education",
+      "name": "Faculty of Education and Community Development",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+      "officialCode": null,
+      "departmentsStatus": "not_published_on_faculty_page",
+      "departments": [],
+      "programs": [
+        {
+          "key": "bachelor-in-education-mathematics-it",
+          "facultyKey": "education",
+          "name": "Bachelor in Education - Mathematics & IT",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "bachelor-of-science-in-social-works",
+          "facultyKey": "education",
+          "name": "Bachelor of science in Social works",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "bachelor-in-education-geography-english",
+          "facultyKey": "education",
+          "name": "Bachelor in Education - Geography & English",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "diploma-in-education",
+          "facultyKey": "education",
+          "name": "Diploma in Education",
+          "level": "Diploma",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "diploma-in-social-works",
+          "facultyKey": "education",
+          "name": "Diploma in Social works",
+          "level": "Diploma",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "certificate-in-education",
+          "facultyKey": "education",
+          "name": "Certificate in Education",
+          "level": "Certificate",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        }
+      ]
+    },
+    {
+      "key": "business",
+      "name": "Faculty of Business and Leadership Development",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+      "officialCode": null,
+      "departmentsStatus": "not_published_on_faculty_page",
+      "departments": [],
+      "programs": [
+        {
+          "key": "bachelor-in-business-administration",
+          "facultyKey": "business",
+          "name": "Bachelor in Business Administration",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "bachelor-in-public-administration",
+          "facultyKey": "business",
+          "name": "Bachelor in Public Administration",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "diploma-in-business-administration",
+          "facultyKey": "business",
+          "name": "Diploma in Business Administration",
+          "level": "Diploma",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "diploma-in-leadership-and-management",
+          "facultyKey": "business",
+          "name": "Diploma in Leadership and Management",
+          "level": "Diploma",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "certificate-in-business-administration",
+          "facultyKey": "business",
+          "name": "Certificate in Business Administration",
+          "level": "Certificate",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "certificate-in-leadership-and-management",
+          "facultyKey": "business",
+          "name": "Certificate in leadership and Management",
+          "level": "Certificate",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "certificate-in-information-technology-it",
+          "facultyKey": "business",
+          "name": "Certificate in Information Technology (IT)",
+          "level": "Certificate",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        }
+      ]
+    },
+    {
+      "key": "agriculture",
+      "name": "Faculty of Agriculture",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+      "officialCode": null,
+      "departmentsStatus": "not_published_on_faculty_page",
+      "departments": [],
+      "programs": [
+        {
+          "key": "bachelor-of-science-in-agribusiness",
+          "facultyKey": "agriculture",
+          "name": "Bachelor of Science in Agribusiness",
+          "level": "Bachelor",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "diploma-in-agribusiness",
+          "facultyKey": "agriculture",
+          "name": "Diploma in Agribusiness",
+          "level": "Diploma",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        },
+        {
+          "key": "certificate-in-agriculture",
+          "facultyKey": "agriculture",
+          "name": "Certificate in Agriculture",
+          "level": "Certificate",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+          "officialCode": null,
+          "departmentKey": null,
+          "durationYears": null,
+          "courseUnitsStatus": "not_published_on_faculty_page",
+          "courseUnits": []
+        }
+      ]
+    }
+  ]
+}

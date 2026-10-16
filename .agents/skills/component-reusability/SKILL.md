@@ -252,15 +252,16 @@ Pair with `InfiniteScrollTrigger` from
 
 ## 9. ECU Brand Theming
 
-### Single-Tenant Architecture
-ECU is **single-tenant** — there is one university, one brand, one
-colour. There is no `SchoolThemeProvider` and no per-school colour
-override.
+### ECU Brand Architecture
+ECU is a single-university system with one institutional brand. Keep
+theme ownership in the shared UI tokens; do not introduce per-school or
+per-tenant theme providers unless the product architecture changes.
 
 ### Rules
-- ❌ **NEVER** hardcode static hex values (e.g. `#800000`, `#1E88E5`).
-- ❌ **NEVER** introduce a per-school theme provider or dynamic colour
-  prop.
+- ❌ **NEVER** scatter raw hex values (e.g. `#800000`, `#1E88E5`)
+  across page and component styles.
+- ❌ **NEVER** introduce per-school theme providers or dynamic colour
+  props for the current single-university design.
 - ✅ **ALWAYS** use Tailwind theme utility classes mapped to CSS
   variables defined in `globals.css`:
   - `bg-primary`, `text-primary`, `border-primary` (ECU Maroon)
@@ -268,6 +269,9 @@ override.
   - `bg-accent`, `text-accent-foreground`
   - `bg-background`, `text-foreground`, `border-border`
   - `bg-muted`, `text-muted-foreground`
+- For a deliberate one-off accent from an approved design reference,
+  define a named CSS variable in the shared theme instead of repeating
+  raw colour literals in components.
 
 ### Typography
 - SANS (UI body): Inter

@@ -24,7 +24,7 @@ Generation**, **Online Payments (m-Gurush)**, or **Lesson Plans**.
   dates). Example: `.index("by_student", ["studentId"])`.
 - If the table is expected to grow beyond 50 records, also add a
   `searchIndex` with the right `filterFields`
-  (see `.agents/convex-type-safety/SKILL.md`).
+  (see `.agents/skills/convex-type-safety/SKILL.md`).
 
 ## 2. Backend Implementation
 

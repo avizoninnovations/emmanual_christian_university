@@ -58,7 +58,7 @@ export default function DashboardPage() {
   );
   const isFinanceCleared =
     profile.financial.balance <= 0 || profile.financial.clearanceStatus === "cleared";
-  const isAttendanceCleared = (attendance?.overallPercentage ?? 100) >= 75;
+  const isAttendanceCleared = attendance !== null && attendance !== undefined && attendance.overallPercentage >= 75;
   const isExamCardReady = isFinanceCleared && isAttendanceCleared && registeredCourses.length > 0;
 
   return (
@@ -187,10 +187,12 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-amber-600">
-                  {attendance?.overallPercentage ?? 100}%
+                  {attendance ? `${attendance.overallPercentage}%` : "—"}
                 </p>
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mt-1">
-                  {isAttendanceCleared ? (
+                  {!attendance ? (
+                    <span className="text-slate-500 font-semibold">Attendance not available</span>
+                  ) : isAttendanceCleared ? (
                     <span className="text-emerald-600 font-semibold">&ge; 75% Exam Eligible</span>
                   ) : (
                     <span className="text-rose-600 font-semibold">&lt; 75% Barred Risk</span>

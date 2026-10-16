@@ -369,6 +369,134 @@ export default defineSchema({
     .index("by_lecturer_period", ["lecturerId", "periodId"])
     .index("by_period_day", ["periodId", "dayOfWeek"]),
 
+  /** Student-visible examination schedule entries, maintained by examination staff. */
+  examTimetables: defineTable({
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    examDate: v.string(), // YYYY-MM-DD
+    startTime: v.string(),
+    endTime: v.string(),
+    room: v.string(),
+    venue: v.optional(v.string()),
+    ...timestamps,
+  })
+    .index("by_course_period", ["courseId", "periodId"])
+    .index("by_period_date", ["periodId", "examDate"]),
+
+  /** Student requests and submissions for additional academic services. */
+  aegrotatApplications: defineTable({
+    studentId: v.id("students"),
+    periodId: v.id("academicPeriods"),
+    courseId: v.id("courses"),
+    reason: v.string(),
+    attachmentId: v.optional(v.id("_storage")),
+    status: v.union(v.literal("submitted"), v.literal("under_review"), v.literal("approved"), v.literal("rejected")),
+    submittedAt: v.number(),
+    ...timestamps,
+  })
+    .index("by_student", ["studentId"])
+    .index("by_student_period", ["studentId", "periodId"]),
+
+  deadSemesterRequests: defineTable({
+    studentId: v.id("students"),
+    targetYear: v.number(),
+    targetTerm: v.number(),
+    reason: v.string(),
+    attachmentId: v.optional(v.id("_storage")),
+    status: v.union(v.literal("submitted"), v.literal("under_review"), v.literal("approved"), v.literal("rejected")),
+    submittedAt: v.number(),
+    ...timestamps,
+  })
+    .index("by_student", ["studentId"])
+    .index("by_status", ["status"]),
+
+  lecturerEvaluations: defineTable({
+    studentId: v.id("students"),
+    lecturerId: v.string(),
+    courseId: v.id("courses"),
+    periodId: v.id("academicPeriods"),
+    responses: v.array(v.object({ question: v.string(), rating: v.number() })),
+    comment: v.optional(v.string()),
+    submittedAt: v.number(),
+    ...timestamps,
+  })
+    .index("by_student_period", ["studentId", "periodId"])
+    .index("by_student_course_period", ["studentId", "courseId", "periodId"]),
+
+  internshipPlacements: defineTable({
+    studentId: v.id("students"),
+    periodId: v.id("academicPeriods"),
+    organization: v.string(),
+    country: v.string(),
+    district: v.string(),
+    location: v.string(),
+    startDate: v.string(),
+    endDate: v.string(),
+    phone: v.string(),
+    email: v.string(),
+    supervisorName: v.string(),
+    supervisorPhone: v.string(),
+    supervisorEmail: v.string(),
+    acceptanceLetterId: v.optional(v.id("_storage")),
+    status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
+    ...timestamps,
+  })
+    .index("by_student_period", ["studentId", "periodId"]),
+
+  internshipLogbookTasks: defineTable({
+    studentId: v.id("students"),
+    placementId: v.id("internshipPlacements"),
+    date: v.string(),
+    activity: v.string(),
+    lessonLearned: v.string(),
+    skills: v.string(),
+    challenges: v.optional(v.string()),
+    status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
+    ...timestamps,
+  })
+    .index("by_student_placement", ["studentId", "placementId"]),
+
+  internshipAgencyContacts: defineTable({
+    studentId: v.id("students"),
+    placementId: v.id("internshipPlacements"),
+    name: v.string(),
+    title: v.optional(v.string()),
+    phone: v.string(),
+    email: v.string(),
+    ...timestamps,
+  })
+    .index("by_student_placement", ["studentId", "placementId"]),
+
+  studentElections: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    opensAt: v.number(),
+    closesAt: v.number(),
+    status: v.union(v.literal("draft"), v.literal("open"), v.literal("closed")),
+    ...timestamps,
+  }).index("by_status", ["status"]),
+
+  studentElectionApplications: defineTable({
+    electionId: v.id("studentElections"),
+    studentId: v.id("students"),
+    position: v.string(),
+    statement: v.string(),
+    status: v.union(v.literal("submitted"), v.literal("under_review"), v.literal("approved"), v.literal("rejected")),
+    submittedAt: v.number(),
+    ...timestamps,
+  })
+    .index("by_student", ["studentId"])
+    .index("by_election", ["electionId"]),
+
+  electoralCommitteeMembers: defineTable({
+    name: v.string(),
+    role: v.string(),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    status: v.union(v.literal("active"), v.literal("inactive")),
+    ...timestamps,
+  }).index("by_status", ["status"]),
+
   /**
    * 8C. Lecturer Absence & Teaching Cover Arrangements
    */

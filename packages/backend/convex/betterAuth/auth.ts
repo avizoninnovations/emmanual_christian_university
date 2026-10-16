@@ -24,10 +24,12 @@ export const createAuthOptions = (ctx: any) => {
   return {
     appName: "Emmanuel Christian University",
     baseURL: process.env.SITE_URL || "http://localhost:3004",
+    trustedOrigins: (process.env.STUDENT_PORTAL_URL || "http://localhost:3005").split(",").map((origin) => origin.trim()),
     secret: process.env.BETTER_AUTH_SECRET || "87h2gks9f2kxl09z1m4p6q8r3t5v7y9x",
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,
+      disableSignUp: true,
     },
     plugins: [
         convex({ authConfig }),

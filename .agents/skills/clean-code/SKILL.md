@@ -93,10 +93,11 @@ Operations must be decomposed into 4 distinct layers:
 - Connect submit buttons directly to `form.formState.isSubmitting` using
   `<Button isLoading={isSubmitting}>`.
 
-### Rule 5: ECU Brand Theming (OKLCH CSS Variables, Zero Hardcoded Hex)
-- **Zero Static Hex Colors in Portal Views**: Never hardcode colors like
-  `#800000`, `#f97316`, or `#1E88E5` in dashboards, marksheets, tables,
-  dialogs, or components.
+### Rule 5: ECU Brand Theming (Shared CSS Variables)
+- Do not scatter hardcoded colors like `#800000`, `#f97316`, or
+  `#1E88E5` through portal views. Use the shared theme tokens for normal
+  UI, and define a named shared variable when a reference-specific
+  accent is intentionally required.
 - **ECU Brand Color**: Maroon `var(--primary)` (`#800000` defined in
   `globals.css`).
 - **Tailwind Theme Tokens**: Always style UI elements with dynamic
@@ -168,7 +169,12 @@ emmanual_christian_university1/
 │   ├── ui/                            # shadcn design system primitives
 │   │   └── src/components/
 │   └── typescript-config/             # Shared tsconfigs
-└── .agents/                           # THIS directory — agent skills
+├── AGENTS.md                          # Shared instructions for coding agents
+├── CLAUDE.md                          # Claude entry point importing AGENTS.md
+└── .agents/
+    ├── skills/                        # Shared project skills
+    ├── rules/                         # Detailed standards
+    └── workflows/                     # Repeatable implementation workflows
 ```
 
 ---

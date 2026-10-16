@@ -398,6 +398,81 @@ export const getMyRegisteredCourses = query({
   },
 });
 
+/** Returns only this student's schedule for courses registered in the selected term. */
+export const getMyTimetable = query({
+  args: {
+    periodId: v.optional(v.id("academicPeriods")),
+    type: v.union(v.literal("lecture"), v.literal("exam")),
+  },
+  handler: async (ctx, args) => {
+    const userId = await assertAuthenticated(ctx);
+    const student = await resolveCurrentStudent(ctx, userId);
+    if (!student) return { period: null, entries: [] };
+
+    let periodId = args.periodId ?? student.currentPeriodId;
+    if (!periodId) {
+      const activePeriod = await ctx.db
+        .query("academicPeriods")
+        .withIndex("by_status", (q) => q.eq("status", "active"))
+        .first();
+      periodId = activePeriod?._id;
+    }
+    if (!periodId) return { period: null, entries: [] };
+
+    const period = await ctx.db.get(periodId as Id<"academicPeriods">);
+    if (!period) return { period: null, entries: [] };
+
+    const registrations = await ctx.db
+      .query("studentCourseRegistrations")
+      .withIndex("by_student_period", (q) =>
+        q.eq("studentId", student._id).eq("periodId", periodId!)
+      )
+      .collect();
+    const courseIds = [...new Set(registrations
+      .filter((registration) => registration.status === "registered")
+      .map((registration) => registration.courseId))];
+
+    const entries = (await Promise.all(courseIds.map(async (courseId) => {
+      const slots = args.type === "lecture"
+        ? await ctx.db.query("timetables").withIndex("by_course_period", (q) =>
+            q.eq("courseId", courseId).eq("periodId", periodId!)
+          ).collect()
+        : await ctx.db.query("examTimetables").withIndex("by_course_period", (q) =>
+            q.eq("courseId", courseId).eq("periodId", periodId!)
+          ).collect();
+      const course = await ctx.db.get(courseId);
+      return slots.map((slot) => ({
+        _id: slot._id,
+        courseCode: course?.code ?? "—",
+        courseTitle: course?.title ?? "Course details unavailable",
+        dayOfWeek: "dayOfWeek" in slot ? slot.dayOfWeek : undefined,
+        examDate: "examDate" in slot ? slot.examDate : undefined,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        room: slot.room,
+        venue: "venue" in slot ? slot.venue : "building" in slot ? slot.building : undefined,
+      }));
+    }))).flat();
+
+    const dayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    entries.sort((a, b) => {
+      if (args.type === "lecture") {
+        const dayDiff = dayOrder.indexOf(a.dayOfWeek ?? "") - dayOrder.indexOf(b.dayOfWeek ?? "");
+        if (dayDiff !== 0) return dayDiff;
+      } else {
+        const dateDiff = (a.examDate ?? "").localeCompare(b.examDate ?? "");
+        if (dateDiff !== 0) return dateDiff;
+      }
+      return a.startTime.localeCompare(b.startTime);
+    });
+
+    return {
+      period: { name: period.name, term: period.term, year: period.year },
+      entries,
+    };
+  },
+});
+
 // ─────────────────────────────────────────────────────────
 // 3. ACADEMIC RESULTS & UNOFFICIAL TRANSCRIPT
 // ─────────────────────────────────────────────────────────
@@ -410,6 +485,9 @@ export const getMyAcademicResults = query({
     if (!student) return null;
 
     const program = (await ctx.db.get(student.programId as Id<"programs">)) as any;
+    const department = program?.departmentId ? await ctx.db.get(program.departmentId as Id<"departments">) : null;
+    const faculty = department?.facultyId ? await ctx.db.get(department.facultyId) : null;
+    const currentPeriod = student.currentPeriodId ? await ctx.db.get(student.currentPeriodId as Id<"academicPeriods">) : null;
     const usersMap = await getUsersMap(ctx);
     const user = usersMap.get(userId);
 
@@ -456,6 +534,7 @@ export const getMyAcademicResults = query({
               code: course?.code ?? "—",
               title: course?.title ?? "—",
               creditUnits: cu,
+              yearOfStudy: course?.yearOfStudy ?? 1,
               courseworkMarks: m.courseworkMarks,
               examMarks: m.examMarks,
               finalScore: m.finalScore,
@@ -491,7 +570,10 @@ export const getMyAcademicResults = query({
         registrationNumber: student.registrationNumber,
         programName: program?.name ?? "—",
         programCode: program?.code ?? "—",
+        facultyName: faculty?.name ?? "—",
         yearOfStudy: student.yearOfStudy,
+        currentTerm: currentPeriod?.term ?? student.term,
+        currentSemester: currentPeriod?.name ?? `Semester ${student.term}`,
       },
       semesters,
       cumulative: {

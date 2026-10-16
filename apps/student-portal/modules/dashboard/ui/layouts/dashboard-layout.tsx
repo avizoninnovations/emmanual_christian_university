@@ -3,6 +3,7 @@ import { DashboardSidebar } from "@/modules/dashboard/ui/components/dashboard-si
 import { SidebarProvider } from "@workspace/ui/components/sidebar";
 import { Provider } from "jotai";
 import { cookies } from "next/headers";
+import { DashboardTopbar } from "@/modules/dashboard/ui/components/dashboard-topbar";
 
 export const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const cookieStore = await cookies();
@@ -14,7 +15,8 @@ export const DashboardLayout = async ({ children }: { children: React.ReactNode 
       <Provider>
         <SidebarProvider defaultOpen={defaultOpen}>
           <DashboardSidebar />
-          <main className="flex flex-1 flex-col">
+          <main className="flex min-h-screen flex-1 flex-col bg-[#f1f3f8]">
+            <DashboardTopbar />
             {children}
           </main>
         </SidebarProvider>

@@ -1,0 +1,3484 @@
+{
+  "formatVersion": 1,
+  "metadata": {
+    "name": "ECU Student Portal Demo Seed Fixture",
+    "generatedAt": "2026-10-16",
+    "officialCatalogSource": "https://ecu-ssd.org/faculties.html",
+    "officialFacultyCount": 4,
+    "officialProgramCount": 19,
+    "syntheticCourseUnitCount": 76,
+    "syntheticTestStaffCount": 6,
+    "syntheticTestStudentCount": 8,
+    "warning": "All records except faculty and program display names are fictional demo data. Do not present generated units, codes, durations, fees, grades, timetables or accounts as official ECU records.",
+    "databaseWritePerformed": false,
+    "retakeCaseCount": 4,
+    "studentLogin": "registration number and password; Better Auth email is deterministically derived by the documented normalization rule"
+  },
+  "academicPeriods": [
+    {
+      "key": "2026-term-1",
+      "name": "Semester 1",
+      "term": 1,
+      "year": 2026,
+      "startDate": "2026-02-01",
+      "endDate": "2026-06-15",
+      "status": "completed",
+      "syntheticDemoPeriod": true
+    },
+    {
+      "key": "2026-term-2",
+      "name": "Semester 2",
+      "term": 2,
+      "year": 2026,
+      "startDate": "2026-08-15",
+      "endDate": "2026-12-10",
+      "status": "active",
+      "syntheticDemoPeriod": true
+    }
+  ],
+  "faculties": [
+    {
+      "key": "theology",
+      "code": "DEMO-FAC-THEO",
+      "name": "Faculty of theology",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+      "sourceCatalogKey": "theology",
+      "syntheticCode": true,
+      "departments": [
+        {
+          "key": "dept-theology",
+          "code": "DEMO-DEPT-THEO",
+          "name": "Demo Department of theology",
+          "syntheticName": true
+        }
+      ],
+      "programs": [
+        {
+          "key": "bachelor-of-arts-in-theology",
+          "code": "DEMO-THEO-BA",
+          "name": "Bachelor of Arts in Theology",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-theology",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+          "sourceName": "Bachelor of Arts in Theology",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-theo-0101",
+              "code": "D-THEO-0101",
+              "title": "Biblical Hermeneutics",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-BA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0102",
+              "code": "D-THEO-0102",
+              "title": "Old Testament Survey",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-BA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0103",
+              "code": "D-THEO-0103",
+              "title": "New Testament Survey",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-BA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0104",
+              "code": "D-THEO-0104",
+              "title": "Christian Doctrine and Ethics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-BA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "diploma-in-theology",
+          "code": "DEMO-THEO-DIP",
+          "name": "Diploma in Theology",
+          "level": "Diploma",
+          "durationYears": 2,
+          "departmentKey": "dept-theology",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+          "sourceName": "Diploma in Theology",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-theo-0201",
+              "code": "D-THEO-0201",
+              "title": "Introduction to Biblical Studies",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0202",
+              "code": "D-THEO-0202",
+              "title": "Pastoral Ministry Practice",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0203",
+              "code": "D-THEO-0203",
+              "title": "Church History",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0204",
+              "code": "D-THEO-0204",
+              "title": "Christian Discipleship",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "certificate-in-theology",
+          "code": "DEMO-THEO-CERT",
+          "name": "Certificate in Theology",
+          "level": "Certificate",
+          "durationYears": 1,
+          "departmentKey": "dept-theology",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#theology",
+          "sourceName": "Certificate in Theology",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-theo-0301",
+              "code": "D-THEO-0301",
+              "title": "Bible Foundations",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0302",
+              "code": "D-THEO-0302",
+              "title": "Introduction to Christian Ministry",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0303",
+              "code": "D-THEO-0303",
+              "title": "Spiritual Formation",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-theo-0304",
+              "code": "D-THEO-0304",
+              "title": "Church and Community Service",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-theology",
+              "programCode": "DEMO-THEO-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "education",
+      "code": "DEMO-FAC-EDU",
+      "name": "Faculty of Education and Community Development",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+      "sourceCatalogKey": "education",
+      "syntheticCode": true,
+      "departments": [
+        {
+          "key": "dept-education",
+          "code": "DEMO-DEPT-EDU",
+          "name": "Demo Department of Education and Community Development",
+          "syntheticName": true
+        }
+      ],
+      "programs": [
+        {
+          "key": "bachelor-in-education-mathematics-it",
+          "code": "DEMO-EDU-MATH-IT",
+          "name": "Bachelor in Education - Mathematics & IT",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-education",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "sourceName": "Bachelor in Education - Mathematics & IT",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-edu-0101",
+              "code": "D-EDU-0101",
+              "title": "Foundations of Education",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-MATH-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0102",
+              "code": "D-EDU-0102",
+              "title": "Mathematics Teaching Methods",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-MATH-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0103",
+              "code": "D-EDU-0103",
+              "title": "ICT in Teaching and Learning",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-MATH-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0104",
+              "code": "D-EDU-0104",
+              "title": "Curriculum Design and Assessment",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-MATH-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "bachelor-of-science-in-social-works",
+          "code": "DEMO-EDU-SOC-WORK",
+          "name": "Bachelor of science in Social works",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-education",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "sourceName": "Bachelor of science in Social works",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-edu-0201",
+              "code": "D-EDU-0201",
+              "title": "Introduction to Social Work",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SOC-WORK",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0202",
+              "code": "D-EDU-0202",
+              "title": "Human Growth and Development",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SOC-WORK",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0203",
+              "code": "D-EDU-0203",
+              "title": "Community Development Practice",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SOC-WORK",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0204",
+              "code": "D-EDU-0204",
+              "title": "Social Work Ethics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SOC-WORK",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "bachelor-in-education-geography-english",
+          "code": "DEMO-EDU-GEO-ENG",
+          "name": "Bachelor in Education - Geography & English",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-education",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "sourceName": "Bachelor in Education - Geography & English",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-edu-0301",
+              "code": "D-EDU-0301",
+              "title": "English Language Teaching Methods",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-GEO-ENG",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0302",
+              "code": "D-EDU-0302",
+              "title": "Physical Geography",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-GEO-ENG",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0303",
+              "code": "D-EDU-0303",
+              "title": "Curriculum and Lesson Planning",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-GEO-ENG",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0304",
+              "code": "D-EDU-0304",
+              "title": "Teaching Practice",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-GEO-ENG",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "diploma-in-education",
+          "code": "DEMO-EDU-DIP",
+          "name": "Diploma in Education",
+          "level": "Diploma",
+          "durationYears": 2,
+          "departmentKey": "dept-education",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "sourceName": "Diploma in Education",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-edu-0401",
+              "code": "D-EDU-0401",
+              "title": "Educational Psychology",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0402",
+              "code": "D-EDU-0402",
+              "title": "General Teaching Methods",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0403",
+              "code": "D-EDU-0403",
+              "title": "Classroom Assessment",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0404",
+              "code": "D-EDU-0404",
+              "title": "Teaching Practice",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "diploma-in-social-works",
+          "code": "DEMO-EDU-SW-DIP",
+          "name": "Diploma in Social works",
+          "level": "Diploma",
+          "durationYears": 2,
+          "departmentKey": "dept-education",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "sourceName": "Diploma in Social works",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-edu-0501",
+              "code": "D-EDU-0501",
+              "title": "Social Welfare Systems",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SW-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0502",
+              "code": "D-EDU-0502",
+              "title": "Casework and Group Work",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SW-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0503",
+              "code": "D-EDU-0503",
+              "title": "Community Field Practice",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SW-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0504",
+              "code": "D-EDU-0504",
+              "title": "Social Work Ethics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-SW-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "certificate-in-education",
+          "code": "DEMO-EDU-CERT",
+          "name": "Certificate in Education",
+          "level": "Certificate",
+          "durationYears": 1,
+          "departmentKey": "dept-education",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#education",
+          "sourceName": "Certificate in Education",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-edu-0601",
+              "code": "D-EDU-0601",
+              "title": "Foundations of Teaching",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0602",
+              "code": "D-EDU-0602",
+              "title": "Child Development",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0603",
+              "code": "D-EDU-0603",
+              "title": "Teaching Methods",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-edu-0604",
+              "code": "D-EDU-0604",
+              "title": "Classroom Practice",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-education",
+              "programCode": "DEMO-EDU-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "business",
+      "code": "DEMO-FAC-BUS",
+      "name": "Faculty of Business and Leadership Development",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+      "sourceCatalogKey": "business",
+      "syntheticCode": true,
+      "departments": [
+        {
+          "key": "dept-business",
+          "code": "DEMO-DEPT-BUS",
+          "name": "Demo Department of Business and Leadership Development",
+          "hodStaffEmail": "hod.demo@ecu-ssd.org",
+          "syntheticName": true
+        }
+      ],
+      "programs": [
+        {
+          "key": "bachelor-in-business-administration",
+          "code": "DEMO-BUS-BBA",
+          "name": "Bachelor in Business Administration",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Bachelor in Business Administration",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0101",
+              "code": "D-BUS-0101",
+              "title": "Principles of Management",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-BBA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0102",
+              "code": "D-BUS-0102",
+              "title": "Financial Accounting I",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-BBA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0103",
+              "code": "D-BUS-0103",
+              "title": "Business Communication",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-BBA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0104",
+              "code": "D-BUS-0104",
+              "title": "Business Mathematics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-BBA",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "bachelor-in-public-administration",
+          "code": "DEMO-BUS-PUBLIC-ADMIN",
+          "name": "Bachelor in Public Administration",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Bachelor in Public Administration",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0201",
+              "code": "D-BUS-0201",
+              "title": "Introduction to Public Administration",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-PUBLIC-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0202",
+              "code": "D-BUS-0202",
+              "title": "Public Policy Foundations",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-PUBLIC-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0203",
+              "code": "D-BUS-0203",
+              "title": "Government Accounting",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-PUBLIC-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0204",
+              "code": "D-BUS-0204",
+              "title": "Public Sector Ethics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-PUBLIC-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "diploma-in-business-administration",
+          "code": "DEMO-BUS-DIP-ADMIN",
+          "name": "Diploma in Business Administration",
+          "level": "Diploma",
+          "durationYears": 2,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Diploma in Business Administration",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0301",
+              "code": "D-BUS-0301",
+              "title": "Principles of Business Administration",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0302",
+              "code": "D-BUS-0302",
+              "title": "Financial Accounting",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0303",
+              "code": "D-BUS-0303",
+              "title": "Business Communication",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0304",
+              "code": "D-BUS-0304",
+              "title": "Small Business Management",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "diploma-in-leadership-and-management",
+          "code": "DEMO-BUS-DIP-LEAD",
+          "name": "Diploma in Leadership and Management",
+          "level": "Diploma",
+          "durationYears": 2,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Diploma in Leadership and Management",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0401",
+              "code": "D-BUS-0401",
+              "title": "Leadership Foundations",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0402",
+              "code": "D-BUS-0402",
+              "title": "Organizational Management",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0403",
+              "code": "D-BUS-0403",
+              "title": "Human Resource Practice",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0404",
+              "code": "D-BUS-0404",
+              "title": "Leadership and Ethics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-DIP-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "certificate-in-business-administration",
+          "code": "DEMO-BUS-CERT-ADMIN",
+          "name": "Certificate in Business Administration",
+          "level": "Certificate",
+          "durationYears": 1,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Certificate in Business Administration",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0501",
+              "code": "D-BUS-0501",
+              "title": "Introduction to Business",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0502",
+              "code": "D-BUS-0502",
+              "title": "Basic Accounting",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0503",
+              "code": "D-BUS-0503",
+              "title": "Customer Service Skills",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0504",
+              "code": "D-BUS-0504",
+              "title": "Entrepreneurship Foundations",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-ADMIN",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "certificate-in-leadership-and-management",
+          "code": "DEMO-BUS-CERT-LEAD",
+          "name": "Certificate in leadership and Management",
+          "level": "Certificate",
+          "durationYears": 1,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Certificate in leadership and Management",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0601",
+              "code": "D-BUS-0601",
+              "title": "Introduction to Leadership",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0602",
+              "code": "D-BUS-0602",
+              "title": "Communication for Leaders",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0603",
+              "code": "D-BUS-0603",
+              "title": "Team Management",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0604",
+              "code": "D-BUS-0604",
+              "title": "Ethical Leadership",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-LEAD",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "certificate-in-information-technology-it",
+          "code": "DEMO-BUS-CERT-IT",
+          "name": "Certificate in Information Technology (IT)",
+          "level": "Certificate",
+          "durationYears": 1,
+          "departmentKey": "dept-business",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#business",
+          "sourceName": "Certificate in Information Technology (IT)",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-bus-0701",
+              "code": "D-BUS-0701",
+              "title": "Computer Applications",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0702",
+              "code": "D-BUS-0702",
+              "title": "Digital Literacy",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0703",
+              "code": "D-BUS-0703",
+              "title": "Introduction to Programming",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-bus-0704",
+              "code": "D-BUS-0704",
+              "title": "Information Technology Practice",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-business",
+              "programCode": "DEMO-BUS-CERT-IT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "agriculture",
+      "code": "DEMO-FAC-AGR",
+      "name": "Faculty of Agriculture",
+      "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+      "sourceCatalogKey": "agriculture",
+      "syntheticCode": true,
+      "departments": [
+        {
+          "key": "dept-agriculture",
+          "code": "DEMO-DEPT-AGR",
+          "name": "Demo Department of Agriculture",
+          "syntheticName": true
+        }
+      ],
+      "programs": [
+        {
+          "key": "bachelor-of-science-in-agribusiness",
+          "code": "DEMO-AGR-BSC",
+          "name": "Bachelor of Science in Agribusiness",
+          "level": "Bachelor",
+          "durationYears": 4,
+          "departmentKey": "dept-agriculture",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+          "sourceName": "Bachelor of Science in Agribusiness",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-agr-0101",
+              "code": "D-AGR-0101",
+              "title": "Introduction to Agribusiness",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-BSC",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0102",
+              "code": "D-AGR-0102",
+              "title": "Principles of Crop Science",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-BSC",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0103",
+              "code": "D-AGR-0103",
+              "title": "Agricultural Economics",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-BSC",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0104",
+              "code": "D-AGR-0104",
+              "title": "Farm Management",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-BSC",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "diploma-in-agribusiness",
+          "code": "DEMO-AGR-DIP",
+          "name": "Diploma in Agribusiness",
+          "level": "Diploma",
+          "durationYears": 2,
+          "departmentKey": "dept-agriculture",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+          "sourceName": "Diploma in Agribusiness",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-agr-0201",
+              "code": "D-AGR-0201",
+              "title": "Agribusiness Foundations",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0202",
+              "code": "D-AGR-0202",
+              "title": "Crop Production Practice",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0203",
+              "code": "D-AGR-0203",
+              "title": "Livestock Production",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0204",
+              "code": "D-AGR-0204",
+              "title": "Agricultural Marketing",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-DIP",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        },
+        {
+          "key": "certificate-in-agriculture",
+          "code": "DEMO-AGR-CERT",
+          "name": "Certificate in Agriculture",
+          "level": "Certificate",
+          "durationYears": 1,
+          "departmentKey": "dept-agriculture",
+          "sourceUrl": "https://ecu-ssd.org/faculties.html#agriculture",
+          "sourceName": "Certificate in Agriculture",
+          "syntheticCode": true,
+          "durationAssumption": true,
+          "courseUnits": [
+            {
+              "key": "d-agr-0301",
+              "code": "D-AGR-0301",
+              "title": "Introduction to Agriculture",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0302",
+              "code": "D-AGR-0302",
+              "title": "Soil and Crop Basics",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 1,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0303",
+              "code": "D-AGR-0303",
+              "title": "Farm Skills Practicum",
+              "creditUnits": 3,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            },
+            {
+              "key": "d-agr-0304",
+              "code": "D-AGR-0304",
+              "title": "Sustainable Agriculture",
+              "creditUnits": 2,
+              "yearOfStudy": 1,
+              "semester": 2,
+              "departmentKey": "dept-agriculture",
+              "programCode": "DEMO-AGR-CERT",
+              "syntheticDemoUnit": true,
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "staffAccounts": [
+    {
+      "email": "admin.demo@ecu-ssd.org",
+      "name": "Demo System Administrator",
+      "password": "UniSystem2026!",
+      "authRole": "admin",
+      "roles": [
+        "admin",
+        "staff"
+      ],
+      "staffId": "DEMO-STAFF-ADMIN",
+      "departmentKey": "dept-business",
+      "title": "Demo Administrator"
+    },
+    {
+      "email": "hod.demo@ecu-ssd.org",
+      "name": "Demo Head of Department",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "roles": [
+        "hod",
+        "staff"
+      ],
+      "staffId": "DEMO-STAFF-HOD",
+      "departmentKey": "dept-business",
+      "title": "Demo HOD"
+    },
+    {
+      "email": "lecturer.theology.demo@ecu-ssd.org",
+      "name": "Demo theology Lecturer",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "roles": [
+        "lecturer",
+        "staff"
+      ],
+      "staffId": "DEMO-LECT-THEO",
+      "departmentKey": "dept-theology",
+      "title": "Demo Lecturer"
+    },
+    {
+      "email": "lecturer.education.demo@ecu-ssd.org",
+      "name": "Demo Education and Community Development Lecturer",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "roles": [
+        "lecturer",
+        "staff"
+      ],
+      "staffId": "DEMO-LECT-EDU",
+      "departmentKey": "dept-education",
+      "title": "Demo Lecturer"
+    },
+    {
+      "email": "lecturer.business.demo@ecu-ssd.org",
+      "name": "Demo Business and Leadership Development Lecturer",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "roles": [
+        "lecturer",
+        "staff"
+      ],
+      "staffId": "DEMO-LECT-BUS",
+      "departmentKey": "dept-business",
+      "title": "Demo Lecturer"
+    },
+    {
+      "email": "lecturer.agriculture.demo@ecu-ssd.org",
+      "name": "Demo Agriculture Lecturer",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "roles": [
+        "lecturer",
+        "staff"
+      ],
+      "staffId": "DEMO-LECT-AGR",
+      "departmentKey": "dept-agriculture",
+      "title": "Demo Lecturer"
+    }
+  ],
+  "studentAccounts": [
+    {
+      "email": "demo20260001@students.ecu-ssd.org",
+      "name": "Demo Student 01",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0001",
+      "programCode": "DEMO-THEO-BA",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260002@students.ecu-ssd.org",
+      "name": "Demo Student 02",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0002",
+      "programCode": "DEMO-THEO-BA",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "partial",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260003@students.ecu-ssd.org",
+      "name": "Demo Student 03",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0003",
+      "programCode": "DEMO-EDU-MATH-IT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260004@students.ecu-ssd.org",
+      "name": "Demo Student 04",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0004",
+      "programCode": "DEMO-EDU-MATH-IT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "partial",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260005@students.ecu-ssd.org",
+      "name": "Demo Student 05",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0005",
+      "programCode": "DEMO-BUS-BBA",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260006@students.ecu-ssd.org",
+      "name": "Demo Student 06",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0006",
+      "programCode": "DEMO-BUS-BBA",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "partial",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260007@students.ecu-ssd.org",
+      "name": "Demo Student 07",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0007",
+      "programCode": "DEMO-AGR-BSC",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    },
+    {
+      "email": "demo20260008@students.ecu-ssd.org",
+      "name": "Demo Student 08",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "DEMO/2026/0008",
+      "programCode": "DEMO-AGR-BSC",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "partial",
+      "syntheticAccount": true,
+      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+    }
+  ],
+  "courseAllocations": [
+    {
+      "courseCode": "D-THEO-0101",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0102",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0103",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0104",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0201",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0202",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0203",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0204",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0301",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0302",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0303",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-THEO-0304",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0101",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0102",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0103",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0104",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0201",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0202",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0203",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0204",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0301",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0302",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0303",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0304",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0401",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0402",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0403",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0404",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0501",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0502",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0503",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0504",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0601",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0602",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0603",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-EDU-0604",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0101",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0102",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0103",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0104",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0201",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0202",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0203",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0204",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0301",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0302",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0303",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0304",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0401",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0402",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0403",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0404",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0501",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0502",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0503",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0504",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0601",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0602",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0603",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0604",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0701",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0702",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0703",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-BUS-0704",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0101",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0102",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0103",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0104",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0201",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0202",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0203",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0204",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0301",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0302",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0303",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    },
+    {
+      "courseCode": "D-AGR-0304",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "periodKey": "2026-term-2"
+    }
+  ],
+  "studentCourseRegistrations": [
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0101",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0102",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0104",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0101",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0101",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0101",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0101",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    }
+  ],
+  "retakeCases": [
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0101",
+      "failedPeriodKey": "2026-term-1",
+      "retakePeriodKey": "2026-term-2",
+      "registrationStatus": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0101",
+      "failedPeriodKey": "2026-term-1",
+      "retakePeriodKey": "2026-term-2",
+      "registrationStatus": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0101",
+      "failedPeriodKey": "2026-term-1",
+      "retakePeriodKey": "2026-term-2",
+      "registrationStatus": "registered"
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0101",
+      "failedPeriodKey": "2026-term-1",
+      "retakePeriodKey": "2026-term-2",
+      "registrationStatus": "registered"
+    }
+  ],
+  "studentAssessments": [
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 6.7,
+      "testMarks": 13.4,
+      "courseworkMarks": 20.1,
+      "examMarks": 46.9,
+      "finalScore": 67,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 7.0,
+      "testMarks": 14.0,
+      "courseworkMarks": 21.0,
+      "examMarks": 49.0,
+      "finalScore": 70,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 6.2,
+      "testMarks": 12.4,
+      "courseworkMarks": 18.6,
+      "examMarks": 43.4,
+      "finalScore": 62,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "courseCode": "D-THEO-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 6.7,
+      "testMarks": 13.4,
+      "courseworkMarks": 20.1,
+      "examMarks": 46.9,
+      "finalScore": 67,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 3.8,
+      "testMarks": 7.6,
+      "courseworkMarks": 11.4,
+      "examMarks": 26.6,
+      "finalScore": 38,
+      "grade": "F",
+      "gradePoints": 0.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 7.1,
+      "testMarks": 14.2,
+      "courseworkMarks": 21.3,
+      "examMarks": 49.7,
+      "finalScore": 71,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 6.3,
+      "testMarks": 12.6,
+      "courseworkMarks": 18.9,
+      "examMarks": 44.1,
+      "finalScore": 63,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "courseCode": "D-THEO-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "assignmentMarks": 6.8,
+      "testMarks": 13.6,
+      "courseworkMarks": 20.4,
+      "examMarks": 47.6,
+      "finalScore": 68,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 6.9,
+      "testMarks": 13.8,
+      "courseworkMarks": 20.7,
+      "examMarks": 48.3,
+      "finalScore": 69,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 7.2,
+      "testMarks": 14.4,
+      "courseworkMarks": 21.6,
+      "examMarks": 50.4,
+      "finalScore": 72,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 6.4,
+      "testMarks": 12.8,
+      "courseworkMarks": 19.2,
+      "examMarks": 44.8,
+      "finalScore": 64,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "courseCode": "D-EDU-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 6.9,
+      "testMarks": 13.8,
+      "courseworkMarks": 20.7,
+      "examMarks": 48.3,
+      "finalScore": 69,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 3.8,
+      "testMarks": 7.6,
+      "courseworkMarks": 11.4,
+      "examMarks": 26.6,
+      "finalScore": 38,
+      "grade": "F",
+      "gradePoints": 0.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 7.3,
+      "testMarks": 14.6,
+      "courseworkMarks": 21.9,
+      "examMarks": 51.1,
+      "finalScore": 73,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 6.5,
+      "testMarks": 13.0,
+      "courseworkMarks": 19.5,
+      "examMarks": 45.5,
+      "finalScore": 65,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "courseCode": "D-EDU-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "assignmentMarks": 7.0,
+      "testMarks": 14.0,
+      "courseworkMarks": 21.0,
+      "examMarks": 49.0,
+      "finalScore": 70,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 7.1,
+      "testMarks": 14.2,
+      "courseworkMarks": 21.3,
+      "examMarks": 49.7,
+      "finalScore": 71,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 7.4,
+      "testMarks": 14.8,
+      "courseworkMarks": 22.2,
+      "examMarks": 51.8,
+      "finalScore": 74,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 6.6,
+      "testMarks": 13.2,
+      "courseworkMarks": 19.8,
+      "examMarks": 46.2,
+      "finalScore": 66,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "courseCode": "D-BUS-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 7.1,
+      "testMarks": 14.2,
+      "courseworkMarks": 21.3,
+      "examMarks": 49.7,
+      "finalScore": 71,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 3.8,
+      "testMarks": 7.6,
+      "courseworkMarks": 11.4,
+      "examMarks": 26.6,
+      "finalScore": 38,
+      "grade": "F",
+      "gradePoints": 0.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 7.5,
+      "testMarks": 15.0,
+      "courseworkMarks": 22.5,
+      "examMarks": 52.5,
+      "finalScore": 75,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 6.7,
+      "testMarks": 13.4,
+      "courseworkMarks": 20.1,
+      "examMarks": 46.9,
+      "finalScore": 67,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "courseCode": "D-BUS-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "assignmentMarks": 7.2,
+      "testMarks": 14.4,
+      "courseworkMarks": 21.6,
+      "examMarks": 50.4,
+      "finalScore": 72,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 7.3,
+      "testMarks": 14.6,
+      "courseworkMarks": 21.9,
+      "examMarks": 51.1,
+      "finalScore": 73,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 7.6,
+      "testMarks": 15.2,
+      "courseworkMarks": 22.8,
+      "examMarks": 53.2,
+      "finalScore": 76,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 6.8,
+      "testMarks": 13.6,
+      "courseworkMarks": 20.4,
+      "examMarks": 47.6,
+      "finalScore": 68,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "courseCode": "D-AGR-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 7.3,
+      "testMarks": 14.6,
+      "courseworkMarks": 21.9,
+      "examMarks": 51.1,
+      "finalScore": 73,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0101",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 3.8,
+      "testMarks": 7.6,
+      "courseworkMarks": 11.4,
+      "examMarks": 26.6,
+      "finalScore": 38,
+      "grade": "F",
+      "gradePoints": 0.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0102",
+      "periodKey": "2026-term-1",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 7.7,
+      "testMarks": 15.4,
+      "courseworkMarks": 23.1,
+      "examMarks": 53.9,
+      "finalScore": 77,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 6.9,
+      "testMarks": 13.8,
+      "courseworkMarks": 20.7,
+      "examMarks": 48.3,
+      "finalScore": 69,
+      "grade": "B",
+      "gradePoints": 3.0,
+      "status": "approved",
+      "syntheticMark": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "courseCode": "D-AGR-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "assignmentMarks": 7.4,
+      "testMarks": 14.8,
+      "courseworkMarks": 22.2,
+      "examMarks": 51.8,
+      "finalScore": 74,
+      "grade": "B+",
+      "gradePoints": 3.5,
+      "status": "approved",
+      "syntheticMark": true
+    }
+  ],
+  "attendanceRecords": [
+    {
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "date": "2026-09-21",
+      "topic": "Course introduction and outcomes",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0001",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0002",
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "date": "2026-10-05",
+      "topic": "Applied classroom discussion",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0001",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0002",
+          "status": "present"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "date": "2026-09-21",
+      "topic": "Course introduction and outcomes",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0003",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0004",
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "date": "2026-10-05",
+      "topic": "Applied classroom discussion",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0003",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0004",
+          "status": "present"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "date": "2026-09-21",
+      "topic": "Course introduction and outcomes",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0005",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0006",
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "date": "2026-10-05",
+      "topic": "Applied classroom discussion",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0005",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0006",
+          "status": "present"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "date": "2026-09-21",
+      "topic": "Course introduction and outcomes",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0007",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0008",
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "date": "2026-10-05",
+      "topic": "Applied classroom discussion",
+      "records": [
+        {
+          "studentRegistrationNumber": "DEMO/2026/0007",
+          "status": "present"
+        },
+        {
+          "studentRegistrationNumber": "DEMO/2026/0008",
+          "status": "present"
+        }
+      ]
+    }
+  ],
+  "lectureTimetables": [
+    {
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "dayOfWeek": "monday",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "theology Demo Room 1",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-THEO-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+      "dayOfWeek": "tuesday",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "theology Demo Room 2",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "dayOfWeek": "monday",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Education and Community Development Demo Room 1",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-EDU-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
+      "dayOfWeek": "tuesday",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Education and Community Development Demo Room 2",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "dayOfWeek": "monday",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Business and Leadership Development Demo Room 1",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-BUS-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
+      "dayOfWeek": "tuesday",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Business and Leadership Development Demo Room 2",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "dayOfWeek": "monday",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Agriculture Demo Room 1",
+      "building": "Demo Academic Block"
+    },
+    {
+      "courseCode": "D-AGR-0104",
+      "periodKey": "2026-term-2",
+      "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
+      "dayOfWeek": "tuesday",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Agriculture Demo Room 2",
+      "building": "Demo Academic Block"
+    }
+  ],
+  "examTimetables": [
+    {
+      "courseCode": "D-THEO-0103",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-02",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Demo Examination Hall 1",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-THEO-0104",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-03",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Demo Examination Hall 2",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-EDU-0103",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-02",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Demo Examination Hall 1",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-EDU-0104",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-03",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Demo Examination Hall 2",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-BUS-0103",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-02",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Demo Examination Hall 1",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-BUS-0104",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-03",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Demo Examination Hall 2",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-AGR-0103",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-02",
+      "startTime": "08:00",
+      "endTime": "10:00",
+      "room": "Demo Examination Hall 1",
+      "venue": "Demo Main Campus"
+    },
+    {
+      "courseCode": "D-AGR-0104",
+      "periodKey": "2026-term-2",
+      "examDate": "2026-11-03",
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "room": "Demo Examination Hall 2",
+      "venue": "Demo Main Campus"
+    }
+  ],
+  "feeStructures": [
+    {
+      "programCode": "DEMO-THEO-BA",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "tuitionFee": 1200000,
+      "registrationFee": 50000,
+      "libraryFee": 30000,
+      "ictFee": 25000,
+      "activityFee": 20000,
+      "otherFees": 0,
+      "currency": "SSP",
+      "syntheticFee": true
+    },
+    {
+      "programCode": "DEMO-EDU-MATH-IT",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "tuitionFee": 1200000,
+      "registrationFee": 50000,
+      "libraryFee": 30000,
+      "ictFee": 25000,
+      "activityFee": 20000,
+      "otherFees": 0,
+      "currency": "SSP",
+      "syntheticFee": true
+    },
+    {
+      "programCode": "DEMO-BUS-BBA",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "tuitionFee": 1200000,
+      "registrationFee": 50000,
+      "libraryFee": 30000,
+      "ictFee": 25000,
+      "activityFee": 20000,
+      "otherFees": 0,
+      "currency": "SSP",
+      "syntheticFee": true
+    },
+    {
+      "programCode": "DEMO-AGR-BSC",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "tuitionFee": 1200000,
+      "registrationFee": 50000,
+      "libraryFee": 30000,
+      "ictFee": 25000,
+      "activityFee": 20000,
+      "otherFees": 0,
+      "currency": "SSP",
+      "syntheticFee": true
+    }
+  ],
+  "studentLedgers": [
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 1325000,
+      "balance": 0,
+      "status": "cleared",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 1325000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 850000,
+      "balance": 475000,
+      "status": "partial",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 850000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 1325000,
+      "balance": 0,
+      "status": "cleared",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 1325000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 850000,
+      "balance": 475000,
+      "status": "partial",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 850000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 1325000,
+      "balance": 0,
+      "status": "cleared",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 1325000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 850000,
+      "balance": 475000,
+      "status": "partial",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 850000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 1325000,
+      "balance": 0,
+      "status": "cleared",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 1325000,
+      "syntheticLedger": true
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "totalDue": 1325000,
+      "totalPaid": 850000,
+      "balance": 475000,
+      "status": "partial",
+      "lastPaymentDate": 1788998400000,
+      "lastPaymentAmount": 850000,
+      "syntheticLedger": true
+    }
+  ],
+  "transactions": [
+    {
+      "studentRegistrationNumber": "DEMO/2026/0001",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 1325000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0001-FULL",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0001-FULL",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0001-FULL",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0002",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 850000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0002",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0002",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0002",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0003",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 1325000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0003-FULL",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0003-FULL",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0003-FULL",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0004",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 850000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0004",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0004",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0004",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0005",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 1325000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0005-FULL",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0005-FULL",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0005-FULL",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0006",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 850000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0006",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0006",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0006",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0007",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 1325000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0007-FULL",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0007-FULL",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0007-FULL",
+      "notes": "Synthetic fixture payment."
+    },
+    {
+      "studentRegistrationNumber": "DEMO/2026/0008",
+      "periodKey": "2026-term-2",
+      "term": 2,
+      "year": 2026,
+      "amount": 850000,
+      "type": "payment",
+      "method": "bank",
+      "channel": "bank_deposit",
+      "bankBranch": "Demo ECU Finance Office",
+      "slipNumber": "DEMO-SLIP-0008",
+      "depositDate": "2026-09-10",
+      "receiptNumber": "DEMO-RCPT-0008",
+      "date": 1788998400000,
+      "reference": "DEMO-PAY-0008",
+      "notes": "Synthetic fixture payment."
+    }
+  ],
+  "gradingScales": [
+    {
+      "grade": "A",
+      "minScore": 80,
+      "maxScore": 100,
+      "gpaValue": 4.0
+    },
+    {
+      "grade": "B+",
+      "minScore": 70,
+      "maxScore": 79.99,
+      "gpaValue": 3.5
+    },
+    {
+      "grade": "B",
+      "minScore": 60,
+      "maxScore": 69.99,
+      "gpaValue": 3.0
+    },
+    {
+      "grade": "C+",
+      "minScore": 55,
+      "maxScore": 59.99,
+      "gpaValue": 2.5
+    },
+    {
+      "grade": "C",
+      "minScore": 50,
+      "maxScore": 54.99,
+      "gpaValue": 2.0
+    },
+    {
+      "grade": "D",
+      "minScore": 40,
+      "maxScore": 49.99,
+      "gpaValue": 1.0
+    },
+    {
+      "grade": "F",
+      "minScore": 0,
+      "maxScore": 39.99,
+      "gpaValue": 0.0
+    }
+  ],
+  "studentServices": {
+    "aegrotatApplications": [
+      {
+        "studentRegistrationNumber": "DEMO/2026/0001",
+        "periodKey": "2026-term-2",
+        "courseCode": "D-THEO-0103",
+        "reason": "Synthetic demo request: illness during the scheduled assessment.",
+        "status": "under_review"
+      }
+    ],
+    "deadSemesterRequests": [
+      {
+        "studentRegistrationNumber": "DEMO/2026/0002",
+        "targetYear": 1,
+        "targetTerm": 1,
+        "reason": "Synthetic demo request for a semester interruption.",
+        "status": "submitted"
+      }
+    ],
+    "lecturerEvaluations": [
+      {
+        "studentRegistrationNumber": "DEMO/2026/0001",
+        "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
+        "courseCode": "D-THEO-0103",
+        "periodKey": "2026-term-2",
+        "responses": [
+          {
+            "question": "The lecturer communicated course content clearly.",
+            "rating": 4
+          },
+          {
+            "question": "The lecturer was prepared and organized for classes.",
+            "rating": 5
+          },
+          {
+            "question": "The lecturer encouraged participation and questions.",
+            "rating": 4
+          },
+          {
+            "question": "Assessment and feedback supported my learning.",
+            "rating": 4
+          },
+          {
+            "question": "The lecturer treated students fairly and respectfully.",
+            "rating": 5
+          }
+        ],
+        "comment": "Synthetic demo evaluation."
+      }
+    ],
+    "internshipPlacements": [
+      {
+        "studentRegistrationNumber": "DEMO/2026/0003",
+        "periodKey": "2026-term-2",
+        "organization": "Demo Community Learning Centre",
+        "country": "South Sudan",
+        "district": "Yei River County",
+        "location": "Yei",
+        "startDate": "2026-09-01",
+        "endDate": "2026-11-30",
+        "phone": "+211900000001",
+        "email": "placement.demo@example.invalid",
+        "supervisorName": "Demo Supervisor",
+        "supervisorPhone": "+211900000002",
+        "supervisorEmail": "supervisor.demo@example.invalid",
+        "status": "submitted",
+        "tasks": [
+          {
+            "date": "2026-09-10",
+            "activity": "Observed a community outreach session.",
+            "lessonLearned": "Planning and clear communication support outreach.",
+            "skills": "Observation and communication",
+            "challenges": "Synthetic example."
+          }
+        ],
+        "contacts": [
+          {
+            "name": "Demo Agency Contact",
+            "title": "Placement Coordinator",
+            "phone": "+211900000003",
+            "email": "contact.demo@example.invalid"
+          }
+        ]
+      }
+    ],
+    "elections": [
+      {
+        "key": "student-council-2026",
+        "title": "Demo Student Council Election",
+        "description": "Synthetic election record for portal testing.",
+        "opensAt": 1792454400000,
+        "closesAt": 1795219140000,
+        "status": "open",
+        "applications": [
+          {
+            "studentRegistrationNumber": "DEMO/2026/0007",
+            "position": "Academic Representative",
+            "statement": "Synthetic test candidacy statement for the demo student council election.",
+            "status": "under_review"
+          }
+        ]
+      }
+    ],
+    "electoralCommitteeMembers": [
+      {
+        "name": "Demo Committee Member One",
+        "role": "Chairperson",
+        "email": "committee1.demo@example.invalid",
+        "phone": "+211900000010",
+        "status": "active"
+      },
+      {
+        "name": "Demo Committee Member Two",
+        "role": "Secretary",
+        "email": "committee2.demo@example.invalid",
+        "phone": "+211900000011",
+        "status": "active"
+      },
+      {
+        "name": "Demo Committee Member Three",
+        "role": "Member",
+        "email": "committee3.demo@example.invalid",
+        "phone": "+211900000012",
+        "status": "active"
+      }
+    ]
+  },
+  "testAccounts": {
+    "passwordForAllAccounts": "UniSystem2026!",
+    "staff": [
+      {
+        "email": "admin.demo@ecu-ssd.org",
+        "name": "Demo System Administrator",
+        "roles": [
+          "admin",
+          "staff"
+        ]
+      },
+      {
+        "email": "hod.demo@ecu-ssd.org",
+        "name": "Demo Head of Department",
+        "roles": [
+          "hod",
+          "staff"
+        ]
+      },
+      {
+        "email": "lecturer.theology.demo@ecu-ssd.org",
+        "name": "Demo theology Lecturer",
+        "roles": [
+          "lecturer",
+          "staff"
+        ]
+      },
+      {
+        "email": "lecturer.education.demo@ecu-ssd.org",
+        "name": "Demo Education and Community Development Lecturer",
+        "roles": [
+          "lecturer",
+          "staff"
+        ]
+      },
+      {
+        "email": "lecturer.business.demo@ecu-ssd.org",
+        "name": "Demo Business and Leadership Development Lecturer",
+        "roles": [
+          "lecturer",
+          "staff"
+        ]
+      },
+      {
+        "email": "lecturer.agriculture.demo@ecu-ssd.org",
+        "name": "Demo Agriculture Lecturer",
+        "roles": [
+          "lecturer",
+          "staff"
+        ]
+      }
+    ],
+    "students": [
+      {
+        "email": "demo20260001@students.ecu-ssd.org",
+        "name": "Demo Student 01",
+        "registrationNumber": "DEMO/2026/0001",
+        "programCode": "DEMO-THEO-BA"
+      },
+      {
+        "email": "demo20260002@students.ecu-ssd.org",
+        "name": "Demo Student 02",
+        "registrationNumber": "DEMO/2026/0002",
+        "programCode": "DEMO-THEO-BA"
+      },
+      {
+        "email": "demo20260003@students.ecu-ssd.org",
+        "name": "Demo Student 03",
+        "registrationNumber": "DEMO/2026/0003",
+        "programCode": "DEMO-EDU-MATH-IT"
+      },
+      {
+        "email": "demo20260004@students.ecu-ssd.org",
+        "name": "Demo Student 04",
+        "registrationNumber": "DEMO/2026/0004",
+        "programCode": "DEMO-EDU-MATH-IT"
+      },
+      {
+        "email": "demo20260005@students.ecu-ssd.org",
+        "name": "Demo Student 05",
+        "registrationNumber": "DEMO/2026/0005",
+        "programCode": "DEMO-BUS-BBA"
+      },
+      {
+        "email": "demo20260006@students.ecu-ssd.org",
+        "name": "Demo Student 06",
+        "registrationNumber": "DEMO/2026/0006",
+        "programCode": "DEMO-BUS-BBA"
+      },
+      {
+        "email": "demo20260007@students.ecu-ssd.org",
+        "name": "Demo Student 07",
+        "registrationNumber": "DEMO/2026/0007",
+        "programCode": "DEMO-AGR-BSC"
+      },
+      {
+        "email": "demo20260008@students.ecu-ssd.org",
+        "name": "Demo Student 08",
+        "registrationNumber": "DEMO/2026/0008",
+        "programCode": "DEMO-AGR-BSC"
+      }
+    ]
+  }
+}

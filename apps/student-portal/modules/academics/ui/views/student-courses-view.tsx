@@ -28,10 +28,10 @@ import {
 import { Badge } from "@workspace/ui/components/badge";
 
 export function StudentCoursesView() {
-  const courses = useQuery(api.student_portal.getMyRegisteredCourses, {}) || [];
+  const coursesResult = useQuery(api.student_portal.getMyRegisteredCourses, {});
   const profile = useQuery(api.student_portal.getMyProfile);
 
-  if (!profile) {
+  if (!profile || coursesResult === undefined) {
     return (
       <div className="p-12 flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="size-8 animate-spin text-primary mb-3" />
@@ -39,6 +39,8 @@ export function StudentCoursesView() {
       </div>
     );
   }
+
+  const courses = coursesResult ?? [];
 
   const totalCredits = courses.reduce((acc: number, c: any) => acc + (c.creditUnits || 0), 0);
 
@@ -48,14 +50,12 @@ export function StudentCoursesView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">My Registered Courses</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Enrolled Courses</h1>
             <Badge variant="outline" className="text-xs">
               {courses.length} Units Enrolled ({totalCredits} CU)
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Active course units for {profile.currentPeriod?.name || "Current Semester"}.
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">Your registered course units and retakes are shown together. Retake classes may be in a different programme year.</p>
         </div>
 
         <Button size="sm" asChild className="gap-1.5 bg-primary text-primary-foreground">
@@ -65,25 +65,30 @@ export function StudentCoursesView() {
         </Button>
       </div>
 
-      {/* ── Courses Grid ── */}
+      {/* ── Current semester accordion ── */}
       {courses.length === 0 ? (
         <Card className="p-12 text-center border-dashed">
           <BookOpen className="size-12 text-muted-foreground mx-auto mb-3 opacity-40" />
           <h3 className="text-base font-semibold">No Registered Courses</h3>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-            You haven&apos;t enrolled in any course units for this semester yet. Click below to register.
-          </p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">You have no enrolled course units for this semester.</p>
           <Button asChild size="sm" className="mt-4 bg-primary text-primary-foreground">
             <Link href="/academics/registration">Enroll in Semester Courses</Link>
           </Button>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <details open className="overflow-hidden rounded-lg border bg-white shadow-sm">
+          <summary className="cursor-pointer list-none border-b bg-[#f7f7fb] px-5 py-4 font-semibold text-slate-800 marker:hidden">
+            {profile.currentPeriod?.name || "Current Semester"} {profile.currentPeriod?.year ?? ""}
+          </summary>
+          <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-4">
           {courses.map((course: any) => (
             <Card
               key={course.registrationId}
-              className="border shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="flex flex-col justify-between overflow-hidden border-slate-100 shadow-sm transition-shadow hover:shadow-md"
             >
+              <div className="mx-4 mt-4 flex h-28 items-center justify-center rounded-lg bg-[#13785f] text-emerald-50">
+                <BookOpen className="size-10 opacity-70" />
+              </div>
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">
                   <Badge variant="secondary" className="font-mono text-xs font-bold">
@@ -97,52 +102,20 @@ export function StudentCoursesView() {
                   {course.title}
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  Instructor: {course.lecturerName}
+                    {course.lecturerName} (Lecturer)
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-3 pb-4">
-                <div className="bg-muted/40 p-3 rounded-lg space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Class Attendance:</span>
-                    <span
-                      className={`font-mono font-bold ${
-                        course.attendanceRate >= 75 ? "text-emerald-600" : "text-rose-600"
-                      }`}
-                    >
-                      {course.attendanceRate}%
-                    </span>
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        course.attendanceRate >= 75 ? "bg-emerald-600" : "bg-rose-600"
-                      }`}
-                      style={{ width: `${Math.min(100, course.attendanceRate)}%` }}
-                    />
-                  </div>
-
-                  <p className="text-[10px] text-muted-foreground pt-0.5">
-                    {course.isEligibleForExam
-                      ? "Eligible for final examination"
-                      : "Risk of examination disqualification (< 75%)"}
-                  </p>
-                </div>
+              <CardContent className="pb-4 pt-0">
+                <Badge variant="outline" className="text-[10px]">{course.status === "registered" ? "ENROLLED" : course.status.toUpperCase()}</Badge>
               </CardContent>
-
-              <CardFooter className="pt-3 border-t bg-muted/20 flex items-center justify-between">
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <GraduationCap className="size-3.5" /> 30% CW / 70% Exam
-                </span>
-                <Button variant="ghost" size="sm" asChild className="h-7 text-xs gap-1 text-primary">
-                  <Link href="/academics/attendance">Attendance Details</Link>
-                </Button>
+              <CardFooter className="border-t bg-muted/20 py-3">
+                <span className="text-xs text-muted-foreground">Year {course.yearOfStudy} · Semester {course.semester}</span>
               </CardFooter>
             </Card>
           ))}
-        </div>
+          </div>
+        </details>
       )}
     </div>
   );

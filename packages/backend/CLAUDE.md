@@ -1,3 +1,8 @@
+@../../AGENTS.md
+@AGENTS.md
+
+For Convex-specific work, follow both imported instruction files and read `convex/_generated/ai/guidelines.md` before editing Convex code.
+
 <!-- convex-ai-start -->
 This project uses [Convex](https://convex.dev) as its backend.
 

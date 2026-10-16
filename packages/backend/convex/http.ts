@@ -3,6 +3,6 @@ import { authComponent, createAuth } from "./betterAuth/auth.js";
 
 const http = httpRouter();
 
-authComponent.registerRoutes(http, createAuth);
+authComponent.registerRoutes(http, createAuth, { cors: true });
 
 export default http;

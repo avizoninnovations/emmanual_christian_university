@@ -10,3 +10,6 @@ When working on Convex code, **always read `convex/_generated/ai/guidelines.md` 
 
 Convex agent skills for common tasks can be installed by running `npx convex ai-files install`.
 <!-- convex-ai-end -->
+
+  git config --global user.email "avizoninnovations@gmail.com"
+  git config --global user.name "avizoninnovations"

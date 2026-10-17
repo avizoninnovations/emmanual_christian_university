@@ -17,12 +17,54 @@ import {
   SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import { Badge } from "@workspace/ui/components/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 import { authClient } from "@/lib/auth-client";
 
 type NavChild = { title: string; url: string };
+
+function ProfileNav({
+  pathname,
+  registrationNumber,
+  image,
+}: {
+  pathname: string;
+  registrationNumber: string;
+  image?: string;
+}) {
+  const active = pathname.startsWith("/profile");
+  const [open, setOpen] = useState(active);
+  useEffect(() => { if (active) setOpen(true); }, [active]);
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        size="lg"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 font-medium data-[state=open]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!"
+      >
+        <Avatar className="size-10 group-data-[collapsible=icon]:size-8">
+          <AvatarImage src={image} alt="Student profile" className="object-cover object-center" />
+          <AvatarFallback className="bg-primary/10 font-semibold text-primary">{registrationNumber.charAt(0) || <UserIcon className="size-4" />}</AvatarFallback>
+        </Avatar>
+        <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">{registrationNumber}</span>
+        <ChevronDown className={`size-4 text-muted-foreground transition-transform duration-[400ms] group-data-[collapsible=icon]:hidden ${open ? "rotate-180" : ""}`} />
+      </SidebarMenuButton>
+      <div aria-hidden={!open} inert={!open} className={`grid transition-[grid-template-rows] duration-[400ms] ease-in-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+        <div className="overflow-hidden">
+          <SidebarMenuSub className="mx-3.5 gap-1 border-l-0 px-1.5 py-1">
+            <SidebarMenuSubItem>
+              <SidebarMenuSubButton asChild isActive={pathname === "/profile"} className="h-10 gap-3 rounded-lg px-2.5 data-[active=true]:bg-muted data-[active=true]:font-semibold data-[active=true]:text-foreground hover:bg-muted/70">
+                <Link href="/profile"><span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-sidebar-accent-foreground"><UserIcon className="size-4" /></span><span>My Profile</span></Link>
+              </SidebarMenuSubButton>
+            </SidebarMenuSubItem>
+          </SidebarMenuSub>
+        </div>
+      </div>
+    </SidebarMenuItem>
+  );
+}
 
 function ExpandableNav({
   title, icon: Icon, children, pathname,
@@ -39,9 +81,9 @@ function ExpandableNav({
       className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70"
     >
       <span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${active ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span>
-      <span>{title}</span><ChevronDown className={`ml-auto size-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      <span>{title}</span><ChevronDown className={`ml-auto size-4 transition-transform duration-[400ms] ${open ? "rotate-180" : ""}`} />
     </SidebarMenuButton>
-    <div aria-hidden={!open} inert={!open} className={`grid transition-[grid-template-rows] duration-200 ease-in-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+    <div aria-hidden={!open} inert={!open} className={`grid transition-[grid-template-rows] duration-[400ms] ease-in-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
       <div className="overflow-hidden"><SidebarMenuSub className="mx-3.5 gap-1 border-l-0 px-1.5 py-1">
         {children.map((child) => <SidebarMenuSubItem key={child.url}><SidebarMenuSubButton asChild isActive={pathname === child.url} className="h-10 gap-3 rounded-lg px-2.5 data-[active=true]:bg-muted data-[active=true]:font-semibold data-[active=true]:text-foreground hover:bg-muted/70">
           <Link href={child.url}><span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-medium text-sidebar-accent-foreground">{child.title.trim().charAt(0).toUpperCase()}</span><span>{child.title}</span></Link>
@@ -115,21 +157,7 @@ export const DashboardSidebar = () => {
           </SidebarMenuButton>
         </SidebarMenuItem></SidebarMenu>
         <SidebarMenu className="mt-2 border-t border-border px-1 pt-2">
-          <SidebarMenuItem><DropdownMenu>
-            <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 font-medium data-[state=open]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
-              <Avatar className="size-10 group-data-[collapsible=icon]:size-8">
-                <AvatarImage src={session?.user.image ?? undefined} alt="Student profile" className="object-cover object-center" />
-                <AvatarFallback className="bg-primary/10 font-semibold text-primary">{profile?.registrationNumber?.charAt(0) ?? <UserIcon className="size-4" />}</AvatarFallback>
-              </Avatar>
-              <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">{profile?.registrationNumber ?? "Loading..."}</span>
-              <ChevronDown className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]/profile:rotate-180 group-data-[collapsible=icon]:hidden" />
-            </SidebarMenuButton></DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" align="start" className="w-56">
-              <DropdownMenuItem asChild className="gap-2">
-                <Link href="/profile"><UserIcon className="size-4" />My Profile</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu></SidebarMenuItem>
+          <ProfileNav pathname={pathname} registrationNumber={profile?.registrationNumber ?? "Loading..."} image={session?.user.image ?? undefined} />
         </SidebarMenu>
       </SidebarHeader>
 

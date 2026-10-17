@@ -1,3 +1,9 @@
+.student-portal-theme [data-slot="sidebar-gap"],
+.student-portal-theme [data-slot="sidebar-container"] {
+  transition-duration: 400ms;
+  transition-timing-function: ease-in-out;
+}
+
 .student-portal-theme [data-slot="tabs-list"] {
   width: 100%;
   height: auto;

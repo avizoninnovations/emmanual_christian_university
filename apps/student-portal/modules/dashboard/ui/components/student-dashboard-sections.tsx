@@ -212,7 +212,7 @@ export function SemesterTimeline({ periods }: { periods: TimelinePeriod[] }) {
     </CardHeader>
     <CardContent>
       {periods.length === 0 ? <p className="py-6 text-center text-sm text-muted-foreground">Your registered semesters will appear here.</p> :
-        <ol className="flex gap-4 overflow-x-auto pb-2">{periods.map((period, index) => <li key={period.id} className="relative min-w-64 flex-1 rounded-md bg-background p-4 pt-5 shadow-sm ring-1 ring-border/60">
+        <ol className="flex gap-4 overflow-x-auto px-1 pb-2 pt-4">{periods.map((period, index) => <li key={period.id} className="relative min-w-64 flex-1 rounded-md bg-background p-4 pt-5 shadow-sm ring-1 ring-border/60">
           <span className="absolute -top-3 left-4 flex size-7 items-center justify-center rounded-full bg-background text-sm font-semibold text-primary ring-2 ring-primary/20">{index + 1}</span>
           <p className="font-bold uppercase">{period.name} {period.year}</p>
           <p className="mt-1 text-xs text-muted-foreground">Year {period.yearOfStudy} · Semester {period.semester} · {period.startDate} – {period.endDate}</p>

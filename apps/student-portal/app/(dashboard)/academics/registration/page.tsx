@@ -1,4 +1,4 @@
-import { CourseRegistrationView } from "@/modules/academics/ui/views/course-registration-view";
+import { RegistrationOverviewView } from "@/modules/academics/ui/views/registration-overview-view";
 
 export const metadata = {
   title: "Course Registration | ECU Student Portal",
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function RegistrationPage() {
-  return <CourseRegistrationView />;
+  return <RegistrationOverviewView />;
 }

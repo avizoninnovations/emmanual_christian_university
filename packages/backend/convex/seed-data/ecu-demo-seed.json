@@ -12,7 +12,10 @@
     "warning": "All records except faculty and program display names are fictional demo data. Do not present generated units, codes, durations, fees, grades, timetables or accounts as official ECU records.",
     "databaseWritePerformed": false,
     "retakeCaseCount": 4,
-    "studentLogin": "registration number and password; Better Auth email is deterministically derived by the documented normalization rule"
+    "studentLogin": "student number, access number, or legacy demo registration number; password is verified by Better Auth",
+    "profileReference": "https://alpha.ucu.ac.ug/students/pages/profile/profile-overview",
+    "identifierFormat": "Synthetic S26/ECU/PROGRAM/NNN student numbers and ECU0001 access numbers; ECU is the university code, not a campus.",
+    "profileDataSynthetic": true
   },
   "academicPeriods": [
     {
@@ -75,7 +78,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-BA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "BH"
             },
             {
               "key": "d-theo-0102",
@@ -87,7 +92,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-BA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "OTS"
             },
             {
               "key": "d-theo-0103",
@@ -99,7 +106,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-BA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "NTS"
             },
             {
               "key": "d-theo-0104",
@@ -111,9 +120,13 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-BA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "CDAE"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "diploma-in-theology",
@@ -137,7 +150,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITBS"
             },
             {
               "key": "d-theo-0202",
@@ -149,7 +164,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "PMP"
             },
             {
               "key": "d-theo-0203",
@@ -161,7 +178,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "CH"
             },
             {
               "key": "d-theo-0204",
@@ -173,9 +192,13 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "CD"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "certificate-in-theology",
@@ -199,7 +222,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "BF"
             },
             {
               "key": "d-theo-0302",
@@ -211,7 +236,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITCM"
             },
             {
               "key": "d-theo-0303",
@@ -223,7 +250,9 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "SF"
             },
             {
               "key": "d-theo-0304",
@@ -235,9 +264,13 @@
               "departmentKey": "dept-theology",
               "programCode": "DEMO-THEO-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "CACS"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         }
       ]
     },
@@ -279,7 +312,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-MATH-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "FOE"
             },
             {
               "key": "d-edu-0102",
@@ -291,7 +326,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-MATH-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "MTM"
             },
             {
               "key": "d-edu-0103",
@@ -303,7 +340,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-MATH-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "IITAL"
             },
             {
               "key": "d-edu-0104",
@@ -315,9 +354,13 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-MATH-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "CDAA"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "bachelor-of-science-in-social-works",
@@ -341,7 +384,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SOC-WORK",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITSW"
             },
             {
               "key": "d-edu-0202",
@@ -353,7 +398,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SOC-WORK",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "HGAD"
             },
             {
               "key": "d-edu-0203",
@@ -365,7 +412,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SOC-WORK",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "CDP"
             },
             {
               "key": "d-edu-0204",
@@ -377,9 +426,13 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SOC-WORK",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "SWE"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "bachelor-in-education-geography-english",
@@ -403,7 +456,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-GEO-ENG",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ELTM"
             },
             {
               "key": "d-edu-0302",
@@ -415,7 +470,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-GEO-ENG",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "PG"
             },
             {
               "key": "d-edu-0303",
@@ -427,7 +484,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-GEO-ENG",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "CALP"
             },
             {
               "key": "d-edu-0304",
@@ -439,9 +498,13 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-GEO-ENG",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "TP"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "diploma-in-education",
@@ -465,7 +528,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "EP"
             },
             {
               "key": "d-edu-0402",
@@ -477,7 +542,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "GTM"
             },
             {
               "key": "d-edu-0403",
@@ -489,7 +556,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "CA"
             },
             {
               "key": "d-edu-0404",
@@ -501,9 +570,13 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "TP"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "diploma-in-social-works",
@@ -527,7 +600,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SW-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "SWS"
             },
             {
               "key": "d-edu-0502",
@@ -539,7 +614,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SW-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "CAGW"
             },
             {
               "key": "d-edu-0503",
@@ -551,7 +628,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SW-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "CFP"
             },
             {
               "key": "d-edu-0504",
@@ -563,9 +642,13 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-SW-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "SWE"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "certificate-in-education",
@@ -589,7 +672,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "FOT"
             },
             {
               "key": "d-edu-0602",
@@ -601,7 +686,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "CD"
             },
             {
               "key": "d-edu-0603",
@@ -613,7 +700,9 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "TM"
             },
             {
               "key": "d-edu-0604",
@@ -625,9 +714,13 @@
               "departmentKey": "dept-education",
               "programCode": "DEMO-EDU-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "CP"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         }
       ]
     },
@@ -670,7 +763,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-BBA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "POM"
             },
             {
               "key": "d-bus-0102",
@@ -682,7 +777,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-BBA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "FAI"
             },
             {
               "key": "d-bus-0103",
@@ -694,7 +791,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-BBA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "BC"
             },
             {
               "key": "d-bus-0104",
@@ -706,9 +805,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-BBA",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "BM"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "bachelor-in-public-administration",
@@ -732,7 +835,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-PUBLIC-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITPA"
             },
             {
               "key": "d-bus-0202",
@@ -744,7 +849,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-PUBLIC-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "PPF"
             },
             {
               "key": "d-bus-0203",
@@ -756,7 +863,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-PUBLIC-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "GA"
             },
             {
               "key": "d-bus-0204",
@@ -768,9 +877,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-PUBLIC-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "PSE"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "diploma-in-business-administration",
@@ -794,7 +907,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "POBA"
             },
             {
               "key": "d-bus-0302",
@@ -806,7 +921,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "FA"
             },
             {
               "key": "d-bus-0303",
@@ -818,7 +935,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "BC"
             },
             {
               "key": "d-bus-0304",
@@ -830,9 +949,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "SBM"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "diploma-in-leadership-and-management",
@@ -856,7 +979,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "LF"
             },
             {
               "key": "d-bus-0402",
@@ -868,7 +993,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "OM"
             },
             {
               "key": "d-bus-0403",
@@ -880,7 +1007,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "HRP"
             },
             {
               "key": "d-bus-0404",
@@ -892,9 +1021,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-DIP-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "LAE"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "certificate-in-business-administration",
@@ -918,7 +1051,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITB"
             },
             {
               "key": "d-bus-0502",
@@ -930,7 +1065,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "BA"
             },
             {
               "key": "d-bus-0503",
@@ -942,7 +1079,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "CSS"
             },
             {
               "key": "d-bus-0504",
@@ -954,9 +1093,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-ADMIN",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "EF"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "certificate-in-leadership-and-management",
@@ -980,7 +1123,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITL"
             },
             {
               "key": "d-bus-0602",
@@ -992,7 +1137,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "CFL"
             },
             {
               "key": "d-bus-0603",
@@ -1004,7 +1151,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "TM"
             },
             {
               "key": "d-bus-0604",
@@ -1016,9 +1165,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-LEAD",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "EL"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "certificate-in-information-technology-it",
@@ -1042,7 +1195,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "CA"
             },
             {
               "key": "d-bus-0702",
@@ -1054,7 +1209,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "DL"
             },
             {
               "key": "d-bus-0703",
@@ -1066,7 +1223,9 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "ITP"
             },
             {
               "key": "d-bus-0704",
@@ -1078,9 +1237,13 @@
               "departmentKey": "dept-business",
               "programCode": "DEMO-BUS-CERT-IT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "ITP"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         }
       ]
     },
@@ -1122,7 +1285,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-BSC",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITA"
             },
             {
               "key": "d-agr-0102",
@@ -1134,7 +1299,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-BSC",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "POCS"
             },
             {
               "key": "d-agr-0103",
@@ -1146,7 +1313,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-BSC",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "AE"
             },
             {
               "key": "d-agr-0104",
@@ -1158,9 +1327,13 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-BSC",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "FM"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "diploma-in-agribusiness",
@@ -1184,7 +1357,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "AF"
             },
             {
               "key": "d-agr-0202",
@@ -1196,7 +1371,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "CPP"
             },
             {
               "key": "d-agr-0203",
@@ -1208,7 +1385,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "LP"
             },
             {
               "key": "d-agr-0204",
@@ -1220,9 +1399,13 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-DIP",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "AM"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         },
         {
           "key": "certificate-in-agriculture",
@@ -1246,7 +1429,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "ITA"
             },
             {
               "key": "d-agr-0302",
@@ -1258,7 +1443,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "core",
+              "shortName": "SACB"
             },
             {
               "key": "d-agr-0303",
@@ -1270,7 +1457,9 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "foundation",
+              "shortName": "FSP"
             },
             {
               "key": "d-agr-0304",
@@ -1282,9 +1471,13 @@
               "departmentKey": "dept-agriculture",
               "programCode": "DEMO-AGR-CERT",
               "syntheticDemoUnit": true,
-              "sourceNote": "Illustrative test unit; not published by ECU as a course unit."
+              "sourceNote": "Illustrative test unit; not published by ECU as a course unit.",
+              "category": "elective",
+              "shortName": "SA"
             }
-          ]
+          ],
+          "onSemesterRetakeLimit": 2,
+          "offSemesterRetakeLimit": 2
         }
       ]
     }
@@ -1372,10 +1565,10 @@
   "studentAccounts": [
     {
       "email": "demo20260001@students.ecu-ssd.org",
-      "name": "Demo Student 01",
+      "name": "Peter Emmanuel Lado",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0001",
+      "registrationNumber": "S26/ECU/BAT/001",
       "programCode": "DEMO-THEO-BA",
       "yearOfStudy": 1,
       "term": 2,
@@ -1384,14 +1577,33 @@
       "status": "active",
       "financeStatus": "cleared",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0001",
+      "accessNumber": "ECU0001",
+      "firstName": "Peter",
+      "surname": "Lado",
+      "otherName": "Emmanuel",
+      "gender": "male",
+      "dateOfBirth": "2002-02-11",
+      "nationality": "South Sudanese",
+      "phone": "+211900000001",
+      "contactEmail": "student01.demo@example.invalid",
+      "address": "Demo household 1, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 01",
+        "relationship": "Guardian",
+        "phone": "+211900000101",
+        "email": "guardian01.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260002@students.ecu-ssd.org",
-      "name": "Demo Student 02",
+      "name": "Mary Grace Kenyi",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0002",
+      "registrationNumber": "S26/ECU/BAT/002",
       "programCode": "DEMO-THEO-BA",
       "yearOfStudy": 1,
       "term": 2,
@@ -1400,14 +1612,33 @@
       "status": "active",
       "financeStatus": "partial",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0002",
+      "accessNumber": "ECU0002",
+      "firstName": "Mary",
+      "surname": "Kenyi",
+      "otherName": "Grace",
+      "gender": "female",
+      "dateOfBirth": "2003-03-12",
+      "nationality": "South Sudanese",
+      "phone": "+211900000002",
+      "contactEmail": "student02.demo@example.invalid",
+      "address": "Demo household 2, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 02",
+        "relationship": "Guardian",
+        "phone": "+211900000102",
+        "email": "guardian02.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260003@students.ecu-ssd.org",
-      "name": "Demo Student 03",
+      "name": "Samuel Ladu Moses",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0003",
+      "registrationNumber": "S26/ECU/BEDMIT/003",
       "programCode": "DEMO-EDU-MATH-IT",
       "yearOfStudy": 1,
       "term": 2,
@@ -1416,14 +1647,33 @@
       "status": "active",
       "financeStatus": "cleared",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0003",
+      "accessNumber": "ECU0003",
+      "firstName": "Samuel",
+      "surname": "Moses",
+      "otherName": "Ladu",
+      "gender": "male",
+      "dateOfBirth": "2004-04-13",
+      "nationality": "South Sudanese",
+      "phone": "+211900000003",
+      "contactEmail": "student03.demo@example.invalid",
+      "address": "Demo household 3, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 03",
+        "relationship": "Guardian",
+        "phone": "+211900000103",
+        "email": "guardian03.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260004@students.ecu-ssd.org",
-      "name": "Demo Student 04",
+      "name": "Esther Joy Wani",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0004",
+      "registrationNumber": "S26/ECU/BEDMIT/004",
       "programCode": "DEMO-EDU-MATH-IT",
       "yearOfStudy": 1,
       "term": 2,
@@ -1432,14 +1682,33 @@
       "status": "active",
       "financeStatus": "partial",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0004",
+      "accessNumber": "ECU0004",
+      "firstName": "Esther",
+      "surname": "Wani",
+      "otherName": "Joy",
+      "gender": "female",
+      "dateOfBirth": "2001-05-14",
+      "nationality": "South Sudanese",
+      "phone": "+211900000004",
+      "contactEmail": "student04.demo@example.invalid",
+      "address": "Demo household 4, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 04",
+        "relationship": "Guardian",
+        "phone": "+211900000104",
+        "email": "guardian04.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260005@students.ecu-ssd.org",
-      "name": "Demo Student 05",
+      "name": "David Joseph Taban",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0005",
+      "registrationNumber": "S26/ECU/BBA/005",
       "programCode": "DEMO-BUS-BBA",
       "yearOfStudy": 1,
       "term": 2,
@@ -1448,14 +1717,33 @@
       "status": "active",
       "financeStatus": "cleared",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0005",
+      "accessNumber": "ECU0005",
+      "firstName": "David",
+      "surname": "Taban",
+      "otherName": "Joseph",
+      "gender": "male",
+      "dateOfBirth": "2002-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000005",
+      "contactEmail": "student05.demo@example.invalid",
+      "address": "Demo household 5, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 05",
+        "relationship": "Guardian",
+        "phone": "+211900000105",
+        "email": "guardian05.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260006@students.ecu-ssd.org",
-      "name": "Demo Student 06",
+      "name": "Ruth Anna Lomoro",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0006",
+      "registrationNumber": "S26/ECU/BBA/006",
       "programCode": "DEMO-BUS-BBA",
       "yearOfStudy": 1,
       "term": 2,
@@ -1464,14 +1752,33 @@
       "status": "active",
       "financeStatus": "partial",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0006",
+      "accessNumber": "ECU0006",
+      "firstName": "Ruth",
+      "surname": "Lomoro",
+      "otherName": "Anna",
+      "gender": "female",
+      "dateOfBirth": "2003-07-16",
+      "nationality": "South Sudanese",
+      "phone": "+211900000006",
+      "contactEmail": "student06.demo@example.invalid",
+      "address": "Demo household 6, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 06",
+        "relationship": "Guardian",
+        "phone": "+211900000106",
+        "email": "guardian06.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260007@students.ecu-ssd.org",
-      "name": "Demo Student 07",
+      "name": "James Paul Deng",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0007",
+      "registrationNumber": "S26/ECU/BAGR/007",
       "programCode": "DEMO-AGR-BSC",
       "yearOfStudy": 1,
       "term": 2,
@@ -1480,14 +1787,33 @@
       "status": "active",
       "financeStatus": "cleared",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0007",
+      "accessNumber": "ECU0007",
+      "firstName": "James",
+      "surname": "Deng",
+      "otherName": "Paul",
+      "gender": "male",
+      "dateOfBirth": "2004-08-17",
+      "nationality": "South Sudanese",
+      "phone": "+211900000007",
+      "contactEmail": "student07.demo@example.invalid",
+      "address": "Demo household 7, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 07",
+        "relationship": "Guardian",
+        "phone": "+211900000107",
+        "email": "guardian07.demo@example.invalid"
+      }
     },
     {
       "email": "demo20260008@students.ecu-ssd.org",
-      "name": "Demo Student 08",
+      "name": "Sarah Hope Lokule",
       "password": "UniSystem2026!",
       "authRole": "user",
-      "registrationNumber": "DEMO/2026/0008",
+      "registrationNumber": "S26/ECU/BAGR/008",
       "programCode": "DEMO-AGR-BSC",
       "yearOfStudy": 1,
       "term": 2,
@@ -1496,7 +1822,26 @@
       "status": "active",
       "financeStatus": "partial",
       "syntheticAccount": true,
-      "betterAuthEmailRule": "lowercase registration number with non-alphanumeric characters removed, followed by @students.ecu-ssd.org"
+      "betterAuthEmailRule": "Existing opaque demo auth alias is preserved in loginEmail; server lookup accepts student, access, and legacy demo numbers.",
+      "legacyRegistrationNumber": "DEMO/2026/0008",
+      "accessNumber": "ECU0008",
+      "firstName": "Sarah",
+      "surname": "Lokule",
+      "otherName": "Hope",
+      "gender": "female",
+      "dateOfBirth": "2001-01-18",
+      "nationality": "South Sudanese",
+      "phone": "+211900000008",
+      "contactEmail": "student08.demo@example.invalid",
+      "address": "Demo household 8, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian 08",
+        "relationship": "Guardian",
+        "phone": "+211900000108",
+        "email": "guardian08.demo@example.invalid"
+      }
     }
   ],
   "courseAllocations": [
@@ -1883,217 +2228,217 @@
   ],
   "studentCourseRegistrations": [
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0101",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0102",
       "periodKey": "2026-term-1",
       "status": "completed"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0103",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0101",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0101",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0101",
       "periodKey": "2026-term-2",
       "status": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0101",
       "periodKey": "2026-term-2",
       "status": "registered"
@@ -2101,28 +2446,28 @@
   ],
   "retakeCases": [
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0101",
       "failedPeriodKey": "2026-term-1",
       "retakePeriodKey": "2026-term-2",
       "registrationStatus": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0101",
       "failedPeriodKey": "2026-term-1",
       "retakePeriodKey": "2026-term-2",
       "registrationStatus": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0101",
       "failedPeriodKey": "2026-term-1",
       "retakePeriodKey": "2026-term-2",
       "registrationStatus": "registered"
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0101",
       "failedPeriodKey": "2026-term-1",
       "retakePeriodKey": "2026-term-2",
@@ -2131,7 +2476,7 @@
   ],
   "studentAssessments": [
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2146,7 +2491,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2161,7 +2506,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2176,7 +2521,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "courseCode": "D-THEO-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2191,7 +2536,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2206,7 +2551,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2221,7 +2566,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2236,7 +2581,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "courseCode": "D-THEO-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
@@ -2251,7 +2596,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2266,7 +2611,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2281,7 +2626,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2296,7 +2641,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "courseCode": "D-EDU-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2311,7 +2656,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2326,7 +2671,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2341,7 +2686,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2356,7 +2701,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "courseCode": "D-EDU-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
@@ -2371,7 +2716,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2386,7 +2731,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2401,7 +2746,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2416,7 +2761,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "courseCode": "D-BUS-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2431,7 +2776,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2446,7 +2791,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2461,7 +2806,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2476,7 +2821,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "courseCode": "D-BUS-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
@@ -2491,7 +2836,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2506,7 +2851,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2521,7 +2866,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2536,7 +2881,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "courseCode": "D-AGR-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2551,7 +2896,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0101",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2566,7 +2911,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2581,7 +2926,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0103",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2596,7 +2941,7 @@
       "syntheticMark": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "courseCode": "D-AGR-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.agriculture.demo@ecu-ssd.org",
@@ -2620,11 +2965,11 @@
       "topic": "Course introduction and outcomes",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0001",
+          "studentRegistrationNumber": "S26/ECU/BAT/001",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0002",
+          "studentRegistrationNumber": "S26/ECU/BAT/002",
           "status": "absent"
         }
       ]
@@ -2637,11 +2982,11 @@
       "topic": "Applied classroom discussion",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0001",
+          "studentRegistrationNumber": "S26/ECU/BAT/001",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0002",
+          "studentRegistrationNumber": "S26/ECU/BAT/002",
           "status": "present"
         }
       ]
@@ -2654,11 +2999,11 @@
       "topic": "Course introduction and outcomes",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0003",
+          "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0004",
+          "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
           "status": "absent"
         }
       ]
@@ -2671,11 +3016,11 @@
       "topic": "Applied classroom discussion",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0003",
+          "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0004",
+          "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
           "status": "present"
         }
       ]
@@ -2688,11 +3033,11 @@
       "topic": "Course introduction and outcomes",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0005",
+          "studentRegistrationNumber": "S26/ECU/BBA/005",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0006",
+          "studentRegistrationNumber": "S26/ECU/BBA/006",
           "status": "absent"
         }
       ]
@@ -2705,11 +3050,11 @@
       "topic": "Applied classroom discussion",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0005",
+          "studentRegistrationNumber": "S26/ECU/BBA/005",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0006",
+          "studentRegistrationNumber": "S26/ECU/BBA/006",
           "status": "present"
         }
       ]
@@ -2722,11 +3067,11 @@
       "topic": "Course introduction and outcomes",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0007",
+          "studentRegistrationNumber": "S26/ECU/BAGR/007",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0008",
+          "studentRegistrationNumber": "S26/ECU/BAGR/008",
           "status": "absent"
         }
       ]
@@ -2739,11 +3084,11 @@
       "topic": "Applied classroom discussion",
       "records": [
         {
-          "studentRegistrationNumber": "DEMO/2026/0007",
+          "studentRegistrationNumber": "S26/ECU/BAGR/007",
           "status": "present"
         },
         {
-          "studentRegistrationNumber": "DEMO/2026/0008",
+          "studentRegistrationNumber": "S26/ECU/BAGR/008",
           "status": "present"
         }
       ]
@@ -2965,7 +3310,7 @@
   ],
   "studentLedgers": [
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -2978,7 +3323,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -2991,7 +3336,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3004,7 +3349,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3017,7 +3362,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3030,7 +3375,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3043,7 +3388,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3056,7 +3401,7 @@
       "syntheticLedger": true
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3071,7 +3416,7 @@
   ],
   "transactions": [
     {
-      "studentRegistrationNumber": "DEMO/2026/0001",
+      "studentRegistrationNumber": "S26/ECU/BAT/001",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3088,7 +3433,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0002",
+      "studentRegistrationNumber": "S26/ECU/BAT/002",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3105,7 +3450,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0003",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3122,7 +3467,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0004",
+      "studentRegistrationNumber": "S26/ECU/BEDMIT/004",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3139,7 +3484,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0005",
+      "studentRegistrationNumber": "S26/ECU/BBA/005",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3156,7 +3501,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0006",
+      "studentRegistrationNumber": "S26/ECU/BBA/006",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3173,7 +3518,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0007",
+      "studentRegistrationNumber": "S26/ECU/BAGR/007",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3190,7 +3535,7 @@
       "notes": "Synthetic fixture payment."
     },
     {
-      "studentRegistrationNumber": "DEMO/2026/0008",
+      "studentRegistrationNumber": "S26/ECU/BAGR/008",
       "periodKey": "2026-term-2",
       "term": 2,
       "year": 2026,
@@ -3254,16 +3599,17 @@
   "studentServices": {
     "aegrotatApplications": [
       {
-        "studentRegistrationNumber": "DEMO/2026/0001",
+        "studentRegistrationNumber": "S26/ECU/BAT/001",
         "periodKey": "2026-term-2",
         "courseCode": "D-THEO-0103",
         "reason": "Synthetic demo request: illness during the scheduled assessment.",
-        "status": "under_review"
+        "status": "under_review",
+        "applicationType": "illness"
       }
     ],
     "deadSemesterRequests": [
       {
-        "studentRegistrationNumber": "DEMO/2026/0002",
+        "studentRegistrationNumber": "S26/ECU/BAT/002",
         "targetYear": 1,
         "targetTerm": 1,
         "reason": "Synthetic demo request for a semester interruption.",
@@ -3272,7 +3618,7 @@
     ],
     "lecturerEvaluations": [
       {
-        "studentRegistrationNumber": "DEMO/2026/0001",
+        "studentRegistrationNumber": "S26/ECU/BAT/001",
         "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
         "courseCode": "D-THEO-0103",
         "periodKey": "2026-term-2",
@@ -3303,7 +3649,7 @@
     ],
     "internshipPlacements": [
       {
-        "studentRegistrationNumber": "DEMO/2026/0003",
+        "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
         "periodKey": "2026-term-2",
         "organization": "Demo Community Learning Centre",
         "country": "South Sudan",
@@ -3333,7 +3679,11 @@
             "phone": "+211900000003",
             "email": "contact.demo@example.invalid"
           }
-        ]
+        ],
+        "academicSupervisorName": "Demo Academic Supervisor",
+        "academicSupervisorPhone": "+211900000020",
+        "academicSupervisorEmail": "academic.supervisor.demo@example.invalid",
+        "reviewComment": "Awaiting placement review."
       }
     ],
     "elections": [
@@ -3346,7 +3696,7 @@
         "status": "open",
         "applications": [
           {
-            "studentRegistrationNumber": "DEMO/2026/0007",
+            "studentRegistrationNumber": "S26/ECU/BAGR/007",
             "position": "Academic Representative",
             "statement": "Synthetic test candidacy statement for the demo student council election.",
             "status": "under_review"
@@ -3434,49 +3784,49 @@
       {
         "email": "demo20260001@students.ecu-ssd.org",
         "name": "Demo Student 01",
-        "registrationNumber": "DEMO/2026/0001",
+        "registrationNumber": "S26/ECU/BAT/001",
         "programCode": "DEMO-THEO-BA"
       },
       {
         "email": "demo20260002@students.ecu-ssd.org",
         "name": "Demo Student 02",
-        "registrationNumber": "DEMO/2026/0002",
+        "registrationNumber": "S26/ECU/BAT/002",
         "programCode": "DEMO-THEO-BA"
       },
       {
         "email": "demo20260003@students.ecu-ssd.org",
         "name": "Demo Student 03",
-        "registrationNumber": "DEMO/2026/0003",
+        "registrationNumber": "S26/ECU/BEDMIT/003",
         "programCode": "DEMO-EDU-MATH-IT"
       },
       {
         "email": "demo20260004@students.ecu-ssd.org",
         "name": "Demo Student 04",
-        "registrationNumber": "DEMO/2026/0004",
+        "registrationNumber": "S26/ECU/BEDMIT/004",
         "programCode": "DEMO-EDU-MATH-IT"
       },
       {
         "email": "demo20260005@students.ecu-ssd.org",
         "name": "Demo Student 05",
-        "registrationNumber": "DEMO/2026/0005",
+        "registrationNumber": "S26/ECU/BBA/005",
         "programCode": "DEMO-BUS-BBA"
       },
       {
         "email": "demo20260006@students.ecu-ssd.org",
         "name": "Demo Student 06",
-        "registrationNumber": "DEMO/2026/0006",
+        "registrationNumber": "S26/ECU/BBA/006",
         "programCode": "DEMO-BUS-BBA"
       },
       {
         "email": "demo20260007@students.ecu-ssd.org",
         "name": "Demo Student 07",
-        "registrationNumber": "DEMO/2026/0007",
+        "registrationNumber": "S26/ECU/BAGR/007",
         "programCode": "DEMO-AGR-BSC"
       },
       {
         "email": "demo20260008@students.ecu-ssd.org",
         "name": "Demo Student 08",
-        "registrationNumber": "DEMO/2026/0008",
+        "registrationNumber": "S26/ECU/BAGR/008",
         "programCode": "DEMO-AGR-BSC"
       }
     ]

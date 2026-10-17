@@ -4,7 +4,9 @@ import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
-import { Loader2, Mail, GraduationCap, Layers3, Building2, BookOpen, UserRound } from "lucide-react";
+import { Loader2, Mail, GraduationCap, Layers3, Building2, BookOpen, UserRound, Phone, MapPin, HeartPulse } from "lucide-react";
+
+import { Avatar, AvatarImage, AvatarFallback } from "@workspace/ui/components/avatar";
 
 type ProfileFieldProps = { label: string; value: string; icon?: React.ComponentType<{ className?: string }> };
 
@@ -31,48 +33,54 @@ export function StudentProfileView() {
     return <div className="p-8 text-sm text-muted-foreground">Student profile is not available.</div>;
   }
 
-  const academicTerm = profile.currentPeriod
-    ? `Year ${profile.yearOfStudy} · Semester ${profile.currentPeriod.term}`
-    : `Year ${profile.yearOfStudy} · Semester ${profile.semester}`;
+  const birthDate = profile.dateOfBirth ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(`${profile.dateOfBirth}T00:00:00Z`)) : "—";
+  const emergencyContact = profile.emergencyContact
+    ? `${profile.emergencyContact.name} · ${profile.emergencyContact.phone}` : "—";
 
   return (
     <div className="w-full space-y-4 p-5 sm:p-6 lg:p-8">
       <section className="relative flex min-h-44 flex-col justify-center gap-5 overflow-hidden rounded-xl bg-gradient-to-r from-primary via-primary/85 to-primary/65 p-6 text-primary-foreground shadow-sm sm:flex-row sm:items-center sm:px-8">
-        <div className="flex size-24 shrink-0 items-center justify-center rounded-full border-4 border-background/80 bg-background/15 text-4xl font-semibold uppercase">
-          {profile.name.trim().charAt(0) || <UserRound className="size-10" />}
-        </div>
+        <Avatar className="size-32 shrink-0 border-4 border-background/80 sm:size-36">
+          <AvatarImage src={profile.imageUrl ?? undefined} alt={profile.name} className="object-cover" />
+          <AvatarFallback className="bg-background/15 text-4xl font-semibold text-primary-foreground">{profile.name.trim().charAt(0) || <UserRound className="size-10" />}</AvatarFallback>
+        </Avatar>
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{profile.name}</h1>
           <p className="font-semibold">{profile.program.name}</p>
           <p className="font-mono text-sm text-primary-foreground/85">{profile.registrationNumber}</p>
         </div>
-        <Badge variant="secondary" className="absolute right-5 top-5 capitalize">{profile.status}</Badge>
+        <Badge variant="secondary" className="absolute right-5 top-5">{profile.onSemester ? "On Semester" : "Off Semester"}</Badge>
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Academic summary">
         <SummaryCard icon={GraduationCap} label="Current year" value={String(profile.yearOfStudy)} />
         <SummaryCard icon={Layers3} label="Current semester" value={String(profile.currentPeriod?.term ?? profile.semester)} />
-        <SummaryCard icon={Building2} label="Department" value={profile.department.name} />
-        <SummaryCard icon={BookOpen} label="Programme" value={profile.program.code} />
+        <SummaryCard icon={Building2} label="Study mode" value={profile.programType || "—"} />
+        <SummaryCard icon={BookOpen} label="Faculty" value={profile.faculty.name} />
       </section>
 
       <section className="grid gap-4 xl:grid-cols-3">
-        <ProfileCard title="Basic Information">
-          <ProfileField label="Full name" value={profile.name} />
-          <ProfileField label="Registration number" value={profile.registrationNumber} />
-          <ProfileField label="Email" value={profile.email} icon={Mail} />
+        <ProfileCard title="Basic Info">
+          <ProfileField label="First name" value={profile.firstName || profile.name} />
+          <ProfileField label="Surname" value={profile.surname} />
+          <ProfileField label="Other name" value={profile.otherName || "—"} />
+          <ProfileField label="Gender" value={profile.gender.replaceAll("_", " ").toUpperCase()} />
+          <ProfileField label="Date of birth" value={birthDate} />
+          <ProfileField label="Nationality" value={profile.nationality} />
         </ProfileCard>
-        <ProfileCard title="Academic Information">
-          <ProfileField label="Student status" value={profile.status} />
-          <ProfileField label="Programme" value={profile.program.name} />
-          <ProfileField label="Programme code" value={profile.program.code} />
-          <ProfileField label="Department" value={profile.department.name} />
-          <ProfileField label="Year and semester" value={academicTerm} />
-          <ProfileField label="Academic period" value={profile.currentPeriod?.name ?? "Not available"} />
+        <ProfileCard title="Academic Info">
+          <ProfileField label="Student number" value={profile.registrationNumber} />
+          <ProfileField label="Access number" value={profile.accessNumber} />
+          <ProfileField label="Year of entry" value={profile.yearOfEntry ? String(profile.yearOfEntry) : "—"} />
+          <ProfileField label="Faculty" value={profile.faculty.name} />
+          <div className="sm:col-span-2"><ProfileField label="Program" value={profile.program.name} /></div>
+          <ProfileField label="Program type" value={profile.programType} />
         </ProfileCard>
-        <ProfileCard title="Contact Information">
-          <ProfileField label="Email address" value={profile.email} icon={Mail} />
-          <p className="text-sm text-muted-foreground">Additional contact details have not been added to your student profile.</p>
+        <ProfileCard title="Contact Info">
+          <div className="sm:col-span-2"><ProfileField label="Email" value={profile.email} icon={Mail} /></div>
+          <div className="sm:col-span-2"><ProfileField label="Phone" value={profile.phone} icon={Phone} /></div>
+          <div className="sm:col-span-2"><ProfileField label="Emergency contact" value={emergencyContact} icon={HeartPulse} /></div>
+          <div className="sm:col-span-2"><ProfileField label="Address" value={profile.address} icon={MapPin} /></div>
         </ProfileCard>
       </section>
     </div>

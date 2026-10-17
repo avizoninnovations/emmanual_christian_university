@@ -1,6 +1,7 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import { tables as authTables } from "./betterAuth/schema.js";
+import { studentPersonalFields } from "./lib/studentProfileFields.js";
 
 const academicPeriodFields = {
   term: v.number(), // Semester/Term 1, 2, or 3
@@ -62,6 +63,8 @@ export default defineSchema({
     departmentId: v.id("departments"),
     level: v.union(v.literal("Certificate"), v.literal("Diploma"), v.literal("Bachelor"), v.literal("Master")),
     durationYears: v.number(),
+    onSemesterRetakeLimit: v.optional(v.number()),
+    offSemesterRetakeLimit: v.optional(v.number()),
     description: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("inactive")),
     ...timestamps,
@@ -76,6 +79,9 @@ export default defineSchema({
   courses: defineTable({
     code: v.string(), // e.g. "BBA 101", "CMP 102"
     title: v.string(),
+    shortName: v.optional(v.string()),
+    category: v.optional(v.union(v.literal("core"), v.literal("elective"), v.literal("foundation"))),
+    moodleUrl: v.optional(v.string()),
     creditUnits: v.number(), // e.g. 3
     departmentId: v.id("departments"),
     programId: v.id("programs"),
@@ -141,6 +147,7 @@ export default defineSchema({
    * 5. Admissions Pipeline
    */
   applicants: defineTable({
+    ...studentPersonalFields,
     name: v.string(),
     email: v.string(),
     phone: v.string(),
@@ -159,8 +166,16 @@ export default defineSchema({
    * 6. Enrolled Students
    */
   students: defineTable({
+    ...studentPersonalFields,
     userId: v.string(),
     registrationNumber: v.string(),
+    accessNumber: v.optional(v.string()),
+    legacyRegistrationNumber: v.optional(v.string()),
+    loginEmail: v.optional(v.string()),
+    contactEmail: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    photoId: v.optional(v.id("_storage")),
+    applicantId: v.optional(v.id("applicants")),
     programId: v.id("programs"),
     sponsorId: v.optional(v.id("sponsors")),
     yearOfStudy: v.number(),
@@ -172,10 +187,37 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_regNumber", ["registrationNumber"])
+    .index("by_accessNumber", ["accessNumber"])
+    .index("by_legacyRegistrationNumber", ["legacyRegistrationNumber"])
     .index("by_program", ["programId"])
     .index("by_sponsor", ["sponsorId"])
     .index("by_status", ["status"])
     .index("by_period", ["term", "year"]),
+
+  /** One clearance record per student and academic period; no campus tenancy. */
+  studentSemesterRegistrations: defineTable({
+    studentId: v.id("students"),
+    periodId: v.id("academicPeriods"),
+    yearOfStudy: v.number(),
+    semester: v.number(),
+    status: v.union(v.literal("pending"), v.literal("registered"), v.literal("withdrawn")),
+    registeredAt: v.optional(v.number()),
+    registeredBy: v.optional(v.string()),
+    academicClearedBy: v.optional(v.string()),
+    accountsClearedBy: v.optional(v.string()),
+    accountsClearedAt: v.optional(v.number()),
+    cafeteriaStatus: v.optional(v.string()),
+    mealPlan: v.optional(v.string()),
+    residenceStatus: v.optional(v.string()),
+    accommodationType: v.optional(v.string()),
+    hall: v.optional(v.string()),
+    block: v.optional(v.string()),
+    room: v.optional(v.string()),
+    bed: v.optional(v.string()),
+    ...timestamps,
+  })
+    .index("by_student_period", ["studentId", "periodId"])
+    .index("by_period_status", ["periodId", "status"]),
 
   /**
    * Institutional Sponsors & Bursaries (Church Dioceses, UNHCR, NGOs, MoHEST)
@@ -304,6 +346,7 @@ export default defineSchema({
     courseworkMarks: v.number(), // 0 - 30 (Combined CA)
     examMarks: v.number(),       // 0 - 70 (Final Exam)
     finalScore: v.number(),      // 0 - 100
+    resultCode: v.optional(v.string()), // e.g. MEX (missing examination), separate from the numeric score
     grade: v.string(),           // "A", "B+", etc.
     gradePoints: v.number(),     // 0.0 - 4.0
     status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
@@ -389,6 +432,7 @@ export default defineSchema({
     periodId: v.id("academicPeriods"),
     courseId: v.id("courses"),
     reason: v.string(),
+    applicationType: v.optional(v.union(v.literal("illness"), v.literal("bereavement"), v.literal("other"))),
     attachmentId: v.optional(v.id("_storage")),
     status: v.union(v.literal("submitted"), v.literal("under_review"), v.literal("approved"), v.literal("rejected")),
     submittedAt: v.number(),
@@ -437,6 +481,10 @@ export default defineSchema({
     supervisorName: v.string(),
     supervisorPhone: v.string(),
     supervisorEmail: v.string(),
+    academicSupervisorName: v.optional(v.string()),
+    academicSupervisorPhone: v.optional(v.string()),
+    academicSupervisorEmail: v.optional(v.string()),
+    reviewComment: v.optional(v.string()),
     acceptanceLetterId: v.optional(v.id("_storage")),
     status: v.union(v.literal("draft"), v.literal("submitted"), v.literal("approved"), v.literal("returned")),
     ...timestamps,
@@ -468,13 +516,14 @@ export default defineSchema({
     .index("by_student_placement", ["studentId", "placementId"]),
 
   studentElections: defineTable({
+    seedKey: v.optional(v.string()),
     title: v.string(),
     description: v.optional(v.string()),
     opensAt: v.number(),
     closesAt: v.number(),
     status: v.union(v.literal("draft"), v.literal("open"), v.literal("closed")),
     ...timestamps,
-  }).index("by_status", ["status"]),
+  }).index("by_status", ["status"]).index("by_seedKey", ["seedKey"]),
 
   studentElectionApplications: defineTable({
     electionId: v.id("studentElections"),
@@ -495,7 +544,7 @@ export default defineSchema({
     phone: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("inactive")),
     ...timestamps,
-  }).index("by_status", ["status"]),
+  }).index("by_status", ["status"]).index("by_email", ["email"]),
 
   /**
    * 8C. Lecturer Absence & Teaching Cover Arrangements

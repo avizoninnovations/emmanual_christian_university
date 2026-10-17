@@ -153,7 +153,7 @@ export const DashboardSidebar = () => {
           </Link>
         </SidebarMenuItem></SidebarMenu>
         <SidebarMenu className="mt-2 border-t border-border px-1 pt-2">
-          <ProfileNav pathname={pathname} registrationNumber={profile?.registrationNumber ?? "Loading..."} image={session?.user.image ?? undefined} />
+          <ProfileNav pathname={pathname} registrationNumber={profile?.accessNumber || profile?.registrationNumber || "Loading..."} image={profile?.imageUrl ?? session?.user.image ?? undefined} />
         </SidebarMenu>
       </SidebarHeader>
 

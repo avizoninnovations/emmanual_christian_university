@@ -6,6 +6,8 @@ import { components } from "./_generated/api.js";
 import { logAction } from "./audit_logger.js";
 import { assertAuthenticated } from "./lib/utils.js";
 import { Id } from "./_generated/dataModel.js";
+import { getStudentProfile } from "./lib/studentProfile.js";
+import { getDegreeClassification } from "./lib/academicStanding.js";
 
 // Helper to fetch user map from Better-Auth
 async function getUsersMap(ctx: any): Promise<Map<string, { name: string; email: string }>> {
@@ -56,125 +58,13 @@ async function resolveCurrentStudent(ctx: any, userId: string) {
   return student;
 }
 
-// South Sudan Degree Classification
-function getDegreeClassification(cgpa: number): {
-  classification: string;
-  standing: "Good Standing" | "Academic Probation" | "Ineligible";
-} {
-  if (cgpa >= 3.6) {
-    return { classification: "First Class Honours", standing: "Good Standing" };
-  }
-  if (cgpa >= 3.0) {
-    return { classification: "Second Class Honours (Upper Division)", standing: "Good Standing" };
-  }
-  if (cgpa >= 2.5) {
-    return { classification: "Second Class Honours (Lower Division)", standing: "Good Standing" };
-  }
-  if (cgpa >= 2.0) {
-    return { classification: "Pass Degree", standing: "Good Standing" };
-  }
-  return { classification: "Fail / Ineligible for Award", standing: "Academic Probation" };
-}
-
 // ─────────────────────────────────────────────────────────
 // 1. STUDENT PROFILE & DASHBOARD OVERVIEW
 // ─────────────────────────────────────────────────────────
 
 export const getMyProfile = query({
   args: {},
-  handler: async (ctx) => {
-    const userId = await assertAuthenticated(ctx);
-    const student = await resolveCurrentStudent(ctx, userId);
-    if (!student) return null;
-
-    const program = (await ctx.db.get(student.programId as Id<"programs">)) as any;
-    const department = program?.departmentId ? ((await ctx.db.get(program.departmentId as Id<"departments">)) as any) : null;
-    const usersMap = await getUsersMap(ctx);
-    const user = usersMap.get(userId);
-
-    // Active period
-    let period = student.currentPeriodId ? ((await ctx.db.get(student.currentPeriodId as Id<"academicPeriods">)) as any) : null;
-    if (!period) {
-      period = (await ctx.db
-        .query("academicPeriods")
-        .withIndex("by_status", (q: any) => q.eq("status", "active"))
-        .first()) as any;
-    }
-
-    // Ledger balance
-    const ledger = period
-      ? await ctx.db
-          .query("studentLedger")
-          .withIndex("by_student_period", (q: any) =>
-            q.eq("studentId", student._id).eq("periodId", period._id)
-          )
-          .first()
-      : null;
-
-    // Academic assessments for CGPA
-    const assessments = await ctx.db
-      .query("studentAssessments")
-      .withIndex("by_student", (q: any) => q.eq("studentId", student._id))
-      .collect();
-
-    const approvedMarks = assessments.filter((a) => a.status === "approved");
-    let totalCU = 0;
-    let weightedGPSum = 0;
-
-    for (const a of approvedMarks) {
-      const course = await ctx.db.get(a.courseId);
-      const cu = course?.creditUnits ?? 3;
-      totalCU += cu;
-      weightedGPSum += a.gradePoints * cu;
-    }
-
-    const cgpa = totalCU > 0 ? Number((weightedGPSum / totalCU).toFixed(2)) : 0.0;
-    const { classification, standing } = getDegreeClassification(cgpa);
-
-    return {
-      studentId: student._id,
-      userId: student.userId,
-      name: user?.name ?? "Student",
-      email: user?.email ?? "—",
-      registrationNumber: student.registrationNumber,
-      yearOfStudy: student.yearOfStudy,
-      semester: student.term || 1,
-      status: student.status,
-      financeStatus: student.financeStatus,
-      program: {
-        _id: program?._id,
-        name: program?.name ?? "Undergraduate Program",
-        code: program?.code ?? "—",
-        level: program?.level ?? "Bachelor",
-        durationYears: program?.durationYears ?? 4,
-      },
-      department: {
-        _id: department?._id,
-        name: department?.name ?? "Academic Department",
-        code: department?.code ?? "—",
-      },
-      currentPeriod: period
-        ? {
-            _id: period._id,
-            name: period.name,
-            term: period.term,
-            year: period.year,
-          }
-        : null,
-      financial: {
-        totalBilled: ledger?.totalDue ?? 0,
-        totalPaid: ledger?.totalPaid ?? 0,
-        balance: ledger?.balance ?? 0,
-        clearanceStatus: ledger?.status ?? student.financeStatus ?? "pending",
-      },
-      academics: {
-        cgpa,
-        totalCreditUnitsEarned: totalCU,
-        degreeClassification: classification,
-        academicStanding: standing,
-      },
-    };
-  },
+  handler: getStudentProfile,
 });
 
 // ─────────────────────────────────────────────────────────
@@ -259,12 +149,13 @@ export const registerSemesterCourses = mutation({
       throw new ConvexError("Please select at least one course unit to register.");
     }
 
-    // Validate total credit units (between 12 and 24 CU, South Sudan regulation)
-    let totalCU = 0;
-    for (const cid of args.courseIds) {
-      const course = await ctx.db.get(cid);
-      totalCU += course?.creditUnits ?? 3;
-    }
+    const courseIds = [...new Set(args.courseIds)];
+    if (courseIds.length !== args.courseIds.length || courseIds.length > 12) throw new ConvexError("Select each course once, up to the permitted semester load.");
+    const period = await ctx.db.get(args.periodId);
+    if (!period || period.status !== "active") throw new ConvexError("Registration is available only in the active academic period.");
+    const courses = await Promise.all(courseIds.map(id => ctx.db.get(id)));
+    if (courses.some(course => !course || course.status !== "active" || course.programId !== student.programId || course.yearOfStudy !== student.yearOfStudy || course.semester !== period.term)) throw new ConvexError("Select active course units from your current program, year, and semester.");
+    const totalCU = courses.reduce((sum, course) => sum + (course?.creditUnits ?? 0), 0);
 
     if (totalCU < 12) {
       throw new ConvexError(`Minimum semester credit load is 12 CU. Selected courses total ${totalCU} CU.`);
@@ -298,6 +189,19 @@ export const registerSemesterCourses = mutation({
           status: "registered",
         });
       }
+    }
+
+    const semesterRegistration = await ctx.db.query("studentSemesterRegistrations").withIndex("by_student_period", q => q.eq("studentId", student._id).eq("periodId", args.periodId)).unique();
+    if (!semesterRegistration) {
+      await ctx.db.insert("studentSemesterRegistrations", {
+        studentId: student._id, periodId: args.periodId, yearOfStudy: student.yearOfStudy, semester: period.term,
+        status: "registered", registeredAt: Date.now(), registeredBy: "Self-registration",
+      });
+    } else if (semesterRegistration.status !== "registered") {
+      await ctx.db.patch(semesterRegistration._id, {
+        yearOfStudy: student.yearOfStudy, semester: period.term, status: "registered",
+        registeredAt: Date.now(), registeredBy: "Self-registration", updatedAt: Date.now(),
+      });
     }
 
     await logAction(ctx, {
@@ -384,6 +288,9 @@ export const getMyRegisteredCourses = query({
           code: course?.code ?? "—",
           title: course?.title ?? "—",
           creditUnits: course?.creditUnits ?? 3,
+          category: course?.category ?? "core",
+          shortName: course?.shortName ?? "",
+          moodleUrl: course?.moodleUrl ?? null,
           yearOfStudy: course?.yearOfStudy ?? 1,
           semester: course?.semester ?? 1,
           lecturerName: lecturerUser?.name ?? "Department Faculty",
@@ -536,6 +443,8 @@ export const getMyAcademicResults = query({
               title: course?.title ?? "—",
               creditUnits: cu,
               yearOfStudy: course?.yearOfStudy ?? 1,
+              plannedSemester: course?.semester ?? 1,
+              resultCode: m.resultCode,
               courseworkMarks: m.courseworkMarks,
               examMarks: m.examMarks,
               finalScore: m.finalScore,
@@ -569,6 +478,7 @@ export const getMyAcademicResults = query({
       student: {
         name: user?.name ?? "Student",
         registrationNumber: student.registrationNumber,
+        accessNumber: student.accessNumber ?? "",
         programName: program?.name ?? "—",
         programCode: program?.code ?? "—",
         facultyName: faculty?.name ?? "—",
@@ -789,6 +699,7 @@ export const getExaminationClearanceCard = query({
       student: {
         name: user?.name ?? "Student",
         registrationNumber: student.registrationNumber,
+        accessNumber: student.accessNumber ?? "",
         programName: program?.name ?? "—",
         departmentName: department?.name ?? "—",
         yearOfStudy: student.yearOfStudy,

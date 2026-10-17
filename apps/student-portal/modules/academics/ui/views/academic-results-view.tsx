@@ -35,12 +35,12 @@ export function AcademicResultsView() {
     if (!data) return [];
     const groups = new Map<number, typeof data.semesters>();
     data.semesters.forEach((semester) => semester.courses.forEach((course) => {
-      const year = course.yearOfStudy ?? 1;
-      const rows = groups.get(year) ?? [];
+      const key = (course.yearOfStudy ?? 1) * 10 + (course.plannedSemester ?? 1);
+      const rows = groups.get(key) ?? [];
       const existing = rows.find((row) => row.periodId === semester.periodId);
       if (existing) existing.courses.push(course);
       else rows.push({ ...semester, courses: [course] });
-      groups.set(year, rows);
+      groups.set(key, rows);
     }));
     return Array.from(groups.entries()).sort(([a], [b]) => a - b);
   }, [data]);
@@ -57,7 +57,9 @@ export function AcademicResultsView() {
   const { student, semesters, cumulative } = data;
   const displaySemesters = transcriptView === "semester"
     ? semesters
-    : curriculumGroups.map(([year, rows]) => {
+    : curriculumGroups.map(([key, rows]) => {
+        const year = Math.floor(key / 10);
+        const term = key % 10;
         const first = rows[0]!;
         const courses = rows.flatMap((row) => row.courses);
         const approved = courses.filter((course) => course.status === "approved");
@@ -67,8 +69,9 @@ export function AcademicResultsView() {
           : 0;
         return {
           ...first,
-          periodId: `curriculum-year-${year}`,
+          periodId: `curriculum-${year}-${term}`,
           periodName: `Year ${year}`,
+          term,
           courses,
           semesterCreditUnits: credits,
           semesterGPA: Number(gradePoints.toFixed(2)),
@@ -131,7 +134,7 @@ export function AcademicResultsView() {
             <div><dt className="text-xs text-slate-500">Current year</dt><dd className="mt-1 font-medium text-slate-800">Year {student.yearOfStudy}</dd></div>
             <div><dt className="text-xs text-slate-500">Current semester</dt><dd className="mt-1 font-medium text-slate-800">{student.currentSemester}</dd></div>
             <div><dt className="text-xs text-slate-500">Current CGPA</dt><dd className="mt-1 font-medium text-slate-800">{cumulative.cgpa.toFixed(2)}</dd></div>
-            <div><dt className="text-xs text-slate-500">Academic standing</dt><dd className="mt-1 font-medium text-slate-800">{cumulative.academicStanding}</dd></div>
+            <div><dt className="text-xs text-slate-500">Access number</dt><dd className="mt-1 font-medium text-slate-800">{student.accessNumber || "—"}</dd></div>
           </dl>
         </CardContent>
       </Card>
@@ -155,15 +158,15 @@ export function AcademicResultsView() {
                     {transcriptView === "semester" ? `${sem.periodName} (${sem.year})` : sem.periodName}
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    {transcriptView === "semester" ? `Term ${sem.term} Examination Session` : "Curriculum year results"}
+                    {transcriptView === "semester" ? `Term ${sem.term} Examination Session` : `Semester ${sem.term} · Curriculum results`}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
                   <Badge variant="outline" className="bg-background">
-                    {transcriptView === "semester" ? "Semester Credits" : "Year Credits"}: {sem.semesterCreditUnits} CU
+                    {transcriptView === "semester" ? "Semester Credits" : "Semester Credits"}: {sem.semesterCreditUnits} CU
                   </Badge>
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 font-bold">
-                    {transcriptView === "semester" ? "Semester GPA" : "Year GPA"}: {sem.semesterGPA.toFixed(2)}
+                    {transcriptView === "semester" ? "Semester GPA" : "Semester GPA"}: {sem.semesterGPA.toFixed(2)}
                   </Badge>
                 </div>
               </div>
@@ -188,7 +191,7 @@ export function AcademicResultsView() {
                       </TableCell>
                       <TableCell className="text-center font-mono font-bold text-sm">
                         <span className={course.status === "approved" ? "text-foreground" : "text-slate-400"}>
-                          {course.status === "approved" ? course.finalScore : "—"}
+                          {course.status === "approved" ? course.resultCode || course.finalScore : "—"}
                         </span>
                       </TableCell>
                       <TableCell className="text-center font-mono text-xs">

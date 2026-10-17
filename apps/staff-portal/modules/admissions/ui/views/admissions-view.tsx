@@ -21,9 +21,11 @@ import { Table, TableHead, TableHeader, TableRow, TableCell, TableBody } from "@
 
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
+import { ApplicantForm } from "../components/applicant-form";
 
 export const AdmissionsView = () => {
   const [search, setSearch] = useState("");
+  const [showForm, setShowForm] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
   
   const applicants = useQuery(api.admissions.getApplicants, {});
@@ -32,6 +34,8 @@ export const AdmissionsView = () => {
     a.name.toLowerCase().includes(search.toLowerCase()) || 
     a._id.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (showForm) return <div className="p-4 lg:p-8"><ApplicantForm onBack={() => setShowForm(false)} /></div>;
 
   return (
     <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
@@ -42,6 +46,7 @@ export const AdmissionsView = () => {
           <p className="text-sm text-muted-foreground mt-1">Monitor the application pipeline and review current applicant statuses.</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button onClick={() => setShowForm(true)} className="gap-2"><UserPlus className="size-4" />New Application</Button>
           <Button variant="outline" className="gap-2"><Download className="size-4" /> Export Data</Button>
         </div>
       </div>

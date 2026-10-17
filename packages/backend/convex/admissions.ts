@@ -1,6 +1,7 @@
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations";
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
+import { studentPersonalFields } from "./lib/studentProfileFields";
 import { logAction } from "./audit_logger";
 import { assertRole, assertAuthenticated } from "./lib/utils";
 
@@ -33,6 +34,7 @@ export const getApplicants = query({
 
 export const createApplicant = mutation({
   args: {
+    ...studentPersonalFields,
     name: v.string(),
     email: v.string(),
     phone: v.string(),
@@ -43,6 +45,11 @@ export const createApplicant = mutation({
   },
   handler: async (ctx, args) => {
     await assertRole(ctx, ["admin", "registrar"]);
+    const program = await ctx.db.get(args.programId);
+    if (!program || program.status !== "active") throw new ConvexError("Select an active program for this application.");
+    if (args.name.trim().length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(args.email)) throw new ConvexError("Enter the applicant's full name and a valid email address.");
+    if (args.dateOfBirth && (!/^\d{4}-\d{2}-\d{2}$/.test(args.dateOfBirth) || !Number.isFinite(Date.parse(args.dateOfBirth)) || Date.parse(args.dateOfBirth) >= Date.now())) throw new ConvexError("Enter a valid date of birth in the past.");
+    if (args.yearOfEntry && (!Number.isInteger(args.yearOfEntry) || args.yearOfEntry < 1950 || args.yearOfEntry > new Date().getUTCFullYear() + 1)) throw new ConvexError("Enter a valid year of entry.");
     const id = await ctx.db.insert("applicants", {
       ...args,
       status: "new",

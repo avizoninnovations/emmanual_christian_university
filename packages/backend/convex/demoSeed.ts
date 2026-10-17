@@ -4,6 +4,9 @@ import { makeFunctionReference } from "convex/server";
 import { v } from "convex/values";
 import { createAuth } from "./betterAuth/auth.js";
 import fixture from "./seed-data/ecu-demo-seed.json";
+import { demoStudentProfile, seedPortalServices } from "./lib/demoPortalSeed.js";
+import { logAction } from "./audit_logger.js";
+import { ConvexError } from "convex/values";
 
 const stamp = () => Date.now();
 
@@ -21,6 +24,10 @@ export const seedDemoData = internalAction({
       });
       if (existing?._id) {
         userIds[account.email] = existing._id;
+        await ctx.runMutation(components.betterAuth.adapter.updateOne, { input: {
+          model: "user", where: [{ field: "_id", value: existing._id, operator: "eq" }],
+          update: { name: account.name },
+        } });
         continue;
       }
 
@@ -37,7 +44,7 @@ export const seedDemoData = internalAction({
         },
       });
       const userId = created.user?.id;
-      if (!userId) throw new Error(`Better Auth did not return an id for ${account.email}`);
+      if (!userId) throw new ConvexError("The demo account could not be created. Please try the seed again.");
       userIds[account.email] = userId;
     }
 
@@ -80,10 +87,13 @@ export const insertDemoData = internalMutation({
         const existingProgram = await ctx.db.query("programs").withIndex("by_department", (q) => q.eq("departmentId", departmentId)).filter((q) => q.eq(q.field("code"), program.code)).first();
         programIds[program.code] = existingProgram?._id ?? await ctx.db.insert("programs", { name: program.name, code: program.code, departmentId, level: program.level as "Certificate" | "Diploma" | "Bachelor" | "Master", durationYears: program.durationYears, status: "active", createdAt: now, updatedAt: now });
         if (!existingProgram) inserted++;
+        await ctx.db.patch(programIds[program.code]!, { onSemesterRetakeLimit: program.onSemesterRetakeLimit, offSemesterRetakeLimit: program.offSemesterRetakeLimit, updatedAt: now });
         for (const course of program.courseUnits) {
           const existingCourse = await ctx.db.query("courses").withIndex("by_code", (q) => q.eq("code", course.code)).first();
           courseIds[course.code] = existingCourse?._id ?? await ctx.db.insert("courses", { code: course.code, title: course.title, creditUnits: course.creditUnits, departmentId, programId: programIds[program.code]!, yearOfStudy: course.yearOfStudy, semester: course.semester, status: "active", createdAt: now, updatedAt: now });
           if (!existingCourse) inserted++;
+          const category = course.category === "elective" ? "elective" : course.category === "foundation" ? "foundation" : "core";
+          await ctx.db.patch(courseIds[course.code]!, { category, shortName: course.shortName, updatedAt: now });
         }
       }
     }
@@ -100,9 +110,10 @@ export const insertDemoData = internalMutation({
 
     for (const student of fixture.studentAccounts) {
       const userId = userIds[student.email]!;
-      const existing = await ctx.db.query("students").withIndex("by_regNumber", (q) => q.eq("registrationNumber", student.registrationNumber)).first();
+      const existing = await ctx.db.query("students").withIndex("by_userId", (q) => q.eq("userId", userId)).unique();
       studentIds[student.registrationNumber] = existing?._id ?? await ctx.db.insert("students", { userId, registrationNumber: student.registrationNumber, programId: programIds[student.programCode]!, yearOfStudy: student.yearOfStudy, currentPeriodId: periodIds[student.currentPeriodKey]!, term: student.term, year: student.year, status: student.status as "active" | "suspended" | "deferred" | "graduating" | "discontinued", financeStatus: student.financeStatus as "cleared" | "partial" | "pending", createdAt: now, updatedAt: now });
       if (!existing) inserted++;
+      await ctx.db.patch(studentIds[student.registrationNumber]!, { ...demoStudentProfile(student), registrationNumber: student.registrationNumber, updatedAt: now });
     }
 
     const existingGrades = await ctx.db.query("gradingScales").collect();
@@ -204,6 +215,8 @@ export const insertDemoData = internalMutation({
       }
     }
 
+    inserted += await seedPortalServices(ctx, { studentIds, courseIds, periodIds, staffIds, now });
+    await logAction(ctx, { action: "SEED_DEMO_PORTAL", resource: "students", details: "Updated fictional demo profiles, student/access identifiers, and linked portal service fixtures." });
     return { inserted, students: fixture.studentAccounts.length, staff: fixture.staffAccounts.length, courseUnits: Object.keys(courseIds).length, authAccounts: Object.keys(userIds).length };
   },
 });

@@ -6,20 +6,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, LockKeyhole, Mail, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useConvex } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@workspace/ui/components/button";
 
-function toBetterAuthEmail(identifier: string) {
-  const value = identifier.trim();
-  if (value.includes("@")) return value.toLowerCase();
-  const normalizedRegistrationNumber = value.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return normalizedRegistrationNumber
-    ? `${normalizedRegistrationNumber}@students.ecu-ssd.org`
-    : "";
-}
-
 export const SignInView = () => {
   const router = useRouter();
+  const convex = useConvex();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -37,8 +31,7 @@ export const SignInView = () => {
 
   const handleSignIn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const accountEmail = toBetterAuthEmail(identifier);
-    if (!accountEmail) {
+    if (!identifier.trim()) {
       toast.error("Enter a valid university email or registration number.");
       return;
     }
@@ -49,6 +42,7 @@ export const SignInView = () => {
 
     setIsLoading(true);
     try {
+      const accountEmail = await convex.query(api.student_identity.resolveLoginIdentifier, { identifier });
       const { error } = await authClient.signIn.email({
         email: accountEmail,
         password,

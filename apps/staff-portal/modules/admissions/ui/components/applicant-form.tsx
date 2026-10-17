@@ -1,140 +1,83 @@
 "use client";
-import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
-import { useState } from "react";
-import { ArrowLeft, Send } from "lucide-react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@workspace/backend/_generated/api";
+import { ArrowLeft, Send, Loader2 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Card, CardContent } from "@workspace/ui/components/card";
-import { Label } from "@workspace/ui/components/label";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@workspace/ui/components/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
-import { toast } from "sonner";
-import { Id } from "@workspace/backend/_generated/dataModel";
+import { useApplicantForm } from "../../hooks/use-applicant-form";
+import type { ApplicantFormValues } from "../../schemas/applicant-schema";
 
-interface ApplicantFormProps {
-  onBack: () => void;
-}
+const sections = [
+  { title: "Personal details", fields: [
+    { name: "firstName", label: "First name" }, { name: "surname", label: "Surname" },
+    { name: "otherName", label: "Other name" }, { name: "dateOfBirth", label: "Date of birth", type: "date" },
+    { name: "nationality", label: "Nationality" },
+  ] },
+  { title: "Contact details", fields: [
+    { name: "email", label: "Email address", type: "email" }, { name: "phone", label: "Phone number", type: "tel" },
+    { name: "address", label: "Residential address" },
+  ] },
+  { title: "Emergency contact", fields: [
+    { name: "emergencyName", label: "Contact name" }, { name: "emergencyRelationship", label: "Relationship" },
+    { name: "emergencyPhone", label: "Contact phone", type: "tel" }, { name: "emergencyEmail", label: "Contact email", type: "email" },
+  ] },
+] satisfies { title: string; fields: { name: keyof ApplicantFormValues; label: string; type?: string }[] }[];
 
-export const ApplicantForm = ({ onBack }: ApplicantFormProps) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [programId, setProgramId] = useState("");
-  const [admissionType, setAdmissionType] = useState<"National" | "Direct">("National");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const programs = useQuery(api.academic.getPrograms, {}) || [];
-  const activePeriod = useQuery(api.calendar.getActivePeriod);
-  const createApplicant = useMutation(api.admissions.createApplicant);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !email || !programId) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
-    if (!activePeriod) {
-      toast.error("No active academic period found. Please contact the administrator.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      await createApplicant({
-        name,
-        email,
-        phone,
-        programId: programId as Id<"programs">,
-        admissionType,
-        term: activePeriod.term,
-        year: activePeriod.year,
-      });
-      toast.success("Applicant recorded successfully.");
-      onBack();
-    } catch (error: any) {
-      toast.error(getUserFacingErrorMessage(error, "Failed to record applicant"));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+export function ApplicantForm({ onBack }: { onBack: () => void }) {
+  const { form, programs, submit, activePeriod } = useApplicantForm(onBack);
   return (
-    <Card className="border shadow-sm mt-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <Card className="mt-4 shadow-sm">
       <CardContent className="p-6 sm:p-8">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="outline" size="icon" className="rounded-full size-10 shrink-0" onClick={onBack}>
-            <ArrowLeft className="size-5" />
-          </Button>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">New Application</h2>
-            <p className="text-sm text-muted-foreground mt-1">Register a new student application into the pipeline.</p>
-          </div>
+        <div className="mb-8 flex items-center gap-4">
+          <Button variant="outline" size="icon" onClick={onBack} aria-label="Back to applications"><ArrowLeft className="size-5" /></Button>
+          <div><h2 className="text-2xl font-bold">New Application</h2><p className="text-sm text-muted-foreground">Capture the details used by the student's profile and academic records.</p></div>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-8 max-w-3xl">
-          {/* Header Toggle (Optional styling matching image) */}
-          <div className="flex p-1 bg-muted/50 rounded-lg w-fit">
-            <button
-              type="button"
-              onClick={() => setAdmissionType("National")}
-              className={`px-6 py-2 text-sm font-semibold rounded-md transition-colors ${admissionType === "National" ? "bg-white shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              NATIONAL
-            </button>
-            <button
-              type="button"
-              onClick={() => setAdmissionType("Direct")}
-              className={`px-6 py-2 text-sm font-semibold rounded-md transition-colors ${admissionType === "Direct" ? "bg-white shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            >
-               DIRECT / INTL
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2 col-span-2">
-              <Label>Applicant Full Name</Label>
-              <Input placeholder="e.g. John Emmanuel Doe" value={name} onChange={e => setName(e.target.value)} required className="h-11 border-muted-foreground/20 bg-muted/20" />
+        <Form {...form}>
+          <form onSubmit={submit} className="max-w-4xl space-y-8">
+            {sections.map(section => <section key={section.title} className="space-y-4">
+              <h3 className="border-b pb-2 text-base font-semibold">{section.title}</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {section.fields.map(item => <FormField key={item.name} control={form.control} name={item.name} render={({ field }) => (
+                  <FormItem><FormLabel>{item.label}</FormLabel><FormControl><Input {...field} type={"type" in item ? item.type : "text"} /></FormControl><FormMessage /></FormItem>
+                )} />)}
+                {section.title === "Personal details" && <FormField control={form.control} name="gender" render={({ field }) => <FormItem>
+                  <FormLabel>Gender</FormLabel><Select value={field.value} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>
+                    <SelectItem value="male">Male</SelectItem><SelectItem value="female">Female</SelectItem><SelectItem value="other">Other</SelectItem><SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                  </SelectContent></Select><FormMessage />
+                </FormItem>} />}
+              </div>
+            </section>)}
+            <section className="space-y-4">
+              <h3 className="border-b pb-2 text-base font-semibold">Academic details</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField control={form.control} name="programId" render={({ field }) => <FormItem>
+                  <FormLabel>Program</FormLabel><Select value={field.value} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue placeholder="Select a program" /></SelectTrigger></FormControl><SelectContent>
+                    {programs.map(program => <SelectItem key={program._id} value={program._id}>{program.name}</SelectItem>)}
+                  </SelectContent></Select><FormMessage />
+                </FormItem>} />
+                <FormField control={form.control} name="yearOfEntry" render={({ field }) => <FormItem><FormLabel>Year of entry</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>} />
+                <FormField control={form.control} name="programType" render={({ field }) => <FormItem>
+                  <FormLabel>Program type</FormLabel><Select value={field.value} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>
+                    {["Day", "Evening", "Weekend", "Distance"].map(mode => <SelectItem key={mode} value={mode}>{mode}</SelectItem>)}
+                  </SelectContent></Select><FormMessage />
+                </FormItem>} />
+                <FormField control={form.control} name="admissionType" render={({ field }) => <FormItem>
+                  <FormLabel>Admission route</FormLabel><Select value={field.value} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>
+                    <SelectItem value="National">National</SelectItem><SelectItem value="Direct">Direct / International</SelectItem>
+                  </SelectContent></Select><FormMessage />
+                </FormItem>} />
+              </div>
+            </section>
+            {!activePeriod && <p className="text-sm text-muted-foreground">An active academic period is required before submitting.</p>}
+            <div className="flex justify-end gap-3 border-t pt-4">
+              <Button type="button" variant="ghost" onClick={onBack}>Cancel</Button>
+              <Button type="submit" aria-busy={form.formState.isSubmitting} disabled={!activePeriod || form.formState.isSubmitting}>{form.formState.isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}Submit Application</Button>
             </div>
-
-            <div className="space-y-2">
-              <Label>Email Address</Label>
-              <Input type="email" placeholder="john@example.com" value={email} onChange={e => setEmail(e.target.value)} required className="h-11 border-muted-foreground/20 bg-muted/20" />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Phone Number</Label>
-              <Input placeholder="+211 ..." value={phone} onChange={e => setPhone(e.target.value)} className="h-11 border-muted-foreground/20 bg-muted/20" />
-            </div>
-
-            <div className="space-y-2 col-span-2">
-              <Label>Program Applied For</Label>
-              <Select value={programId} onValueChange={setProgramId}>
-                <SelectTrigger className="h-11 border-muted-foreground/20 bg-muted/20">
-                  <SelectValue placeholder="Select an academic program..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {programs.map((p: any) => (
-                    <SelectItem key={p._id} value={p._id}>
-                      {p.name} ({p.code})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="pt-4 flex justify-end">
-            <Button type="button" variant="ghost" onClick={onBack} className="mr-2">Cancel</Button>
-            <Button type="submit" disabled={isSubmitting} className="gap-2 h-11 px-8 text-white bg-primary hover:bg-primary/90">
-              <Send className="size-4" />
-              {isSubmitting ? "Submitting..." : "Submit Application"}
-            </Button>
-          </div>
-        </form>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
-};
+}

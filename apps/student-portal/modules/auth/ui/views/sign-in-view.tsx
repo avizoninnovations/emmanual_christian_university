@@ -10,6 +10,7 @@ import { useConvex } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@workspace/ui/components/button";
+import { Input } from "@workspace/ui/components/input";
 
 export const SignInView = () => {
   const router = useRouter();
@@ -68,7 +69,7 @@ export const SignInView = () => {
         style={{ backgroundImage: "url('/001.webp')" }}
         aria-hidden="true"
       />
-      <div className="absolute inset-0 bg-[#030814]/65" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
 
       <header className="absolute inset-x-0 top-0 z-10 mx-auto flex w-full max-w-[1320px] items-center justify-between px-5 py-5 text-white sm:px-8">
         <div className="flex items-center gap-3">
@@ -78,51 +79,51 @@ export const SignInView = () => {
         <span className="hidden text-xs font-medium tracking-[0.16em] text-white/80 sm:block">EMMANUEL CHRISTIAN UNIVERSITY</span>
       </header>
 
-      <section className="relative z-10 w-full max-w-[600px] overflow-hidden rounded-xl border border-[#d71559] shadow-[0_0_0_1px_#1874c9,0_24px_70px_-20px_rgba(0,0,0,0.85)]">
-        <div className="flex min-h-[130px] items-center justify-center gap-5 bg-white px-5 py-5 sm:px-8">
+      <section className="relative z-10 w-full max-w-[600px] overflow-hidden rounded-xl border border-primary/50 bg-card text-card-foreground shadow-2xl ring-1 ring-primary/30">
+        <div className="flex min-h-[130px] items-center justify-center gap-5 bg-card px-5 py-5 text-card-foreground sm:px-8">
           <Image src="/icon.png" alt="Emmanuel Christian University crest" width={86} height={86} className="size-[68px] shrink-0 object-contain sm:size-[82px]" priority />
           <div className="min-w-0">
-            <h1 className="font-serif text-[25px] font-medium uppercase leading-[1.05] tracking-[0.035em] text-[#191919] sm:text-[32px]">
+            <h1 className="font-serif text-[25px] font-medium uppercase leading-[1.05] tracking-[0.035em] text-foreground sm:text-[32px]">
               Emmanuel Christian University
             </h1>
-            <p className="mt-2 text-sm font-medium tracking-wide text-[#b10f3b] sm:text-base">A transformed people with academic excellence</p>
+            <p className="mt-2 text-sm font-medium tracking-wide text-primary sm:text-base">A transformed people with academic excellence</p>
           </div>
         </div>
 
-        <div className="border-y border-white/10 bg-[#080b18]/95 px-3 py-6 sm:px-4 sm:py-7">
+        <div className="border-y border-border bg-muted/30 px-3 py-6 sm:px-4 sm:py-7">
           {step === "identifier" ? (
             <form onSubmit={continueToPassword} className="flex flex-col gap-3 sm:flex-row">
-              <label className="relative flex min-h-[50px] flex-1 items-center rounded-md bg-[#f5f8fa] text-[#17364a] focus-within:ring-2 focus-within:ring-[#1d75c9]">
-                <Mail className="ml-4 size-5 shrink-0" aria-hidden="true" />
+              <label className="relative flex min-h-[50px] flex-1 items-center rounded-md border border-input bg-background text-foreground focus-within:ring-2 focus-within:ring-primary">
+                <Mail className="ml-4 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 <span className="sr-only">University email or access number</span>
-                <input
+                <Input
                   autoComplete="username"
                   autoFocus
-                  className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-[#1c2933] outline-none placeholder:text-[#929ba1]"
+                  className="h-full min-w-0 flex-1 border-0 bg-transparent px-4 shadow-none outline-none ring-0 placeholder:text-muted-foreground focus-visible:ring-0"
                   onChange={(event) => setIdentifier(event.target.value)}
                   placeholder="Username or access number"
                   value={identifier}
                 />
               </label>
-              <button className="flex h-[50px] min-w-[132px] items-center justify-center gap-3 rounded-md bg-gradient-to-r from-[#ec155e] to-[#d50c58] px-6 text-sm font-bold text-white shadow-lg shadow-[#c10c4a]/20 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60" type="submit">
+              <Button className="h-[50px] min-w-[132px] gap-3 px-6 text-sm font-bold" type="submit">
                 NEXT <ArrowRight className="size-[18px]" />
-              </button>
+              </Button>
             </form>
           ) : (
             <form onSubmit={handleSignIn} className="space-y-3">
-              <div className="flex items-center gap-3 rounded-md bg-white/10 px-4 py-3 text-white">
-                <button type="button" onClick={() => setStep("identifier")} className="rounded p-1 text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Change username or access number">
+              <div className="flex items-center gap-3 rounded-md border border-border bg-card px-4 py-3 text-foreground">
+                <Button type="button" onClick={() => setStep("identifier")} className="size-8 p-0 text-muted-foreground" variant="ghost" aria-label="Change username or access number">
                   <ArrowLeft className="size-4" />
-                </button>
+                </Button>
                 <span className="min-w-0 flex-1 truncate text-sm">{identifier}</span>
               </div>
-              <label className="flex min-h-[50px] items-center rounded-md bg-[#f5f8fa] text-[#17364a] focus-within:ring-2 focus-within:ring-[#1d75c9]">
-                <LockKeyhole className="ml-4 size-5 shrink-0" aria-hidden="true" />
+              <label className="flex min-h-[50px] items-center rounded-md border border-input bg-background text-foreground focus-within:ring-2 focus-within:ring-primary">
+                <LockKeyhole className="ml-4 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 <span className="sr-only">Password</span>
-                <input
+                <Input
                   autoComplete="current-password"
                   autoFocus
-                  className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-[#1c2933] outline-none placeholder:text-[#929ba1]"
+                  className="h-full min-w-0 flex-1 border-0 bg-transparent px-4 shadow-none outline-none ring-0 placeholder:text-muted-foreground focus-visible:ring-0"
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="Password"
                   type={showPassword ? "text" : "password"}
@@ -130,7 +131,7 @@ export const SignInView = () => {
                 />
                 <Button
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="mr-2 text-[#17364a] hover:bg-black/5"
+                  className="mr-2 text-muted-foreground hover:bg-muted"
                   onClick={() => setShowPassword((visible) => !visible)}
                   size="icon"
                   type="button"
@@ -139,16 +140,16 @@ export const SignInView = () => {
                   {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                 </Button>
               </label>
-              <button className="flex h-[50px] w-full items-center justify-center gap-3 rounded-md bg-gradient-to-r from-[#ec155e] to-[#d50c58] px-6 text-sm font-bold text-white shadow-lg shadow-[#c10c4a]/20 transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="submit">
+              <Button className="h-[50px] w-full gap-3 px-6 text-sm font-bold" disabled={isLoading} type="submit">
                 {isLoading ? <LoaderCircle className="size-5 animate-spin" /> : <>SIGN IN <ArrowRight className="size-[18px]" /></>}
-              </button>
+              </Button>
             </form>
           )}
         </div>
 
-        <footer className="bg-[#080b18]/95 px-5 py-5 text-center text-xs leading-6 text-white/75 sm:px-8">
+        <footer className="bg-card px-5 py-5 text-center text-xs leading-6 text-muted-foreground sm:px-8">
           <p>Authorized access for Emmanuel Christian University students.</p>
-          <p className="text-white/55">For password assistance, contact the university ICT help desk.</p>
+          <p className="text-muted-foreground/75">For password assistance, contact the university ICT help desk.</p>
         </footer>
       </section>
 

@@ -147,7 +147,7 @@ export const DashboardSidebar = () => {
         <SidebarMenu><SidebarMenuItem>
           <Link href="/" aria-label="ECU Student dashboard" className="flex h-10 w-full items-center justify-start gap-2 rounded-lg px-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-data-[collapsible=icon]:justify-center">
             <div className="flex size-10 items-center justify-center overflow-hidden rounded-md group-data-[collapsible=icon]:size-8">
-              <Image src="/icon.png" alt="ECU Logo" width={44} height={44} className="size-full object-contain" />
+              <Image src="/logo.webp" alt="ECU Logo" width={44} height={44} className="size-full object-contain" />
             </div>
             <span className="font-semibold text-sm group-data-[collapsible=icon]:hidden">ECU Student</span>
           </Link>

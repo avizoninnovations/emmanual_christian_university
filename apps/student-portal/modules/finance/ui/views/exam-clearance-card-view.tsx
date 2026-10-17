@@ -136,7 +136,7 @@ export function ExamClearanceCardView() {
         <div className="border-b-2 border-primary/20 pb-5 text-center relative">
           <div className="flex items-center justify-center gap-4 mb-2">
             <div className="flex aspect-square size-14 items-center justify-center overflow-hidden">
-              <Image src="/icon.png" alt="ECU Logo" width={56} height={56} className="object-contain" />
+              <Image src="/logo.webp" alt="ECU Logo" width={56} height={56} className="object-contain" />
             </div>
             <div>
               <h2 className="text-xl font-extrabold tracking-tight text-foreground">

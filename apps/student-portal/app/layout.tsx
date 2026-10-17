@@ -21,17 +21,17 @@ export const metadata: Metadata = {
   title: "ECU Student Portal | Emmanuel Christian University",
   description: "Official student portal for Emmanuel Christian University.",
   icons: {
-    icon: { url: "/icon.png", type: "image/png" },
-    apple: { url: "/icon.png", type: "image/png" },
+    icon: { url: "/logo.webp", type: "image/webp" },
+    apple: { url: "/logo.webp", type: "image/webp" },
   },
   openGraph: {
     title: "ECU Student Portal | Emmanuel Christian University",
     description: "Official student portal for Emmanuel Christian University.",
-    images: [{ url: "/icon.png", width: 1536, height: 1024, alt: "Emmanuel Christian University crest" }],
+    images: [{ url: "/logo.webp", alt: "Emmanuel Christian University logo" }],
   },
   twitter: {
     card: "summary_large_image",
-    images: [{ url: "/icon.png", alt: "Emmanuel Christian University crest" }],
+    images: [{ url: "/logo.webp", alt: "Emmanuel Christian University logo" }],
   },
 }
 

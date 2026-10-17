@@ -488,7 +488,7 @@ export function StudentFinanceView() {
           <div className="p-6 bg-muted/20 border-b flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex aspect-square size-10 items-center justify-center overflow-hidden">
-                <Image src="/icon.png" alt="ECU Logo" width={40} height={40} className="object-contain" />
+                <Image src="/logo.webp" alt="ECU Logo" width={40} height={40} className="object-contain" />
               </div>
               <div>
                 <h3 className="font-bold text-sm leading-none">EMMANUEL CHRISTIAN UNIVERSITY</h3>

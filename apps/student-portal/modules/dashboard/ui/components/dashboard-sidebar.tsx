@@ -63,16 +63,16 @@ function IconRailLink({
   active: boolean;
 }) {
   return (
-    <SidebarMenuItem className="flex justify-center py-1.5">
+    <SidebarMenuItem className="flex justify-center py-2">
       <SidebarMenuButton
         asChild
         isActive={active}
         tooltip={title}
-        className="mx-auto flex h-8 w-8 justify-center rounded-lg p-0 data-[active=true]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-0!"
+        className="mx-auto flex h-8 w-8 justify-center rounded-lg p-0 data-[active=true]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:size-11! group-data-[collapsible=icon]:p-0!"
       >
         <Link href={url} aria-label={title}>
-          <span className={`flex size-8 items-center justify-center rounded-md ${active ? "bg-primary text-primary-foreground" : "bg-muted/70 text-sidebar-accent-foreground"}`}>
-            <Icon className="size-4" />
+          <span className={`flex size-10 items-center justify-center rounded-md ${active ? "bg-primary text-primary-foreground" : "bg-muted/70 text-sidebar-accent-foreground"}`}>
+            <Icon className="size-5" />
           </span>
         </Link>
       </SidebarMenuButton>
@@ -102,9 +102,9 @@ export const DashboardSidebar = () => {
 
   return (
     <Sidebar variant="floating" className="group" collapsible="icon" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <SidebarHeader className="px-2 pt-3 pb-2 group-data-[collapsible=icon]:py-5">
+      <SidebarHeader className="px-2 pt-3 pb-2 group-data-[collapsible=icon]:py-4">
         <SidebarMenu><SidebarMenuItem>
-            <SidebarMenuButton size="lg" className="h-10 w-full justify-start gap-2 rounded-lg px-2 hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-0!">
+            <SidebarMenuButton size="lg" className="h-10 w-full justify-start gap-2 rounded-lg px-2 hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
             <div className="flex size-10 items-center justify-center overflow-hidden rounded-md group-data-[collapsible=icon]:size-8">
               <Image src="/icon.png" alt="ECU Logo" width={44} height={44} className="size-full object-contain" />
             </div>
@@ -114,9 +114,9 @@ export const DashboardSidebar = () => {
             </div>
           </SidebarMenuButton>
         </SidebarMenuItem></SidebarMenu>
-        <SidebarMenu className="mt-2 border-t border-border/60 px-1 pt-2">
+        <SidebarMenu className="mt-2 border-t border-border px-1 pt-2">
           <SidebarMenuItem><DropdownMenu>
-            <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 data-[state=open]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-0!">
+            <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 font-medium data-[state=open]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
               <Avatar className="size-10 group-data-[collapsible=icon]:size-8">
                 <AvatarImage src={session?.user.image ?? undefined} alt="Student profile" className="object-cover object-center" />
                 <AvatarFallback className="bg-primary/10 font-semibold text-primary">{profile?.registrationNumber?.charAt(0) ?? <UserIcon className="size-4" />}</AvatarFallback>
@@ -135,12 +135,12 @@ export const DashboardSidebar = () => {
 
       <SidebarContent className="gap-0 px-2 py-1">
         <div className="hidden group-data-[collapsible=icon]:block">
-          <SidebarGroup className="border-b border-border/60 px-1 py-1.5">
+          <SidebarGroup className="border-b border-border px-1 py-2">
             <SidebarGroupContent><SidebarMenu className="gap-0">
               <IconRailLink title="Dashboard" url="/" icon={LayoutDashboardIcon} active={pathname === "/"} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
-          <SidebarGroup className="border-b border-border/60 px-1 py-1.5">
+          <SidebarGroup className="border-b border-border px-1 py-2">
             <SidebarGroupContent><SidebarMenu className="gap-0">
               <IconRailLink title="Register" url="/academics/registration" icon={CheckSquare} active={isActive("/academics/registration")} />
               <IconRailLink title="Dead Year / Dead Sem" url="/registration/dead-year-dead-sem" icon={CalendarDays} active={isActive("/registration/dead-year-dead-sem")} />
@@ -148,12 +148,12 @@ export const DashboardSidebar = () => {
               <IconRailLink title="Aegrotat" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
-          <SidebarGroup className="border-b border-border/60 px-1 py-1.5">
+          <SidebarGroup className="border-b border-border px-1 py-2">
             <SidebarGroupContent><SidebarMenu className="gap-0">
               <IconRailLink title="Financial statement" url="/finance" icon={DollarSign} active={isActive("/finance")} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
-          <SidebarGroup className="border-b border-border/60 px-1 py-1.5">
+          <SidebarGroup className="border-b border-border px-1 py-2">
             <SidebarGroupContent><SidebarMenu className="gap-0">
               <IconRailLink title="My Timetable" url="/academics/timetable" icon={CalendarDays} active={isActive("/academics/timetable")} />
               <IconRailLink title="Enrolled Courses" url="/academics/courses" icon={BookOpen} active={isActive("/academics/courses")} />
@@ -163,7 +163,7 @@ export const DashboardSidebar = () => {
               <IconRailLink title="Internship Process" url="/internship" icon={SchoolIcon} active={isActive("/internship")} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
-          <SidebarGroup className="border-b border-border/60 px-1 py-1.5">
+          <SidebarGroup className="border-b border-border px-1 py-2">
             <SidebarGroupContent><SidebarMenu className="gap-0">
               <IconRailLink title="Applications" url="/elections/applications" icon={Vote} active={isActive("/elections/applications")} />
               <IconRailLink title="Electoral Committee" url="/elections/committee" icon={UserIcon} active={isActive("/elections/committee")} />
@@ -177,7 +177,7 @@ export const DashboardSidebar = () => {
         </div>
 
         <div className="group-data-[collapsible=icon]:hidden">
-        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
+        <SidebarGroup className="border-b border-border px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupContent><SidebarMenu><SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
               <Link href="/"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === "/" ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><LayoutDashboardIcon className="size-4" /></span><span>Dashboard</span></Link>
@@ -185,7 +185,7 @@ export const DashboardSidebar = () => {
           </SidebarMenuItem></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
+        <SidebarGroup className="border-b border-border px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">REGISTRATION</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu><ExpandableNav title="Registration" icon={CheckSquare} pathname={pathname} children={[
             { title: "Register", url: "/academics/registration" },
@@ -195,7 +195,7 @@ export const DashboardSidebar = () => {
           ]} /></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
+        <SidebarGroup className="border-b border-border px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">MY FINANCE</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/finance")} tooltip="Financial statement" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
             <Link href="/finance"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/finance") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><DollarSign className="size-4" /></span><span>Financial statement</span></Link>
@@ -214,7 +214,7 @@ export const DashboardSidebar = () => {
           </SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-b border-border/60 px-1 py-3">
+        <SidebarGroup className="border-b border-border px-1 py-3">
           <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">ELECTIONS</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu><ExpandableNav title="Elections" icon={Vote} pathname={pathname} children={[
             { title: "Applications", url: "/elections/applications" },

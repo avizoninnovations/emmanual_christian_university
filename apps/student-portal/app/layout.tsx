@@ -1,4 +1,4 @@
-import { Inter, Geist_Mono } from "next/font/google"
+import { Roboto, Geist_Mono } from "next/font/google"
 import { Metadata } from "next"
 
 import "@workspace/ui/globals.css"
@@ -6,8 +6,9 @@ import "./student-portal.css"
 import { Providers } from "@/components/providers"
 import { Toaster } from "@workspace/ui/components/sonner";
 
-const fontSans = Inter({
+const fontSans = Roboto({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
   variable: "--font-sans",
 })
 

@@ -62,3 +62,37 @@ html.dark .hover\:bg-slate-50:hover,
 html.dark .hover\:bg-slate-50\/70:hover {
   background-color: var(--muted);
 }
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  .student-financial-statement,
+  .student-financial-statement *,
+  .student-partial-transcript,
+  .student-partial-transcript * {
+    visibility: visible !important;
+  }
+
+  .student-financial-statement {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .student-financial-statement table thead {
+    display: table-header-group;
+  }
+
+  .student-partial-transcript {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    overflow: visible !important;
+  }
+}

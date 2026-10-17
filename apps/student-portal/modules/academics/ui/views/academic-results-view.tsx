@@ -13,11 +13,7 @@ import { Button } from "@workspace/ui/components/button";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
 } from "@workspace/ui/components/card";
-import { Badge } from "@workspace/ui/components/badge";
 import {
   Table,
   TableBody,
@@ -83,131 +79,96 @@ export function AcademicResultsView() {
   };
 
   return (
-    <div className="w-full space-y-6 p-5 sm:p-6 lg:p-8 print:p-0">
-      {/* ── Official Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">My Transcripts</h1>
-            <Badge variant="outline" className="text-xs">{student.programName}</Badge>
-          </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            View your partial transcript by semester or curriculum year.
-          </p>
+    <main className="student-partial-transcript space-y-3 p-5 sm:p-6 lg:p-8 print:p-0">
+      <h1 className="text-base font-semibold text-foreground">My Transcripts</h1>
+
+      <div className="flex min-h-10 flex-wrap items-center justify-between gap-2 bg-card px-0 print:hidden" role="tablist" aria-label="Transcript views">
+        <div className="flex items-center">
+          {(["semester", "curriculum"] as const).map((view) => (
+            <Button key={view} variant="ghost" role="tab" aria-selected={transcriptView === view} onClick={() => setTranscriptView(view)} className={`h-9 rounded-none px-4 text-xs ${transcriptView === view ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-foreground"}`}>
+              {view === "semester" ? "Semester Based" : "Curriculum Based"}
+            </Button>
+          ))}
         </div>
-
-        <Button variant="outline" size="sm" onClick={handlePrint} className="gap-1.5 print:hidden">
-          <Printer className="size-3.5" /> Print Transcript
-        </Button>
+        <Button variant="ghost" size="sm" onClick={handlePrint} className="mr-2 gap-2 text-primary"><Printer className="size-3.5" />Print Transcript</Button>
       </div>
 
-      <Card className="shadow-sm print:hidden">
-        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold">Important Information to Note</p>
-            <p className="text-xs text-muted-foreground">View your partial transcript and academic progress.</p>
-            {showInfo && <p className="mt-2 max-w-2xl text-sm text-slate-600">Only results released by the university are shown here. Contact the Academic Registrar if a published result appears to be missing.</p>}
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setShowInfo((value) => !value)} aria-expanded={showInfo}>
-            {showInfo ? "Hide information" : "Show important information"}
+      <Card className="rounded-none border-border/60 shadow-none print:hidden">
+        <CardContent className="p-3">
+          <Button variant="ghost" size="sm" className="h-auto w-full justify-between px-0 text-xs font-medium text-primary hover:bg-transparent" onClick={() => setShowInfo((value) => !value)} aria-expanded={showInfo}>
+            Important Information to Note
+            <span aria-hidden="true" className={`text-muted-foreground transition-transform ${showInfo ? "rotate-180" : ""}`}>⌄</span>
           </Button>
+          {showInfo && <p className="mt-2 text-xs text-muted-foreground">Only results released by the university are shown here. Contact the Academic Registrar if a published result appears to be missing.</p>}
         </CardContent>
       </Card>
 
-      <div className="flex w-fit rounded-lg border border-slate-200 bg-white p-1 shadow-sm print:hidden" role="tablist" aria-label="Transcript views">
-        {(["semester", "curriculum"] as const).map((view) => (
-          <Button key={view} variant="ghost" role="tab" aria-selected={transcriptView === view} onClick={() => setTranscriptView(view)} className={transcriptView === view ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-slate-600"}>
-            {view === "semester" ? "Semester Based" : "Curriculum Based"}
-          </Button>
-        ))}
-      </div>
-
-      <Card className="border-0 shadow-sm ring-1 ring-slate-200/70">
-        <CardContent className="p-5 sm:p-6">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-slate-900">{student.name}</h2>
-            <p className="text-sm text-slate-500">{student.programName}</p>
+      <Card className="overflow-hidden rounded-lg border-0 shadow-sm ring-1 ring-foreground/5">
+        <div className="relative flex min-h-12 items-center justify-between overflow-hidden bg-primary px-3 py-2 text-primary-foreground sm:px-5">
+          <h2 className="text-sm font-medium">View your partial transcript</h2>
+          <Award className="size-5" />
+        </div>
+        <CardContent className="p-3 sm:p-4">
+          <div className="border-b border-border/60 pb-3">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
+              <span className="font-semibold uppercase text-foreground">{student.name}</span>
+              <span className="text-muted-foreground">{student.programName}</span>
+            </div>
+            <dl className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[10px]">
+              <TranscriptMeta label="Registration number" value={student.registrationNumber} />
+              <TranscriptMeta label="Access number" value={student.accessNumber || "—"} />
+              <TranscriptMeta label="Faculty" value={student.facultyName} />
+              <TranscriptMeta label="Current year" value={`Year ${student.yearOfStudy}`} />
+              <TranscriptMeta label="Current semester" value={`Semester ${student.currentTerm}`} />
+              <TranscriptMeta label="Current CGPA" value={cumulative.cgpa.toFixed(2)} />
+            </dl>
           </div>
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t pt-4 text-sm sm:grid-cols-3 lg:grid-cols-6">
-            <div><dt className="text-xs text-slate-500">Registration number</dt><dd className="mt-1 font-medium text-slate-800">{student.registrationNumber}</dd></div>
-            <div><dt className="text-xs text-slate-500">Faculty</dt><dd className="mt-1 font-medium text-slate-800">{student.facultyName}</dd></div>
-            <div><dt className="text-xs text-slate-500">Current year</dt><dd className="mt-1 font-medium text-slate-800">Year {student.yearOfStudy}</dd></div>
-            <div><dt className="text-xs text-slate-500">Current semester</dt><dd className="mt-1 font-medium text-slate-800">{student.currentSemester}</dd></div>
-            <div><dt className="text-xs text-slate-500">Current CGPA</dt><dd className="mt-1 font-medium text-slate-800">{cumulative.cgpa.toFixed(2)}</dd></div>
-            <div><dt className="text-xs text-slate-500">Access number</dt><dd className="mt-1 font-medium text-slate-800">{student.accessNumber || "—"}</dd></div>
-          </dl>
+
+          {semesters.length === 0 ? (
+            <div className="p-12 text-center">
+              <Award className="mx-auto mb-3 size-10 text-muted-foreground opacity-40" />
+              <h3 className="text-sm font-semibold">No Examination Marks Published Yet</h3>
+              <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">Your marks will appear here once approved by the Academic Registrar.</p>
+            </div>
+          ) : (
+            <div className="grid gap-x-10 gap-y-4 pt-3 lg:grid-cols-2">
+              {displaySemesters.map((sem) => (
+                <section key={sem.periodId} className="min-w-0 break-inside-avoid" aria-label={`${sem.periodName} semester ${sem.term}`}>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-end gap-2 border-b border-foreground/60 px-1 pb-0.5 text-[10px] font-semibold uppercase text-foreground">
+                    <h3>{`${sem.periodName} ${sem.year} · Year ${sem.courses[0]?.yearOfStudy ?? 1}`}</h3>
+                    <span>Semester {sem.term}</span>
+                    <span className="text-right">GPA {sem.semesterGPA.toFixed(2)}</span>
+                  </div>
+                  <Table className="text-[10px]">
+                    <TableHeader>
+                      <TableRow className="h-5 hover:bg-transparent">
+                        <TableHead className="h-5 px-1 text-[10px] font-semibold uppercase">Course</TableHead>
+                        <TableHead className="h-5 w-16 px-1 text-center text-[10px] font-semibold uppercase">Mark</TableHead>
+                        <TableHead className="h-5 w-10 px-1 text-center text-[10px] font-semibold uppercase">CU</TableHead>
+                        <TableHead className="h-5 w-10 px-1 text-center text-[10px] font-semibold uppercase">GP</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sem.courses.map((course) => (
+                        <TableRow key={course.assessmentId || course.courseId} className="h-6 border-0 hover:bg-muted/30">
+                          <TableCell className="max-w-0 truncate px-1 py-1 text-[10px] text-muted-foreground" title={course.title}>{course.title}</TableCell>
+                          <TableCell className="px-1 py-1 text-center text-[10px] text-muted-foreground">{course.status === "approved" ? course.resultCode || course.finalScore : "—"}</TableCell>
+                          <TableCell className="px-1 py-1 text-center text-[10px] text-muted-foreground">{course.creditUnits}</TableCell>
+                          <TableCell className="px-1 py-1 text-center text-[10px] text-muted-foreground">{course.status === "approved" ? course.gradePoints.toFixed(1) : "—"}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </section>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
-
-      {/* ── Semester Results Tables ── */}
-      {semesters.length === 0 ? (
-        <Card className="p-12 text-center border-dashed">
-          <Award className="size-12 text-muted-foreground mx-auto mb-3 opacity-40" />
-          <h3 className="text-base font-semibold">No Examination Marks Published Yet</h3>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-            Your marks will appear here once approved by the Head of Department (HOD) and the Faculty Board of Examiners.
-          </p>
-        </Card>
-      ) : (
-        displaySemesters.map((sem) => (
-          <Card key={sem.periodId} className="shadow-sm">
-            <CardHeader className="pb-3 border-b bg-muted/20">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <CardTitle className="text-base font-semibold">
-                    {transcriptView === "semester" ? `${sem.periodName} (${sem.year})` : sem.periodName}
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    {transcriptView === "semester" ? `Term ${sem.term} Examination Session` : `Semester ${sem.term} · Curriculum results`}
-                  </CardDescription>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <Badge variant="outline" className="bg-background">
-                    {transcriptView === "semester" ? "Semester Credits" : "Semester Credits"}: {sem.semesterCreditUnits} CU
-                  </Badge>
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 font-bold">
-                    {transcriptView === "semester" ? "Semester GPA" : "Semester GPA"}: {sem.semesterGPA.toFixed(2)}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-muted/40">
-                  <TableRow>
-                    <TableHead className="pl-6">Course</TableHead>
-                    <TableHead className="w-28 text-center">Mark</TableHead>
-                    <TableHead className="w-20 text-center">CU</TableHead>
-                    <TableHead className="w-20 text-center">GP</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sem.courses.map((course) => (
-                    <TableRow key={course.assessmentId || course.courseId} className="hover:bg-muted/20">
-                      <TableCell className="pl-6">
-                        <span className="block font-medium text-sm text-foreground">{course.title}</span>
-                        <span className="font-mono text-xs text-muted-foreground">{course.code}</span>
-                      </TableCell>
-                      <TableCell className="text-center font-mono font-bold text-sm">
-                        <span className={course.status === "approved" ? "text-foreground" : "text-slate-400"}>
-                          {course.status === "approved" ? course.resultCode || course.finalScore : "—"}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center font-mono text-xs">
-                        {course.creditUnits}
-                      </TableCell>
-                      <TableCell className="text-center font-mono text-xs text-muted-foreground">
-                        {course.status === "approved" ? course.gradePoints.toFixed(1) : "—"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        ))
-      )}
-    </div>
+    </main>
   );
+}
+
+function TranscriptMeta({ label, value }: { label: string; value: string }) {
+  return <div className="flex gap-1"><dt className="text-muted-foreground">{label}:</dt><dd className="font-medium text-foreground">{value}</dd></div>;
 }

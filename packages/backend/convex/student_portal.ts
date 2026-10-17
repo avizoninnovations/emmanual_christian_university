@@ -734,7 +734,7 @@ export const getMyFinancialStatement = query({
     const transactions = await ctx.db
       .query("transactions")
       .withIndex("by_student", (q: any) => q.eq("studentId", student._id))
-      .order("desc")
+      .order("asc")
       .collect();
 
     const sponsor = student.sponsorId
@@ -799,6 +799,34 @@ export const getMyFinancialStatement = query({
         totalBilledAll > 0 ? Math.min(100, Math.round((totalPaidAll / totalBilledAll) * 100)) : 100,
     };
 
+    let runningBalance = 0;
+    const statementTransactions = transactions.map((transaction) => {
+      const debit = transaction.type === "charge" ? transaction.amount : 0;
+      const credit = transaction.type === "payment" || transaction.type === "waiver" ? transaction.amount : 0;
+      runningBalance += debit - credit;
+
+      return {
+        _id: transaction._id,
+        date: transaction.date,
+        reference: transaction.receiptNumber ?? transaction.reference,
+        description: transaction.notes ?? "",
+        type: transaction.type,
+        debit,
+        credit,
+        balance: runningBalance,
+        amount: transaction.amount,
+        currency: "SSP",
+        method: transaction.method || "cash",
+        channel: transaction.channel || (transaction.method === "cash" ? "cash" : transaction.method === "mobile_money" ? "m_gurush" : "bank_deposit"),
+        bankBranch: transaction.bankBranch,
+        slipNumber: transaction.slipNumber,
+        depositDate: transaction.depositDate,
+        receiptNumber: transaction.receiptNumber,
+        notes: transaction.notes,
+        createdAt: transaction._creationTime,
+      };
+    });
+
     return {
       summary: {
         totalBilled: totalBilledAll,
@@ -817,19 +845,7 @@ export const getMyFinancialStatement = query({
           : null,
       },
       semesterLedgers,
-      transactions: transactions.map((t) => ({
-        _id: t._id,
-        receiptNumber: t.receiptNumber,
-        amount: t.amount,
-        currency: "SSP",
-        method: t.method || "cash",
-        channel: t.channel || (t.method === "cash" ? "cash" : t.method === "mobile_money" ? "m_gurush" : "bank_deposit"),
-        bankBranch: t.bankBranch,
-        slipNumber: t.slipNumber,
-        depositDate: t.depositDate,
-        notes: t.notes,
-        createdAt: t._creationTime,
-      })),
+      transactions: statementTransactions,
     };
   },
 });

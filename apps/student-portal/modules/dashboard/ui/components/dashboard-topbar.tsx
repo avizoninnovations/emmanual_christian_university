@@ -1,10 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { SidebarTrigger } from "@workspace/ui/components/sidebar";
-import { ChevronRight, UserRound } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const routeNames: Record<string, string> = {
   academics: "Academics",
@@ -28,7 +29,22 @@ const routeNames: Record<string, string> = {
 
 export function DashboardTopbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const crumbs = pathname.split("/").filter(Boolean);
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await authClient.signOut();
+      if (error) {
+        toast.error("Unable to sign out right now. Please try again.");
+        return;
+      }
+      router.replace("/sign-in");
+      router.refresh();
+    } catch {
+      toast.error("Unable to sign out right now. Please try again.");
+    }
+  };
 
   return (
     <header className="flex h-[72px] shrink-0 items-center justify-between px-5 sm:px-8">
@@ -46,9 +62,9 @@ export function DashboardTopbar() {
         </nav>
         <SidebarTrigger className="text-muted-foreground" />
       </div>
-      <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
-        <Link href="/profile"><UserRound className="size-4" />
-        <span>Profile</span></Link>
+      <Button onClick={handleSignOut} variant="ghost" size="sm" className="text-muted-foreground">
+        <LogOut className="size-4" />
+        <span>Logout</span>
       </Button>
     </header>
   );

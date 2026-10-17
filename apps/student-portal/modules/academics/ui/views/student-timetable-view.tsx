@@ -41,7 +41,7 @@ export function StudentTimetableView() {
         </div>
       </div>
 
-      <Card className="overflow-hidden border-0 bg-white shadow-sm ring-1 ring-slate-200/70">
+      <Card className="gap-0 overflow-hidden border-0 bg-white py-0 shadow-sm ring-1 ring-slate-200/70">
         <CardHeader className="border-b border-slate-100 bg-primary px-5 py-4 text-primary-foreground sm:px-6">
           <div className="flex items-center justify-between gap-3">
             <div>

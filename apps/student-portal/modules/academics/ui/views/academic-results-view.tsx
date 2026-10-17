@@ -103,7 +103,7 @@ export function AcademicResultsView() {
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden rounded-lg border-0 shadow-sm ring-1 ring-foreground/5">
+      <Card className="gap-0 overflow-hidden rounded-lg border-0 py-0 shadow-sm ring-1 ring-foreground/5">
         <div className="relative flex min-h-12 items-center justify-between overflow-hidden bg-primary px-3 py-2 text-primary-foreground sm:px-5">
           <h2 className="text-sm font-medium">View your partial transcript</h2>
           <Award className="size-5" />

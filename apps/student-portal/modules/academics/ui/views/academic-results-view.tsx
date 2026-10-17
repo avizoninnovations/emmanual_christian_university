@@ -25,7 +25,6 @@ import {
 
 export function AcademicResultsView() {
   const [transcriptView, setTranscriptView] = useState<"semester" | "curriculum">("semester");
-  const [showInfo, setShowInfo] = useState(false);
   const data = useQuery(api.student_portal.getMyAcademicResults);
   const curriculumGroups = useMemo(() => {
     if (!data) return [];
@@ -92,16 +91,6 @@ export function AcademicResultsView() {
         </div>
         <Button variant="ghost" size="sm" onClick={handlePrint} className="mr-2 gap-2 text-primary"><Printer className="size-3.5" />Print Transcript</Button>
       </div>
-
-      <Card className="rounded-none border-border/60 shadow-none print:hidden">
-        <CardContent className="p-3">
-          <Button variant="ghost" size="sm" className="h-auto w-full justify-between px-0 text-xs font-medium text-primary hover:bg-transparent" onClick={() => setShowInfo((value) => !value)} aria-expanded={showInfo}>
-            Important Information to Note
-            <span aria-hidden="true" className={`text-muted-foreground transition-transform ${showInfo ? "rotate-180" : ""}`}>⌄</span>
-          </Button>
-          {showInfo && <p className="mt-2 text-xs text-muted-foreground">Only results released by the university are shown here. Contact the Academic Registrar if a published result appears to be missing.</p>}
-        </CardContent>
-      </Card>
 
       <Card className="gap-0 overflow-hidden rounded-lg border-0 py-0 shadow-sm ring-1 ring-foreground/5">
         <div className="relative flex min-h-12 items-center justify-between overflow-hidden bg-primary px-3 py-2 text-primary-foreground sm:px-5">

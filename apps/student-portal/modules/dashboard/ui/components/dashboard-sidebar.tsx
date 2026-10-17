@@ -207,7 +207,7 @@ export const DashboardSidebar = () => {
         <div className="group-data-[collapsible=icon]:hidden">
         <SidebarGroup className="border-b border-border px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupContent><SidebarMenu><SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
+            <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
               <Link href="/"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === "/" ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><LayoutDashboardIcon className="size-4" /></span><span>Dashboard</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem></SidebarMenu></SidebarGroupContent>
@@ -225,7 +225,7 @@ export const DashboardSidebar = () => {
 
         <SidebarGroup className="border-b border-border px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupLabel className="px-4 text-xs font-semibold tracking-wide">MY FINANCE</SidebarGroupLabel>
-          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/finance")} tooltip="Financial statement" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
+          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/finance")} tooltip="Financial statement" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
             <Link href="/finance"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/finance") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><DollarSign className="size-4" /></span><span>Financial statement</span></Link>
           </SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
@@ -233,11 +233,11 @@ export const DashboardSidebar = () => {
         <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupLabel className="px-4 text-xs font-semibold tracking-wide">ACADEMICS</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu>
-            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/timetable")} tooltip="My Timetable" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70"><Link href="/academics/timetable"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/academics/timetable") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><CalendarDays className="size-4" /></span><span>My Timetable</span></Link></SidebarMenuButton></SidebarMenuItem>
+            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/timetable")} tooltip="My Timetable" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70"><Link href="/academics/timetable"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/academics/timetable") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><CalendarDays className="size-4" /></span><span>My Timetable</span></Link></SidebarMenuButton></SidebarMenuItem>
             <ExpandableNav title="My Courses" icon={BookOpen} pathname={pathname} children={[{ title: "Enrolled Courses", url: "/academics/courses" }]} />
             <ExpandableNav title="Results" icon={Award} pathname={pathname} children={[{ title: "Partial Transcript", url: "/academics/results" }]} />
             <ExpandableNav title="Examinations" icon={FileText} pathname={pathname} children={[{ title: "Exam Permit", url: "/finance/exam-card" }]} />
-            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/attendance")} tooltip="Attendance" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70"><Link href="/academics/attendance"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/academics/attendance") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><CalendarDays className="size-4" /></span><span>Attendance</span></Link></SidebarMenuButton></SidebarMenuItem>
+            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/attendance")} tooltip="Attendance" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70"><Link href="/academics/attendance"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/academics/attendance") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><CalendarDays className="size-4" /></span><span>Attendance</span></Link></SidebarMenuButton></SidebarMenuItem>
             <ExpandableNav title="Internship" icon={SchoolIcon} pathname={pathname} children={[{ title: "Internship Process", url: "/internship" }]} />
           </SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
@@ -252,7 +252,7 @@ export const DashboardSidebar = () => {
 
         <SidebarGroup className="px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupLabel className="px-4 text-xs font-semibold tracking-wide">EVALUATION</SidebarGroupLabel>
-          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/evaluation")} tooltip="Evaluation" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
+          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/evaluation")} tooltip="Evaluation" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
             <Link href="/evaluation"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/evaluation") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><ClipboardCheck className="size-4" /></span><span>Evaluation</span></Link>
           </SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>

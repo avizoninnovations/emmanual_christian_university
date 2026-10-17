@@ -46,7 +46,7 @@ export function StudentFinanceView() {
           <Button onClick={() => window.print()} size="sm" className="gap-2"><Printer className="size-4" />Print Statement</Button>
         </div>
 
-        <header className="flex flex-col justify-between gap-5 border-b border-border/60 px-5 pb-5 pt-2 sm:flex-row sm:items-center sm:px-8">
+        <header className="grid gap-4 border-b border-border/60 px-5 pb-5 pt-2 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-6">
           <div className="flex items-center gap-3">
             <Image src="/logo.webp" alt="Emmanuel Christian University logo" width={68} height={68} className="size-16 object-contain" priority />
             <div>
@@ -54,10 +54,14 @@ export function StudentFinanceView() {
               <p className="mt-1 text-xs font-medium text-primary">A transformed people with academic excellence</p>
             </div>
           </div>
-          <div className="text-xs leading-5 text-muted-foreground sm:text-right">
+          <StatementHeading
+            faculty={profile.faculty.name}
+            program={profile.program.name}
+            programType={profile.programType || "Program type not provided"}
+          />
+          <div className="text-xs leading-5 text-muted-foreground lg:text-right">
             <p className="font-semibold text-foreground">Finance &amp; Accounts Office</p>
             <p>Goli, Yei River County, South Sudan</p>
-            <p>Student Financial Statement</p>
           </div>
         </header>
 
@@ -72,9 +76,6 @@ export function StudentFinanceView() {
             yearOfEntry={profile.yearOfEntry}
             period={period}
             imageUrl={profile.imageUrl}
-            faculty={profile.faculty.name}
-            program={profile.program.name}
-            programType={profile.programType || "Program type not provided"}
           />
 
           <TransactionLedger transactions={statement.transactions} />
@@ -94,10 +95,20 @@ function SummaryCard({ label, value, note }: { label: string; value: string; not
   </Card>;
 }
 
-function StudentDetails({ name, gender, accessNumber, sponsorship, registrationNumber, nationality, yearOfEntry, period, imageUrl, faculty, program, programType }: {
+function StatementHeading({ faculty, program, programType }: { faculty: string; program: string; programType: string }) {
+  const facultyTitle = faculty.toLowerCase().startsWith("faculty of ") ? faculty : `Faculty of ${faculty}`;
+
+  return <div className="text-center">
+    <h1 className="text-xl font-bold uppercase tracking-tight text-primary sm:text-2xl">Student&apos;s Financial Statement</h1>
+    <p className="mt-2 text-sm font-medium uppercase text-foreground sm:text-base">{facultyTitle}</p>
+    <p className="mt-1 text-xs font-semibold uppercase text-foreground">{program} ({programType})</p>
+  </div>;
+}
+
+function StudentDetails({ name, gender, accessNumber, sponsorship, registrationNumber, nationality, yearOfEntry, period, imageUrl }: {
   name: string; gender: string; accessNumber: string; sponsorship: string;
   registrationNumber: string; nationality: string; yearOfEntry: number | null;
-  period: string; imageUrl: string | null; faculty: string; program: string; programType: string;
+  period: string; imageUrl: string | null;
 }) {
   const left: Array<[string, string]> = [
     ["Full name", name], ["Access number", accessNumber || "—"],
@@ -108,10 +119,8 @@ function StudentDetails({ name, gender, accessNumber, sponsorship, registrationN
     ["Sponsorship", sponsorship || "Not provided"], ["Nationality", nationality || "—"], ["Period", period],
   ];
 
-  const facultyTitle = faculty.toLowerCase().startsWith("faculty of ") ? faculty : `Faculty of ${faculty}`;
-
-  return <section className="mx-auto grid max-w-6xl gap-5 border-b border-border/50 py-4 sm:py-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-8" aria-label="Student details">
-    <div className="order-2 grid grid-cols-[72px_minmax(0,1fr)] items-center gap-3 lg:order-1">
+  return <section className="mx-auto grid max-w-6xl gap-5 border-b border-border/50 py-4 sm:py-5 lg:grid-cols-2 lg:items-center lg:gap-10" aria-label="Student details">
+    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-3">
       <div className="relative flex size-[72px] items-center justify-center overflow-hidden rounded-sm bg-muted">
         {imageUrl ? <Image src={imageUrl} alt={`${name} student portrait`} fill unoptimized className="object-cover" /> : <span className="text-3xl font-semibold text-muted-foreground">{name.charAt(0)}</span>}
       </div>
@@ -119,12 +128,7 @@ function StudentDetails({ name, gender, accessNumber, sponsorship, registrationN
         {left.map(([label, value]) => <DetailField key={label} label={label} value={value} />)}
       </dl>
     </div>
-    <div className="order-1 text-center lg:order-2">
-      <h1 className="text-xl font-bold uppercase tracking-tight text-primary sm:text-2xl">Student&apos;s Financial Statement</h1>
-      <p className="mt-2 text-sm font-medium uppercase text-foreground sm:text-base">{facultyTitle}</p>
-      <p className="mt-1 text-xs font-semibold uppercase text-foreground">{program} ({programType})</p>
-    </div>
-    <dl className="order-3 grid gap-x-5 gap-y-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+    <dl className="grid gap-x-5 gap-y-2 sm:grid-cols-2">
       {right.map(([label, value]) => <DetailField key={label} label={label} value={value} />)}
     </dl>
   </section>;

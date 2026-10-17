@@ -104,7 +104,7 @@ export const DashboardSidebar = () => {
     <Sidebar variant="floating" className="group" collapsible="icon" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <SidebarHeader className="px-2 pt-3 pb-2 group-data-[collapsible=icon]:py-4">
         <SidebarMenu><SidebarMenuItem>
-            <SidebarMenuButton size="lg" className="h-10 w-full justify-start gap-2 rounded-lg px-2 hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
+            <SidebarMenuButton size="lg" className="h-10 w-full justify-start gap-2 rounded-lg px-2 hover:bg-muted/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
             <div className="flex size-10 items-center justify-center overflow-hidden rounded-md group-data-[collapsible=icon]:size-8">
               <Image src="/icon.png" alt="ECU Logo" width={44} height={44} className="size-full object-contain" />
             </div>
@@ -116,7 +116,7 @@ export const DashboardSidebar = () => {
         </SidebarMenuItem></SidebarMenu>
         <SidebarMenu className="mt-2 border-t border-border px-1 pt-2">
           <SidebarMenuItem><DropdownMenu>
-            <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 font-medium data-[state=open]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
+            <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 font-medium data-[state=open]:bg-muted hover:bg-muted/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
               <Avatar className="size-10 group-data-[collapsible=icon]:size-8">
                 <AvatarImage src={session?.user.image ?? undefined} alt="Student profile" className="object-cover object-center" />
                 <AvatarFallback className="bg-primary/10 font-semibold text-primary">{profile?.registrationNumber?.charAt(0) ?? <UserIcon className="size-4" />}</AvatarFallback>

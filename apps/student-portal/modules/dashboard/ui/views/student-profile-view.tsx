@@ -2,11 +2,9 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
-import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
-import { Loader2, Mail, GraduationCap, Layers3, Building2, BookOpen, UserRound, Phone, MapPin, HeartPulse } from "lucide-react";
-
-import { Avatar, AvatarImage, AvatarFallback } from "@workspace/ui/components/avatar";
+import { Loader2, Mail, GraduationCap, Layers3, Building2, BookOpen, Phone, MapPin, HeartPulse } from "lucide-react";
+import { StudentIdentityBanner } from "../components/student-identity-banner";
 
 type ProfileFieldProps = { label: string; value: string; icon?: React.ComponentType<{ className?: string }> };
 
@@ -39,18 +37,15 @@ export function StudentProfileView() {
 
   return (
     <div className="w-full space-y-4 p-5 sm:p-6 lg:p-8">
-      <section className="relative flex min-h-44 flex-col justify-center gap-5 overflow-hidden rounded-xl bg-gradient-to-r from-primary via-primary/85 to-primary/65 p-6 text-primary-foreground shadow-sm sm:flex-row sm:items-center sm:px-8">
-        <Avatar className="size-32 shrink-0 border-4 border-background/80 sm:size-36">
-          <AvatarImage src={profile.imageUrl ?? undefined} alt={profile.name} className="object-cover" />
-          <AvatarFallback className="bg-background/15 text-4xl font-semibold text-primary-foreground">{profile.name.trim().charAt(0) || <UserRound className="size-10" />}</AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{profile.name}</h1>
-          <p className="font-semibold">{profile.program.name}</p>
-          <p className="font-mono text-sm text-primary-foreground/85">{profile.registrationNumber}</p>
-        </div>
-        <Badge variant="secondary" className="absolute right-5 top-5">{profile.onSemester ? "On Semester" : "Off Semester"}</Badge>
-      </section>
+      <StudentIdentityBanner
+        name={profile.name}
+        program={profile.program.name}
+        email={profile.email}
+        phone={profile.phone}
+        nationality={profile.nationality}
+        imageUrl={profile.imageUrl}
+        status={profile.onSemester ? "On Semester" : "Off Semester"}
+      />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Academic summary">
         <SummaryCard icon={GraduationCap} label="Current year" value={String(profile.yearOfStudy)} />

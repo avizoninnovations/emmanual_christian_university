@@ -171,7 +171,7 @@ export const DashboardSidebar = () => {
           <SidebarGroup className="border-b border-border px-1 py-2">
             <SidebarGroupContent><SidebarMenu className="gap-0">
               <IconRailLink title="Register" url="/academics/registration" icon={CheckSquare} active={isActive("/academics/registration")} />
-              <IconRailLink title="Dead Year / Dead Sem" url="/registration/dead-year-dead-sem" icon={CalendarDays} active={isActive("/registration/dead-year-dead-sem")} />
+              <IconRailLink title="Dead Year Dead Sem" url="/registration/dead-year-dead-sem" icon={CalendarDays} active={isActive("/registration/dead-year-dead-sem")} />
               <IconRailLink title="Retake Registration" url="/academics/retakes" icon={BookOpen} active={isActive("/academics/retakes")} />
               <IconRailLink title="Aegrotat" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
             </SidebarMenu></SidebarGroupContent>
@@ -217,7 +217,7 @@ export const DashboardSidebar = () => {
           <SidebarGroupLabel className="px-4 text-xs font-semibold tracking-wide">REGISTRATION</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu><ExpandableNav title="Registration" icon={CheckSquare} pathname={pathname} children={[
             { title: "Register", url: "/academics/registration" },
-            { title: "Dead Year / Dead Sem", url: "/registration/dead-year-dead-sem" },
+            { title: "Dead Year Dead Sem", url: "/registration/dead-year-dead-sem" },
             { title: "Retake Registration", url: "/academics/retakes" },
             { title: "Aegrotat", url: "/registration/aegrotat" },
           ]} /></SidebarMenu></SidebarGroupContent>

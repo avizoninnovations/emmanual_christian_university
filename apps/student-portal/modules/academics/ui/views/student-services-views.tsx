@@ -111,12 +111,21 @@ export function RetakeView() {
   const [busy, setBusy] = useState<string | null>(null);
   async function enroll(courseId: Id<"courses">) {
     setBusy(courseId);
-    try { await register({ courseId }); toast.success("Retake course registered."); }
+    try {
+      const result = await register({ courseId });
+      toast.success(result.status === "pending_approval" ? "Off-semester retake submitted for approval." : "Retake course registered.");
+    }
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not register retake.")); }
     finally { setBusy(null); }
   }
-  return <div className={shell}><PageHeading eyebrow="Registration" title="Retake Registration" note="Review eligible previously assessed courses and add a retake to your current semester." />
-    {!data ? <Loading /> : <Card><CardHeader><CardTitle className="text-base">Eligible Courses</CardTitle><CardDescription>{data.period?.name ?? "No active semester"}</CardDescription></CardHeader><CardContent className="space-y-3">{data.courses.length === 0 ? <Empty message="No approved results currently require a retake." /> : data.courses.filter((course) => course !== null).map((course) => { const alreadyRegistered = data.registrations.some((id) => id === course.id); return <div key={course.id} className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="rounded-md bg-blue-50 p-2 text-blue-700"><BookOpen className="size-4" /></span><div><p className="font-medium">{course.title}</p><p className="text-xs text-slate-500">{course.code} · Previous grade {course.grade}</p></div></div>{alreadyRegistered ? <Badge variant="outline" className="w-fit text-emerald-700"><CheckCircle2 className="mr-1 size-3.5" />Registered</Badge> : <Button disabled={busy === course.id || !data.period} onClick={() => enroll(course.id)}>{busy === course.id && <Loader2 className="mr-2 size-4 animate-spin" />}Register Retake</Button>}</div>; })}</CardContent></Card>}
+  return <div className={shell}><PageHeading eyebrow="Registration" title="Retake Registration" note="Retake failed course units within your program limit. Off-semester retakes require HOD or Registrar approval." />
+    {!data ? <Loading /> : <Card><CardHeader><CardTitle className="text-base">Eligible Courses</CardTitle><CardDescription>{data.period?.name ?? "No active semester"}</CardDescription></CardHeader><CardContent className="space-y-3">
+      <div className="grid gap-3 rounded-lg border bg-muted/30 p-4 text-sm sm:grid-cols-2"><p><span className="font-medium">On-semester:</span> {data.usage.onSemester} of {data.limits.onSemester} used</p><p><span className="font-medium">Off-semester:</span> {data.usage.offSemester} of {data.limits.offSemester} used</p></div>
+      {data.courses.length === 0 ? <Empty message="No approved results currently require a retake." /> : data.courses.map((course) => {
+        const registration = data.registrations.find((item) => item.courseId === course.id);
+        const isOffSemester = course.mode === "off_semester";
+        return <div key={course.id} className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="rounded-md bg-primary/10 p-2 text-primary"><BookOpen className="size-4" /></span><div><p className="font-medium">{course.title}</p><p className="text-xs text-muted-foreground">{course.code} · {course.creditUnits} CU · Previous grade {course.grade}</p><p className="mt-1 text-xs text-muted-foreground">{isOffSemester ? "Off-semester retake — approval required" : "On-semester retake — registers immediately"}</p></div></div>{registration ? <StatusBadge status={registration.status} /> : <Button disabled={busy === course.id || !data.period} onClick={() => enroll(course.id)}>{busy === course.id && <Loader2 className="mr-2 size-4 animate-spin" />}{isOffSemester ? "Request Approval" : "Register Retake"}</Button>}</div>;
+      })}</CardContent></Card>}
   </div>;
 }
 

@@ -119,7 +119,11 @@ export default defineSchema({
     studentId: v.id("students"),
     courseId: v.id("courses"),
     periodId: v.id("academicPeriods"),
-    status: v.union(v.literal("registered"), v.literal("dropped"), v.literal("completed")),
+    status: v.union(v.literal("registered"), v.literal("pending_approval"), v.literal("dropped"), v.literal("completed")),
+    registrationKind: v.optional(v.union(v.literal("regular"), v.literal("retake"))),
+    retakeMode: v.optional(v.union(v.literal("on_semester"), v.literal("off_semester"))),
+    retakeApprovedBy: v.optional(v.string()),
+    retakeApprovedAt: v.optional(v.number()),
     ...timestamps,
   })
     .index("by_student", ["studentId"])

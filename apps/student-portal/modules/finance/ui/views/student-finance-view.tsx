@@ -61,13 +61,7 @@ export function StudentFinanceView() {
           </div>
         </header>
 
-        <div className="px-5 pb-8 sm:px-8">
-          <div className="py-5 text-center sm:py-6">
-            <h1 className="text-xl font-bold uppercase tracking-tight text-primary sm:text-2xl">Student&apos;s Financial Statement</h1>
-            <p className="mt-2 text-sm font-medium uppercase text-foreground sm:text-base">Faculty of {profile.faculty.name}</p>
-            <p className="mt-1 text-xs font-semibold uppercase text-foreground">{profile.program.name} ({profile.programType || "Program type not provided"})</p>
-          </div>
-
+        <div className="px-5 pb-5 sm:px-8">
           <StudentDetails
             name={profile.name}
             gender={profile.gender}
@@ -78,6 +72,9 @@ export function StudentFinanceView() {
             yearOfEntry={profile.yearOfEntry}
             period={period}
             imageUrl={profile.imageUrl}
+            faculty={profile.faculty.name}
+            program={profile.program.name}
+            programType={profile.programType || "Program type not provided"}
           />
 
           <TransactionLedger transactions={statement.transactions} />
@@ -97,10 +94,10 @@ function SummaryCard({ label, value, note }: { label: string; value: string; not
   </Card>;
 }
 
-function StudentDetails({ name, gender, accessNumber, sponsorship, registrationNumber, nationality, yearOfEntry, period, imageUrl }: {
+function StudentDetails({ name, gender, accessNumber, sponsorship, registrationNumber, nationality, yearOfEntry, period, imageUrl, faculty, program, programType }: {
   name: string; gender: string; accessNumber: string; sponsorship: string;
   registrationNumber: string; nationality: string; yearOfEntry: number | null;
-  period: string; imageUrl: string | null;
+  period: string; imageUrl: string | null; faculty: string; program: string; programType: string;
 }) {
   const left: Array<[string, string]> = [
     ["Full name", name], ["Access number", accessNumber || "—"],
@@ -111,16 +108,25 @@ function StudentDetails({ name, gender, accessNumber, sponsorship, registrationN
     ["Sponsorship", sponsorship || "Not provided"], ["Nationality", nationality || "—"], ["Period", period],
   ];
 
-  return <section className="mx-auto mb-5 grid max-w-5xl gap-5 border-b border-border/50 pb-5 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-7" aria-label="Student details">
-    <div className="flex items-center justify-center sm:items-end">
-      <div className="relative flex size-32 items-center justify-center overflow-hidden bg-muted sm:size-28">
-        {imageUrl ? <Image src={imageUrl} alt={`${name} student portrait`} fill unoptimized className="object-cover" /> : <span className="text-4xl font-semibold text-muted-foreground">{name.charAt(0)}</span>}
+  const facultyTitle = faculty.toLowerCase().startsWith("faculty of ") ? faculty : `Faculty of ${faculty}`;
+
+  return <section className="mx-auto grid max-w-6xl gap-5 border-b border-border/50 py-4 sm:py-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-8" aria-label="Student details">
+    <div className="order-2 grid grid-cols-[72px_minmax(0,1fr)] items-center gap-3 lg:order-1">
+      <div className="relative flex size-[72px] items-center justify-center overflow-hidden rounded-sm bg-muted">
+        {imageUrl ? <Image src={imageUrl} alt={`${name} student portrait`} fill unoptimized className="object-cover" /> : <span className="text-3xl font-semibold text-muted-foreground">{name.charAt(0)}</span>}
       </div>
+      <dl className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+        {left.map(([label, value]) => <DetailField key={label} label={label} value={value} />)}
+      </dl>
     </div>
-    <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-      <dl className="space-y-3">{left.map(([label, value]) => <DetailField key={label} label={label} value={value} />)}</dl>
-      <dl className="space-y-3">{right.map(([label, value]) => <DetailField key={label} label={label} value={value} />)}</dl>
+    <div className="order-1 text-center lg:order-2">
+      <h1 className="text-xl font-bold uppercase tracking-tight text-primary sm:text-2xl">Student&apos;s Financial Statement</h1>
+      <p className="mt-2 text-sm font-medium uppercase text-foreground sm:text-base">{facultyTitle}</p>
+      <p className="mt-1 text-xs font-semibold uppercase text-foreground">{program} ({programType})</p>
     </div>
+    <dl className="order-3 grid gap-x-5 gap-y-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      {right.map(([label, value]) => <DetailField key={label} label={label} value={value} />)}
+    </dl>
   </section>;
 }
 

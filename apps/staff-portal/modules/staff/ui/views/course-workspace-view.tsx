@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -210,7 +211,7 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
       setHasUnsavedChanges(false);
       toast.success("Draft assessments saved successfully");
     } catch (err: any) {
-      toast.error(err.message || "Failed to save draft");
+      toast.error(getUserFacingErrorMessage(err, "Failed to save draft"));
     } finally {
       setIsSaving(false);
     }
@@ -243,7 +244,7 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
       setHasUnsavedChanges(false);
       toast.success("Gradebook submitted to HOD for formal approval");
     } catch (err: any) {
-      toast.error(err.message || "Failed to submit to HOD");
+      toast.error(getUserFacingErrorMessage(err, "Failed to submit to HOD"));
     } finally {
       setIsSubmitting(false);
     }
@@ -337,7 +338,7 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
       toast.success("Roll call session recorded successfully");
       setRollCallTopic("");
     } catch (err: any) {
-      toast.error(err.message || "Failed to record roll call session");
+      toast.error(getUserFacingErrorMessage(err, "Failed to record roll call session"));
     } finally {
       setIsSavingRollCall(false);
     }

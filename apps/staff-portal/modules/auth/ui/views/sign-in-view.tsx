@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -31,7 +32,7 @@ export const SignInView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [weekDays, setWeekDays] = useState<Date[]>([]);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  
+
   const stats = useQuery(api.system.getPublicStats);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export const SignInView = () => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const err = params.get("error");
-      
+
       if (err === "inactive") {
         toast.error("Account Inactive", { 
           description: "Your staff account has been deactivated. Please contact an administrator." 
@@ -56,7 +57,7 @@ export const SignInView = () => {
     const today = new Date();
     const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // Sunday
     setWeekDays(Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i)));
-    
+
     // Set initial time and start interval for the live clock
     setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -77,13 +78,13 @@ export const SignInView = () => {
       });
 
       if (response.error) {
-        toast.error(response.error.message || "Failed to sign in. Please check your credentials.");
+        toast.error(getUserFacingErrorMessage(response.error, "Failed to sign in. Please check your credentials."));
       } else {
         toast.success("Welcome back!");
         router.push("/");
       }
     } catch (err: any) {
-      toast.error("An unexpected error occurred: " + (err.message || "Unknown error"));
+      toast.error(getUserFacingErrorMessage(err, "Something went wrong. Please try again."));
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +118,7 @@ export const SignInView = () => {
 
               <Form {...form}>
                 <form className="space-y-6" onSubmit={form.handleSubmit(handleSignIn)}>
-                  
+
                   <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem className="space-y-2">
                        <Label className="text-foreground font-semibold">Email Address</Label>
@@ -182,7 +183,7 @@ export const SignInView = () => {
               className="absolute inset-0 w-full h-full object-cover"
               priority
             />
-            
+
             {/* Overlay Elements */}
             <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
 

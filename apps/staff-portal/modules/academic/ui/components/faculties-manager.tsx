@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -105,7 +106,7 @@ export function FacultiesManager() {
       setSheetOpen(false);
       form.reset();
     } catch (e: any) {
-      toast.error(e.message || "Failed to save faculty");
+      toast.error(getUserFacingErrorMessage(e, "Failed to save faculty"));
     }
   };
 
@@ -115,7 +116,7 @@ export function FacultiesManager() {
       await deleteMutation({ id: deleteTarget._id });
       toast.success("Faculty deleted");
     } catch (e: any) {
-      toast.error(e.message || "Failed to delete faculty");
+      toast.error(getUserFacingErrorMessage(e, "Failed to delete faculty"));
     } finally {
       setDeleteTarget(null);
     }
@@ -286,7 +287,7 @@ export function FacultiesManager() {
                  Detailed information and children units for {viewing?.name}
               </SheetDescription>
            </SheetHeader>
-           
+
            {viewing && (
               <ScrollArea className="h-[calc(100vh-140px)] pr-4 mt-6">
                  <div className="space-y-8">

@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -92,7 +93,7 @@ export function ProgramsManager() {
       setSheetOpen(false);
       form.reset();
     } catch (e: any) {
-      toast.error(e.message || "Failed to save program");
+      toast.error(getUserFacingErrorMessage(e, "Failed to save program"));
     }
   };
 
@@ -102,7 +103,7 @@ export function ProgramsManager() {
       await deleteMutation({ id: deleteTarget._id });
       toast.success("Program deleted");
     } catch (e: any) {
-      toast.error(e.message || "Failed to delete program");
+      toast.error(getUserFacingErrorMessage(e, "Failed to delete program"));
     } finally {
       setDeleteTarget(null);
     }
@@ -305,7 +306,7 @@ export function ProgramsManager() {
                  Academic level, duration and hierarchy for {viewing?.name}
               </SheetDescription>
            </SheetHeader>
-           
+
            {viewing && (
               <ScrollArea className="h-[calc(100vh-140px)] pr-4 mt-6">
                  <div className="space-y-8">

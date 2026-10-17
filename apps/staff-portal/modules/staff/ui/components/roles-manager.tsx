@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -89,7 +90,7 @@ export function RolesManager() {
       setSheetOpen(false);
       form.reset();
     } catch (e: any) {
-      toast.error(e.message || "Failed to save role");
+      toast.error(getUserFacingErrorMessage(e, "Failed to save role"));
     }
   };
 
@@ -99,7 +100,7 @@ export function RolesManager() {
       await deleteMutation({ id: deleteTarget._id });
       toast.success("Role deleted");
     } catch (e: any) {
-      toast.error(e.message || "Failed to delete role");
+      toast.error(getUserFacingErrorMessage(e, "Failed to delete role"));
     } finally {
       setDeleteTarget(null);
     }

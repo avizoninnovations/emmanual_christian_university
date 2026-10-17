@@ -1,27 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  LayoutDashboardIcon, BookOpen, Users, UserIcon, SchoolIcon, CalendarDays,
+  LayoutDashboardIcon, BookOpen, UserIcon, SchoolIcon, CalendarDays,
   ClipboardCheck, Vote, Award, DollarSign, FileText,
-  CheckSquare, LogOut, ChevronUp, ChevronDown,
+  CheckSquare, ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, useSidebar,
   SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton,
   SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import { Badge } from "@workspace/ui/components/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 import { authClient } from "@/lib/auth-client";
 
-type NavChild = { title: string; url: string; icon?: React.ComponentType<{ className?: string }> };
+type NavChild = { title: string; url: string };
 
 function ExpandableNav({
   title, icon: Icon, children, pathname,
@@ -31,34 +32,50 @@ function ExpandableNav({
   useEffect(() => { if (active) setOpen(true); }, [active]);
 
   return <SidebarMenuItem>
-    <SidebarMenuButton onClick={() => setOpen((value) => !value)} isActive={active} aria-expanded={open}>
-      <Icon className="size-4" /><span>{title}</span>{open ? <ChevronUp className="ml-auto size-4" /> : <ChevronDown className="ml-auto size-4" />}
+    <SidebarMenuButton
+      onClick={() => setOpen((value) => !value)}
+      isActive={active}
+      aria-expanded={open}
+      className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70"
+    >
+      <span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${active ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span>
+      <span>{title}</span><ChevronDown className={`ml-auto size-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
     </SidebarMenuButton>
-    {open && <SidebarMenuSub>{children.map((child) => {
-      const ChildIcon = child.icon;
-      return <SidebarMenuSubItem key={child.url}><SidebarMenuSubButton asChild isActive={pathname === child.url}>
-        <Link href={child.url}>{ChildIcon && <ChildIcon className="size-4" />}<span>{child.title}</span></Link>
-      </SidebarMenuSubButton></SidebarMenuSubItem>;
-    })}</SidebarMenuSub>}
+    <div aria-hidden={!open} inert={!open} className={`grid transition-[grid-template-rows] duration-200 ease-in-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+      <div className="overflow-hidden"><SidebarMenuSub className="mx-3.5 gap-1 border-l-0 px-1.5 py-1">
+        {children.map((child) => <SidebarMenuSubItem key={child.url}><SidebarMenuSubButton asChild isActive={pathname === child.url} className="h-10 gap-3 rounded-lg px-2.5 data-[active=true]:bg-muted data-[active=true]:font-semibold data-[active=true]:text-foreground hover:bg-muted/70">
+          <Link href={child.url}><span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-medium text-sidebar-accent-foreground">{child.title.trim().charAt(0).toUpperCase()}</span><span>{child.title}</span></Link>
+        </SidebarMenuSubButton></SidebarMenuSubItem>)}
+      </SidebarMenuSub></div>
+    </div>
   </SidebarMenuItem>;
 }
 
 export const DashboardSidebar = () => {
   const pathname = usePathname();
-  const router = useRouter();
+  const { open, setOpen, isMobile } = useSidebar();
+  const hoverExpanded = useRef(false);
   const profile = useQuery(api.student_portal.getMyProfile);
+  const { data: session } = authClient.useSession();
   const isActive = (url: string) => pathname === url || pathname.startsWith(`${url}/`);
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    router.push("/sign-in");
+  const handleMouseEnter = () => {
+    if (!open && !isMobile) {
+      hoverExpanded.current = true;
+      setOpen(true);
+    }
+  };
+  const handleMouseLeave = () => {
+    if (hoverExpanded.current) {
+      hoverExpanded.current = false;
+      setOpen(false);
+    }
   };
 
   return (
-    <Sidebar className="group border-r border-slate-200 bg-white" collapsible="icon">
-      <SidebarHeader className="border-b border-slate-100 px-4 py-3">
+    <Sidebar variant="floating" className="group" collapsible="icon" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <SidebarHeader className="px-2 pt-3 pb-2 group-data-[collapsible=icon]:py-5">
         <SidebarMenu><SidebarMenuItem>
-          <SidebarMenuButton size="lg" className="w-full justify-start gap-2 px-2">
+            <SidebarMenuButton size="lg" className="h-10 w-full justify-start gap-2 rounded-lg px-2 hover:bg-muted/70">
             <div className="flex size-10 items-center justify-center overflow-hidden rounded-md">
               <Image src="/icon.png" alt="ECU Logo" width={44} height={44} className="size-full object-contain" />
             </div>
@@ -68,19 +85,36 @@ export const DashboardSidebar = () => {
             </div>
           </SidebarMenuButton>
         </SidebarMenuItem></SidebarMenu>
+        <SidebarMenu className="mt-2 border-t border-border/60 px-1 pt-2 group-data-[collapsible=icon]:hidden">
+          <SidebarMenuItem><DropdownMenu>
+            <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="group/profile h-12 w-full justify-start gap-3 rounded-lg px-2 data-[state=open]:bg-muted hover:bg-muted/70">
+              <Avatar className="size-10">
+                <AvatarImage src={session?.user.image ?? undefined} alt="Student profile" className="object-cover object-center" />
+                <AvatarFallback className="bg-primary/10 font-semibold text-primary">{profile?.registrationNumber?.charAt(0) ?? <UserIcon className="size-4" />}</AvatarFallback>
+              </Avatar>
+              <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">{profile?.registrationNumber ?? "Loading..."}</span>
+              <ChevronDown className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]/profile:rotate-180" />
+            </SidebarMenuButton></DropdownMenuTrigger>
+            <DropdownMenuContent side="bottom" align="start" className="w-56">
+              <DropdownMenuItem asChild className="gap-2">
+                <Link href="/profile"><UserIcon className="size-4" />My Profile</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu></SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="gap-0 px-2 py-2">
-        <SidebarGroup className="py-1">
+      <SidebarContent className="gap-0 px-2 py-1">
+        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
           <SidebarGroupContent><SidebarMenu><SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard">
-              <Link href="/"><LayoutDashboardIcon className="size-4" /><span>Dashboard</span></Link>
+            <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
+              <Link href="/"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === "/" ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><LayoutDashboardIcon className="size-4" /></span><span>Dashboard</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-t border-slate-100 py-3">
-          <SidebarGroupLabel>REGISTRATION</SidebarGroupLabel>
+        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
+          <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">REGISTRATION</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu><ExpandableNav title="Registration" icon={CheckSquare} pathname={pathname} children={[
             { title: "Register", url: "/academics/registration" },
             { title: "Dead Year / Dead Sem", url: "/registration/dead-year-dead-sem" },
@@ -89,51 +123,41 @@ export const DashboardSidebar = () => {
           ]} /></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-t border-slate-100 py-3">
-          <SidebarGroupLabel>MY FINANCE</SidebarGroupLabel>
-          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/finance")} tooltip="Financial statement">
-            <Link href="/finance"><DollarSign className="size-4" /><span>Financial statement</span></Link>
+        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
+          <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">MY FINANCE</SidebarGroupLabel>
+          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/finance")} tooltip="Financial statement" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
+            <Link href="/finance"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/finance") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><DollarSign className="size-4" /></span><span>Financial statement</span></Link>
           </SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-t border-slate-100 py-3">
-          <SidebarGroupLabel>ACADEMICS</SidebarGroupLabel>
+        <SidebarGroup className="border-b border-border/60 px-1 py-3 group-data-[collapsible=icon]:py-5">
+          <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">ACADEMICS</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu>
-            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/timetable")} tooltip="My Timetable"><Link href="/academics/timetable"><CalendarDays className="size-4" /><span>My Timetable</span></Link></SidebarMenuButton></SidebarMenuItem>
+            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/timetable")} tooltip="My Timetable" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70"><Link href="/academics/timetable"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/academics/timetable") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><CalendarDays className="size-4" /></span><span>My Timetable</span></Link></SidebarMenuButton></SidebarMenuItem>
             <ExpandableNav title="My Courses" icon={BookOpen} pathname={pathname} children={[{ title: "Enrolled Courses", url: "/academics/courses" }]} />
             <ExpandableNav title="Results" icon={Award} pathname={pathname} children={[{ title: "Partial Transcript", url: "/academics/results" }]} />
             <ExpandableNav title="Examinations" icon={FileText} pathname={pathname} children={[{ title: "Exam Permit", url: "/finance/exam-card" }]} />
-            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/attendance")} tooltip="Attendance"><Link href="/academics/attendance"><CalendarDays className="size-4" /><span>Attendance</span></Link></SidebarMenuButton></SidebarMenuItem>
+            <SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/academics/attendance")} tooltip="Attendance" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70"><Link href="/academics/attendance"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/academics/attendance") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><CalendarDays className="size-4" /></span><span>Attendance</span></Link></SidebarMenuButton></SidebarMenuItem>
             <ExpandableNav title="Internship" icon={SchoolIcon} pathname={pathname} children={[{ title: "Internship Process", url: "/internship" }]} />
           </SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-t border-slate-100 py-3">
-          <SidebarGroupLabel>ELECTIONS</SidebarGroupLabel>
+        <SidebarGroup className="border-b border-border/60 px-1 py-3">
+          <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">ELECTIONS</SidebarGroupLabel>
           <SidebarGroupContent><SidebarMenu><ExpandableNav title="Elections" icon={Vote} pathname={pathname} children={[
             { title: "Applications", url: "/elections/applications" },
-            { title: "Electoral Committee", url: "/elections/committee", icon: Users },
+            { title: "Electoral Committee", url: "/elections/committee" },
           ]} /></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="border-t border-slate-100 py-3">
-          <SidebarGroupLabel>EVALUATION</SidebarGroupLabel>
-          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/evaluation")} tooltip="Evaluation">
-            <Link href="/evaluation"><ClipboardCheck className="size-4" /><span>Evaluation</span></Link>
+        <SidebarGroup className="px-1 py-3 group-data-[collapsible=icon]:py-5">
+          <SidebarGroupLabel className="px-2 text-[11px] font-semibold tracking-wide">EVALUATION</SidebarGroupLabel>
+          <SidebarGroupContent><SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild isActive={isActive("/evaluation")} tooltip="Evaluation" className="h-10 gap-3 rounded-lg px-3 data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
+            <Link href="/evaluation"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${isActive("/evaluation") ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><ClipboardCheck className="size-4" /></span><span>Evaluation</span></Link>
           </SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-slate-100 p-2">
-        <SidebarMenu><SidebarMenuItem><DropdownMenu>
-          <DropdownMenuTrigger asChild><SidebarMenuButton size="lg" className="w-full justify-start gap-2 px-2 data-[state=open]:bg-sidebar-accent">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground"><UserIcon className="size-4" /></div>
-            <div className="flex min-w-0 flex-1 flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden"><span className="truncate text-sm font-semibold">{profile?.name ?? "Student"}</span><span className="truncate font-mono text-[11px] text-muted-foreground">{profile?.registrationNumber ?? "Loading..."}</span></div>
-            <ChevronUp className="size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
-          </SidebarMenuButton></DropdownMenuTrigger>
-          <DropdownMenuContent side="top" align="start" className="w-56"><DropdownMenuItem onClick={handleLogout} className="gap-2 text-destructive focus:text-destructive"><LogOut className="size-4" />Sign Out</DropdownMenuItem></DropdownMenuContent>
-        </DropdownMenu></SidebarMenuItem></SidebarMenu>
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

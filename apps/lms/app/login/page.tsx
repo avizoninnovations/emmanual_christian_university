@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -27,12 +28,12 @@ export default function LoginPage() {
       });
 
       if (response.error) {
-        setError(response.error.message || "Failed to sign in");
+        setError(getUserFacingErrorMessage(response.error, "Unable to sign in. Check your details and try again."));
       } else {
         router.push("/");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+    } catch (err: unknown) {
+      setError(getUserFacingErrorMessage(err, "Something went wrong. Please try again."));
     } finally {
       setLoading(false);
     }

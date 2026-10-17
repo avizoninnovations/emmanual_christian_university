@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations";
 import { v } from "convex/values";
@@ -73,7 +74,7 @@ export const deleteFaculty = mutation({
       .collect();
     
     if (departments.length > 0) {
-      throw new Error(`Cannot delete faculty. It has ${departments.length} associated department(s).`);
+      throw new ConvexError(`Cannot delete faculty. It has ${departments.length} associated department(s).`);
     }
 
     const faculty = await ctx.db.get(args.id);
@@ -167,7 +168,7 @@ export const deleteDepartment = mutation({
       .collect();
     
     if (programs.length > 0) {
-      throw new Error(`Cannot delete department. It has ${programs.length} associated program(s).`);
+      throw new ConvexError(`Cannot delete department. It has ${programs.length} associated program(s).`);
     }
 
     const dept = await ctx.db.get(args.id);

@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -106,7 +107,7 @@ export const createCourse = mutation({
       .first();
 
     if (existing) {
-      throw new Error(`Course with code '${cleanCode}' already exists.`);
+      throw new ConvexError(`Course with code '${cleanCode}' already exists.`);
     }
 
     const id = await ctx.db.insert("courses", {
@@ -159,7 +160,7 @@ export const deleteCourse = mutation({
       .first();
 
     if (allocations) {
-      throw new Error("Cannot delete course. It is allocated to teaching staff.");
+      throw new ConvexError("Cannot delete course. It is allocated to teaching staff.");
     }
 
     const course = await ctx.db.get(args.id);
@@ -184,7 +185,7 @@ export const seedDefaultCourses = mutation({
     // Fetch programs
     const programs = await ctx.db.query("programs").collect();
     if (programs.length === 0) {
-      throw new Error("No academic programs found. Run seedData first.");
+      throw new ConvexError("No academic programs found. Run seedData first.");
     }
 
     const bba = programs.find((p) => p.code === "BBA");

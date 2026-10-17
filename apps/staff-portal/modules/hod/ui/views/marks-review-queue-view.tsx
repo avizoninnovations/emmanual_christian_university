@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -109,7 +110,7 @@ export function MarksReviewQueueView() {
         setInspectCourseId(null);
       }
     } catch (err: any) {
-      toast.error(err.message || "Failed to approve marks");
+      toast.error(getUserFacingErrorMessage(err, "Failed to approve marks"));
     } finally {
       setIsProcessing(false);
     }
@@ -133,7 +134,7 @@ export function MarksReviewQueueView() {
       setReturnReason("");
       setInspectCourseId(null);
     } catch (err: any) {
-      toast.error(err.message || "Failed to return marks");
+      toast.error(getUserFacingErrorMessage(err, "Failed to return marks"));
     } finally {
       setIsProcessing(false);
     }
@@ -144,7 +145,7 @@ export function MarksReviewQueueView() {
       await grantUnlock({ assessmentId });
       toast.success("Edit grant unlocked for student");
     } catch (err: any) {
-      toast.error(err.message || "Failed to grant unlock");
+      toast.error(getUserFacingErrorMessage(err, "Failed to grant unlock"));
     }
   };
 

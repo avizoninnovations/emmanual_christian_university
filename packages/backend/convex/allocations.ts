@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -185,7 +186,7 @@ export const allocateLecturerToCourse = mutation({
     await assertRole(ctx, ["admin", "hod"]);
 
     const course = await ctx.db.get(args.courseId);
-    if (!course) throw new Error("Course not found");
+    if (!course) throw new ConvexError("Course not found");
 
     // Check if course is already allocated for this period
     const existing = await ctx.db
@@ -229,7 +230,7 @@ export const deallocateLecturer = mutation({
     await assertRole(ctx, ["admin", "hod"]);
 
     const allocation = await ctx.db.get(args.allocationId);
-    if (!allocation) throw new Error("Allocation not found");
+    if (!allocation) throw new ConvexError("Allocation not found");
 
     const course = await ctx.db.get(allocation.courseId);
     await ctx.db.delete(args.allocationId);

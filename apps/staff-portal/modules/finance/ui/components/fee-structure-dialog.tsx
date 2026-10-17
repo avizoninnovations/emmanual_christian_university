@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -161,7 +162,7 @@ export const FeeStructureDialog = ({
       onOpenChange(false);
       if (onSuccess) onSuccess();
     } catch (error: any) {
-      toast.error(error.message || "Failed to save fee structure.");
+      toast.error(getUserFacingErrorMessage(error, "Failed to save fee structure."));
     }
   };
 

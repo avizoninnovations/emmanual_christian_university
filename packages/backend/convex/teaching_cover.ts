@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -132,7 +133,7 @@ export const createCoverRequest = mutation({
     const userId = await assertAuthenticated(ctx);
 
     if (args.coveringLecturerId === userId) {
-      throw new Error("You cannot assign yourself to cover your own lecture.");
+      throw new ConvexError("You cannot assign yourself to cover your own lecture.");
     }
 
     const id = await ctx.db.insert("teachingCoverRequests", {
@@ -171,7 +172,7 @@ export const reviewCoverRequest = mutation({
     const reviewerId = await assertRole(ctx, ["admin", "hod", "dean"]);
 
     const req = await ctx.db.get(args.id);
-    if (!req) throw new Error("Teaching cover request not found.");
+    if (!req) throw new ConvexError("Teaching cover request not found.");
 
     await ctx.db.patch(args.id, {
       status: args.action,

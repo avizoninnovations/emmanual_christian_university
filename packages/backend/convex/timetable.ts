@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -174,7 +175,7 @@ export const createTimetableSlot = mutation({
     await assertRole(ctx, ["admin", "hod", "staff"]);
 
     if (args.startTime >= args.endTime) {
-      throw new Error("Start time must be strictly before end time.");
+      throw new ConvexError("Start time must be strictly before end time.");
     }
 
     // Check 1: Room collision detection
@@ -189,7 +190,7 @@ export const createTimetableSlot = mutation({
     for (const slot of existingRoomSlots) {
       if (isTimeOverlapping(args.startTime, args.endTime, slot.startTime, slot.endTime)) {
         const conflictingCourse = await ctx.db.get(slot.courseId);
-        throw new Error(
+        throw new ConvexError(
           `Room Collision: Room "${args.room}" is already booked on ${args.dayOfWeek.toUpperCase()} (${slot.startTime}–${slot.endTime}) for ${conflictingCourse?.code ?? "another course"}.`
         );
       }
@@ -207,7 +208,7 @@ export const createTimetableSlot = mutation({
     for (const slot of existingLecturerSlots) {
       if (isTimeOverlapping(args.startTime, args.endTime, slot.startTime, slot.endTime)) {
         const conflictingCourse = await ctx.db.get(slot.courseId);
-        throw new Error(
+        throw new ConvexError(
           `Lecturer Collision: The assigned lecturer is already teaching ${conflictingCourse?.code ?? "another course"} on ${args.dayOfWeek.toUpperCase()} (${slot.startTime}–${slot.endTime}) in Room ${slot.room}.`
         );
       }

@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -53,7 +54,7 @@ export function DepartmentsManager() {
   const departments = useQuery(api.academic.getDepartments, {});
   const programs = useQuery(api.academic.getPrograms, {});
   const staff = useQuery(api.users.getStaff);
-  
+
   const createMutation = useMutation(api.academic.createDepartment);
   const updateMutation = useMutation(api.academic.updateDepartment);
   const deleteMutation = useMutation(api.academic.deleteDepartment);
@@ -109,7 +110,7 @@ export function DepartmentsManager() {
       setSheetOpen(false);
       form.reset();
     } catch (e: any) {
-      toast.error(e.message || "Failed to save department");
+      toast.error(getUserFacingErrorMessage(e, "Failed to save department"));
     }
   };
 
@@ -119,7 +120,7 @@ export function DepartmentsManager() {
       await deleteMutation({ id: deleteTarget._id });
       toast.success("Department deleted");
     } catch (e: any) {
-      toast.error(e.message || "Failed to delete department");
+      toast.error(getUserFacingErrorMessage(e, "Failed to delete department"));
     } finally {
       setDeleteTarget(null);
     }
@@ -321,7 +322,7 @@ export function DepartmentsManager() {
                  Hierarchical structure and active programs for {viewing?.name}
               </SheetDescription>
            </SheetHeader>
-           
+
            {viewing && (
               <ScrollArea className="h-[calc(100vh-140px)] pr-4 mt-6">
                  <div className="space-y-8">

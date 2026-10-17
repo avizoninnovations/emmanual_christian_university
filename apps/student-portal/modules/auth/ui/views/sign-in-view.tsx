@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
@@ -54,7 +55,7 @@ export const SignInView = () => {
       });
 
       if (error) {
-        toast.error(error.message || "Sign-in failed. Check your university account details.");
+        toast.error(getUserFacingErrorMessage(error, "Sign-in failed. Check your university account details."));
       } else {
         toast.success("Welcome to the student portal.");
         router.push("/");
@@ -77,7 +78,7 @@ export const SignInView = () => {
 
       <header className="absolute inset-x-0 top-0 z-10 mx-auto flex w-full max-w-[1320px] items-center justify-between px-5 py-5 text-white sm:px-8">
         <div className="flex items-center gap-3">
-          <Image src="/icon.png" alt="" width={42} height={42} className="size-10 rounded-full object-cover" priority />
+          <Image src="/icon.png" alt="" width={42} height={42} className="size-10 object-contain" priority />
           <span className="text-sm font-semibold tracking-wide sm:text-base">ECU Student Portal</span>
         </div>
         <span className="hidden text-xs font-medium tracking-[0.16em] text-white/80 sm:block">EMMANUEL CHRISTIAN UNIVERSITY</span>
@@ -85,7 +86,7 @@ export const SignInView = () => {
 
       <section className="relative z-10 w-full max-w-[600px] overflow-hidden rounded-xl border border-[#d71559] shadow-[0_0_0_1px_#1874c9,0_24px_70px_-20px_rgba(0,0,0,0.85)]">
         <div className="flex min-h-[130px] items-center justify-center gap-5 bg-white px-5 py-5 sm:px-8">
-          <Image src="/icon.png" alt="Emmanuel Christian University crest" width={86} height={86} className="size-[68px] shrink-0 rounded-full object-cover sm:size-[82px]" priority />
+          <Image src="/icon.png" alt="Emmanuel Christian University crest" width={86} height={86} className="size-[68px] shrink-0 object-contain sm:size-[82px]" priority />
           <div className="min-w-0">
             <h1 className="font-serif text-[25px] font-medium uppercase leading-[1.05] tracking-[0.035em] text-[#191919] sm:text-[32px]">
               Emmanuel Christian University

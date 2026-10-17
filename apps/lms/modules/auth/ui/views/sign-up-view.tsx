@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -20,7 +21,7 @@ export const SignUpView = () => {
       });
 
       if (error) {
-        toast.error(error.message || "Failed to create account. Please try again.");
+        toast.error(getUserFacingErrorMessage(error, "Failed to create account. Please try again."));
       } else {
         toast.success("Account created successfully!");
         router.push("/");

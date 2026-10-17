@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -252,10 +253,10 @@ export const registerSemesterCourses = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await resolveCurrentStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
 
     if (args.courseIds.length === 0) {
-      throw new Error("Please select at least one course unit to register.");
+      throw new ConvexError("Please select at least one course unit to register.");
     }
 
     // Validate total credit units (between 12 and 24 CU, South Sudan regulation)
@@ -266,10 +267,10 @@ export const registerSemesterCourses = mutation({
     }
 
     if (totalCU < 12) {
-      throw new Error(`Minimum semester credit load is 12 CU. Selected courses total ${totalCU} CU.`);
+      throw new ConvexError(`Minimum semester credit load is 12 CU. Selected courses total ${totalCU} CU.`);
     }
     if (totalCU > 24) {
-      throw new Error(`Maximum allowed credit load is 24 CU. Selected courses total ${totalCU} CU.`);
+      throw new ConvexError(`Maximum allowed credit load is 24 CU. Selected courses total ${totalCU} CU.`);
     }
 
     // Remove existing registrations for this period that are not in the new selection

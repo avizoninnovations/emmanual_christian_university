@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -128,7 +129,7 @@ export const FinanceView = () => {
       await deleteFeeStructure({ id });
       toast.success("Fee structure removed.");
     } catch (e: any) {
-      toast.error(e.message || "Failed to delete fee structure.");
+      toast.error(getUserFacingErrorMessage(e, "Failed to delete fee structure."));
     }
   };
 

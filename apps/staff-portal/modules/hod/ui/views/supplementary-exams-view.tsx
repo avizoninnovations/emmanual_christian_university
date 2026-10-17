@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -79,7 +80,7 @@ export function SupplementaryExamsView() {
       setSelectedCandidate(null);
       setRawScoreInput("");
     } catch (err: any) {
-      toast.error(err.message || "Failed to record supplementary examination");
+      toast.error(getUserFacingErrorMessage(err, "Failed to record supplementary examination"));
     } finally {
       setIsSubmitting(false);
     }

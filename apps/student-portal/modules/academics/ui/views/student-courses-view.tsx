@@ -45,7 +45,7 @@ export function StudentCoursesView() {
   const totalCredits = courses.reduce((acc: number, c: any) => acc + (c.creditUnits || 0), 0);
 
   return (
-    <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+    <div className="w-full space-y-6 p-5 sm:p-6 lg:p-8">
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

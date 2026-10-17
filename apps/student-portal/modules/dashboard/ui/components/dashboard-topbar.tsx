@@ -1,13 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { SidebarTrigger } from "@workspace/ui/components/sidebar";
-import { ChevronRight, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { ChevronRight, UserRound } from "lucide-react";
+import { Button } from "@workspace/ui/components/button";
 
 const routeNames: Record<string, string> = {
   academics: "Academics",
+  profile: "My Profile",
   courses: "My Courses",
   results: "Results",
   timetable: "My Timetable",
@@ -27,19 +28,12 @@ const routeNames: Record<string, string> = {
 
 export function DashboardTopbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const crumbs = pathname.split("/").filter(Boolean);
 
-  async function signOut() {
-    await authClient.signOut();
-    router.push("/sign-in");
-  }
-
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur sm:px-7">
-      <div className="flex min-w-0 items-center gap-3">
-        <SidebarTrigger className="text-slate-500" />
-        <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5 text-sm">
+    <header className="flex h-[72px] shrink-0 items-center justify-between px-5 sm:px-8">
+      <div className="flex min-w-0 items-center gap-4">
+        <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5 text-xs sm:text-sm">
           <span className="text-slate-400">Students</span>
           {crumbs.map((crumb) => (
             <span key={crumb} className="flex min-w-0 items-center gap-1.5">
@@ -50,11 +44,12 @@ export function DashboardTopbar() {
             </span>
           ))}
         </nav>
+        <SidebarTrigger className="text-muted-foreground" />
       </div>
-      <button onClick={signOut} className="flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-primary">
-        <LogOut className="size-4" />
-        <span className="hidden sm:inline">Logout</span>
-      </button>
+      <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
+        <Link href="/profile"><UserRound className="size-4" />
+        <span>Profile</span></Link>
+      </Button>
     </header>
   );
 }

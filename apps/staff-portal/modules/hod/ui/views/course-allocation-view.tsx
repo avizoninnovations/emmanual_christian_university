@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -104,7 +105,7 @@ export function CourseAllocationView() {
       });
       toast.success("Lecturer assigned to course");
     } catch (err: any) {
-      toast.error(err.message || "Failed to assign course");
+      toast.error(getUserFacingErrorMessage(err, "Failed to assign course"));
     } finally {
       setUpdatingCourseId(null);
     }
@@ -117,7 +118,7 @@ export function CourseAllocationView() {
       });
       toast.success("Course allocation removed");
     } catch (err: any) {
-      toast.error(err.message || "Failed to deallocate course");
+      toast.error(getUserFacingErrorMessage(err, "Failed to deallocate course"));
     }
   };
 

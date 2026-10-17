@@ -31,6 +31,19 @@ export function AcademicResultsView() {
   const [transcriptView, setTranscriptView] = useState<"semester" | "curriculum">("semester");
   const [showInfo, setShowInfo] = useState(false);
   const data = useQuery(api.student_portal.getMyAcademicResults);
+  const curriculumGroups = useMemo(() => {
+    if (!data) return [];
+    const groups = new Map<number, typeof data.semesters>();
+    data.semesters.forEach((semester) => semester.courses.forEach((course) => {
+      const year = course.yearOfStudy ?? 1;
+      const rows = groups.get(year) ?? [];
+      const existing = rows.find((row) => row.periodId === semester.periodId);
+      if (existing) existing.courses.push(course);
+      else rows.push({ ...semester, courses: [course] });
+      groups.set(year, rows);
+    }));
+    return Array.from(groups.entries()).sort(([a], [b]) => a - b);
+  }, [data]);
 
   if (!data) {
     return (
@@ -42,18 +55,6 @@ export function AcademicResultsView() {
   }
 
   const { student, semesters, cumulative } = data;
-  const curriculumGroups = useMemo(() => {
-    const groups = new Map<number, typeof semesters>();
-    semesters.forEach((semester) => semester.courses.forEach((course) => {
-      const year = course.yearOfStudy ?? 1;
-      const rows = groups.get(year) ?? [];
-      const existing = rows.find((row) => row.periodId === semester.periodId);
-      if (existing) existing.courses.push(course);
-      else rows.push({ ...semester, courses: [course] });
-      groups.set(year, rows);
-    }));
-    return Array.from(groups.entries()).sort(([a], [b]) => a - b);
-  }, [semesters]);
   const displaySemesters = transcriptView === "semester"
     ? semesters
     : curriculumGroups.map(([year, rows]) => {
@@ -79,7 +80,7 @@ export function AcademicResultsView() {
   };
 
   return (
-    <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full print:p-0">
+    <div className="w-full space-y-6 p-5 sm:p-6 lg:p-8 print:p-0">
       {/* ── Official Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
@@ -154,7 +155,7 @@ export const PaymentFormDialog = ({
         onPaymentSuccess(receiptData);
       }
     } catch (err: any) {
-      toast.error(err.message || "Failed to record payment.");
+      toast.error(getUserFacingErrorMessage(err, "Failed to record payment."));
     } finally {
       setIsSubmitting(false);
     }

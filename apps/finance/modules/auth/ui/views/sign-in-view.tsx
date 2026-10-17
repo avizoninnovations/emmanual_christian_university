@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -19,7 +20,7 @@ export const SignInView = () => {
       });
 
       if (error) {
-        toast.error(error.message || "Failed to sign in. Please check your credentials.");
+        toast.error(getUserFacingErrorMessage(error, "Failed to sign in. Please check your credentials."));
       } else {
         toast.success("Welcome back!");
         router.push("/");
@@ -43,4 +44,3 @@ export const SignInView = () => {
     </div>
   );
 };
- 

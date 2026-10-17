@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -124,7 +125,7 @@ export function TeachingCoverView() {
       setTopic("");
       setReason("");
     } catch (err: any) {
-      toast.error(err.message || "Failed to submit request");
+      toast.error(getUserFacingErrorMessage(err, "Failed to submit request"));
     } finally {
       setIsSubmitting(false);
     }
@@ -145,7 +146,7 @@ export function TeachingCoverView() {
       setSelectedRequestToReview(null);
       setReviewNotes("");
     } catch (err: any) {
-      toast.error(err.message || "Failed to review request");
+      toast.error(getUserFacingErrorMessage(err, "Failed to review request"));
     } finally {
       setIsSubmitting(false);
     }

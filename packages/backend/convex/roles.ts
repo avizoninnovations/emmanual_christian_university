@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./lib/mutations";
@@ -32,7 +33,7 @@ export const createRole = mutation({
       .unique();
 
     if (existing) {
-      throw new Error(`Role with code '${args.code}' already exists`);
+      throw new ConvexError(`Role with code '${args.code}' already exists`);
     }
 
     const roleId = await ctx.db.insert("systemRoles", {
@@ -64,7 +65,7 @@ export const updateRole = mutation({
   handler: async (ctx, args) => {
     await assertAdmin(ctx);
     const role = await ctx.db.get(args.id);
-    if (!role) throw new Error("Role not found");
+    if (!role) throw new ConvexError("Role not found");
 
     const oldCode = role.code;
     const newCode = args.code ? args.code.toLowerCase().trim().replace(/\s+/g, "_") : oldCode;
@@ -124,11 +125,11 @@ export const deleteRole = mutation({
   handler: async (ctx, args) => {
     await assertAdmin(ctx);
     const role = await ctx.db.get(args.id);
-    if (!role) throw new Error("Role not found");
+    if (!role) throw new ConvexError("Role not found");
 
     // Prevent deletion of protected roles (referenced by assertRole calls)
     if (PROTECTED_ROLE_CODES.includes(role.code)) {
-      throw new Error(
+      throw new ConvexError(
         `Role '${role.code}' is protected and cannot be deleted because it is referenced by system permission checks.`
       );
     }

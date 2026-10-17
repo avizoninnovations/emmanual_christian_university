@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { ArrowLeft, Save } from "lucide-react";
@@ -41,7 +42,7 @@ export const BookForm = ({ onBack }: BookFormProps) => {
       toast.success("Book added to the catalog.");
       onBack();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add book");
+      toast.error(getUserFacingErrorMessage(error, "Failed to add book"));
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +77,7 @@ export const BookForm = ({ onBack }: BookFormProps) => {
               <Label>ISBN Number</Label>
               <Input placeholder="e.g. 9780262033848" value={isbn} onChange={e => setIsbn(e.target.value)} required className="h-11 border-muted-foreground/20 bg-muted/20" />
             </div>
-            
+
              <div className="space-y-2">
               <Label>Total Copies Available</Label>
               <Input type="number" min="1" placeholder="e.g. 5" value={totalCopies} onChange={e => setTotalCopies(e.target.value ? Number(e.target.value) : "")} required className="h-11 border-muted-foreground/20 bg-muted/20" />

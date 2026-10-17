@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { v } from "convex/values";
 import { components } from "./_generated/api.js";
 import { query } from "./_generated/server.js";
@@ -58,14 +59,14 @@ export const submitAegrotatApplication = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new Error("There is no active academic period.");
+    if (!period) throw new ConvexError("There is no active academic period.");
     const registration = await ctx.db.query("studentCourseRegistrations")
       .withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id))
       .filter((q: any) => q.eq(q.field("courseId"), args.courseId)).first();
-    if (!registration || registration.status !== "registered") throw new Error("Select a course you are registered in this semester.");
-    if (args.reason.trim().length < 10) throw new Error("Please provide more detail about your application.");
+    if (!registration || registration.status !== "registered") throw new ConvexError("Select a course you are registered in this semester.");
+    if (args.reason.trim().length < 10) throw new ConvexError("Please provide more detail about your application.");
     return await ctx.db.insert("aegrotatApplications", {
       studentId: student._id, periodId: period._id, courseId: args.courseId,
       reason: args.reason.trim(), attachmentId: args.attachmentId,
@@ -89,9 +90,9 @@ export const submitDeadSemesterRequest = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
-    if (args.targetYear < 1 || args.targetTerm < 1 || args.targetTerm > 3) throw new Error("Select a valid year and semester.");
-    if (args.reason.trim().length < 10) throw new Error("Please provide more detail about your request.");
+    if (!student) throw new ConvexError("Student profile not found.");
+    if (args.targetYear < 1 || args.targetTerm < 1 || args.targetTerm > 3) throw new ConvexError("Select a valid year and semester.");
+    if (args.reason.trim().length < 10) throw new ConvexError("Please provide more detail about your request.");
     return await ctx.db.insert("deadSemesterRequests", {
       studentId: student._id, targetYear: args.targetYear, targetTerm: args.targetTerm,
       reason: args.reason.trim(), attachmentId: args.attachmentId,
@@ -145,20 +146,20 @@ export const submitLecturerEvaluation = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new Error("No active academic semester is available.");
+    if (!period) throw new ConvexError("No active academic semester is available.");
     const registration = await ctx.db.query("studentCourseRegistrations")
       .withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id))
       .filter((q: any) => q.eq(q.field("courseId"), args.courseId)).first();
-    if (!registration || registration.status !== "registered") throw new Error("You can evaluate only a lecturer teaching your registered course.");
+    if (!registration || registration.status !== "registered") throw new ConvexError("You can evaluate only a lecturer teaching your registered course.");
     const allocation = await ctx.db.query("courseAllocations").withIndex("by_course_period", (q: any) =>
       q.eq("courseId", args.courseId).eq("periodId", period._id)).filter((q: any) => q.eq(q.field("lecturerId"), args.lecturerId)).first();
-    if (!allocation) throw new Error("This staff member is not assigned to this course in the current semester.");
-    if (args.responses.length < 3 || args.responses.some((response) => response.rating < 1 || response.rating > 5)) throw new Error("Complete all evaluation ratings before submitting.");
+    if (!allocation) throw new ConvexError("This staff member is not assigned to this course in the current semester.");
+    if (args.responses.length < 3 || args.responses.some((response) => response.rating < 1 || response.rating > 5)) throw new ConvexError("Complete all evaluation ratings before submitting.");
     const existing = await ctx.db.query("lecturerEvaluations").withIndex("by_student_course_period", (q: any) =>
       q.eq("studentId", student._id).eq("courseId", args.courseId).eq("periodId", period._id)).filter((q: any) => q.eq(q.field("lecturerId"), args.lecturerId)).first();
-    if (existing) throw new Error("You have already submitted this evaluation.");
+    if (existing) throw new ConvexError("You have already submitted this evaluation.");
     return await ctx.db.insert("lecturerEvaluations", {
       studentId: student._id, lecturerId: args.lecturerId, courseId: args.courseId,
       periodId: period._id, responses: args.responses, comment: args.comment?.trim(), submittedAt: Date.now(),
@@ -198,11 +199,11 @@ export const saveMyInternshipPlacement = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new Error("No current academic semester is available.");
-    for (const [label, value] of Object.entries(args)) if (label !== "acceptanceLetterId" && typeof value === "string" && !value.trim()) throw new Error(`${label} is required.`);
-    if (args.endDate < args.startDate) throw new Error("The end date must be after the start date.");
+    if (!period) throw new ConvexError("No current academic semester is available.");
+    for (const [label, value] of Object.entries(args)) if (label !== "acceptanceLetterId" && typeof value === "string" && !value.trim()) throw new ConvexError(`${label} is required.`);
+    if (args.endDate < args.startDate) throw new ConvexError("The end date must be after the start date.");
     const existing = await ctx.db.query("internshipPlacements").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).first();
     if (existing) {
       await ctx.db.patch(existing._id, { ...args, status: "submitted" });
@@ -217,12 +218,12 @@ export const addInternshipLogbookTask = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new Error("No current academic semester is available.");
+    if (!period) throw new ConvexError("No current academic semester is available.");
     const placement = await ctx.db.query("internshipPlacements").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).first();
-    if (!placement) throw new Error("Save your internship placement details first.");
-    if (!args.activity.trim() || !args.lessonLearned.trim() || !args.skills.trim()) throw new Error("Complete the activity, lesson learned, and skills fields.");
+    if (!placement) throw new ConvexError("Save your internship placement details first.");
+    if (!args.activity.trim() || !args.lessonLearned.trim() || !args.skills.trim()) throw new ConvexError("Complete the activity, lesson learned, and skills fields.");
     return await ctx.db.insert("internshipLogbookTasks", { studentId: student._id, placementId: placement._id, ...args, status: "submitted" });
   },
 });
@@ -232,12 +233,12 @@ export const addInternshipAgencyContact = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new Error("No current academic semester is available.");
+    if (!period) throw new ConvexError("No current academic semester is available.");
     const placement = await ctx.db.query("internshipPlacements").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).first();
-    if (!placement) throw new Error("Save your internship placement details first.");
-    if (!args.name.trim() || !args.phone.trim() || !args.email.trim()) throw new Error("Name, phone, and email are required.");
+    if (!placement) throw new ConvexError("Save your internship placement details first.");
+    if (!args.name.trim() || !args.phone.trim() || !args.email.trim()) throw new ConvexError("Name, phone, and email are required.");
     return await ctx.db.insert("internshipAgencyContacts", { studentId: student._id, placementId: placement._id, ...args });
   },
 });
@@ -248,7 +249,7 @@ export const removeInternshipAgencyContact = mutation({
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
     const contact = await ctx.db.get(args.contactId);
-    if (!student || !contact || contact.studentId !== student._id) throw new Error("Contact not found.");
+    if (!student || !contact || contact.studentId !== student._id) throw new ConvexError("Contact not found.");
     await ctx.db.delete(contact._id);
     return { success: true };
   },
@@ -277,13 +278,13 @@ export const submitElectionApplication = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const election = await ctx.db.get(args.electionId);
     const now = Date.now();
-    if (!election || election.status !== "open" || election.opensAt > now || election.closesAt < now) throw new Error("This election is not accepting applications.");
-    if (!args.position.trim() || args.statement.trim().length < 20) throw new Error("Select a position and provide a statement of at least 20 characters.");
+    if (!election || election.status !== "open" || election.opensAt > now || election.closesAt < now) throw new ConvexError("This election is not accepting applications.");
+    if (!args.position.trim() || args.statement.trim().length < 20) throw new ConvexError("Select a position and provide a statement of at least 20 characters.");
     const existing = await ctx.db.query("studentElectionApplications").withIndex("by_election", (q: any) => q.eq("electionId", args.electionId)).filter((q: any) => q.eq(q.field("studentId"), student._id)).first();
-    if (existing) throw new Error("You have already submitted an application for this election.");
+    if (existing) throw new ConvexError("You have already submitted an application for this election.");
     return await ctx.db.insert("studentElectionApplications", { electionId: args.electionId, studentId: student._id, position: args.position.trim(), statement: args.statement.trim(), status: "submitted", submittedAt: now });
   },
 });
@@ -320,13 +321,13 @@ export const registerRetakeCourse = mutation({
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
-    if (!student) throw new Error("Student profile not found.");
+    if (!student) throw new ConvexError("Student profile not found.");
     const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new Error("There is no active academic period.");
+    if (!period) throw new ConvexError("There is no active academic period.");
     const assessments = await ctx.db.query("studentAssessments").withIndex("by_student_course_period", (q: any) => q.eq("studentId", student._id).eq("courseId", args.courseId)).collect();
-    if (!assessments.some((assessment: any) => assessment.status === "approved" && (assessment.grade === "F" || assessment.grade === "D"))) throw new Error("This course is not eligible for retake registration.");
+    if (!assessments.some((assessment: any) => assessment.status === "approved" && (assessment.grade === "F" || assessment.grade === "D"))) throw new ConvexError("This course is not eligible for retake registration.");
     const existing = await ctx.db.query("studentCourseRegistrations").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).filter((q: any) => q.eq(q.field("courseId"), args.courseId)).first();
-    if (existing) throw new Error("This course is already registered for the current semester.");
+    if (existing) throw new ConvexError("This course is already registered for the current semester.");
     return await ctx.db.insert("studentCourseRegistrations", { studentId: student._id, courseId: args.courseId, periodId: period._id, status: "registered" });
   },
 });

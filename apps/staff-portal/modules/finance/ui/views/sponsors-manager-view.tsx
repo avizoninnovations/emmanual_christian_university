@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -108,7 +109,7 @@ export const SponsorsManagerView = () => {
       setCoveragePercentage("100");
       setIsCreateOpen(false);
     } catch (err: any) {
-      toast.error(err.message || "Failed to create sponsor.");
+      toast.error(getUserFacingErrorMessage(err, "Failed to create sponsor."));
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +134,7 @@ export const SponsorsManagerView = () => {
       setAssignSponsorId("");
       setIsAssignOpen(false);
     } catch (err: any) {
-      toast.error(err.message || "Failed to assign student.");
+      toast.error(getUserFacingErrorMessage(err, "Failed to assign student."));
     } finally {
       setIsSubmitting(false);
     }
@@ -145,7 +146,7 @@ export const SponsorsManagerView = () => {
       await deleteSponsor({ id });
       toast.success("Sponsor removed.");
     } catch (err: any) {
-      toast.error(err.message || "Failed to remove sponsor.");
+      toast.error(getUserFacingErrorMessage(err, "Failed to remove sponsor."));
     }
   };
 

@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -140,7 +141,7 @@ export function CourseFormDialog({
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
-      toast.error(error.message || "Failed to save course");
+      toast.error(getUserFacingErrorMessage(error, "Failed to save course"));
     }
   };
 

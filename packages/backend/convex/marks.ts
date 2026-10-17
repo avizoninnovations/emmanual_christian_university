@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -46,7 +47,7 @@ export const getCourseGradebook = query({
     await assertAuthenticated(ctx);
 
     const course = await ctx.db.get(args.courseId);
-    if (!course) throw new Error("Course not found");
+    if (!course) throw new ConvexError("Course not found");
 
     let periodId = args.periodId;
     if (!periodId) {
@@ -277,7 +278,7 @@ export const submitGradebookToHOD = mutation({
       .collect();
 
     if (assessments.length === 0) {
-      throw new Error("Cannot submit an empty gradebook. Please enter student marks first.");
+      throw new ConvexError("Cannot submit an empty gradebook. Please enter student marks first.");
     }
 
     for (const a of assessments) {
@@ -427,7 +428,7 @@ export const returnCourseMarks = mutation({
     await assertRole(ctx, ["admin", "hod", "dean"]);
 
     if (!args.reason.trim()) {
-      throw new Error("Please provide a reason for returning the marks.");
+      throw new ConvexError("Please provide a reason for returning the marks.");
     }
 
     const assessments = await ctx.db
@@ -557,7 +558,7 @@ export const recordSupplementaryMark = mutation({
     await assertRole(ctx, ["admin", "hod", "lecturer", "staff"]);
 
     const assessment = await ctx.db.get(args.assessmentId);
-    if (!assessment) throw new Error("Assessment record not found");
+    if (!assessment) throw new ConvexError("Assessment record not found");
 
     const raw = Math.min(100, Math.max(0, args.rawScore));
 

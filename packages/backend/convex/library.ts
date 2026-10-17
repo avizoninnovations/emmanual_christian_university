@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations";
 import { v } from "convex/values";
@@ -80,13 +81,13 @@ export const issueLoan = mutation({
     // 1. Get book and check availability
     const book = await ctx.db.get(args.bookId);
     if (!book || book.availableCopies <= 0) {
-      throw new Error("Book is not available for loan.");
+      throw new ConvexError("Book is not available for loan.");
     }
 
     // 2. Get student context for term/year tracking
     const student = await ctx.db.get(args.studentId);
     if (!student || student.term === undefined || student.year === undefined) {
-      throw new Error("Student enrollment period not found.");
+      throw new ConvexError("Student enrollment period not found.");
     }
 
     // 3. Decrement available copies
@@ -121,7 +122,7 @@ export const returnLoan = mutation({
     await assertRole(ctx, ["admin", "librarian"]);
     const loan = await ctx.db.get(args.loanId);
     if (!loan || loan.status === "returned") {
-      throw new Error("Invalid or already returned loan.");
+      throw new ConvexError("Invalid or already returned loan.");
     }
 
     // 1. Increment available copies

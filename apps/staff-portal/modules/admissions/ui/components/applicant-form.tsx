@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
@@ -54,7 +55,7 @@ export const ApplicantForm = ({ onBack }: ApplicantFormProps) => {
       toast.success("Applicant recorded successfully.");
       onBack();
     } catch (error: any) {
-      toast.error(error.message || "Failed to record applicant");
+      toast.error(getUserFacingErrorMessage(error, "Failed to record applicant"));
     } finally {
       setIsSubmitting(false);
     }

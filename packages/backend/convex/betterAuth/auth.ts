@@ -1,5 +1,5 @@
 import { createClient } from "@convex-dev/better-auth";
-import { convex } from "@convex-dev/better-auth/plugins";
+import { convex, crossDomain } from "@convex-dev/better-auth/plugins";
 import type { GenericCtx } from "@convex-dev/better-auth/utils";
 import type { BetterAuthOptions } from "better-auth";
 import { betterAuth } from "better-auth";
@@ -33,6 +33,7 @@ export const createAuthOptions = (ctx: any) => {
     },
     plugins: [
         convex({ authConfig }),
+        crossDomain({ siteUrl: process.env.STUDENT_PORTAL_URL || "http://localhost:3005" }),
         admin(),
     ],
     databaseHooks: {

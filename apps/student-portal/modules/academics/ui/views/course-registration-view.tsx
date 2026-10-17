@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -104,7 +105,7 @@ export function CourseRegistrationView() {
         `Successfully registered ${res.registeredCount} courses (${res.totalCreditUnits} Credit Units)`
       );
     } catch (err: any) {
-      toast.error(err.message || "Failed to register courses");
+      toast.error(getUserFacingErrorMessage(err, "Failed to register courses"));
     } finally {
       setIsSubmitting(false);
     }
@@ -115,7 +116,7 @@ export function CourseRegistrationView() {
   };
 
   return (
-    <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full print:p-0">
+    <div className="w-full space-y-6 p-5 sm:p-6 lg:p-8 print:p-0">
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

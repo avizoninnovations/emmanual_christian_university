@@ -22,7 +22,7 @@ export function StudentTimetableView() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8">
+    <div className="w-full space-y-6 p-5 sm:p-6 lg:p-8">
         <div className="flex flex-col gap-4">
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary">Academics</p>

@@ -62,7 +62,7 @@ export default function DashboardPage() {
   const isExamCardReady = isFinanceCleared && isAttendanceCleared && registeredCourses.length > 0;
 
   return (
-    <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+    <div className="w-full space-y-6 p-5 sm:p-6 lg:p-8">
       {/* ── Student Header Profile Banner ── */}
       <div className="relative overflow-hidden rounded-xl border bg-gradient-to-r from-primary/10 via-background to-primary/5 p-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

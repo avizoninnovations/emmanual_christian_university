@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations";
 import { v } from "convex/values";
@@ -60,7 +61,7 @@ export const activatePeriod = mutation({
     await assertAdmin(ctx);
     // 1. Get the period to activate
     const targetPeriod = await ctx.db.get(args.id);
-    if (!targetPeriod) throw new Error("Period not found");
+    if (!targetPeriod) throw new ConvexError("Period not found");
 
     // 2. Mark currently active periods as completed
     const activePeriods = await ctx.db

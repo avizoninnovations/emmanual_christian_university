@@ -1,3 +1,4 @@
+import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
 import { v } from "convex/values";
@@ -107,7 +108,7 @@ export const createFeeStructure = mutation({
       .first();
 
     if (existing) {
-      throw new Error(
+      throw new ConvexError(
         "A fee structure has already been defined for this program in the selected academic period."
       );
     }
@@ -158,7 +159,7 @@ export const deleteFeeStructure = mutation({
   handler: async (ctx, args) => {
     await assertRole(ctx, ["admin", "finance"]);
     const target = await ctx.db.get(args.id);
-    if (!target) throw new Error("Fee structure not found");
+    if (!target) throw new ConvexError("Fee structure not found");
 
     await ctx.db.delete(args.id);
     await logAction(ctx, {
@@ -412,7 +413,7 @@ export const getStudentFinancialProfile = query({
     await assertRole(ctx, ["admin", "finance"]);
 
     const student = await ctx.db.get(args.studentId);
-    if (!student) throw new Error("Student not found");
+    if (!student) throw new ConvexError("Student not found");
 
     const usersMap = await getUsersMap(ctx);
     const user = student.userId ? usersMap.get(student.userId) : null;
@@ -589,20 +590,20 @@ export const recordPayment = mutation({
     await assertRole(ctx, ["admin", "finance"]);
 
     if (args.amount <= 0) {
-      throw new Error("Payment amount must be greater than zero.");
+      throw new ConvexError("Payment amount must be greater than zero.");
     }
 
     const student = await ctx.db.get(args.studentId);
-    if (!student) throw new Error("Student record not found.");
+    if (!student) throw new ConvexError("Student record not found.");
 
     // Determine target period
     const targetPeriodId = args.periodId || student.currentPeriodId;
     if (!targetPeriodId) {
-      throw new Error("Student is not enrolled in an active academic period.");
+      throw new ConvexError("Student is not enrolled in an active academic period.");
     }
 
     const period = await ctx.db.get(targetPeriodId);
-    if (!period) throw new Error("Target academic period does not exist.");
+    if (!period) throw new ConvexError("Target academic period does not exist.");
 
     // Generate unique sequential receipt number: ECU-REC-YYYY-XXXXX
     const randomSeq = Math.floor(10000 + Math.random() * 90000);
@@ -751,17 +752,17 @@ export const recordWaiver = mutation({
     await assertRole(ctx, ["admin", "finance"]);
 
     if (args.amount <= 0) {
-      throw new Error("Waiver amount must be greater than zero.");
+      throw new ConvexError("Waiver amount must be greater than zero.");
     }
 
     const student = await ctx.db.get(args.studentId);
-    if (!student) throw new Error("Student not found.");
+    if (!student) throw new ConvexError("Student not found.");
 
     const targetPeriodId = args.periodId || student.currentPeriodId;
-    if (!targetPeriodId) throw new Error("Student is not assigned to an academic period.");
+    if (!targetPeriodId) throw new ConvexError("Student is not assigned to an academic period.");
 
     const period = await ctx.db.get(targetPeriodId);
-    if (!period) throw new Error("Target academic period not found.");
+    if (!period) throw new ConvexError("Target academic period not found.");
 
     const callerId = await assertAuthenticated(ctx);
     const receiptNumber = `ECU-WAV-${period.year}-${Math.floor(10000 + Math.random() * 90000)}`;
@@ -830,7 +831,7 @@ export const applySemesterInvoices = mutation({
     await assertRole(ctx, ["admin", "finance"]);
 
     const period = await ctx.db.get(args.periodId);
-    if (!period) throw new Error("Academic period not found.");
+    if (!period) throw new ConvexError("Academic period not found.");
 
     // Fetch fee structures for this period
     let feeStructures = await ctx.db
@@ -843,7 +844,7 @@ export const applySemesterInvoices = mutation({
     }
 
     if (feeStructures.length === 0) {
-      throw new Error(
+      throw new ConvexError(
         "No fee structures found for this academic period. Please configure a fee structure first."
       );
     }
@@ -1002,7 +1003,7 @@ export const createSponsor = mutation({
       .first();
 
     if (existing) {
-      throw new Error(`A sponsor with code '${args.code}' already exists.`);
+      throw new ConvexError(`A sponsor with code '${args.code}' already exists.`);
     }
 
     const id = await ctx.db.insert("sponsors", {
@@ -1089,7 +1090,7 @@ export const assignStudentSponsor = mutation({
     await assertRole(ctx, ["admin", "finance"]);
 
     const student = await ctx.db.get(args.studentId);
-    if (!student) throw new Error("Student not found.");
+    if (!student) throw new ConvexError("Student not found.");
 
     await ctx.db.patch(args.studentId, {
       sponsorId: args.sponsorId || undefined,

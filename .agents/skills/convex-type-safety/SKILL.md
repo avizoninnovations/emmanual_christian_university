@@ -15,7 +15,10 @@ Use this skill together with `packages/backend/AGENTS.md` and the generated Conv
 - Use generated `api`, `internal`, `Id`, and document types. Avoid `any`, `api as any`, and unchecked identity casts.
 - If a generated function reference triggers deep TypeScript inference (`TS2589`), define a narrowly typed `makeFunctionReference` at the boundary that needs it; do not weaken types across the whole module.
 - Keep validators on every public and internal Convex function. Validate external payloads before using them.
-- Use `ConvexError` for expected domain failures where structured client feedback is useful. Follow existing local error conventions if the generated guidelines or current code require another pattern.
+- **Backend error contract (required in every Convex file and new feature):** expected user-facing validation failures, missing/duplicate records, invalid state transitions, and permission restrictions MUST throw `ConvexError` with a concise, safe human-readable message. Use `new ConvexError("...")` for simple cases or `{ message, code, tip? }` when a stable code or next step helps the caller. Do not use plain `Error` for expected domain rejections.
+- Never suppress, bypass, or weaken authorization, validation, business restrictions, or data integrity to make an error disappear. Keep these checks on the server and explain the restriction in plain language.
+- Let unexpected programming, infrastructure, and external-service failures remain errors so they can be diagnosed; do not disguise them as successful results or expose stack traces, request IDs, validators, or internal details to end users. Catch only when you can recover or translate safely, and preserve diagnostic context in server-side logs.
+- Frontends must pass backend errors through the shared `getUserFacingErrorMessage` helper (`packages/ui/src/lib/error-message.ts`) with an appropriate fallback. Do not render raw Convex error payloads or create feature-specific Convex error parsing.
 
 ## Authorization and data ownership
 

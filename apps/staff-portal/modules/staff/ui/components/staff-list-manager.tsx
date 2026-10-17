@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation, useAction } from "convex/react";
@@ -129,7 +130,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
       setCreateOpen(false);
       createForm.reset();
     } catch (e: any) {
-      toast.error(e.message || "Failed to create staff member");
+      toast.error(getUserFacingErrorMessage(e, "Failed to create staff member"));
     }
   };
 
@@ -175,7 +176,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
       toast.success("Staff member updated");
       setEditTarget(null);
     } catch (e: any) {
-      toast.error(e.message || "Failed to update staff member");
+      toast.error(getUserFacingErrorMessage(e, "Failed to update staff member"));
     }
   };
 
@@ -197,7 +198,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
       setBanTarget(null);
       banForm.reset();
     } catch (e: any) {
-      toast.error(e.message || "Failed to ban staff");
+      toast.error(getUserFacingErrorMessage(e, "Failed to ban staff"));
     }
   };
 
@@ -206,7 +207,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
       await unbanStaff({ userId: person._id });
       toast.success("Ban lifted. Member is now active.");
     } catch (e: any) {
-      toast.error(e.message || "Failed to lift ban");
+      toast.error(getUserFacingErrorMessage(e, "Failed to lift ban"));
     }
   };
 
@@ -216,7 +217,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
       await deleteStaff({ id: deleteTarget._id });
       toast.success("Staff member removed");
     } catch (e: any) {
-      toast.error(e.message || "Failed to remove staff member");
+      toast.error(getUserFacingErrorMessage(e, "Failed to remove staff member"));
     } finally {
       setDeleteTarget(null);
     }

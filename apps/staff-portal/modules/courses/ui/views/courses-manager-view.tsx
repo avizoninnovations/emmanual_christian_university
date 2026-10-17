@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
@@ -102,7 +103,7 @@ export function CoursesManagerView() {
       const res = await seedCourses();
       toast.success(`Successfully seeded ${res.created} demo courses`);
     } catch (err: any) {
-      toast.error(err.message || "Failed to seed courses");
+      toast.error(getUserFacingErrorMessage(err, "Failed to seed courses"));
     } finally {
       setIsSeeding(false);
     }
@@ -115,7 +116,7 @@ export function CoursesManagerView() {
       toast.success(`Deleted course ${deleteTarget.code}`);
       setDeleteTarget(null);
     } catch (err: any) {
-      toast.error(err.message || "Failed to delete course");
+      toast.error(getUserFacingErrorMessage(err, "Failed to delete course"));
     }
   };
 

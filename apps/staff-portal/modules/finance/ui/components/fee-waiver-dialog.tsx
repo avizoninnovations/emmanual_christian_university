@@ -1,4 +1,5 @@
 "use client";
+import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
@@ -99,7 +100,7 @@ export const FeeWaiverDialog = ({
 
       if (onSuccess) onSuccess();
     } catch (err: any) {
-      toast.error(err.message || "Failed to apply fee waiver.");
+      toast.error(getUserFacingErrorMessage(err, "Failed to apply fee waiver."));
     } finally {
       setIsSubmitting(false);
     }

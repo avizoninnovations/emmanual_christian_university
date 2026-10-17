@@ -127,8 +127,19 @@ Operations must be decomposed into 4 distinct layers:
 - **Atomic Integrity**: Group multiple `db` writes into a single
   `internalMutation`. Never perform two separate writes from an action
   without wrapping them.
-- **Fail-Fast with `ConvexError`**: Use `ConvexError({ message, code,
-  tip })` for every rejection so the UI gets structured feedback.
+- **Backend error contract**: In every Convex file, throw `ConvexError`
+  with a concise human-readable message for expected validation failures,
+  missing/duplicate records, invalid state changes, and permission
+  restrictions. Use `new ConvexError("...")` for simple cases or
+  `new ConvexError({ message, code, tip? })` when a stable code or next
+  step is useful. Never use plain `Error` for an expected domain rejection.
+  Keep authorization, validation, and business restrictions intact; never
+  bypass them to hide an error. Let unexpected programming, infrastructure,
+  and external-service failures remain diagnosable and never return fake
+  success. Frontends must use the shared
+  `getUserFacingErrorMessage` helper for safe display and must not render
+  raw Convex payloads, request IDs, or stacks. Apply this standard to all
+  existing backend code and every new Convex file or feature.
 - **Mandatory Verification**: Every code modification or refactor MUST
   be verified with `pnpm --filter @workspace/backend exec tsc --noEmit`
   (plus the relevant app filter) before finishing.

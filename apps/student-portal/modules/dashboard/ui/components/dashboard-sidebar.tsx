@@ -17,7 +17,6 @@ import {
   SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
-import { Badge } from "@workspace/ui/components/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 import { authClient } from "@/lib/auth-client";
 
@@ -146,15 +145,12 @@ export const DashboardSidebar = () => {
     <Sidebar variant="floating" className="group" collapsible="icon" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <SidebarHeader className="px-2 pt-3 pb-2 group-data-[collapsible=icon]:py-4">
         <SidebarMenu><SidebarMenuItem>
-            <SidebarMenuButton size="lg" className="h-10 w-full justify-start gap-2 rounded-lg px-2 hover:bg-muted/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!">
+          <Link href="/" aria-label="ECU Student dashboard" className="flex h-10 w-full items-center justify-start gap-2 rounded-lg px-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-data-[collapsible=icon]:justify-center">
             <div className="flex size-10 items-center justify-center overflow-hidden rounded-md group-data-[collapsible=icon]:size-8">
               <Image src="/icon.png" alt="ECU Logo" width={44} height={44} className="size-full object-contain" />
             </div>
-            <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
-              <span className="font-semibold text-sm">ECU Student</span>
-              <Badge variant="outline" className="h-4 w-fit border-primary/20 bg-primary/10 px-1.5 text-[10px] font-medium text-primary">Student Portal</Badge>
-            </div>
-          </SidebarMenuButton>
+            <span className="font-semibold text-sm group-data-[collapsible=icon]:hidden">ECU Student</span>
+          </Link>
         </SidebarMenuItem></SidebarMenu>
         <SidebarMenu className="mt-2 border-t border-border px-1 pt-2">
           <ProfileNav pathname={pathname} registrationNumber={profile?.registrationNumber ?? "Loading..."} image={session?.user.image ?? undefined} />

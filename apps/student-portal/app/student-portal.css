@@ -10,7 +10,7 @@
   justify-content: flex-start;
   gap: 0.25rem;
   border-radius: 0;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid var(--border);
   background: transparent;
   padding: 0;
 }
@@ -20,13 +20,45 @@
   min-height: 2.75rem;
   padding: 0.65rem 1rem;
   border-radius: 0.5rem 0.5rem 0 0;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-size: 0.8125rem;
   font-weight: 600;
 }
 
 .student-portal-theme [data-slot="tabs-trigger"][data-state="active"] {
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  background: var(--primary);
+  color: var(--primary-foreground);
   box-shadow: none;
+}
+
+html.dark .bg-white,
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
+  background-color: var(--card);
+}
+
+html.dark .bg-slate-50 {
+  background-color: var(--muted);
+}
+
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700 {
+  color: var(--foreground);
+}
+
+html.dark .text-slate-600,
+html.dark .text-slate-500,
+html.dark .text-slate-400 {
+  color: var(--muted-foreground);
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-100 {
+  border-color: var(--border);
+}
+
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-50\/70:hover {
+  background-color: var(--muted);
 }

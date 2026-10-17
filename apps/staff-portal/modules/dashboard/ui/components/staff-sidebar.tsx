@@ -43,7 +43,7 @@ import { cn } from "@workspace/ui/lib/utils";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@workspace/ui/components/badge";
 import { authClient } from "@/lib/auth-client";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ModeToggle } from "@workspace/ui/components/mode-toggle";
 
 const lecturerMenuItems = [
   {

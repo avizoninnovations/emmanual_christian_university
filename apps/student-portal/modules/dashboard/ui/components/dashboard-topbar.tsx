@@ -6,6 +6,7 @@ import { ChevronRight, LogOut } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { ModeToggle } from "@workspace/ui/components/mode-toggle";
 
 const routeNames: Record<string, string> = {
   academics: "Academics",
@@ -62,10 +63,13 @@ export function DashboardTopbar() {
         </nav>
         <SidebarTrigger className="text-muted-foreground" />
       </div>
-      <Button onClick={handleSignOut} variant="ghost" size="sm" className="text-muted-foreground">
-        <LogOut className="size-4" />
-        <span>Logout</span>
-      </Button>
+      <div className="flex shrink-0 items-center gap-1">
+        <ModeToggle />
+        <Button onClick={handleSignOut} variant="ghost" size="sm" className="text-muted-foreground">
+          <LogOut className="size-4" />
+          <span>Logout</span>
+        </Button>
+      </div>
     </header>
   );
 }

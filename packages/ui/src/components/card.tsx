@@ -3,12 +3,17 @@ import * as React from "react"
 import { cn } from "@workspace/ui/lib/utils"
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
+  const cardClasses = className?.split(/\s+/).filter(Boolean) ?? []
+  const hasDashedOutline = cardClasses.includes("border-dashed")
+  const normalizedClasses = cardClasses.filter(name => name !== "border").join(" ")
+
   return (
     <div
       data-slot="card"
       className={cn(
         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border-0 py-6 shadow-sm ring-1 ring-foreground/5",
-        className
+        hasDashedOutline && "border",
+        normalizedClasses
       )}
       {...props}
     />

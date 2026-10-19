@@ -1,14 +1,17 @@
 import { ConvexError, v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import { mutation, query, type MutationCtx, type QueryCtx } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 import { mutation as auditedMutation } from "./lib/mutations";
 import { logAction } from "./audit_logger";
-import { assertAuthenticated } from "./lib/utils";
+import { assertAuthenticated, assertAdmin } from "./lib/utils";
 
 const sectionValidator = v.union(
   v.literal("contact"),
   v.literal("bankAccount"),
   v.literal("qualification"),
   v.literal("experience"),
+  v.literal("employment"),
   v.literal("publication"),
   v.literal("nextOfKin"),
   v.literal("spouse"),
@@ -31,20 +34,40 @@ async function getOwnProfile(ctx: QueryCtx | MutationCtx) {
   return profile;
 }
 
+async function validateProfileUpload(ctx: MutationCtx, fileId: Id<"_storage">, allowedTypes: string[], maxBytes: number) {
+  const metadata = await ctx.db.system.get("_storage", fileId);
+  if (!metadata) throw new ConvexError({ message: "Uploaded file could not be found.", code: "FILE_NOT_FOUND" });
+  if (metadata.size > maxBytes || !allowedTypes.includes(metadata.contentType ?? "")) {
+    throw new ConvexError({ message: "This file type or size is not allowed.", code: "INVALID_FILE" });
+  }
+}
+
 export const getMyProfile = query({
   args: {},
   handler: async (ctx) => {
     const profile = await getOwnProfile(ctx);
-    const entries = await ctx.db
+    const [photoUrl, signatureUrl] = await Promise.all([
+      profile.photoFileId ? ctx.storage.getUrl(profile.photoFileId) : null,
+      profile.signatureFileId ? ctx.storage.getUrl(profile.signatureFileId) : null,
+    ]);
+    return { profile, photoUrl, signatureUrl };
+  },
+});
+
+export const getMyProfileEntries = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const profile = await getOwnProfile(ctx);
+    const page = await ctx.db
       .query("staffProfileEntries")
       .withIndex("by_profile", (q) => q.eq("profileId", profile._id))
-      .take(100);
-
-    const entriesWithUrls = await Promise.all(entries.map(async (entry) => ({
+      .order("desc")
+      .paginate(args.paginationOpts);
+    const pageWithUrls = await Promise.all(page.page.map(async (entry) => ({
       ...entry,
       fileUrl: entry.fileId ? await ctx.storage.getUrl(entry.fileId) : null,
     })));
-    return { profile, entries: entriesWithUrls };
+    return { ...page, page: pageWithUrls };
   },
 });
 
@@ -70,6 +93,66 @@ export const saveMyPersonalDetails = auditedMutation({
   },
 });
 
+export const saveMyProfileImage = auditedMutation({
+  args: {
+    asset: v.union(v.literal("photo"), v.literal("signature")),
+    fileId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const profile = await getOwnProfile(ctx);
+    await validateProfileUpload(ctx, args.fileId, ["image/png", "image/jpeg"], 5 * 1024 * 1024);
+    const previousFileId = args.asset === "photo" ? profile.photoFileId : profile.signatureFileId;
+    if (previousFileId && previousFileId !== args.fileId) await ctx.storage.delete(previousFileId);
+    await ctx.db.patch(profile._id, {
+      ...(args.asset === "photo" ? { photoFileId: args.fileId } : { signatureFileId: args.fileId }),
+      updatedAt: Date.now(),
+    });
+    await logAction(ctx, {
+      action: "UPDATE_STAFF_PROFILE_ASSET",
+      resource: "staffProfiles",
+      details: `Updated staff ${args.asset}`,
+    });
+  },
+});
+
+/** Employment appointments are maintained by authorised staff, not self-edited. */
+export const updateStaffEmployment = auditedMutation({
+  args: {
+    profileId: v.id("staffProfiles"),
+    positionTitle: v.optional(v.union(v.string(), v.null())),
+    departmentId: v.optional(v.union(v.string(), v.null())),
+    divisionName: v.optional(v.union(v.string(), v.null())),
+    jobType: v.optional(v.union(v.string(), v.null())),
+    supervisorProfileId: v.optional(v.union(v.id("staffProfiles"), v.null())),
+    employmentStartDate: v.optional(v.union(v.string(), v.null())),
+    employmentEndDate: v.optional(v.union(v.string(), v.null())),
+  },
+  handler: async (ctx, args) => {
+    await assertAdmin(ctx);
+    const profile = await ctx.db.get(args.profileId);
+    if (!profile) throw new ConvexError({ message: "Staff profile not found.", code: "NOT_FOUND" });
+    if (args.supervisorProfileId && args.supervisorProfileId === profile._id) {
+      throw new ConvexError({ message: "A staff member cannot be their own supervisor.", code: "INVALID_SUPERVISOR" });
+    }
+
+    await ctx.db.patch(profile._id, {
+      ...(args.positionTitle !== undefined ? { title: args.positionTitle ?? undefined } : {}),
+      ...(args.departmentId !== undefined ? { departmentId: args.departmentId ?? undefined } : {}),
+      ...(args.divisionName !== undefined ? { divisionName: args.divisionName ?? undefined } : {}),
+      ...(args.jobType !== undefined ? { jobType: args.jobType ?? undefined } : {}),
+      ...(args.supervisorProfileId !== undefined ? { supervisorProfileId: args.supervisorProfileId ?? undefined } : {}),
+      ...(args.employmentStartDate !== undefined ? { employmentStartDate: args.employmentStartDate ?? undefined } : {}),
+      ...(args.employmentEndDate !== undefined ? { employmentEndDate: args.employmentEndDate ?? undefined } : {}),
+      updatedAt: Date.now(),
+    });
+    await logAction(ctx, {
+      action: "UPDATE_STAFF_EMPLOYMENT",
+      resource: "staffProfiles",
+      details: `Updated appointment details for staff record ${profile.staffId}`,
+    });
+  },
+});
+
 export const saveMyProfileEntry = auditedMutation({
   args: {
     entryId: v.optional(v.id("staffProfileEntries")),
@@ -80,12 +163,19 @@ export const saveMyProfileEntry = auditedMutation({
   },
   handler: async (ctx, args) => {
     const profile = await getOwnProfile(ctx);
+    if (args.fileId) {
+      if (args.section !== "document") throw new ConvexError({ message: "Only document records accept attachments.", code: "INVALID_FILE" });
+      await validateProfileUpload(ctx, args.fileId, ["application/pdf", "image/png", "image/jpeg", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"], 10 * 1024 * 1024);
+    }
     const now = Date.now();
 
     if (args.entryId) {
       const existing = await ctx.db.get(args.entryId);
       if (!existing || existing.profileId !== profile._id) {
         throw new ConvexError({ message: "Profile record not found.", code: "NOT_FOUND" });
+      }
+      if (args.fileId && existing.fileId && args.fileId !== existing.fileId) {
+        await ctx.storage.delete(existing.fileId);
       }
       await ctx.db.patch(args.entryId, {
         section: args.section,

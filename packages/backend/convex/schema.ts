@@ -28,6 +28,13 @@ export default defineSchema({
     staffNumber: v.optional(v.string()), // Legacy/Phone
     staffId: v.string(),     // Official University ID
     personalDetails: v.optional(v.record(v.string(), v.string())),
+    photoFileId: v.optional(v.id("_storage")),
+    signatureFileId: v.optional(v.id("_storage")),
+    divisionName: v.optional(v.string()),
+    jobType: v.optional(v.string()),
+    supervisorProfileId: v.optional(v.id("staffProfiles")),
+    employmentStartDate: v.optional(v.string()),
+    employmentEndDate: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("inactive")),
     ...timestamps,
   })
@@ -43,6 +50,7 @@ export default defineSchema({
       v.literal("bankAccount"),
       v.literal("qualification"),
       v.literal("experience"),
+      v.literal("employment"),
       v.literal("publication"),
       v.literal("nextOfKin"),
       v.literal("spouse"),

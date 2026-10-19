@@ -17,7 +17,6 @@ export const profileFields: Record<StaffProfileSection, StaffProfileField[]> = {
     { key: "nationalIdNumber", label: "National ID number (NIN)" },
     { key: "hobbies", label: "Hobbies (comma separated)" },
     { key: "universityTeam", label: "University team" },
-    { key: "signatureImageUrl", label: "Signature image URL" },
   ],
   residence: [
     { key: "currentCountry", label: "Current country" },
@@ -56,6 +55,7 @@ export const entrySections = {
   bankAccount: { title: "Other bank accounts", fields: ["Bank", "Account title", "Bank branch", "Account number"] },
   qualification: { title: "Academic background", fields: ["Qualification", "Institution", "Award", "Start year", "End year", "Country"] },
   experience: { title: "Work experience", fields: ["Position", "Employer", "Department", "Start date", "End date", "Responsibilities"] },
+  employment: { title: "Employment history", fields: ["Movement type", "Position", "Unit", "Division", "Job type", "Start date", "End date"] },
   publication: { title: "Publications", fields: ["Title", "Publication type", "Journal or publisher", "Year", "Link"] },
   nextOfKin: { title: "Next of kin", fields: ["Full name", "Relationship", "Phone", "Email", "Address"] },
   spouse: { title: "Spouse", fields: ["Full name", "Phone", "Email", "Occupation", "Address"] },

@@ -20,6 +20,36 @@ const sectionValidator = v.union(
   v.literal("document"),
 );
 
+const personalDetailKeys = new Set([
+  "titles", "firstName", "surname", "gender", "maritalStatus", "dateOfBirth", "nationalIdNumber", "hobbies", "universityTeam",
+  "currentCountry", "nationality", "currentDistrict", "currentCounty", "currentSubCounty", "currentParish", "currentVillage",
+  "homeDistrict", "homeSubCounty", "homeVillage", "homeDiocese",
+  "bankName", "bankAccountTitle", "bankBranch", "bankAccountNumber", "nssfName", "nssfNumber", "tin",
+  "biography", "researchInterests", "profilePublished", "showQualifications", "showExperience", "showPublications",
+]);
+
+const entryDataKeys: Record<string, readonly string[]> = {
+  contact: ["contactType", "value", "label"],
+  bankAccount: ["bank", "accountTitle", "bankBranch", "accountNumber"],
+  qualification: ["qualification", "institution", "award", "startYear", "endYear", "country"],
+  experience: ["position", "employer", "department", "startDate", "endDate", "responsibilities"],
+  employment: ["movementType", "position", "unit", "division", "jobType", "startDate", "endDate"],
+  publication: ["title", "publicationType", "journalOrPublisher", "year", "link"],
+  nextOfKin: ["fullName", "relationship", "phone", "email", "address"],
+  spouse: ["fullName", "phone", "email", "occupation", "address"],
+  child: ["fullName", "dateOfBirth", "gender"],
+  parent: ["fullName", "relationship", "phone", "email", "address"],
+  document: ["documentType", "documentName", "notes", "expiryDate", "fileName"],
+};
+
+function assertAllowedKeys(data: Record<string, string>, allowedKeys: ReadonlySet<string> | readonly string[], description: string) {
+  const allowed = allowedKeys instanceof Set ? allowedKeys : new Set(allowedKeys);
+  const unexpected = Object.keys(data).filter((key) => !allowed.has(key));
+  if (unexpected.length > 0) {
+    throw new ConvexError({ message: `Unsupported ${description} field: ${unexpected.join(", ")}.`, code: "INVALID_PROFILE_FIELD" });
+  }
+}
+
 async function getOwnProfile(ctx: QueryCtx | MutationCtx) {
   const userId = await assertAuthenticated(ctx);
   const profile = await ctx.db
@@ -83,6 +113,7 @@ export const saveMyPersonalDetails = auditedMutation({
   args: { details: v.record(v.string(), v.string()) },
   handler: async (ctx, args) => {
     const profile = await getOwnProfile(ctx);
+    assertAllowedKeys(args.details, personalDetailKeys, "personal profile");
     await ctx.db.patch(profile._id, { personalDetails: args.details, updatedAt: Date.now() });
     await logAction(ctx, {
       action: "UPDATE_MY_STAFF_PROFILE",
@@ -163,6 +194,7 @@ export const saveMyProfileEntry = auditedMutation({
   },
   handler: async (ctx, args) => {
     const profile = await getOwnProfile(ctx);
+    assertAllowedKeys(args.data, entryDataKeys[args.section] ?? [], args.section);
     if (args.fileId) {
       if (args.section !== "document") throw new ConvexError({ message: "Only document records accept attachments.", code: "INVALID_FILE" });
       await validateProfileUpload(ctx, args.fileId, ["application/pdf", "image/png", "image/jpeg", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"], 10 * 1024 * 1024);

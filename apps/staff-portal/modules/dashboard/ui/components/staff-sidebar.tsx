@@ -10,6 +10,8 @@ import {
   CalendarDays,
   CheckSquare,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ClipboardCheck,
   FileSpreadsheet,
   FileText,
@@ -24,6 +26,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { Button } from "@workspace/ui/components/button";
+import { ModeToggle } from "@workspace/ui/components/mode-toggle";
 import {
   Collapsible,
   CollapsibleContent,
@@ -32,6 +36,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -120,9 +125,10 @@ export const StaffSidebar = () => {
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/55 dark:bg-background/68" />
 
         <SidebarHeader className="relative z-10 gap-3 border-b border-sidebar-border/70 px-3 py-3">
+          <SidebarCollapseButton />
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild size="lg" className="h-11 gap-2 px-1 hover:bg-transparent">
+              <SidebarMenuButton asChild size="lg" className="h-11 gap-2 px-1 pr-10 hover:bg-transparent">
                 <Link href="/" aria-label="ECU staff dashboard">
                   <Image src="/logo.webp" alt="ECU logo" width={36} height={36} className="size-9 shrink-0 object-contain" />
                   <span className="truncate text-base font-medium tracking-tight text-sidebar-foreground group-data-[collapsible=icon]:hidden">ECU STAFF</span>
@@ -142,46 +148,6 @@ export const StaffSidebar = () => {
             />
           </div>
 
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                size="lg"
-                onClick={() => setOpenSection((current) => current === "account" ? null : "account")}
-                aria-expanded={accountOpen}
-                className="h-12 gap-2 rounded-lg px-1.5 hover:bg-sidebar-accent/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!"
-              >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary group-data-[collapsible=icon]:size-8">
-                  <UserRound className="size-5" />
-                </span>
-                <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-                  <span className="block truncate text-sm font-normal">{user?.name ?? <Skeleton className="h-4 w-24" />}</span>
-                  <span className="block truncate text-[11px] text-muted-foreground">{user?.staffNumber ?? "Staff account"}</span>
-                </span>
-                <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-[400ms] group-data-[collapsible=icon]:hidden ${accountOpen ? "rotate-180" : ""}`} />
-              </SidebarMenuButton>
-              <div aria-hidden={!accountOpen} inert={!accountOpen} className={`grid transition-[grid-template-rows] duration-[400ms] ease-in-out ${accountOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-                <div className="overflow-hidden">
-                  <SidebarMenuSub className="mx-3.5 gap-1 border-l-0 px-1.5 py-1">
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild isActive={profileActive} className="h-10 gap-3 rounded-lg px-2.5 data-[active=true]:bg-muted data-[active=true]:font-medium data-[active=true]:text-foreground hover:bg-muted/70">
-                        <Link href="/profile"><UserRound className="size-4" /><span>Profile</span></Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                    {isMultiRole && <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild className="h-10 gap-3 rounded-lg px-2.5 hover:bg-muted/70">
-                        <button type="button" onClick={switchRole}><ArrowLeftRight className="size-4" /><span>Switch portal</span></button>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>}
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild className="h-10 gap-3 rounded-lg px-2.5 text-destructive hover:bg-destructive/5 hover:text-destructive">
-                        <button type="button" onClick={signOut}><LogOut className="size-4" /><span>Sign out</span></button>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  </SidebarMenuSub>
-                </div>
-              </div>
-            </SidebarMenuItem>
-          </SidebarMenu>
         </SidebarHeader>
 
         <SidebarContent className="relative z-10 gap-0 px-2 py-1">
@@ -213,11 +179,77 @@ export const StaffSidebar = () => {
           </SidebarGroup>
           </div>
         </SidebarContent>
+        <SidebarFooter className="relative z-10 gap-1 border-t border-sidebar-border/70 px-2 py-2">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                size="lg"
+                onClick={() => setOpenSection((current) => current === "account" ? null : "account")}
+                aria-expanded={accountOpen}
+                className="h-11 gap-2 rounded-lg px-1.5 hover:bg-sidebar-accent/70 group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!"
+              >
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <UserRound className="size-4" />
+                </span>
+                <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+                  <span className="block truncate text-sm font-medium">{user?.name ?? <Skeleton className="h-4 w-24" />}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">{user?.staffNumber ?? "Staff account"}</span>
+                </span>
+                <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-[400ms] group-data-[collapsible=icon]:hidden ${accountOpen ? "rotate-180" : ""}`} />
+              </SidebarMenuButton>
+              <div aria-hidden={!accountOpen} inert={!accountOpen} className={`grid transition-[grid-template-rows] duration-[400ms] ease-in-out group-data-[collapsible=icon]:hidden ${accountOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                <div className="overflow-hidden">
+                  <SidebarMenuSub className="mx-3.5 gap-1 border-l-0 px-1.5 py-1">
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={profileActive} className="h-9 gap-3 rounded-lg px-2.5 data-[active=true]:bg-muted data-[active=true]:font-medium data-[active=true]:text-foreground hover:bg-muted/70">
+                        <Link href="/profile"><UserRound className="size-4" /><span>Profile</span></Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    {isMultiRole && <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild className="h-9 gap-3 rounded-lg px-2.5 hover:bg-muted/70">
+                        <button type="button" onClick={switchRole}><ArrowLeftRight className="size-4" /><span>Switch portal</span></button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>}
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild className="h-9 gap-3 rounded-lg px-2.5 text-destructive hover:bg-destructive/5 hover:text-destructive">
+                        <button type="button" onClick={signOut}><LogOut className="size-4" /><span>Sign out</span></button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </div>
+              </div>
+            </SidebarMenuItem>
+            <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
+              <div className="flex h-10 items-center justify-between rounded-lg px-2 group-data-[collapsible=icon]:px-0">
+                <span className="text-xs font-medium text-muted-foreground group-data-[collapsible=icon]:hidden">Appearance</span>
+                <ModeToggle />
+              </div>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
       </div>
       <SidebarRail />
     </Sidebar>
   );
 };
+
+function SidebarCollapseButton() {
+  const { open, openMobile, isMobile, toggleSidebar } = useSidebar();
+  const expanded = isMobile ? openMobile : open;
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      aria-label={isMobile ? (expanded ? "Close navigation" : "Open navigation") : (expanded ? "Collapse sidebar" : "Expand sidebar")}
+      onClick={toggleSidebar}
+      className="absolute right-2 top-3 z-20 size-8 rounded-full bg-background text-muted-foreground shadow-md hover:bg-muted"
+    >
+      {expanded ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />}
+    </Button>
+  );
+}
 
 function NavGroup({
   title,

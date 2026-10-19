@@ -59,9 +59,9 @@ export default function StaffProfileView() {
       <div className="grid items-start gap-5 xl:grid-cols-[260px_minmax(0,1fr)]">
         <StaffIdentity user={user} roles={roles} photoUrl={result.photoUrl} />
         <Tabs defaultValue="bio" className="min-w-0">
-        <div className="overflow-x-auto rounded-2xl bg-muted/50 p-1.5">
-          <TabsList aria-label="Staff profile sections" className="h-auto min-w-max w-full justify-start gap-1 bg-transparent p-0 shadow-none">
-            {tabs.map(([value, label, Icon]) => <TabsTrigger key={value} value={value} className="h-10 flex-none cursor-pointer gap-2 rounded-xl px-3 text-xs font-medium capitalize text-muted-foreground transition-colors hover:bg-background/50 hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:ring-1 data-[state=active]:ring-primary/35 data-[state=active]:hover:bg-transparent md:px-3.5 md:text-sm"><Icon className="size-4" />{label}</TabsTrigger>)}
+        <div className="overflow-x-auto border-b border-border/60">
+          <TabsList aria-label="Staff profile sections" className="h-auto min-w-max w-full justify-start gap-3 rounded-none bg-transparent p-0 shadow-none">
+            {tabs.map(([value, label, Icon]) => <TabsTrigger key={value} value={value} className="h-11 flex-none cursor-pointer gap-2 rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-2 text-xs font-medium capitalize text-muted-foreground shadow-none transition-colors hover:bg-transparent hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary data-[state=active]:shadow-none md:px-3 md:text-sm"><Icon className="size-4" />{label}</TabsTrigger>)}
           </TabsList>
         </div>
         <TabsContent value="bio" className="mt-4 space-y-4">
@@ -78,7 +78,7 @@ export default function StaffProfileView() {
         </TabsContent>
         <TabsContent value="affiliates" className="mt-4 space-y-4">
           <Tabs value={affiliate} onValueChange={(value) => setAffiliate(value as EntrySection)}>
-            <TabsList className="h-auto flex-wrap"><AffiliateTrigger value="nextOfKin" label="Next of kin" /><AffiliateTrigger value="spouse" label="Spouse" /><AffiliateTrigger value="child" label="Children" /><AffiliateTrigger value="parent" label="Parents" /></TabsList>
+            <TabsList className="h-auto flex-wrap gap-2 rounded-none border-b border-border/60 bg-transparent p-0 shadow-none"><AffiliateTrigger value="nextOfKin" label="Next of kin" /><AffiliateTrigger value="spouse" label="Spouse" /><AffiliateTrigger value="child" label="Children" /><AffiliateTrigger value="parent" label="Parents" /></TabsList>
             {(["nextOfKin", "spouse", "child", "parent"] as const).map((section) => <TabsContent key={section} value={section} className="mt-4"><StaffProfileEntryList section={section} entries={entryPage.results} /></TabsContent>)}
           </Tabs>
         </TabsContent>
@@ -93,7 +93,7 @@ export default function StaffProfileView() {
 }
 
 function AffiliateTrigger({ value, label }: { value: EntrySection; label: string }) {
-  return <TabsTrigger value={value} className="h-9 flex-none cursor-pointer rounded-lg px-3 capitalize hover:bg-background/50 data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:ring-1 data-[state=active]:ring-primary/35 data-[state=active]:hover:bg-transparent">{label}</TabsTrigger>;
+  return <TabsTrigger value={value} className="h-9 flex-none cursor-pointer rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-3 capitalize shadow-none hover:bg-transparent hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary data-[state=active]:shadow-none">{label}</TabsTrigger>;
 }
 
 function StaffIdentity({ user, roles, photoUrl }: { user: NonNullable<ReturnType<typeof useCurrentUser>["user"]>; roles: string[]; photoUrl: string | null }) {

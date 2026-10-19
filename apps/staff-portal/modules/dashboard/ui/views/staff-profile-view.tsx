@@ -123,7 +123,7 @@ function EmploymentSummary({ user, profile }: { user: NonNullable<ReturnType<typ
 }
 
 function ReadOnlyField({ label, value }: { label: string; value?: string }) {
-  return <div className="rounded-lg bg-muted/35 p-3"><p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{label}</p><p className="mt-1 break-words text-sm font-medium">{value || "Not provided"}</p></div>;
+  return <div className="min-w-0 space-y-1"><p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{label}</p><p className="break-words text-sm font-medium">{value || <span className="font-normal text-muted-foreground">Not provided</span>}</p></div>;
 }
 
 function ProfileSkeleton() {

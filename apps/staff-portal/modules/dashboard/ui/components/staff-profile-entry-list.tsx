@@ -68,34 +68,38 @@ export function StaffProfileEntryList({ section, entries }: StaffProfileEntryLis
   }
 
   return (
-    <Card className="border-0 shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between gap-3">
-        <CardTitle className="text-base">{definition.title}</CardTitle>
-        <Button size="sm" onClick={() => setEditing("new")}><Plus className="mr-1 size-4" />Add</Button>
+    <Card className="rounded-2xl border-0 bg-card/80 shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between gap-3 px-5 pb-3 pt-5">
+        <div><CardTitle className="text-base">{definition.title}</CardTitle><p className="mt-1 text-sm text-muted-foreground">Keep your {definition.title.toLowerCase()} up to date.</p></div>
+        <Button size="sm" className="rounded-lg" onClick={() => setEditing("new")}><Plus className="mr-1 size-4" />Add</Button>
       </CardHeader>
-      <CardContent className="space-y-3">
-        {sectionEntries.length === 0 ? <p className="rounded-lg bg-muted/40 px-4 py-8 text-center text-sm text-muted-foreground">No {definition.title.toLowerCase()} on file yet.</p> : sectionEntries.map((entry) => (
-          <div key={entry._id} className="flex items-start justify-between gap-4 rounded-lg bg-muted/35 p-4">
-            <div className="min-w-0">
-              <p className="font-medium">{entry.title || definition.title}</p>
-              <div className="mt-2 grid gap-x-6 gap-y-1 sm:grid-cols-2">
-                {definition.fields.slice(1).map((label) => <p key={label} className="truncate text-sm text-muted-foreground">{label}: {entry.data[fieldKey(label)] || "Not provided"}</p>)}
-              </div>
-              {entry.data.fileName && <p className="mt-2 text-xs text-muted-foreground">File: {entry.data.fileName}</p>}
-              {entry.fileUrl && <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm font-medium text-primary underline underline-offset-4">View attached file</a>}
-            </div>
-            <div className="flex shrink-0 gap-1">
-              <Button variant="ghost" size="icon" aria-label={`Edit ${definition.title}`} onClick={() => setEditing(entry)}><Pencil className="size-4" /></Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild><Button variant="ghost" size="icon" aria-label={`Delete ${definition.title}`}><Trash2 className="size-4 text-destructive" /></Button></AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader><AlertDialogTitle>Remove this record?</AlertDialogTitle><AlertDialogDescription>This removes the selected entry from your staff profile.</AlertDialogDescription></AlertDialogHeader>
-                  <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => void remove(entry._id)}>Remove</AlertDialogAction></AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
+      <CardContent className="px-5 pb-5">
+        {sectionEntries.length === 0 ? <div className="rounded-xl bg-muted/35 px-4 py-8 text-center"><p className="text-sm font-medium">Nothing added yet</p><p className="mt-1 text-sm text-muted-foreground">Add {definition.title.toLowerCase()} to complete your staff profile.</p></div> : (
+          <div className="divide-y divide-border/50">
+            {sectionEntries.map((entry) => (
+              <article key={entry._id} className="group flex items-start justify-between gap-3 rounded-xl px-2 py-4 transition-colors hover:bg-muted/30 sm:px-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">{entry.title || definition.title}</p>
+                  <dl className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                    {definition.fields.slice(1).map((label) => <div key={label} className="min-w-0"><dt className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{label}</dt><dd className="mt-0.5 break-words text-sm">{entry.data[fieldKey(label)] || <span className="text-muted-foreground">Not provided</span>}</dd></div>)}
+                  </dl>
+                  {entry.data.fileName && <p className="mt-3 text-xs text-muted-foreground">File: {entry.data.fileName}</p>}
+                  {entry.fileUrl && <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-sm font-medium text-primary underline underline-offset-4">View attached file</a>}
+                </div>
+                <div className="flex shrink-0 gap-0.5 opacity-100 transition-opacity sm:opacity-60 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+                  <Button variant="ghost" size="icon" aria-label={`Edit ${definition.title}`} onClick={() => setEditing(entry)}><Pencil className="size-4" /></Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild><Button variant="ghost" size="icon" aria-label={`Delete ${definition.title}`}><Trash2 className="size-4 text-destructive" /></Button></AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader><AlertDialogTitle>Remove this record?</AlertDialogTitle><AlertDialogDescription>This removes the selected entry from your staff profile.</AlertDialogDescription></AlertDialogHeader>
+                      <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => void remove(entry._id)}>Remove</AlertDialogAction></AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </article>
+            ))}
           </div>
-        ))}
+        )}
       </CardContent>
       <EntryEditor section={section} record={editing} onClose={() => setEditing(null)} onSave={save} />
     </Card>

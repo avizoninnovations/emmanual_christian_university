@@ -52,7 +52,7 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
     >
       <StaffSidebar />
       <main className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-muted/30">
-        <header className="z-10 flex h-12 shrink-0 items-center gap-3 border-b border-border/70 bg-background/95 px-3 md:px-5">
+        <header className="z-10 flex h-12 shrink-0 items-center gap-3 bg-background/95 px-3 md:px-5">
           <SidebarTrigger className="size-8 rounded-md text-muted-foreground hover:bg-muted" />
           <div className="min-w-0 flex-1 text-xs text-muted-foreground">
             <span>Staff</span><span className="mx-2 text-border">/</span>
@@ -68,7 +68,7 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
             <Button asChild variant="ghost" size="icon" className="size-8 text-muted-foreground" aria-label="Teaching timetable">
               <Link href="/staff/timetable"><CalendarDays className="size-4" /></Link>
             </Button>
-            <div className="ml-1 border-l border-border/70 pl-2">
+            <div className="ml-1 pl-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="size-8 rounded-full bg-primary/10 text-primary" aria-label="Open staff profile menu">

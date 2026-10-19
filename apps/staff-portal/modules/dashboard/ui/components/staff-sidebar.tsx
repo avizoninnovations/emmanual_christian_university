@@ -26,6 +26,9 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { api } from "@workspace/backend/_generated/api";
+import { useQuery } from "convex/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 import { Button } from "@workspace/ui/components/button";
 import { ModeToggle } from "@workspace/ui/components/mode-toggle";
 import {
@@ -75,6 +78,7 @@ export const StaffSidebar = () => {
   const { open, setOpen, isMobile } = useSidebar();
   const hoverExpanded = useRef(false);
   const { user, roles, isMultiRole, clearActiveRole } = useCurrentUser();
+  const staffProfile = useQuery(api.staffPersonalRecords.getMyProfile);
   const query = search.trim().toLowerCase();
   const filteredTeaching = teachingLinks.filter((link) => link.title.toLowerCase().includes(query));
   const filteredLeadership = leadershipLinks.filter((link) => link.title.toLowerCase().includes(query));
@@ -150,7 +154,7 @@ export const StaffSidebar = () => {
 
         </SidebarHeader>
 
-        <SidebarContent className="relative z-10 gap-0 px-2 py-1">
+        <SidebarContent className="relative z-10 gap-0 overflow-x-hidden overflow-y-auto px-2 py-1">
           <StaffSidebarIconRail pathname={pathname} hasLeadership={Boolean(hasLeadership)} />
           <div className="group-data-[collapsible=icon]:hidden">
           <SidebarGroup className="px-0 py-3">
@@ -188,9 +192,10 @@ export const StaffSidebar = () => {
                 aria-expanded={accountOpen}
                 className="h-11 gap-2 rounded-lg px-1.5 hover:bg-sidebar-accent/70 group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!"
               >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <UserRound className="size-4" />
-                </span>
+                <Avatar className="size-8 shrink-0 rounded-full">
+                  <AvatarImage src={staffProfile?.photoUrl ?? user?.image ?? undefined} alt="Staff profile" />
+                  <AvatarFallback className="rounded-full bg-primary/10 text-primary"><UserRound className="size-4" /></AvatarFallback>
+                </Avatar>
                 <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
                   <span className="block truncate text-sm font-medium">{user?.name ?? <Skeleton className="h-4 w-24" />}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{user?.staffNumber ?? "Staff account"}</span>

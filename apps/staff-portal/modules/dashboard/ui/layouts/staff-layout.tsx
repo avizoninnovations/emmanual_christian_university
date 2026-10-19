@@ -7,11 +7,12 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
   return (
     <SidebarProvider
       defaultOpen={defaultOpen}
+      className="h-dvh min-h-0 overflow-hidden"
       style={{ "--sidebar-width": "16rem", "--sidebar-width-icon": "3.5rem" } as React.CSSProperties}
     >
       <StaffSidebar />
       <main className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-muted/35">
-        <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+        <div className="min-h-0 min-w-0 w-full flex-1 overflow-x-hidden overflow-y-auto">{children}</div>
       </main>
     </SidebarProvider>
   );

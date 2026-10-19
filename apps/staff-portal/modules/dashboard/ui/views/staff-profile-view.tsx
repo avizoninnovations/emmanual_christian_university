@@ -50,17 +50,17 @@ export default function StaffProfileView() {
   }
 
   return (
-    <main className="min-h-full bg-transparent p-4 md:p-6">
+    <main className="min-h-full min-w-0 w-full bg-transparent p-4 md:p-6">
       <header className="mb-5">
         <p className="text-xs font-medium text-muted-foreground">Staff <span className="px-1">/</span> Personal Records</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">My Profile</h1>
         <p className="mt-1 text-sm text-muted-foreground">Review and maintain your staff information.</p>
       </header>
-      <div className="grid items-start gap-5 xl:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="grid min-w-0 w-full items-start gap-5 xl:grid-cols-[260px_minmax(0,1fr)]">
         <StaffIdentity user={user} roles={roles} photoUrl={result.photoUrl} />
         <Tabs defaultValue="bio" className="min-w-0">
-        <div className="overflow-x-auto border-b border-border/60">
-          <TabsList aria-label="Staff profile sections" className="h-auto min-w-max w-full justify-start gap-3 rounded-none bg-transparent p-0 shadow-none">
+        <div className="min-w-0 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-border/60">
+          <TabsList aria-label="Staff profile sections" className="h-auto w-max min-w-full justify-start gap-3 rounded-none bg-transparent p-0 shadow-none">
             {tabs.map(([value, label, Icon]) => <TabsTrigger key={value} value={value} className="h-11 flex-none cursor-pointer gap-2 rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-2 text-xs font-medium capitalize text-muted-foreground shadow-none transition-colors hover:bg-transparent hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary data-[state=active]:shadow-none md:px-3 md:text-sm"><Icon className="size-4" />{label}</TabsTrigger>)}
           </TabsList>
         </div>

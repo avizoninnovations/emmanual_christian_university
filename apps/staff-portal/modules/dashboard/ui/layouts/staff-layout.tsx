@@ -60,13 +60,13 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
           </div>
           <nav aria-label="Academic shortcuts" className="flex items-center gap-1">
             <Button asChild variant="ghost" size="icon" className="size-8 text-muted-foreground" aria-label="Staff dashboard">
-              <Link href="/staff"><LayoutGrid className="size-4" /></Link>
+              <Link href="/"><LayoutGrid className="size-4" /></Link>
             </Button>
             <Button asChild variant="ghost" size="icon" className="size-8 text-muted-foreground" aria-label="Teaching courses">
-              <Link href="/staff/courses"><BookOpen className="size-4" /></Link>
+              <Link href="/courses"><BookOpen className="size-4" /></Link>
             </Button>
             <Button asChild variant="ghost" size="icon" className="size-8 text-muted-foreground" aria-label="Teaching timetable">
-              <Link href="/staff/timetable"><CalendarDays className="size-4" /></Link>
+              <Link href="/timetable"><CalendarDays className="size-4" /></Link>
             </Button>
             <div className="ml-1 pl-2">
               <DropdownMenu>

@@ -374,7 +374,7 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2">
-            <Link href="/staff/courses">
+            <Link href="/courses">
               <ArrowLeft className="size-4" /> Back to Teaching Courses
             </Link>
           </Button>

@@ -59,7 +59,7 @@ export const RoleSelector = () => {
                 if (role.key === "admin") {
                   router.push("/admin");
                 } else {
-                  router.push("/staff");
+                  router.push("/");
                 }
               }}
               className={cn(

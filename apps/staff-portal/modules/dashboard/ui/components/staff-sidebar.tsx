@@ -21,7 +21,7 @@ import {
   UserCheck,
   UserRound,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
@@ -29,13 +29,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@workspace/ui/components/collapsible";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -55,21 +48,22 @@ import {
 import { StaffSidebarIconRail } from "@/modules/dashboard/ui/components/staff-sidebar-icon-rail";
 
 const teachingLinks = [
-  { title: "Teaching Courses", url: "/staff/courses", icon: BookOpen },
-  { title: "Class Attendance", url: "/staff/attendance", icon: ClipboardCheck },
-  { title: "Teaching Timetable", url: "/staff/timetable", icon: CalendarDays },
-  { title: "Teaching Cover", url: "/staff/cover-requests", icon: UserCheck },
+  { title: "Teaching Courses", url: "/courses", icon: BookOpen },
+  { title: "Class Attendance", url: "/attendance", icon: ClipboardCheck },
+  { title: "Teaching Timetable", url: "/timetable", icon: CalendarDays },
+  { title: "Teaching Cover", url: "/cover-requests", icon: UserCheck },
 ];
 
 const leadershipLinks = [
-  { title: "Course Allocations", url: "/staff/hod/allocations", icon: Layers },
-  { title: "Marks Review Queue", url: "/staff/hod/review-queue", icon: FileSpreadsheet },
-  { title: "Senate Broadsheet", url: "/staff/hod/broadsheet", icon: Award },
-  { title: "Supplementary Exams", url: "/staff/hod/supplementaries", icon: FileText },
+  { title: "Course Allocations", url: "/hod/allocations", icon: Layers },
+  { title: "Marks Review Queue", url: "/hod/review-queue", icon: FileSpreadsheet },
+  { title: "Senate Broadsheet", url: "/hod/broadsheet", icon: Award },
+  { title: "Supplementary Exams", url: "/hod/supplementaries", icon: FileText },
 ];
 
 export const StaffSidebar = () => {
   const [search, setSearch] = useState("");
+  const [accountOpen, setAccountOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { open, setOpen, isMobile } = useSidebar();
@@ -79,6 +73,11 @@ export const StaffSidebar = () => {
   const filteredTeaching = teachingLinks.filter((link) => link.title.toLowerCase().includes(query));
   const filteredLeadership = leadershipLinks.filter((link) => link.title.toLowerCase().includes(query));
   const hasLeadership = roles?.some((role) => ["hod", "dean", "admin"].includes(role.toLowerCase()));
+  const profileActive = pathname === "/profile";
+
+  useEffect(() => {
+    if (profileActive) setAccountOpen(true);
+  }, [profileActive]);
 
   const signOut = async () => {
     clearActiveRole();
@@ -115,7 +114,7 @@ export const StaffSidebar = () => {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild size="lg" className="h-11 gap-2 px-1 hover:bg-transparent">
-                <Link href="/staff" aria-label="ECU staff dashboard">
+                <Link href="/" aria-label="ECU staff dashboard">
                   <Image src="/logo.webp" alt="ECU logo" width={36} height={36} className="size-9 shrink-0 object-contain" />
                   <span className="truncate text-base font-medium tracking-tight text-sidebar-foreground group-data-[collapsible=icon]:hidden">ECU STAFF</span>
                 </Link>
@@ -136,32 +135,42 @@ export const StaffSidebar = () => {
 
           <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton size="lg" className="h-12 gap-2 rounded-lg px-1.5 hover:bg-sidebar-accent/70 data-[state=open]:bg-sidebar-accent/70">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <UserRound className="size-5" />
-                    </span>
-                    <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-                      <span className="block truncate text-sm font-normal">{user?.name ?? "Loading…"}</span>
-                      <span className="block truncate text-[11px] text-muted-foreground">{user?.staffNumber ?? "Staff account"}</span>
-                    </span>
-                    <ChevronDown className="size-4 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="bottom" align="start" className="w-56">
-                  <div className="px-2 py-2">
-                    <p className="truncate text-sm font-semibold">{user?.name ?? "ECU Staff"}</p>
-                    <p className="truncate text-xs text-muted-foreground">{user?.email ?? ""}</p>
-                  </div>
-                  {isMultiRole && <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={switchRole} className="gap-2"><ArrowLeftRight className="size-4" />Switch portal</DropdownMenuItem>
-                  </>}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="gap-2 text-destructive focus:text-destructive"><LogOut className="size-4" />Sign out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <SidebarMenuButton
+                size="lg"
+                onClick={() => setAccountOpen((value) => !value)}
+                aria-expanded={accountOpen}
+                className="h-12 gap-2 rounded-lg px-1.5 hover:bg-sidebar-accent/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!"
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary group-data-[collapsible=icon]:size-8">
+                  <UserRound className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+                  <span className="block truncate text-sm font-normal">{user?.name ?? "Loading…"}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">{user?.staffNumber ?? "Staff account"}</span>
+                </span>
+                <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-[400ms] group-data-[collapsible=icon]:hidden ${accountOpen ? "rotate-180" : ""}`} />
+              </SidebarMenuButton>
+              <div aria-hidden={!accountOpen} inert={!accountOpen} className={`grid transition-[grid-template-rows] duration-[400ms] ease-in-out ${accountOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                <div className="overflow-hidden">
+                  <SidebarMenuSub className="mx-3.5 gap-1 border-l-0 px-1.5 py-1">
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={profileActive} className="h-10 gap-3 rounded-lg px-2.5 data-[active=true]:bg-muted data-[active=true]:font-medium data-[active=true]:text-foreground hover:bg-muted/70">
+                        <Link href="/profile"><UserRound className="size-4" /><span>Profile</span></Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    {isMultiRole && <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild className="h-10 gap-3 rounded-lg px-2.5 hover:bg-muted/70">
+                        <button type="button" onClick={switchRole}><ArrowLeftRight className="size-4" /><span>Switch portal</span></button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>}
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild className="h-10 gap-3 rounded-lg px-2.5 text-destructive hover:bg-destructive/5 hover:text-destructive">
+                        <button type="button" onClick={signOut}><LogOut className="size-4" /><span>Sign out</span></button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </div>
+              </div>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
@@ -173,8 +182,8 @@ export const StaffSidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={pathname === "/staff"} tooltip="Staff Dashboard" className="h-11 rounded-md px-3 text-muted-foreground shadow-sm hover:bg-sidebar-accent/80 hover:text-sidebar-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground">
-                    <Link href="/staff"><LayoutDashboard className="size-5" /><span className="text-xs font-semibold uppercase">Staff Dashboard</span></Link>
+                  <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Staff Dashboard" className="h-11 rounded-md px-3 text-muted-foreground shadow-sm hover:bg-sidebar-accent/80 hover:text-sidebar-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground">
+                    <Link href="/"><LayoutDashboard className="size-5" /><span className="text-xs font-semibold uppercase">Staff Dashboard</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

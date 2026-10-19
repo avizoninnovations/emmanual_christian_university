@@ -84,7 +84,7 @@ export default function StaffDashboardView() {
                 </div>
               </div>
               <Button asChild variant="secondary" className="shrink-0 font-semibold">
-                <Link href="/staff/courses">
+                <Link href="/courses">
                   View Courses <ArrowRight className="ml-2 size-4" />
                 </Link>
               </Button>
@@ -113,7 +113,7 @@ export default function StaffDashboardView() {
               ) : (
                 <div className="divide-y divide-border/70">
                   {pendingCourses.slice(0, 4).map((course) => (
-                    <Link key={course.allocationId} href={`/staff/courses/${course.courseId}`} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50">
+                    <Link key={course.allocationId} href={`/courses/${course.courseId}`} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50">
                       <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <BookOpen className="size-4" />
                       </span>
@@ -139,14 +139,14 @@ export default function StaffDashboardView() {
                 </div>
               </div>
               <Button asChild variant="outline" size="sm" className="h-8">
-                <Link href="/staff/courses">All courses <ArrowRight className="ml-1.5 size-3.5" /></Link>
+                <Link href="/courses">All courses <ArrowRight className="ml-1.5 size-3.5" /></Link>
               </Button>
             </CardHeader>
             <CardContent className="grid gap-2 px-4 pb-4 sm:grid-cols-2">
               {courseList.length === 0 ? (
                 <p className="col-span-full rounded-md bg-muted/50 p-4 text-sm text-muted-foreground">No teaching courses are allocated for the current semester.</p>
               ) : courseList.slice(0, 4).map((course, index) => (
-                <Link key={course.allocationId} href={`/staff/courses/${course.courseId}`} className="flex min-h-[92px] gap-3 rounded-md bg-muted/40 p-3 transition-colors hover:bg-muted/70">
+                <Link key={course.allocationId} href={`/courses/${course.courseId}`} className="flex min-h-[92px] gap-3 rounded-md bg-muted/40 p-3 transition-colors hover:bg-muted/70">
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-sm font-semibold text-primary">{index + 1}</span>
                   <span className="min-w-0">
                     <span className="block line-clamp-2 text-sm font-semibold leading-5">{course.title}</span>
@@ -221,7 +221,7 @@ export default function StaffDashboardView() {
               {pendingCourses.length === 0 ? (
                 <p className="border-t border-border/70 py-3 text-xs text-muted-foreground">No outstanding academic actions.</p>
               ) : pendingCourses.slice(0, 3).map((course) => (
-                <Link key={course.allocationId} href={`/staff/courses/${course.courseId}`} className="flex items-start gap-2.5 border-t border-border/70 py-3 text-xs transition-colors hover:text-primary">
+                <Link key={course.allocationId} href={`/courses/${course.courseId}`} className="flex items-start gap-2.5 border-t border-border/70 py-3 text-xs transition-colors hover:text-primary">
                   <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-amber-700"><UserRound className="size-3.5" /></span>
                   <span className="min-w-0 flex-1"><span className="block font-medium">{course.code} gradebook {course.gradebookStatus}</span><span className="mt-0.5 block text-muted-foreground">{course.title}</span></span>
                 </Link>

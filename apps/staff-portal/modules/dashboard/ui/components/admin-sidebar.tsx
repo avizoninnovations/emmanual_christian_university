@@ -124,17 +124,17 @@ const navGroups: NavGroup[] = [
       },
       {
         title: "Senate Broadsheet",
-        url: "/staff/hod/broadsheet",
+        url: "/hod/broadsheet",
         icon: Award,
       },
       {
         title: "Supplementary Exams",
-        url: "/staff/hod/supplementaries",
+        url: "/hod/supplementaries",
         icon: FileSpreadsheet,
       },
       {
         title: "Lecture Timetable",
-        url: "/staff/timetable",
+        url: "/timetable",
         icon: Calendar,
       },
       // {

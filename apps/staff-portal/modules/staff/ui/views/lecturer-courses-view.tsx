@@ -252,7 +252,7 @@ export function LecturerCoursesView() {
                   asChild
                   className="h-8 text-xs gap-1 flex-1"
                 >
-                  <Link href={`/staff/attendance?courseId=${course.courseId}`}>
+                  <Link href={`/attendance?courseId=${course.courseId}`}>
                     <CalendarCheck className="size-3.5 text-muted-foreground" />
                     Roll Call
                   </Link>
@@ -263,7 +263,7 @@ export function LecturerCoursesView() {
                   asChild
                   className="h-8 text-xs gap-1 flex-1 bg-primary text-primary-foreground"
                 >
-                  <Link href={`/staff/courses/${course.courseId}`}>
+                  <Link href={`/courses/${course.courseId}`}>
                     <FileSpreadsheet className="size-3.5" />
                     Gradebook
                     <ChevronRight className="size-3 ml-auto" />

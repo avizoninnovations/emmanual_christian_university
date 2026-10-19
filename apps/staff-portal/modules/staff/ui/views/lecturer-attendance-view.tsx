@@ -103,7 +103,7 @@ export function LecturerAttendanceView() {
 
           {selectedCourseId && (
             <Button variant="outline" size="sm" asChild className="gap-1.5 h-9 text-xs">
-              <Link href={`/staff/courses/${selectedCourseId}`}>
+              <Link href={`/courses/${selectedCourseId}`}>
                 <ExternalLink className="size-3.5" /> Course Hub
               </Link>
             </Button>

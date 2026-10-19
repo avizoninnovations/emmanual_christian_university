@@ -17,7 +17,7 @@ export default function StaffDashboardPage() {
 
   if (isLoading || activeRole === "admin" || (!activeRole && !needsRoleSelection)) {
     return (
-      <div className="min-h-full bg-muted/35 p-4 md:p-6" role="status" aria-label="Loading workspace">
+      <div className="min-h-full bg-transparent p-4 md:p-6" role="status" aria-label="Loading workspace">
         <div className="mx-auto grid max-w-[1600px] gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(310px,0.92fr)]">
           <div className="space-y-4"><Skeleton className="h-40 rounded-lg" /><Skeleton className="h-56 rounded-lg" /><Skeleton className="h-64 rounded-lg" /></div>
           <div className="space-y-4"><Skeleton className="h-40 rounded-lg" /><Skeleton className="h-48 rounded-lg" /><Skeleton className="h-36 rounded-lg" /></div>

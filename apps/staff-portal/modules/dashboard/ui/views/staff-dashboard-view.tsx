@@ -55,7 +55,7 @@ export default function StaffDashboardView() {
 
   if (isLoading) {
     return (
-      <div className="min-h-full bg-muted/35 p-4 md:p-5 xl:p-6" role="status" aria-label="Loading academic workspace">
+      <div className="min-h-full bg-transparent p-4 md:p-5 xl:p-6" role="status" aria-label="Loading academic workspace">
         <div className="mx-auto grid w-full max-w-[1600px] gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(310px,0.92fr)]">
           <div className="space-y-4"><Skeleton className="h-44 rounded-lg" /><Skeleton className="h-56 rounded-lg" /><Skeleton className="h-64 rounded-lg" /></div>
           <div className="space-y-4"><Skeleton className="h-44 rounded-lg" /><Skeleton className="h-56 rounded-lg" /><Skeleton className="h-40 rounded-lg" /></div>
@@ -66,7 +66,7 @@ export default function StaffDashboardView() {
   }
 
   return (
-    <div className="min-h-full bg-muted/35 p-4 md:p-5 xl:p-6">
+    <div className="min-h-full bg-transparent p-4 md:p-5 xl:p-6">
       <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(310px,0.92fr)]">
         <div className="min-w-0 space-y-4">
           <section className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/90 via-primary/85 to-primary/75 px-5 py-5 text-primary-foreground shadow-sm md:px-6 md:py-6">

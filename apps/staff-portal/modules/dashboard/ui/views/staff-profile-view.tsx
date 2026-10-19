@@ -11,7 +11,7 @@ export default function StaffProfileView() {
 
   if (isLoading) {
     return (
-      <div className="min-h-full bg-muted/35 p-4 md:p-6" role="status" aria-label="Loading profile">
+      <div className="min-h-full bg-transparent p-4 md:p-6" role="status" aria-label="Loading profile">
         <div className="mx-auto max-w-5xl space-y-5">
           <div className="space-y-2"><Skeleton className="h-4 w-28" /><Skeleton className="h-8 w-48" /><Skeleton className="h-4 w-72" /></div>
           <Card className="border-0 shadow-sm">
@@ -31,7 +31,7 @@ export default function StaffProfileView() {
   }
 
   return (
-    <div className="min-h-full bg-muted/35 p-4 md:p-6">
+    <div className="min-h-full bg-transparent p-4 md:p-6">
       <div className="mx-auto max-w-5xl space-y-5">
         <header>
           <p className="text-xs text-muted-foreground">Staff / Profile</p>

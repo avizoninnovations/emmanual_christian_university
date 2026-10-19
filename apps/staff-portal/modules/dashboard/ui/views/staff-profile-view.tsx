@@ -61,7 +61,7 @@ export default function StaffProfileView() {
         <Tabs defaultValue="bio" className="min-w-0">
         <div className="overflow-x-auto rounded-2xl bg-muted/50 p-1.5">
           <TabsList aria-label="Staff profile sections" className="h-auto min-w-max w-full justify-start gap-1 bg-transparent p-0 shadow-none">
-            {tabs.map(([value, label, Icon]) => <TabsTrigger key={value} value={value} className="h-10 flex-none cursor-pointer gap-2 rounded-xl px-3 text-xs font-medium capitalize text-muted-foreground transition-colors hover:bg-background/70 hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm md:px-3.5 md:text-sm"><Icon className="size-4" />{label}</TabsTrigger>)}
+            {tabs.map(([value, label, Icon]) => <TabsTrigger key={value} value={value} className="h-10 flex-none cursor-pointer gap-2 rounded-xl px-3 text-xs font-medium capitalize text-muted-foreground transition-colors hover:bg-background/50 hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:ring-1 data-[state=active]:ring-primary/35 data-[state=active]:hover:bg-transparent md:px-3.5 md:text-sm"><Icon className="size-4" />{label}</TabsTrigger>)}
           </TabsList>
         </div>
         <TabsContent value="bio" className="mt-4 space-y-4">
@@ -93,7 +93,7 @@ export default function StaffProfileView() {
 }
 
 function AffiliateTrigger({ value, label }: { value: EntrySection; label: string }) {
-  return <TabsTrigger value={value} className="h-9 flex-none cursor-pointer rounded-lg px-3 capitalize hover:bg-background/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm">{label}</TabsTrigger>;
+  return <TabsTrigger value={value} className="h-9 flex-none cursor-pointer rounded-lg px-3 capitalize hover:bg-background/50 data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:ring-1 data-[state=active]:ring-primary/35 data-[state=active]:hover:bg-transparent">{label}</TabsTrigger>;
 }
 
 function StaffIdentity({ user, roles, photoUrl }: { user: NonNullable<ReturnType<typeof useCurrentUser>["user"]>; roles: string[]; photoUrl: string | null }) {

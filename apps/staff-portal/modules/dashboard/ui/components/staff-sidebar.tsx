@@ -21,10 +21,9 @@ import {
   UserCheck,
   UserRound,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { Button } from "@workspace/ui/components/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -51,7 +50,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
+  useSidebar,
 } from "@workspace/ui/components/sidebar";
+import { StaffSidebarIconRail } from "@/modules/dashboard/ui/components/staff-sidebar-icon-rail";
 
 const teachingLinks = [
   { title: "Teaching Courses", url: "/staff/courses", icon: BookOpen },
@@ -71,12 +72,13 @@ export const StaffSidebar = () => {
   const [search, setSearch] = useState("");
   const pathname = usePathname();
   const router = useRouter();
+  const { open, setOpen, isMobile } = useSidebar();
+  const hoverExpanded = useRef(false);
   const { user, roles, isMultiRole, clearActiveRole } = useCurrentUser();
   const query = search.trim().toLowerCase();
   const filteredTeaching = teachingLinks.filter((link) => link.title.toLowerCase().includes(query));
   const filteredLeadership = leadershipLinks.filter((link) => link.title.toLowerCase().includes(query));
   const hasLeadership = roles?.some((role) => ["hod", "dean", "admin"].includes(role.toLowerCase()));
-  const initials = (user?.name ?? "ECU").split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase();
 
   const signOut = async () => {
     clearActiveRole();
@@ -89,8 +91,22 @@ export const StaffSidebar = () => {
     router.push("/");
   };
 
+  const handleMouseEnter = () => {
+    if (!open && !isMobile) {
+      hoverExpanded.current = true;
+      setOpen(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverExpanded.current) {
+      hoverExpanded.current = false;
+      setOpen(false);
+    }
+  };
+
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border/70">
+    <Sidebar variant="floating" collapsible="icon" className="group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-sidebar">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[url('/001.webp')] bg-cover bg-center opacity-[0.10] dark:opacity-[0.06]" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/70 dark:bg-background/75" />
@@ -150,7 +166,9 @@ export const StaffSidebar = () => {
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent className="relative z-10 px-2">
+        <SidebarContent className="relative z-10 gap-0 px-2 py-1">
+          <StaffSidebarIconRail pathname={pathname} hasLeadership={Boolean(hasLeadership)} />
+          <div className="group-data-[collapsible=icon]:hidden">
           <SidebarGroup className="px-0 py-3">
             <SidebarGroupContent>
               <SidebarMenu>
@@ -175,6 +193,7 @@ export const StaffSidebar = () => {
               )}
             </SidebarGroupContent>
           </SidebarGroup>
+          </div>
         </SidebarContent>
       </div>
       <SidebarRail />

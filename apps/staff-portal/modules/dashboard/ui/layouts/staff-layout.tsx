@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 
-export const StaffLayout = ({ children }: { children: React.ReactNode }) => {
+export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNode; defaultOpen: boolean }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useCurrentUser();
@@ -47,7 +47,7 @@ export const StaffLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <SidebarProvider
-      defaultOpen={true}
+      defaultOpen={defaultOpen}
       style={{ "--sidebar-width": "16rem", "--sidebar-width-icon": "3.5rem" } as React.CSSProperties}
     >
       <StaffSidebar />

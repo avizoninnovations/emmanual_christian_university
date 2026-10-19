@@ -104,7 +104,8 @@ export const StaffSidebar = () => {
     router.push("/");
   };
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target instanceof Element && event.target.closest("[data-sidebar-collapse-toggle]")) return;
     if (!open && !isMobile) {
       hoverExpanded.current = true;
       setOpen(true);
@@ -119,16 +120,15 @@ export const StaffSidebar = () => {
   };
 
   return (
-    <Sidebar variant="sidebar" collapsible="icon" className="group border-0 shadow-none" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Sidebar variant="sidebar" collapsible="icon" className="group relative border-0 shadow-none" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-sidebar shadow-[4px_0_14px_rgba(0,0,0,0.28)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[url('/001.webp')] bg-cover bg-center opacity-[0.16] dark:opacity-[0.12]" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/55 dark:bg-background/68" />
 
         <SidebarHeader className="relative z-10 gap-3 border-b border-sidebar-border/70 px-3 py-3">
-          <SidebarCollapseButton />
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild size="lg" className="h-11 gap-2 px-1 pr-10 hover:bg-transparent">
+              <SidebarMenuButton asChild size="lg" className="h-11 gap-2 px-1 hover:bg-transparent">
                 <Link href="/" aria-label="ECU staff dashboard">
                   <Image src="/logo.webp" alt="ECU logo" width={36} height={36} className="size-9 shrink-0 object-contain" />
                   <span className="truncate text-base font-medium tracking-tight text-sidebar-foreground group-data-[collapsible=icon]:hidden">ECU STAFF</span>
@@ -228,28 +228,16 @@ export const StaffSidebar = () => {
           </SidebarMenu>
         </SidebarFooter>
       </div>
-      <SidebarRail />
+      <SidebarRail
+        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+        data-sidebar-collapse-toggle="true"
+        className="!inset-y-auto !top-4 !-right-[18px] !z-30 !flex !size-9 !translate-x-0 !items-center !justify-center !rounded-full !border !border-sidebar-border !bg-background !shadow-md !after:hidden hover:!bg-muted"
+      >
+        {open ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />}
+      </SidebarRail>
     </Sidebar>
   );
 };
-
-function SidebarCollapseButton() {
-  const { open, openMobile, isMobile, toggleSidebar } = useSidebar();
-  const expanded = isMobile ? openMobile : open;
-
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      aria-label={isMobile ? (expanded ? "Close navigation" : "Open navigation") : (expanded ? "Collapse sidebar" : "Expand sidebar")}
-      onClick={toggleSidebar}
-      className="absolute right-2 top-3 z-20 size-8 rounded-full bg-background text-muted-foreground shadow-md hover:bg-muted"
-    >
-      {expanded ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />}
-    </Button>
-  );
-}
 
 function NavGroup({
   title,

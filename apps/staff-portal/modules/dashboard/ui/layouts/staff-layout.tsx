@@ -1,14 +1,18 @@
 "use client";
 
 import { StaffSidebar } from "@/modules/dashboard/ui/components/staff-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@workspace/ui/components/sidebar";
+import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar";
 import { Button } from "@workspace/ui/components/button";
 import { ModeToggle } from "@workspace/ui/components/mode-toggle";
 import {
   BookOpen,
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  House,
   LayoutGrid,
   LogOut,
+  UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -52,12 +56,19 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
     >
       <StaffSidebar />
       <main className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-muted/30">
-        <header className="z-10 flex h-12 shrink-0 items-center gap-3 bg-background/95 px-3 md:px-5">
-          <SidebarTrigger className="size-8 rounded-md text-muted-foreground hover:bg-muted" />
-          <div className="min-w-0 flex-1 text-xs text-muted-foreground">
-            <span>Staff</span><span className="mx-2 text-border">/</span>
-            <span className="font-medium text-foreground">{pageTitle}</span>
-          </div>
+        <header className="z-10 flex h-[72px] shrink-0 items-center gap-4 bg-background px-4 md:px-6">
+          <SidebarCollapseButton />
+          <nav aria-label="Breadcrumb" className="flex min-w-0 flex-1 items-center gap-2 text-sm">
+            <Link href="/" className="inline-flex shrink-0 items-center gap-2 font-medium text-primary hover:text-primary/80">
+              <House className="size-4" />
+              <span>Home</span>
+            </Link>
+            <ChevronRight className="size-3.5 shrink-0 text-muted-foreground/55" />
+            <span className="inline-flex min-w-0 items-center gap-2 font-semibold text-foreground">
+              <UserRound className="size-4 shrink-0 text-muted-foreground" />
+              <span className="truncate">{pageTitle}</span>
+            </span>
+          </nav>
           <nav aria-label="Academic shortcuts" className="flex items-center gap-1">
             <Button asChild variant="ghost" size="icon" className="size-8 text-muted-foreground" aria-label="Staff dashboard">
               <Link href="/"><LayoutGrid className="size-4" /></Link>
@@ -99,3 +110,21 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
     </SidebarProvider>
   );
 };
+
+function SidebarCollapseButton() {
+  const { open, openMobile, isMobile, toggleSidebar } = useSidebar();
+  const expanded = isMobile ? openMobile : open;
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      aria-label={isMobile ? (expanded ? "Close navigation" : "Open navigation") : (expanded ? "Collapse sidebar" : "Expand sidebar")}
+      onClick={toggleSidebar}
+      className="size-10 shrink-0 rounded-full bg-card text-muted-foreground shadow-sm hover:bg-muted"
+    >
+      {expanded ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />}
+    </Button>
+  );
+}

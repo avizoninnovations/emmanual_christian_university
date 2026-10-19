@@ -63,7 +63,7 @@ const leadershipLinks = [
 
 export const StaffSidebar = () => {
   const [search, setSearch] = useState("");
-  const [accountOpen, setAccountOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<"account" | "academics" | "leadership" | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { open, setOpen, isMobile } = useSidebar();
@@ -76,8 +76,16 @@ export const StaffSidebar = () => {
   const profileActive = pathname === "/profile";
 
   useEffect(() => {
-    if (profileActive) setAccountOpen(true);
-  }, [profileActive]);
+    if (profileActive) {
+      setOpenSection("account");
+    } else if (teachingLinks.some((link) => pathname === link.url || pathname.startsWith(`${link.url}/`))) {
+      setOpenSection("academics");
+    } else if (leadershipLinks.some((link) => pathname === link.url || pathname.startsWith(`${link.url}/`))) {
+      setOpenSection("leadership");
+    }
+  }, [pathname, profileActive]);
+
+  const accountOpen = openSection === "account";
 
   const signOut = async () => {
     clearActiveRole();
@@ -137,7 +145,7 @@ export const StaffSidebar = () => {
             <SidebarMenuItem>
               <SidebarMenuButton
                 size="lg"
-                onClick={() => setAccountOpen((value) => !value)}
+                onClick={() => setOpenSection((current) => current === "account" ? null : "account")}
                 aria-expanded={accountOpen}
                 className="h-12 gap-2 rounded-lg px-1.5 hover:bg-sidebar-accent/70 group-data-[collapsible=icon]:h-10! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-0!"
               >
@@ -192,11 +200,11 @@ export const StaffSidebar = () => {
 
           <SidebarGroup className="border-t border-sidebar-border/60 px-0 py-2.5">
             <SidebarGroupContent>
-              {(filteredTeaching.length > 0 || !query) && <NavGroup title="Academics Office" icon={GraduationCap} active={teachingLinks.some((link) => pathname.startsWith(link.url))}>
+              {(filteredTeaching.length > 0 || !query) && <NavGroup title="Academics Office" icon={GraduationCap} open={openSection === "academics"} onOpenChange={(open) => setOpenSection(open ? "academics" : null)}>
                 {filteredTeaching.map((link) => <NavItem key={link.url} {...link} active={pathname.startsWith(link.url)} />)}
               </NavGroup>}
               {hasLeadership && (filteredLeadership.length > 0 || !query) && (
-                <NavGroup title="Academic Leadership" icon={CheckSquare} active={leadershipLinks.some((link) => pathname.startsWith(link.url))}>
+                <NavGroup title="Academic Leadership" icon={CheckSquare} open={openSection === "leadership"} onOpenChange={(open) => setOpenSection(open ? "leadership" : null)}>
                   {filteredLeadership.map((link) => <NavItem key={link.url} {...link} active={pathname.startsWith(link.url)} />)}
                 </NavGroup>
               )}
@@ -213,16 +221,18 @@ export const StaffSidebar = () => {
 function NavGroup({
   title,
   icon: Icon,
-  active,
+  open,
+  onOpenChange,
   children,
 }: {
   title: string;
   icon: typeof GraduationCap;
-  active: boolean;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
 }) {
   return (
-    <Collapsible defaultOpen={active} className="group/nav mb-1">
+    <Collapsible open={open} onOpenChange={onOpenChange} className="group/nav mb-1">
       <SidebarMenu>
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>

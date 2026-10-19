@@ -5,22 +5,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   ArrowLeftRight,
-  Award,
-  BookOpen,
-  CalendarDays,
-  CheckSquare,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ClipboardCheck,
-  FileSpreadsheet,
-  FileText,
-  GraduationCap,
   LayoutDashboard,
-  Layers,
   LogOut,
   Search,
-  UserCheck,
   UserRound,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -31,11 +21,6 @@ import { useQuery } from "convex/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 import { Button } from "@workspace/ui/components/button";
 import { ModeToggle } from "@workspace/ui/components/mode-toggle";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@workspace/ui/components/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -54,44 +39,26 @@ import {
   useSidebar,
 } from "@workspace/ui/components/sidebar";
 import { StaffSidebarIconRail } from "@/modules/dashboard/ui/components/staff-sidebar-icon-rail";
+import { findStaffSidebarSection, StaffSidebarNavigation } from "@/modules/dashboard/ui/components/staff-sidebar-navigation";
 import { Skeleton } from "@workspace/ui/components/skeleton";
-
-const teachingLinks = [
-  { title: "Teaching Courses", url: "/courses", icon: BookOpen },
-  { title: "Class Attendance", url: "/attendance", icon: ClipboardCheck },
-  { title: "Teaching Timetable", url: "/timetable", icon: CalendarDays },
-  { title: "Teaching Cover", url: "/cover-requests", icon: UserCheck },
-];
-
-const leadershipLinks = [
-  { title: "Course Allocations", url: "/hod/allocations", icon: Layers },
-  { title: "Marks Review Queue", url: "/hod/review-queue", icon: FileSpreadsheet },
-  { title: "Senate Broadsheet", url: "/hod/broadsheet", icon: Award },
-  { title: "Supplementary Exams", url: "/hod/supplementaries", icon: FileText },
-];
 
 export const StaffSidebar = () => {
   const [search, setSearch] = useState("");
-  const [openSection, setOpenSection] = useState<"account" | "academics" | "leadership" | null>(null);
+  const [openSection, setOpenSection] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { open, setOpen, isMobile } = useSidebar();
   const hoverExpanded = useRef(false);
   const { user, roles, isMultiRole, clearActiveRole } = useCurrentUser();
   const staffProfile = useQuery(api.staffPersonalRecords.getMyProfile);
-  const query = search.trim().toLowerCase();
-  const filteredTeaching = teachingLinks.filter((link) => link.title.toLowerCase().includes(query));
-  const filteredLeadership = leadershipLinks.filter((link) => link.title.toLowerCase().includes(query));
   const hasLeadership = roles?.some((role) => ["hod", "dean", "admin"].includes(role.toLowerCase()));
   const profileActive = pathname === "/profile";
 
   useEffect(() => {
     if (profileActive) {
       setOpenSection("account");
-    } else if (teachingLinks.some((link) => pathname === link.url || pathname.startsWith(`${link.url}/`))) {
-      setOpenSection("academics");
-    } else if (leadershipLinks.some((link) => pathname === link.url || pathname.startsWith(`${link.url}/`))) {
-      setOpenSection("leadership");
+    } else {
+      setOpenSection(findStaffSidebarSection(pathname) ?? null);
     }
   }, [pathname, profileActive]);
 
@@ -169,18 +136,13 @@ export const StaffSidebar = () => {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarGroup className="border-t border-sidebar-border/60 px-0 py-2.5">
-            <SidebarGroupContent>
-              {(filteredTeaching.length > 0 || !query) && <NavGroup title="Academics Office" icon={GraduationCap} open={openSection === "academics"} onOpenChange={(open) => setOpenSection(open ? "academics" : null)}>
-                {filteredTeaching.map((link) => <NavItem key={link.url} {...link} active={pathname.startsWith(link.url)} />)}
-              </NavGroup>}
-              {hasLeadership && (filteredLeadership.length > 0 || !query) && (
-                <NavGroup title="Academic Leadership" icon={CheckSquare} open={openSection === "leadership"} onOpenChange={(open) => setOpenSection(open ? "leadership" : null)}>
-                  {filteredLeadership.map((link) => <NavItem key={link.url} {...link} active={pathname.startsWith(link.url)} />)}
-                </NavGroup>
-              )}
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <StaffSidebarNavigation
+            pathname={pathname}
+            query={search}
+            openSection={openSection}
+            onOpenChange={(key, isOpen) => setOpenSection(isOpen ? key : null)}
+            roles={roles ?? []}
+          />
           </div>
         </SidebarContent>
         <SidebarFooter className="relative z-10 gap-1 border-t border-sidebar-border/70 px-2 py-2">
@@ -243,58 +205,3 @@ export const StaffSidebar = () => {
     </Sidebar>
   );
 };
-
-function NavGroup({
-  title,
-  icon: Icon,
-  open,
-  onOpenChange,
-  children,
-}: {
-  title: string;
-  icon: typeof GraduationCap;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <Collapsible open={open} onOpenChange={onOpenChange} className="group/nav mb-1">
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={title} className="h-10 gap-3 rounded-md px-3 text-[13px] font-normal text-muted-foreground hover:bg-sidebar-accent/80 hover:text-sidebar-foreground">
-              <Icon className="size-5 shrink-0" />
-              <span className="flex-1 truncate uppercase">{title}</span>
-              <ChevronDown className="size-3.5 shrink-0 transition-transform duration-300 group-data-[state=open]/nav:rotate-180 group-data-[collapsible=icon]:hidden" />
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <SidebarMenuSub className="mx-4 mb-1 mt-0.5 gap-0.5 border-sidebar-border/70 pl-2">
-              {children}
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </Collapsible>
-  );
-}
-
-function NavItem({
-  title,
-  url,
-  icon: Icon,
-  active,
-}: {
-  title: string;
-  url: string;
-  icon: typeof BookOpen;
-  active: boolean;
-}) {
-  return (
-    <SidebarMenuSubItem>
-      <SidebarMenuSubButton asChild isActive={active} className="h-9 gap-2.5 px-2 text-[13px] text-muted-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-primary hover:text-sidebar-foreground">
-        <Link href={url}><Icon className="size-4 shrink-0" /><span className="truncate">{title}</span></Link>
-      </SidebarMenuSubButton>
-    </SidebarMenuSubItem>
-  );
-}

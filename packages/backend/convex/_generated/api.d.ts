@@ -30,6 +30,7 @@ import type * as marks from "../marks.js";
 import type * as migration from "../migration.js";
 import type * as roles from "../roles.js";
 import type * as seed from "../seed.js";
+import type * as staffPersonalRecords from "../staffPersonalRecords.js";
 import type * as student_dashboard from "../student_dashboard.js";
 import type * as student_identity from "../student_identity.js";
 import type * as student_portal from "../student_portal.js";
@@ -69,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   migration: typeof migration;
   roles: typeof roles;
   seed: typeof seed;
+  staffPersonalRecords: typeof staffPersonalRecords;
   student_dashboard: typeof student_dashboard;
   student_identity: typeof student_identity;
   student_portal: typeof student_portal;

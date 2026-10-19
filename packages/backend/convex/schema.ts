@@ -27,12 +27,36 @@ export default defineSchema({
     departmentId: v.optional(v.string()),
     staffNumber: v.optional(v.string()), // Legacy/Phone
     staffId: v.string(),     // Official University ID
+    personalDetails: v.optional(v.record(v.string(), v.string())),
     status: v.union(v.literal("active"), v.literal("inactive")),
     ...timestamps,
   })
     .index("by_userId", ["userId"])
     .index("by_staffId", ["staffId"])
     .index("by_status", ["status"]),
+
+  /** Editable, repeatable records attached to a staff member's profile. */
+  staffProfileEntries: defineTable({
+    profileId: v.id("staffProfiles"),
+    section: v.union(
+      v.literal("contact"),
+      v.literal("bankAccount"),
+      v.literal("qualification"),
+      v.literal("experience"),
+      v.literal("publication"),
+      v.literal("nextOfKin"),
+      v.literal("spouse"),
+      v.literal("child"),
+      v.literal("parent"),
+      v.literal("document"),
+    ),
+    title: v.optional(v.string()),
+    data: v.record(v.string(), v.string()),
+    fileId: v.optional(v.id("_storage")),
+    ...timestamps,
+  })
+    .index("by_profile", ["profileId"])
+    .index("by_profile_section", ["profileId", "section"]),
 
   faculties: defineTable({
     name: v.string(),

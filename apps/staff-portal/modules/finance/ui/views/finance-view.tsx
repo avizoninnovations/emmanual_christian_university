@@ -45,6 +45,7 @@ import {
   TableCell,
   TableBody,
 } from "@workspace/ui/components/table";
+import { TableSkeletonRows } from "@/modules/dashboard/ui/components/table-skeleton-rows";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -589,11 +590,7 @@ export const FinanceView = () => {
                 </TableHeader>
                 <TableBody className="text-xs">
                   {!studentLedgers ? (
-                    <TableRow>
-                      <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
-                        Loading student ledgers...
-                      </TableCell>
-                    </TableRow>
+                    <TableSkeletonRows columns={9} />
                   ) : studentLedgers.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">

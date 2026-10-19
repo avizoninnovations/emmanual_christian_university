@@ -247,7 +247,7 @@ export function DepartmentsManager() {
                   <Select disabled={!faculties} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={!faculties ? "Loading..." : "Select a Faculty"} />
+                        <SelectValue placeholder="Select a Faculty" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -279,7 +279,7 @@ export function DepartmentsManager() {
                   <Select disabled={!staff} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={!staff ? "Loading Staff..." : "Select HOD"} />
+                        <SelectValue placeholder="Select HOD" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

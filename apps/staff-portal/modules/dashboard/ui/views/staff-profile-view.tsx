@@ -4,16 +4,34 @@ import { Mail, Phone, ShieldCheck, UserRound } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export default function StaffProfileView() {
   const { user, roles, isLoading } = useCurrentUser();
 
   if (isLoading) {
-    return <div className="p-6 text-sm text-muted-foreground">Loading your profile…</div>;
+    return (
+      <div className="min-h-full bg-muted/35 p-4 md:p-6" role="status" aria-label="Loading profile">
+        <div className="mx-auto max-w-5xl space-y-5">
+          <div className="space-y-2"><Skeleton className="h-4 w-28" /><Skeleton className="h-8 w-48" /><Skeleton className="h-4 w-72" /></div>
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="flex flex-row items-center gap-4">
+              <Skeleton className="size-14 rounded-full" />
+              <div className="flex-1 space-y-2"><Skeleton className="h-5 w-48" /><Skeleton className="h-4 w-56" /></div>
+              <Skeleton className="h-6 w-16 rounded-full" />
+            </CardHeader>
+            <CardContent className="grid gap-6 border-t border-border/60 pt-5 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 7 }, (_, index) => <div key={index} className="space-y-2"><Skeleton className="h-3 w-24" /><Skeleton className="h-4 w-36" /></div>)}
+            </CardContent>
+          </Card>
+        </div>
+        <span className="sr-only">Loading</span>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-full bg-muted/30 p-4 md:p-6">
+    <div className="min-h-full bg-muted/35 p-4 md:p-6">
       <div className="mx-auto max-w-5xl space-y-5">
         <header>
           <p className="text-xs text-muted-foreground">Staff / Profile</p>

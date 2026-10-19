@@ -244,7 +244,7 @@ export function FacultiesManager() {
                   <Select disabled={!staff} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={!staff ? "Loading Staff..." : "Select Dean"} />
+                        <SelectValue placeholder="Select Dean" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

@@ -14,10 +14,10 @@ import {
   Users,
   GraduationCap,
   TrendingUp,
-  Loader2,
   Filter,
 } from "lucide-react";
 import Image from "next/image";
+import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-skeleton";
 
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -128,12 +128,7 @@ export function FacultyBroadsheetView() {
   };
 
   if (!metadata) {
-    return (
-      <div className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-        <Loader2 className="size-8 animate-spin text-primary mb-3" />
-        <p className="text-sm text-muted-foreground">Loading academic programs and periods...</p>
-      </div>
-    );
+    return <StaffDataSkeleton label="academic programs and periods" />;
   }
 
   return (
@@ -316,10 +311,7 @@ export function FacultyBroadsheetView() {
 
       {/* ── Main Broadsheet Matrix Table ── */}
       {!broadsheet ? (
-        <div className="p-12 flex flex-col items-center justify-center min-h-[300px]">
-          <Loader2 className="size-8 animate-spin text-primary mb-3" />
-          <p className="text-sm text-muted-foreground">Compiling departmental broadsheet...</p>
-        </div>
+        <StaffDataSkeleton label="departmental broadsheet" />
       ) : (
         <Card className="shadow-sm border overflow-hidden">
           <CardHeader className="pb-3 print:hidden">

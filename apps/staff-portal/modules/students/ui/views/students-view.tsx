@@ -11,6 +11,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Separator } from "@workspace/ui/components/separator";
 import { Table, TableHead, TableHeader, TableRow, TableCell, TableBody } from "@workspace/ui/components/table";
+import { TableSkeletonRows } from "@/modules/dashboard/ui/components/table-skeleton-rows";
 
 /**
  * Students View
@@ -97,9 +98,7 @@ export const StudentsView = () => {
             </TableHeader>
             <TableBody>
               {students === undefined ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">Loading...</TableCell>
-                </TableRow>
+                <TableSkeletonRows columns={7} />
               ) : filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">No students found.</TableCell>

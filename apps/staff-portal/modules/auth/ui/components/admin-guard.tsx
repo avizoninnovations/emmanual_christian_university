@@ -4,6 +4,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { ShieldOff } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 interface AdminGuardProps {
   children: React.ReactNode;
@@ -21,11 +22,12 @@ export const AdminGuard = ({ children, allowedRoles }: AdminGuardProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center p-8">
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <div className="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span>Verifying access...</span>
-        </div>
+      <div className="flex-1 space-y-5 p-4 md:p-6" role="status" aria-label="Checking access">
+        <Skeleton className="h-8 w-56" />
+        <Skeleton className="h-4 w-80 max-w-full" />
+        <div className="grid gap-4 md:grid-cols-2"><Skeleton className="h-44 rounded-xl" /><Skeleton className="h-44 rounded-xl" /></div>
+        <Skeleton className="h-64 rounded-xl" />
+        <span className="sr-only">Loading</span>
       </div>
     );
   }

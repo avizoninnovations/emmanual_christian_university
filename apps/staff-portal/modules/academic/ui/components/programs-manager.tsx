@@ -228,7 +228,7 @@ export function ProgramsManager() {
                   <Select disabled={!departments} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={!departments ? "Loading..." : "Select a Department"} />
+                        <SelectValue placeholder="Select a Department" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="max-h-[200px]">

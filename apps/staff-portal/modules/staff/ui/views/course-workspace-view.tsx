@@ -28,6 +28,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
+import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-skeleton";
 
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
@@ -141,12 +142,7 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
   }, [gradebook]);
 
   if (!courseDetails || !gradebook) {
-    return (
-      <div className="p-12 flex flex-col items-center justify-center min-h-[400px]">
-        <Loader2 className="size-8 animate-spin text-primary mb-3" />
-        <p className="text-sm text-muted-foreground">Loading course workspace...</p>
-      </div>
-    );
+    return <StaffDataSkeleton label="course workspace" />;
   }
 
   const course = courseDetails;

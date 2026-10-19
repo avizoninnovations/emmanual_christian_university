@@ -57,6 +57,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { cn } from "@workspace/ui/lib/utils";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Badge } from "@workspace/ui/components/badge";
 import { authClient } from "@/lib/auth-client";
 import { ModeToggle } from "@workspace/ui/components/mode-toggle";
@@ -365,7 +366,7 @@ export const AdminSidebar = () => {
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden flex-1 min-w-0">
                     <span className="font-semibold text-sm truncate">
-                      {user?.name ?? "Loading..."}
+                      {user?.name ?? <Skeleton className="h-4 w-24" />}
                     </span>
                     <span className="text-[11px] text-muted-foreground truncate">
                       {user?.email ?? ""}

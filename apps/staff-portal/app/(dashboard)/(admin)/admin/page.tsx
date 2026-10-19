@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/componen
 import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
 import { Separator } from "@workspace/ui/components/separator";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
 
 function AdminDashboardContent() {
@@ -134,8 +135,8 @@ function AdminDashboardContent() {
           </CardHeader>
           <CardContent className="p-0">
             {staff === undefined ? (
-              <div className="flex items-center gap-2 text-muted-foreground p-4 text-sm">
-                <Activity className="size-4 animate-pulse" /> Loading...
+              <div className="space-y-3 p-4" role="status" aria-label="Loading recent staff">
+                {Array.from({ length: 3 }, (_, index) => <div key={index} className="flex items-center gap-3"><Skeleton className="size-8 rounded-full" /><div className="flex-1 space-y-2"><Skeleton className="h-4 w-36" /><Skeleton className="h-3 w-24" /></div><Skeleton className="h-7 w-16 rounded-md" /></div>)}
               </div>
             ) : recentStaff.length === 0 ? (
               <p className="text-sm text-muted-foreground p-4">No staff members yet.</p>

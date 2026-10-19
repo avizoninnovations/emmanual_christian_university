@@ -46,6 +46,7 @@ import {
   useSidebar,
 } from "@workspace/ui/components/sidebar";
 import { StaffSidebarIconRail } from "@/modules/dashboard/ui/components/staff-sidebar-icon-rail";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 const teachingLinks = [
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
@@ -114,7 +115,7 @@ export const StaffSidebar = () => {
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="group border-0 shadow-none" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-sidebar">
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-sidebar shadow-[4px_0_14px_rgba(0,0,0,0.28)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[url('/001.webp')] bg-cover bg-center opacity-[0.16] dark:opacity-[0.12]" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/55 dark:bg-background/68" />
 
@@ -153,7 +154,7 @@ export const StaffSidebar = () => {
                   <UserRound className="size-5" />
                 </span>
                 <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-                  <span className="block truncate text-sm font-normal">{user?.name ?? "Loading…"}</span>
+                  <span className="block truncate text-sm font-normal">{user?.name ?? <Skeleton className="h-4 w-24" />}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{user?.staffNumber ?? "Staff account"}</span>
                 </span>
                 <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform duration-[400ms] group-data-[collapsible=icon]:hidden ${accountOpen ? "rotate-180" : ""}`} />

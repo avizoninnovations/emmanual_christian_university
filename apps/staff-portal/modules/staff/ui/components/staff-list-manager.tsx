@@ -40,6 +40,7 @@ import {
 } from "@workspace/ui/components/select";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import { Separator } from "@workspace/ui/components/separator";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import { cn } from "@workspace/ui/lib/utils";
 
 // ─────────────────────────────────────────────────────────
@@ -456,7 +457,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-[--radix-dropdown-menu-trigger-width] min-w-[200px]">
                       {!systemRoles ? (
-                        <div className="p-2 text-sm text-muted-foreground"><Loader2 className="size-3 animate-spin"/> Loading...</div>
+                        <div className="space-y-2 p-2" role="status" aria-label="Loading staff"><Skeleton className="h-4 w-36" /><Skeleton className="h-4 w-24" /></div>
                       ) : (
                         systemRoles.map(role => (
                           <DropdownMenuCheckboxItem
@@ -553,7 +554,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-[--radix-dropdown-menu-trigger-width] min-w-[200px]">
                       {!systemRoles ? (
-                        <div className="p-2 text-sm text-muted-foreground"><Loader2 className="size-3 animate-spin"/> Loading...</div>
+                        <div className="space-y-2 p-2" role="status" aria-label="Loading staff"><Skeleton className="h-4 w-36" /><Skeleton className="h-4 w-24" /></div>
                       ) : (
                         systemRoles.map(role => (
                           <DropdownMenuCheckboxItem

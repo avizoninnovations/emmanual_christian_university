@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
 function getTimeOfDay() {
@@ -54,8 +55,12 @@ export default function StaffDashboardView() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-sm text-muted-foreground">
-        Loading your academic workspace…
+      <div className="min-h-full bg-muted/35 p-4 md:p-5 xl:p-6" role="status" aria-label="Loading academic workspace">
+        <div className="mx-auto grid w-full max-w-[1600px] gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(310px,0.92fr)]">
+          <div className="space-y-4"><Skeleton className="h-44 rounded-lg" /><Skeleton className="h-56 rounded-lg" /><Skeleton className="h-64 rounded-lg" /></div>
+          <div className="space-y-4"><Skeleton className="h-44 rounded-lg" /><Skeleton className="h-56 rounded-lg" /><Skeleton className="h-40 rounded-lg" /></div>
+        </div>
+        <span className="sr-only">Loading</span>
       </div>
     );
   }
@@ -101,7 +106,10 @@ export default function StaffDashboardView() {
             </CardHeader>
             <CardContent className="p-0">
               {courses === undefined ? (
-                <div className="p-5 text-sm text-muted-foreground">Loading assigned courses…</div>
+                <div className="space-y-4 p-5" role="status" aria-label="Loading assigned courses">
+                  {Array.from({ length: 3 }, (_, index) => <div key={index} className="flex items-center gap-3"><Skeleton className="size-9 rounded-md" /><div className="flex-1 space-y-2"><Skeleton className="h-4 w-2/3" /><Skeleton className="h-3 w-1/3" /></div></div>)}
+                  <span className="sr-only">Loading</span>
+                </div>
               ) : pendingCourses.length === 0 ? (
                 <div className="flex min-h-36 flex-col items-center justify-center gap-2 px-5 py-6 text-center">
                   <span className="flex size-10 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">

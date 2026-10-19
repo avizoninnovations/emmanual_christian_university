@@ -6,6 +6,7 @@ import { SignInView } from "../views/sign-in-view";
 import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { useEffect } from "react";
+import { AuthLoadingSkeleton } from "./auth-loading-skeleton";
 
 const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
@@ -39,9 +40,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <AuthLoading>
-        <AuthLayout>
-          <p>Loading...</p>
-        </AuthLayout>
+        <AuthLoadingSkeleton />
       </AuthLoading>
       <Authenticated>
         <LiveBanGuard>

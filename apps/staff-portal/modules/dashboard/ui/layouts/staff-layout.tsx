@@ -55,8 +55,8 @@ export const StaffLayout = ({ children, defaultOpen }: { children: React.ReactNo
       style={{ "--sidebar-width": "16rem", "--sidebar-width-icon": "3.5rem" } as React.CSSProperties}
     >
       <StaffSidebar />
-      <main className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-muted/30">
-        <header className="z-10 flex h-[72px] shrink-0 items-center gap-4 bg-background px-4 md:px-6">
+      <main className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-muted/35">
+        <header className="z-10 flex h-[72px] shrink-0 items-center gap-4 bg-transparent px-4 md:px-6">
           <SidebarCollapseButton />
           <nav aria-label="Breadcrumb" className="flex min-w-0 flex-1 items-center gap-2 text-sm">
             <Link href="/" className="inline-flex shrink-0 items-center gap-2 font-medium text-primary hover:text-primary/80">

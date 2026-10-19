@@ -108,8 +108,8 @@ export const StaffSidebar = () => {
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="group border-0 shadow-none" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-sidebar">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[url('/001.webp')] bg-cover bg-center opacity-25 dark:opacity-20" />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/45 dark:bg-background/60" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[url('/001.webp')] bg-cover bg-center opacity-20 dark:opacity-[0.16]" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/50 dark:bg-background/65" />
 
         <SidebarHeader className="relative z-10 gap-3 border-b border-sidebar-border/70 px-3 py-3">
           <SidebarMenu>

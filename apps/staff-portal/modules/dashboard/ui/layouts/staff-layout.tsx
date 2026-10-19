@@ -48,7 +48,7 @@ export const StaffLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider
       defaultOpen={true}
-      style={{ "--sidebar-width": "11rem", "--sidebar-width-icon": "3.5rem" } as React.CSSProperties}
+      style={{ "--sidebar-width": "16rem", "--sidebar-width-icon": "3.5rem" } as React.CSSProperties}
     >
       <StaffSidebar />
       <main className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-muted/30">

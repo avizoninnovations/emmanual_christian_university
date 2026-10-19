@@ -50,6 +50,7 @@ export const getCurrentUser = query({
       title: staffProfile?.title,
       phone: staffProfile?.phone,
       departmentId: staffProfile?.departmentId,
+      staffId: staffProfile?.staffId,
       staffNumber: staffProfile?.staffNumber,
       profileStatus: staffProfile?.status ?? "active",
       profileId: staffProfile?._id,

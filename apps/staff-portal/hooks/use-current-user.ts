@@ -16,6 +16,7 @@ export interface CurrentUser {
   title?: string;
   phone?: string;
   departmentId?: string;
+  staffId?: string;
   staffNumber?: string;
   profileStatus: string;
   profileId?: string;

@@ -133,8 +133,8 @@ export const createStaff = action({
     // Determine the Better Auth role — "admin" if roles include it, otherwise "user"
     const betterAuthRole = args.roles.includes("admin") ? "admin" : "user";
 
-    // @ts-ignore - The admin plugin is enabled but the InferAPI type is not picking it up in this context
-    const user = await (auth.api as any).admin.createUser({
+    // @ts-ignore - The admin plugin endpoint is not included in Better Auth's inferred API type here
+    const user = await auth.api.createUser({
       body: {
         email: args.email,
         password: args.password || "UniSystem2026!",
@@ -151,7 +151,8 @@ export const createStaff = action({
       await ctx.runMutation(internal.users._createStaffProfile, {
         userId: user.user.id,
         roles: args.roles,
-        staffId: args.staffId,
+        staffId:
+          args.staffId || `ECU-STAFF-${user.user.id.slice(0, 8).toUpperCase()}`,
         title: args.title,
         phone: args.phone,
       });
@@ -232,6 +233,8 @@ async function updateStaffLogic(ctx: any, args: any) {
     return await ctx.db.insert("staffProfiles", {
       userId: args.userId,
       roles: args.roles ?? ["staff"],
+      staffId:
+        args.staffId || `ECU-STAFF-${args.userId.slice(0, 8).toUpperCase()}`,
       title: args.title,
       phone: args.phone,
       departmentId: args.departmentId,

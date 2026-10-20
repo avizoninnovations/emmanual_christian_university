@@ -6,7 +6,7 @@ import {
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
   Layers, Mail, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
   DoorOpen, ShieldAlert, MessageSquareWarning, Scale, ChartNoAxesCombined, Utensils,
-  Building2, Award, Bus, Boxes, PackageCheck, Sparkles, BriefcaseBusiness,
+  Building2, Award, Bus, Boxes, PackageCheck, Sparkles, BriefcaseBusiness, MonitorPlay,
   ChevronDown, ChevronRight,
 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/collapsible";
@@ -49,9 +49,18 @@ const alphaItems: SidebarEntry[] = [
 
 export const staffSidebarSections: StaffSidebarSection[] = [
   { key: "my-alpha", title: "My Alpha", icon: BriefcaseBusiness, items: alphaItems },
-  { key: "academics", title: "Academics Office", icon: GraduationCap, items: [link("Teaching Courses", "/courses", BookOpen), link("Class Attendance", "/attendance", ClipboardCheck), link("Teaching Cover", "/cover-requests", UsersRound)] },
   { key: "faculty", title: "Faculty Central", icon: Building2, items: [link("Faculty Workspace", "/workspace/faculty-central", Building2)] },
-  { key: "results", title: "Results", icon: Award, items: [link("Results Workspace", "/workspace/results", Award)] },
+  { key: "results", title: "Results", icon: Award, items: [
+    group("lecturer-courses", "Lecturer Courses", BookOpen, [
+      link("My Aggregated Units", "/workspace/aggregated-units", Layers),
+      link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),
+      link("My Course Units", "/courses", BookOpen),
+      link("My Aegrotat Units", "/workspace/aegrotat-units", ClipboardCheck),
+      link("Class Attendance", "/attendance", CalendarDays),
+      link("Teaching Cover", "/cover-requests", UsersRound),
+    ]),
+    link("Results Workspace", "/workspace/results", Award),
+  ] },
   { key: "timetable", title: "Timetable", icon: CalendarDays, items: [link("Teaching Timetable", "/timetable", CalendarDays)] },
   { key: "leadership", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
   { key: "procurement", title: "Procurement", icon: PackageCheck, items: [link("Procurement Workspace", "/workspace/procurement", PackageCheck)] },

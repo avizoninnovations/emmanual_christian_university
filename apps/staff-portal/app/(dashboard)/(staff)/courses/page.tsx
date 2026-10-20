@@ -1,4 +1,4 @@
-import { LecturerCoursesView } from "@/modules/staff/ui/views/lecturer-courses-view";
+import { LecturerCourseUnitsView } from "@/modules/staff/ui/views/lecturer-course-units-view";
 
 export const metadata = {
   title: "My Teaching Courses | ECU Staff Portal",
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function LecturerCoursesPage() {
-  return <LecturerCoursesView />;
+  return <LecturerCourseUnitsView />;
 }

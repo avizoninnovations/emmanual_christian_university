@@ -47,6 +47,15 @@ export const staffWorkspaces: Record<string, StaffWorkspaceDefinition> = {
   "teaching-reports": { title: "My Teaching Reports", summary: "Alpha’s report page offers Moodle Utilization and Student Evaluation views, semester filters, a report load action, and tabular view. This ECU page is a navigation and information outline; it is not yet connected to reporting data.", sections: [
     { title: "Report views", description: "Choose a report type and review the result for a Semester.", fields: ["Moodle Utilization", "Student Evaluation", "Academic Period", "Tabular view"] },
   ] },
+  "aggregated-units": { title: "My Aggregated Units", summary: "Review course units grouped by academic period and their consolidated teaching information.", sections: [
+    { title: "Unit summary", description: "A consolidated view of your course-unit assignments.", fields: ["Academic Period", "Course unit", "Program", "Year and semester", "Credit units"] },
+  ] },
+  "e-learning-courses": { title: "E-Learning Courses", summary: "Review the online learning spaces associated with your teaching assignments.", sections: [
+    { title: "Online courses", description: "Course links and learning platform status will be connected here.", fields: ["Course unit", "Online course", "Enrollment", "Learning platform status"] },
+  ] },
+  "aegrotat-units": { title: "My Aegrotat Units", summary: "Review course units and result follow-up related to approved aegrotat cases.", sections: [
+    { title: "Aegrotat units", description: "Approved cases and required lecturer follow-up will appear here when connected.", fields: ["Student", "Course unit", "Academic Period", "Approval status", "Required action"] },
+  ] },
   meals: { title: "Meals", summary: alphaPersonalWorkspace, sections: [
     { title: "Meal information", description: "A staff view for meal access and related notices.", fields: ["Meal schedule", "Eligibility", "Meal notices"] },
   ] },

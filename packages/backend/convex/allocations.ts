@@ -7,6 +7,18 @@ import { logAction } from "./audit_logger.js";
 import { assertRole, assertAuthenticated } from "./lib/utils.js";
 import { Id } from "./_generated/dataModel.js";
 
+type LecturerCourseCard = {
+  allocationId: Id<"courseAllocations">;
+  courseId: Id<"courses">;
+  code: string;
+  title: string;
+  creditUnits: number;
+  yearOfStudy: number;
+  semester: number;
+  departmentName: string;
+  programName: string;
+};
+
 // Helper to fetch user map
 async function getUsersMap(ctx: any): Promise<Map<string, { name: string; email: string }>> {
   try {
@@ -102,6 +114,56 @@ export const getLecturerCourses = query({
     );
 
     return enriched;
+  },
+});
+
+export const getLecturerCoursePeriods = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await assertAuthenticated(ctx);
+    const allocations = await ctx.db
+      .query("courseAllocations")
+      .withIndex("by_lecturer", (q) => q.eq("lecturerId", userId))
+      .order("desc")
+      .take(200);
+
+    const periodIds = [...new Set(allocations.map((allocation) => allocation.periodId))];
+    const periods = await Promise.all(periodIds.map((periodId) => ctx.db.get(periodId)));
+    const periodMap = new Map(periods.filter((period) => period !== null).map((period) => [period._id, period]));
+    const courseIds = [...new Set(allocations.map((allocation) => allocation.courseId))];
+    const courses = await Promise.all(courseIds.map((courseId) => ctx.db.get(courseId)));
+    const courseMap = new Map(courses.filter((course) => course !== null).map((course) => [course._id, course]));
+    const departmentIds = [...new Set(courses.flatMap((course) => course ? [course.departmentId] : []))];
+    const departments = await Promise.all(departmentIds.map((departmentId) => ctx.db.get(departmentId)));
+    const departmentMap = new Map(departments.filter((department) => department !== null).map((department) => [department._id, department.name]));
+    const programIds = [...new Set(courses.flatMap((course) => course ? [course.programId] : []))];
+    const programs = await Promise.all(programIds.map((programId) => ctx.db.get(programId)));
+    const programMap = new Map(programs.filter((program) => program !== null).map((program) => [program._id, program.name]));
+    const grouped = new Map<string, { period: NonNullable<(typeof periods)[number]>; courses: LecturerCourseCard[] }>();
+
+    for (const allocation of allocations) {
+      const period = periodMap.get(allocation.periodId);
+      const course = courseMap.get(allocation.courseId);
+      if (!period || !course) continue;
+      const key = String(period._id);
+      const periodCourses = grouped.get(key)?.courses ?? [];
+      periodCourses.push({
+        allocationId: allocation._id,
+        courseId: course._id,
+        code: course.code,
+        title: course.title,
+        creditUnits: course.creditUnits,
+        yearOfStudy: course.yearOfStudy,
+        semester: course.semester,
+        departmentName: departmentMap.get(course.departmentId) ?? "—",
+        programName: programMap.get(course.programId) ?? "—",
+      });
+      grouped.set(key, { period, courses: periodCourses });
+    }
+
+    return [...grouped.values()].sort((left, right) =>
+      right.period.year - left.period.year || right.period.term - left.period.term
+    );
   },
 });
 

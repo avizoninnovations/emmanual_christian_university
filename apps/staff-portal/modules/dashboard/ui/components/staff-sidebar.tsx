@@ -58,7 +58,11 @@ export const StaffSidebar = () => {
   useEffect(() => {
     const activeNavigation = findStaffSidebarNavigation(pathname);
     setOpenSection(activeNavigation?.sectionKey ?? null);
-    setOpenNestedPath(activeNavigation?.nestedPath ?? null);
+    setOpenNestedPath((current) => {
+      if (activeNavigation?.nestedPath) return activeNavigation.nestedPath;
+      if (activeNavigation && current?.startsWith(`${activeNavigation.sectionKey}/`)) return current;
+      return null;
+    });
   }, [pathname]);
 
   const accountOpen = openSection === "account";

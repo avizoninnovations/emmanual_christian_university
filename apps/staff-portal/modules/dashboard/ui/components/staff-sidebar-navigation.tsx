@@ -83,7 +83,7 @@ function findActiveEntry(items: SidebarEntry[], pathname: string, parents: strin
 export function findStaffSidebarNavigation(pathname: string): { sectionKey: string; nestedPath: string | null } | undefined {
   for (const section of staffSidebarSections) {
     const parents = findActiveEntry(section.items, pathname);
-    if (parents) return { sectionKey: section.key, nestedPath: parents.join("/") || null };
+    if (parents) return { sectionKey: section.key, nestedPath: parents.length ? [section.key, ...parents].join("/") : null };
   }
   return undefined;
 }

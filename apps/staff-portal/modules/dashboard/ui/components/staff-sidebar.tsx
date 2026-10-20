@@ -39,12 +39,13 @@ import {
   useSidebar,
 } from "@workspace/ui/components/sidebar";
 import { StaffSidebarIconRail } from "@/modules/dashboard/ui/components/staff-sidebar-icon-rail";
-import { findStaffSidebarSection, StaffSidebarNavigation } from "@/modules/dashboard/ui/components/staff-sidebar-navigation";
+import { findStaffSidebarNavigation, StaffSidebarNavigation } from "@/modules/dashboard/ui/components/staff-sidebar-navigation";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export const StaffSidebar = () => {
   const [search, setSearch] = useState("");
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const [openNestedPath, setOpenNestedPath] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { open, setOpen, isMobile } = useSidebar();
@@ -55,12 +56,10 @@ export const StaffSidebar = () => {
   const profileActive = pathname === "/profile";
 
   useEffect(() => {
-    if (profileActive) {
-      setOpenSection("account");
-    } else {
-      setOpenSection(findStaffSidebarSection(pathname) ?? null);
-    }
-  }, [pathname, profileActive]);
+    const activeNavigation = findStaffSidebarNavigation(pathname);
+    setOpenSection(activeNavigation?.sectionKey ?? null);
+    setOpenNestedPath(activeNavigation?.nestedPath ?? null);
+  }, [pathname]);
 
   const accountOpen = openSection === "account";
 
@@ -141,6 +140,11 @@ export const StaffSidebar = () => {
             query={search}
             openSection={openSection}
             onOpenChange={(key, isOpen) => setOpenSection(isOpen ? key : null)}
+            openNestedPath={openNestedPath}
+            onNestedPathChange={(path, isOpen) => setOpenNestedPath((current) => {
+              if (isOpen) return path;
+              return current === path || current?.startsWith(`${path}/`) ? null : current;
+            })}
             roles={roles ?? []}
           />
           </div>

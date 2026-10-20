@@ -7,105 +7,114 @@ import {
   Layers, Mail, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
   DoorOpen, ShieldAlert, MessageSquareWarning, Scale, ChartNoAxesCombined, Utensils,
   Building2, Award, Bus, Boxes, PackageCheck, Sparkles, BriefcaseBusiness,
+  ChevronDown, ChevronRight,
 } from "lucide-react";
-import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/collapsible";
 import {
   SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
   SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
 } from "@workspace/ui/components/sidebar";
 
-type StaffSidebarLink = { title: string; url: string; icon: LucideIcon };
-type StaffSidebarSection = { key: string; title: string; icon: LucideIcon; links: StaffSidebarLink[]; roles?: string[] };
+type SidebarLink = { kind: "link"; title: string; url: string; icon: LucideIcon };
+type SidebarGroupEntry = { kind: "group"; key: string; title: string; icon: LucideIcon; items: SidebarEntry[] };
+type SidebarEntry = SidebarLink | SidebarGroupEntry;
+type StaffSidebarSection = { key: string; title: string; icon: LucideIcon; items: SidebarEntry[]; roles?: string[] };
+const link = (title: string, url: string, icon: LucideIcon): SidebarLink => ({ kind: "link", title, url, icon });
+const group = (key: string, title: string, icon: LucideIcon, items: SidebarEntry[]): SidebarGroupEntry => ({ kind: "group", key, title, icon, items });
 
-const alphaLinks: StaffSidebarLink[] = [
-  { title: "My Memos", url: "/workspace/memos", icon: Mail },
-  { title: "My Finance", url: "/workspace/finance", icon: Wallet },
-  { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: Wallet },
-  { title: "Personal Records", url: "/profile", icon: UserRound },
-  { title: "My Evaluation", url: "/workspace/my-evaluation", icon: ChartNoAxesCombined },
-  { title: "Evaluate Supervisors", url: "/workspace/supervisor-evaluation", icon: UsersRound },
-  { title: "Leave Application", url: "/workspace/leave-application", icon: ClipboardList },
-  { title: "Leave Calendar", url: "/workspace/leave-calendar", icon: CalendarRange },
-  { title: "Exit Application", url: "/workspace/exit-application", icon: DoorOpen },
-  { title: "Staff Disciplinary", url: "/workspace/disciplinary", icon: ShieldAlert },
-  { title: "My Complaints", url: "/workspace/complaints", icon: MessageSquareWarning },
-  { title: "My Defenses", url: "/workspace/defenses", icon: Scale },
-  { title: "My Teaching", url: "/workspace/my-teaching", icon: BookOpen },
-  { title: "My Teaching Reports", url: "/workspace/teaching-reports", icon: FileSpreadsheet },
-  { title: "Meals", url: "/workspace/meals", icon: Utensils },
+const alphaItems: SidebarEntry[] = [
+  link("My Memos", "/workspace/memos", Mail),
+  group("finance", "My Finance", Wallet, [
+    link("Finance Overview", "/workspace/finance", Wallet),
+    link("Salary Pay Slip", "/workspace/salary-payslip", FileText),
+  ]),
+  group("hr-records", "HR Records", UserRound, [
+    link("Personal Records", "/profile", UserRound),
+    link("My Evaluation", "/workspace/my-evaluation", ChartNoAxesCombined),
+    link("Evaluate Supervisors", "/workspace/supervisor-evaluation", UsersRound),
+    link("Leave Application", "/workspace/leave-application", ClipboardList),
+    link("Leave Calendar", "/workspace/leave-calendar", CalendarRange),
+    link("Exit Application", "/workspace/exit-application", DoorOpen),
+    group("disciplinary", "Staff Disciplinary", ShieldAlert, [
+      link("My Complaints", "/workspace/complaints", MessageSquareWarning),
+      link("My Defenses", "/workspace/defenses", Scale),
+    ]),
+  ]),
+  group("my-teaching", "My Teaching", BookOpen, [
+    link("Teaching Workspace", "/workspace/my-teaching", BookOpen),
+    link("My Teaching Reports", "/workspace/teaching-reports", FileSpreadsheet),
+  ]),
+  link("Meals", "/workspace/meals", Utensils),
 ];
 
 export const staffSidebarSections: StaffSidebarSection[] = [
-  { key: "my-alpha", title: "My Alpha", icon: BriefcaseBusiness, links: alphaLinks },
-  { key: "academics", title: "Academics Office", icon: GraduationCap, links: [
-    { title: "Teaching Courses", url: "/courses", icon: BookOpen },
-    { title: "Class Attendance", url: "/attendance", icon: ClipboardCheck },
-    { title: "Teaching Cover", url: "/cover-requests", icon: UsersRound },
-  ] },
-  { key: "faculty", title: "Faculty Central", icon: Building2, links: [
-    { title: "Faculty Workspace", url: "/workspace/faculty-central", icon: Building2 },
-  ] },
-  { key: "results", title: "Results", icon: Award, links: [
-    { title: "Results Workspace", url: "/workspace/results", icon: Award },
-  ] },
-  { key: "timetable", title: "Timetable", icon: CalendarDays, links: [
-    { title: "Teaching Timetable", url: "/timetable", icon: CalendarDays },
-  ] },
-  { key: "leadership", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], links: [
-    { title: "Course Allocations", url: "/hod/allocations", icon: Layers },
-    { title: "Marks Review Queue", url: "/hod/review-queue", icon: FileSpreadsheet },
-    { title: "Senate Broadsheet", url: "/hod/broadsheet", icon: FileText },
-    { title: "Supplementary Exams", url: "/hod/supplementaries", icon: ClipboardCheck },
-  ] },
-  { key: "procurement", title: "Procurement", icon: PackageCheck, links: [
-    { title: "Procurement Workspace", url: "/workspace/procurement", icon: PackageCheck },
-  ] },
-  { key: "inventory", title: "Inventory", icon: Boxes, links: [
-    { title: "Inventory Workspace", url: "/workspace/inventory", icon: Boxes },
-  ] },
-  { key: "vehicles", title: "Vehicles", icon: Bus, links: [
-    { title: "Vehicle Workspace", url: "/workspace/vehicles", icon: Bus },
-  ] },
-  { key: "extras", title: "Alpha Extras", icon: Sparkles, links: [
-    { title: "University Tools", url: "/workspace/alpha-extras", icon: Sparkles },
-  ] },
+  { key: "my-alpha", title: "My Alpha", icon: BriefcaseBusiness, items: alphaItems },
+  { key: "academics", title: "Academics Office", icon: GraduationCap, items: [link("Teaching Courses", "/courses", BookOpen), link("Class Attendance", "/attendance", ClipboardCheck), link("Teaching Cover", "/cover-requests", UsersRound)] },
+  { key: "faculty", title: "Faculty Central", icon: Building2, items: [link("Faculty Workspace", "/workspace/faculty-central", Building2)] },
+  { key: "results", title: "Results", icon: Award, items: [link("Results Workspace", "/workspace/results", Award)] },
+  { key: "timetable", title: "Timetable", icon: CalendarDays, items: [link("Teaching Timetable", "/timetable", CalendarDays)] },
+  { key: "leadership", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
+  { key: "procurement", title: "Procurement", icon: PackageCheck, items: [link("Procurement Workspace", "/workspace/procurement", PackageCheck)] },
+  { key: "inventory", title: "Inventory", icon: Boxes, items: [link("Inventory Workspace", "/workspace/inventory", Boxes)] },
+  { key: "vehicles", title: "Vehicles", icon: Bus, items: [link("Vehicle Workspace", "/workspace/vehicles", Bus)] },
+  { key: "extras", title: "Alpha Extras", icon: Sparkles, items: [link("University Tools", "/workspace/alpha-extras", Sparkles)] },
 ];
 
-export function findStaffSidebarSection(pathname: string): string | undefined {
-  return staffSidebarSections.find((section) => section.links.some(({ url }) =>
-    url === pathname || (url !== "/" && pathname.startsWith(`${url}/`))))?.key;
+function findActiveEntry(items: SidebarEntry[], pathname: string, parents: string[] = []): string[] | undefined {
+  for (const item of items) {
+    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && pathname.startsWith(`${item.url}/`)))) return parents;
+    if (item.kind === "group") {
+      const match = findActiveEntry(item.items, pathname, [...parents, item.key]);
+      if (match) return match;
+    }
+  }
+  return undefined;
 }
 
-export function StaffSidebarNavigation({
-  pathname, query, openSection, onOpenChange, roles,
-}: {
-  pathname: string;
-  query: string;
-  openSection: string | null;
-  onOpenChange: (key: string, open: boolean) => void;
-  roles: string[];
+export function findStaffSidebarNavigation(pathname: string): { sectionKey: string; nestedPath: string | null } | undefined {
+  for (const section of staffSidebarSections) {
+    const parents = findActiveEntry(section.items, pathname);
+    if (parents) return { sectionKey: section.key, nestedPath: parents.join("/") || null };
+  }
+  return undefined;
+}
+
+export function findStaffSidebarSection(pathname: string): string | undefined {
+  return findStaffSidebarNavigation(pathname)?.sectionKey;
+}
+
+export function StaffSidebarNavigation({ pathname, query, openSection, onOpenChange, openNestedPath, onNestedPathChange, roles }: {
+  pathname: string; query: string; openSection: string | null; onOpenChange: (key: string, open: boolean) => void;
+  openNestedPath: string | null; onNestedPathChange: (path: string, open: boolean) => void; roles: string[];
 }) {
   const normalizedQuery = query.trim().toLowerCase();
   const roleSet = new Set(roles.map((role) => role.toLowerCase()));
   const sections = staffSidebarSections.filter((section) => !section.roles || section.roles.some((role) => roleSet.has(role)));
-
   return <SidebarGroup className="border-t border-sidebar-border/60 px-0 py-2.5"><SidebarGroupContent>
     {sections.map((section) => {
       const sectionMatches = section.title.toLowerCase().includes(normalizedQuery);
-      const links = section.links.filter(({ title }) => sectionMatches || title.toLowerCase().includes(normalizedQuery));
-      if (links.length === 0) return null;
-      return <NavigationGroup key={section.key} section={section} links={links} pathname={pathname} open={openSection === section.key} onOpenChange={(open) => onOpenChange(section.key, open)} />;
+      const items = filterEntries(section.items, normalizedQuery, sectionMatches);
+      if (!items.length) return null;
+      return <NavigationGroup key={section.key} section={section} items={items} pathname={pathname} open={openSection === section.key} onOpenChange={(isOpen) => onOpenChange(section.key, isOpen)} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} />;
     })}
   </SidebarGroupContent></SidebarGroup>;
 }
 
-function NavigationGroup({ section, links, pathname, open, onOpenChange }: {
-  section: (typeof staffSidebarSections)[number];
-  links: StaffSidebarLink[];
-  pathname: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+function filterEntries(items: SidebarEntry[], query: string, parentMatches: boolean): SidebarEntry[] {
+  if (!query || parentMatches) return items;
+  return items.flatMap((item) => {
+    if (item.title.toLowerCase().includes(query)) return [item];
+    if (item.kind === "group") {
+      const children = filterEntries(item.items, query, false);
+      return children.length ? [{ ...item, items: children }] : [];
+    }
+    return [];
+  });
+}
+
+function NavigationGroup({ section, items, pathname, open, onOpenChange, openNestedPath, onNestedPathChange }: {
+  section: StaffSidebarSection; items: SidebarEntry[]; pathname: string; open: boolean; onOpenChange: (open: boolean) => void;
+  openNestedPath: string | null; onNestedPathChange: (path: string, open: boolean) => void;
 }) {
   const Icon = section.icon;
   return <Collapsible open={open} onOpenChange={onOpenChange} className="group/nav mb-1">
@@ -116,12 +125,23 @@ function NavigationGroup({ section, links, pathname, open, onOpenChange }: {
       </SidebarMenuButton>
     </CollapsibleTrigger><CollapsibleContent>
       <SidebarMenuSub className="mx-4 mb-1 mt-0.5 gap-0.5 border-sidebar-border/70 pl-2">
-        {links.map(({ title, url, icon: LinkIcon }) => <SidebarMenuSubItem key={url}>
-          <SidebarMenuSubButton asChild isActive={pathname === url || (url !== "/" && pathname.startsWith(`${url}/`))} className="h-9 gap-2.5 px-2 text-[13px] text-muted-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-primary hover:text-sidebar-foreground">
-            <Link href={url}><LinkIcon className="size-4 shrink-0" /><span className="truncate">{title}</span></Link>
-          </SidebarMenuSubButton>
-        </SidebarMenuSubItem>)}
+        <EntryList items={items} pathname={pathname} parentPath={section.key} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} />
       </SidebarMenuSub>
     </CollapsibleContent></SidebarMenuItem></SidebarMenu>
   </Collapsible>;
+}
+
+function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathChange }: {
+  items: SidebarEntry[]; pathname: string; parentPath: string; openNestedPath: string | null; onNestedPathChange: (path: string, open: boolean) => void;
+}) {
+  return <>{items.map((item) => {
+    const Icon = item.icon;
+    if (item.kind === "link") return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild isActive={pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`))} className="h-9 gap-2.5 px-2 text-[13px] text-muted-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-primary hover:text-sidebar-foreground"><Link href={item.url}><Icon className="size-4 shrink-0" /><span className="truncate">{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
+    const path = `${parentPath}/${item.key}`;
+    const expanded = openNestedPath === path || Boolean(openNestedPath?.startsWith(`${path}/`));
+    return <SidebarMenuSubItem key={path}><Collapsible open={expanded} onOpenChange={(isOpen) => onNestedPathChange(path, isOpen)}>
+      <CollapsibleTrigger asChild><SidebarMenuSubButton className="h-9 gap-2.5 px-2 text-[13px] text-muted-foreground hover:text-sidebar-foreground"><Icon className="size-4 shrink-0" /><span className="flex-1 truncate">{item.title}</span>{expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</SidebarMenuSubButton></CollapsibleTrigger>
+      <CollapsibleContent><SidebarMenuSub className="ml-3 mr-0 gap-0.5 border-sidebar-border/70 pl-2"><EntryList items={item.items} pathname={pathname} parentPath={path} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} /></SidebarMenuSub></CollapsibleContent>
+    </Collapsible></SidebarMenuSubItem>;
+  })}</>;
 }

@@ -561,7 +561,7 @@ export function TeachingCoverView() {
               <div className="space-y-1">
                 <label className="font-semibold block text-xs">HOD Remarks (Optional)</label>
                 <Input
-                  placeholder="e.g. Approved. Please ensure attendance register is collected."
+                  placeholder="e.g. Approved. Please ensure the class materials are ready."
                   value={reviewNotes}
                   onChange={(e) => setReviewNotes(e.target.value)}
                   className="text-xs h-9"

@@ -10,7 +10,6 @@ import {
   BookOpen,
   Users,
   Award,
-  CalendarCheck,
   ArrowLeft,
   Save,
   Send,
@@ -21,11 +20,9 @@ import {
   Unlock,
   FileSpreadsheet,
   AlertTriangle,
-  History,
   Check,
   X,
   Loader2,
-  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-skeleton";
@@ -83,12 +80,9 @@ interface CourseWorkspaceViewProps {
 export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
   const courseDetails = useQuery(api.courses.getCourseById, { id: courseId });
   const gradebook = useQuery(api.marks.getCourseGradebook, { courseId });
-  const attendanceHistory = useQuery(api.attendance.getCourseAttendanceHistory, { courseId }) || [];
-  const studentAttendance = useQuery(api.attendance.getStudentAttendanceSummary, { courseId }) || [];
 
   const saveAssessments = useMutation(api.marks.saveGradebookDraft);
   const submitToHOD = useMutation(api.marks.submitGradebookToHOD);
-  const recordAttendance = useMutation(api.attendance.recordAttendanceSession);
 
   // Local state for grade edits
   const [marksState, setMarksState] = useState<
@@ -99,16 +93,6 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Attendance local state
-  const [rollCallDate, setRollCallDate] = useState<string>(
-    new Date().toISOString().split("T")[0] || "2026-09-16"
-  );
-  const [rollCallTopic, setRollCallTopic] = useState<string>("");
-  const [rollCallStatus, setRollCallStatus] = useState<
-    Map<string, "present" | "absent" | "late">
-  >(new Map());
-  const [isSavingRollCall, setIsSavingRollCall] = useState(false);
 
   // Sync gradebook to local state on initial load
   useEffect(() => {
@@ -132,12 +116,6 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
       setMarksState(initialMap);
       if (hasDetailed) setIsDetailedCAMode(true);
 
-      // Default attendance to present
-      const defaultAtt = new Map<string, "present" | "absent" | "late">();
-      gradebook.students.forEach((s) => {
-        defaultAtt.set(s.studentId, "present");
-      });
-      setRollCallStatus(defaultAtt);
     }
   }, [gradebook]);
 
@@ -298,46 +276,6 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  // Roll call attendance handlers
-  const handleRollCallToggle = (
-    studentId: string,
-    status: "present" | "absent" | "late"
-  ) => {
-    setRollCallStatus((prev) => {
-      const next = new Map(prev);
-      next.set(studentId, status);
-      return next;
-    });
-  };
-
-  const handleSaveAttendance = async () => {
-    if (!gradebook.period) return;
-    try {
-      setIsSavingRollCall(true);
-      const records = Array.from(rollCallStatus.entries()).map(
-        ([studentId, status]) => ({
-          studentId: studentId as Id<"students">,
-          status,
-        })
-      );
-
-      await recordAttendance({
-        courseId,
-        periodId: gradebook.period._id,
-        date: rollCallDate,
-        topic: rollCallTopic.trim() || undefined,
-        records,
-      });
-
-      toast.success("Roll call session recorded successfully");
-      setRollCallTopic("");
-    } catch (err: any) {
-      toast.error(getUserFacingErrorMessage(err, "Failed to record roll call session"));
-    } finally {
-      setIsSavingRollCall(false);
-    }
   };
 
   const totalStudents = gradebook.students.length;
@@ -583,10 +521,6 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
             <FileSpreadsheet className="size-4" />
             Gradebook (30% CW / 70% Exam)
           </TabsTrigger>
-          <TabsTrigger value="attendance" className="gap-2">
-            <CalendarCheck className="size-4" />
-            Roll Call & Attendance
-          </TabsTrigger>
           <TabsTrigger value="roster" className="gap-2">
             <Users className="size-4" />
             Enrolled Directory ({totalStudents})
@@ -809,230 +743,6 @@ export function CourseWorkspaceView({ courseId }: CourseWorkspaceViewProps) {
                         </TableRow>
                       );
                     })
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ── TAB 2: ATTENDANCE & ROLL CALL ── */}
-        <TabsContent value="attendance" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* New Session Roll Call */}
-            <Card className="lg:col-span-2 shadow-sm">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base font-semibold">Take Session Roll Call</CardTitle>
-                  <Button
-                    size="sm"
-                    onClick={handleSaveAttendance}
-                    disabled={isSavingRollCall || totalStudents === 0}
-                    className="gap-1.5"
-                  >
-                    {isSavingRollCall && <Loader2 className="size-3.5 animate-spin" />}
-                    Save Attendance
-                  </Button>
-                </div>
-                <CardDescription className="text-xs">
-                  Mark each student as Present (P), Absent (A), or Late (L).
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-muted/40 p-3 rounded-lg">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">
-                      Session Date
-                    </label>
-                    <Input
-                      type="date"
-                      value={rollCallDate}
-                      onChange={(e) => setRollCallDate(e.target.value)}
-                      className="h-8 text-xs bg-background"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground block mb-1">
-                      Lecture Topic / Lab Focus
-                    </label>
-                    <Input
-                      placeholder="e.g. Pointers & Dynamic Memory Allocation"
-                      value={rollCallTopic}
-                      onChange={(e) => setRollCallTopic(e.target.value)}
-                      className="h-8 text-xs bg-background"
-                    />
-                  </div>
-                </div>
-
-                <div className="border rounded-md divide-y max-h-[420px] overflow-y-auto">
-                  {gradebook.students.map((student) => {
-                    const currentStatus = rollCallStatus.get(student.studentId) || "present";
-                    return (
-                      <div
-                        key={student.studentId}
-                        className="flex items-center justify-between p-2.5 text-xs hover:bg-muted/20"
-                      >
-                        <div>
-                          <p className="font-semibold text-foreground">{student.studentName}</p>
-                          <p className="font-mono text-[11px] text-muted-foreground">
-                            {student.studentRegNumber}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-1 bg-muted p-0.5 rounded-md">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setRollCallStatus((prev) => new Map(prev).set(student.studentId, "present"))
-                            }
-                            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-                              currentStatus === "present"
-                                ? "bg-emerald-600 text-white shadow-xs"
-                                : "text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            Present
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setRollCallStatus((prev) => new Map(prev).set(student.studentId, "late"))
-                            }
-                            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-                              currentStatus === "late"
-                                ? "bg-amber-600 text-white shadow-xs"
-                                : "text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            Late
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setRollCallStatus((prev) => new Map(prev).set(student.studentId, "absent"))
-                            }
-                            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
-                              currentStatus === "absent"
-                                ? "bg-rose-600 text-white shadow-xs"
-                                : "text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            Absent
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Attendance History Sidebar */}
-            <Card className="shadow-sm flex flex-col">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <History className="size-4 text-muted-foreground" /> Session History
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  {attendanceHistory.length} class dates recorded
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="p-0 flex-1 overflow-y-auto max-h-[480px]">
-                {attendanceHistory.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-muted-foreground">
-                    No past sessions recorded yet.
-                  </div>
-                ) : (
-                  <div className="divide-y text-xs">
-                    {attendanceHistory.map((sess: any) => (
-                      <div key={sess._id} className="p-3 hover:bg-muted/30">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold flex items-center gap-1">
-                            <Calendar className="size-3 text-muted-foreground" /> {sess.date}
-                          </span>
-                          <Badge variant="outline" className="font-mono text-[10px]">
-                            {sess.attendanceRate}% Attendance
-                          </Badge>
-                        </div>
-                        {sess.topic && (
-                          <p className="text-muted-foreground text-[11px] mt-1 line-clamp-1">
-                            {sess.topic}
-                          </p>
-                        )}
-                        <p className="text-[10px] text-muted-foreground mt-1">
-                          {sess.presentCount} Present &bull; {sess.lateCount} Late &bull; {sess.absentCount} Absent
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Student Cumulative Attendance Stats Table */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold">
-                Student Attendance & Exam Eligibility (75% Threshold)
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Students below 75% attendance may be barred from sitting the final examination per university policy.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-muted/40">
-                  <TableRow>
-                    <TableHead className="pl-6">Reg Number</TableHead>
-                    <TableHead>Student Name</TableHead>
-                    <TableHead className="text-center">Attended / Total</TableHead>
-                    <TableHead className="text-center">Attendance %</TableHead>
-                    <TableHead className="text-right pr-6">Exam Clearance</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {studentAttendance.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="h-24 text-center text-muted-foreground text-xs">
-                        Attendance summary will appear once sessions are recorded.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    studentAttendance.map((stat: any) => (
-                      <TableRow key={stat.studentId}>
-                        <TableCell className="pl-6 font-mono text-xs text-muted-foreground">
-                          {stat.studentRegNumber}
-                        </TableCell>
-                        <TableCell className="font-medium text-sm">{stat.studentName}</TableCell>
-                        <TableCell className="text-center text-xs font-mono">
-                          {stat.present + stat.late} / {stat.totalSessions} sessions
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`font-mono text-xs font-bold ${
-                              stat.percentage >= 75 ? "text-emerald-600" : "text-rose-600"
-                            }`}
-                          >
-                            {stat.percentage}%
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right pr-6">
-                          {stat.isEligibleForExams ? (
-                            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-200 text-[10px]">
-                              Cleared for Exam
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="bg-rose-500/10 text-rose-600 border-rose-200 text-[10px]">
-                              Barred (&lt; 75%)
-                            </Badge>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))
                   )}
                 </TableBody>
               </Table>

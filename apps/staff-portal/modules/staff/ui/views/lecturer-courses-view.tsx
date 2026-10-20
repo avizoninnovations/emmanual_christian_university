@@ -8,7 +8,6 @@ import {
   BookOpen,
   Users,
   Award,
-  CalendarCheck,
   ChevronRight,
   Search,
   CheckCircle2,
@@ -246,18 +245,6 @@ export function LecturerCoursesView() {
               </CardContent>
 
               <CardFooter className="pt-3 border-t bg-muted/20 flex items-center justify-between gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="h-8 text-xs gap-1 flex-1"
-                >
-                  <Link href={`/attendance?courseId=${course.courseId}`}>
-                    <CalendarCheck className="size-3.5 text-muted-foreground" />
-                    Roll Call
-                  </Link>
-                </Button>
-
                 <Button
                   size="sm"
                   asChild

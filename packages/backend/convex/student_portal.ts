@@ -261,27 +261,6 @@ export const getMyRegisteredCourses = query({
 
         const lecturerUser = allocation ? usersMap.get(allocation.lecturerId) : null;
 
-        // Calculate attendance for this course
-        const attendanceSessions = await ctx.db
-          .query("attendanceRecords")
-          .withIndex("by_course_period", (q: any) =>
-            q.eq("courseId", reg.courseId).eq("periodId", periodId!)
-          )
-          .collect();
-
-        let attended = 0;
-        let totalSessions = attendanceSessions.length;
-
-        for (const sess of attendanceSessions) {
-          const myRec = sess.records.find((r) => r.studentId === student._id);
-          if (myRec && (myRec.status === "present" || myRec.status === "late")) {
-            attended++;
-          }
-        }
-
-        const attendanceRate =
-          totalSessions > 0 ? Math.round((attended / totalSessions) * 100) : 100;
-
         return {
           registrationId: reg._id,
           courseId: reg.courseId,
@@ -296,8 +275,6 @@ export const getMyRegisteredCourses = query({
           lecturerName: lecturerUser?.name ?? "Department Faculty",
           lecturerEmail: lecturerUser?.email ?? "—",
           status: reg.status,
-          attendanceRate,
-          isEligibleForExam: attendanceRate >= 75,
         };
       })
     );
@@ -498,101 +475,7 @@ export const getMyAcademicResults = query({
 });
 
 // ─────────────────────────────────────────────────────────
-// 4. ATTENDANCE TRACKER
-// ─────────────────────────────────────────────────────────
-
-export const getMyAttendanceSummary = query({
-  args: {
-    periodId: v.optional(v.id("academicPeriods")),
-  },
-  handler: async (ctx, args) => {
-    const userId = await assertAuthenticated(ctx);
-    const student = await resolveCurrentStudent(ctx, userId);
-    if (!student) return null;
-
-    let periodId = args.periodId;
-    if (!periodId) {
-      const activePeriod = await ctx.db
-        .query("academicPeriods")
-        .withIndex("by_status", (q: any) => q.eq("status", "active"))
-        .first();
-      periodId = activePeriod?._id;
-    }
-
-    if (!periodId) return null;
-
-    // Get registered courses
-    const registrations = await ctx.db
-      .query("studentCourseRegistrations")
-      .withIndex("by_student_period", (q: any) =>
-        q.eq("studentId", student._id).eq("periodId", periodId!)
-      )
-      .collect();
-
-    let totalSessionsAll = 0;
-    let attendedSessionsAll = 0;
-
-    const courseStats = await Promise.all(
-      registrations.map(async (reg) => {
-        const course = await ctx.db.get(reg.courseId);
-
-        const sessions = await ctx.db
-          .query("attendanceRecords")
-          .withIndex("by_course_period", (q: any) =>
-            q.eq("courseId", reg.courseId).eq("periodId", periodId!)
-          )
-          .collect();
-
-        let presentCount = 0;
-        let lateCount = 0;
-        let absentCount = 0;
-
-        for (const sess of sessions) {
-          const rec = sess.records.find((r) => r.studentId === student._id);
-          if (rec?.status === "present") presentCount++;
-          else if (rec?.status === "late") lateCount++;
-          else if (rec?.status === "absent") absentCount++;
-        }
-
-        const attended = presentCount + lateCount;
-        const total = sessions.length;
-        const percentage = total > 0 ? Math.round((attended / total) * 100) : 100;
-
-        totalSessionsAll += total;
-        attendedSessionsAll += attended;
-
-        return {
-          courseId: reg.courseId,
-          code: course?.code ?? "—",
-          title: course?.title ?? "—",
-          creditUnits: course?.creditUnits ?? 3,
-          totalSessions: total,
-          presentCount,
-          lateCount,
-          absentCount,
-          percentage,
-          isEligibleForExam: percentage >= 75,
-        };
-      })
-    );
-
-    const overallPercentage =
-      totalSessionsAll > 0
-        ? Math.round((attendedSessionsAll / totalSessionsAll) * 100)
-        : 100;
-
-    return {
-      overallPercentage,
-      totalSessionsHeld: totalSessionsAll,
-      totalSessionsAttended: attendedSessionsAll,
-      isOverallEligible: overallPercentage >= 75,
-      courseStats,
-    };
-  },
-});
-
-// ─────────────────────────────────────────────────────────
-// 5. EXAMINATION CLEARANCE CARD & FINANCIAL STATEMENT
+// 4. EXAMINATION CLEARANCE CARD & FINANCIAL STATEMENT
 // ─────────────────────────────────────────────────────────
 
 export const getExaminationClearanceCard = query({
@@ -628,7 +511,7 @@ export const getExaminationClearanceCard = query({
       student.financeStatus === "cleared" ||
       ledger?.status === "cleared";
 
-    // Check Gate 2: Attendance Clearance & Courses
+    // Confirm current-semester course registration.
     const registrations = await ctx.db
       .query("studentCourseRegistrations")
       .withIndex("by_student_period", (q: any) =>
@@ -636,7 +519,6 @@ export const getExaminationClearanceCard = query({
       )
       .collect();
 
-    let allAttendanceCleared = true;
     const roadblocks: string[] = [];
 
     if (!isFinanceCleared) {
@@ -647,49 +529,21 @@ export const getExaminationClearanceCard = query({
 
     if (registrations.length === 0) {
       roadblocks.push("No course units registered for the current semester.");
-      allAttendanceCleared = false;
     }
 
     const courses = await Promise.all(
       registrations.map(async (reg) => {
         const course = await ctx.db.get(reg.courseId);
-
-        const sessions = await ctx.db
-          .query("attendanceRecords")
-          .withIndex("by_course_period", (q: any) =>
-            q.eq("courseId", reg.courseId).eq("periodId", activePeriod._id)
-          )
-          .collect();
-
-        let attended = 0;
-        for (const s of sessions) {
-          const r = s.records.find((rec) => rec.studentId === student._id);
-          if (r && (r.status === "present" || r.status === "late")) attended++;
-        }
-
-        const percentage =
-          sessions.length > 0 ? Math.round((attended / sessions.length) * 100) : 100;
-        const cleared = percentage >= 75;
-
-        if (!cleared) {
-          allAttendanceCleared = false;
-          roadblocks.push(
-            `Attendance in ${course?.code} is ${percentage}% (minimum 75% required by MoHEST).`
-          );
-        }
-
         return {
           courseId: reg.courseId,
           code: course?.code ?? "—",
           title: course?.title ?? "—",
           creditUnits: course?.creditUnits ?? 3,
-          attendanceRate: percentage,
-          isEligible: cleared,
         };
       })
     );
 
-    const isFullyCleared = isFinanceCleared && allAttendanceCleared && registrations.length > 0;
+    const isFullyCleared = isFinanceCleared && registrations.length > 0;
 
     return {
       isCleared: isFullyCleared,

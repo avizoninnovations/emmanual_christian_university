@@ -53,7 +53,7 @@ test examples, not official ECU curriculum.
 The fixture also contains two academic periods, six staff accounts, eight
 student accounts across the four faculties, 76 lecturer/course allocations,
 student registrations, approved sample marks and retakes, lecture and exam
-schedules, attendance, ledger/payment data, and records for the student portal
+schedules, ledger/payment data, and records for the student portal
 services. References use stable faculty keys, department keys, program codes,
 course codes, emails, and student registration numbers for the future seed
 importer to resolve into Convex document IDs.
@@ -67,7 +67,7 @@ The fixture itself has not been written to a Convex database.
 Use all four published faculties and all 19 published programs as the academic
 catalog. Expand the earlier staff/student demo proposal to include teaching and
 student examples in every faculty. All course allocations, registrations,
-marks, timetables, attendance, and fee records must reference the same linked
+marks, timetables, and fee records must reference the same linked
 catalog records and academic periods.
 
 For official course units, the next required source is a curriculum or course

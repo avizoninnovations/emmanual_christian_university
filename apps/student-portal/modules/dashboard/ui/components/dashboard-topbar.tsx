@@ -16,7 +16,6 @@ const routeNames: Record<string, string> = {
   timetable: "My Timetable",
   retakes: "Retake Registration",
   internship: "Internship",
-  attendance: "Attendance",
   finance: "Financial Statement",
   "exam-card": "Exam Permit",
   registration: "Registration",

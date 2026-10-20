@@ -5,15 +5,9 @@ import { api } from "@workspace/backend/_generated/api";
 import {
   ShieldCheck,
   Printer,
-  AlertCircle,
   CheckCircle2,
   Lock,
-  Building2,
-  CalendarCheck,
-  DollarSign,
-  UserCheck,
   Loader2,
-  FileCheck,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -98,7 +92,7 @@ export function ExamClearanceCardView() {
                   Examination Clearance Incomplete
                 </h3>
                 <p className="text-xs text-rose-800 dark:text-rose-400">
-                  Per South Sudan Higher Education standards, you cannot be issued an Examination Card until both mandatory clearance gates are satisfied:
+            You need a cleared student account and current-semester course registration before an Examination Card can be issued:
                 </p>
                 <ul className="list-disc pl-5 space-y-1 text-xs text-rose-800 dark:text-rose-400 font-medium">
                   {roadblocks.map((rb, idx) => (
@@ -108,9 +102,6 @@ export function ExamClearanceCardView() {
                 <div className="pt-2 flex items-center gap-2">
                   <Button size="sm" variant="outline" asChild className="h-8 text-xs border-rose-300 text-rose-800 hover:bg-rose-100">
                     <Link href="/finance">Go to Finance & Payments</Link>
-                  </Button>
-                  <Button size="sm" variant="outline" asChild className="h-8 text-xs border-rose-300 text-rose-800 hover:bg-rose-100">
-                    <Link href="/academics/attendance">Review Attendance</Link>
                   </Button>
                 </div>
               </div>
@@ -187,7 +178,6 @@ export function ExamClearanceCardView() {
                   <TableHead className="pl-4 w-28 text-xs font-bold">Course Code</TableHead>
                   <TableHead className="text-xs font-bold">Course Title</TableHead>
                   <TableHead className="w-16 text-center text-xs font-bold">CU</TableHead>
-                  <TableHead className="w-28 text-center text-xs font-bold">Attendance</TableHead>
                   <TableHead className="w-36 text-center text-xs font-bold">Candidate Sig.</TableHead>
                   <TableHead className="w-36 text-center pr-4 text-xs font-bold">Invigilator Sig.</TableHead>
                 </TableRow>
@@ -195,7 +185,7 @@ export function ExamClearanceCardView() {
               <TableBody>
                 {courses.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-20 text-center text-muted-foreground text-xs">
+                    <TableCell colSpan={5} className="h-20 text-center text-muted-foreground text-xs">
                       No courses registered.
                     </TableCell>
                   </TableRow>
@@ -205,11 +195,6 @@ export function ExamClearanceCardView() {
                       <TableCell className="pl-4 font-mono font-bold text-xs">{course.code}</TableCell>
                       <TableCell className="font-medium text-xs text-foreground">{course.title}</TableCell>
                       <TableCell className="text-center font-mono text-xs">{course.creditUnits}</TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-200 text-[10px]">
-                          {course.attendanceRate}% Cleared
-                        </Badge>
-                      </TableCell>
                       <TableCell className="border-l border-r"></TableCell>
                       <TableCell className="pr-4"></TableCell>
                     </TableRow>
@@ -241,7 +226,7 @@ export function ExamClearanceCardView() {
               ACADEMICALLY CLEARED
             </span>
             <p className="text-[10px] text-muted-foreground">
-              Registration & 75% attendance criteria met.
+              Current-semester course registration confirmed.
             </p>
             <p className="text-[10px] font-mono text-muted-foreground pt-1">Academic Registrar Signature</p>
           </div>
@@ -253,7 +238,7 @@ export function ExamClearanceCardView() {
           <ol className="list-decimal pl-4 space-y-0.5">
             <li>This Examination Clearance Card together with a valid ECU Student Identity Card must be produced at every examination sitting.</li>
             <li>Strictly NO mobile phones, smartwatches, or unauthorized printed materials are permitted in the examination hall.</li>
-            <li>Candidates must sign the attendance register and have this card signed by the chief invigilator upon submission of exam scripts.</li>
+            <li>Candidates must present this card to the chief invigilator when submitting examination scripts.</li>
           </ol>
         </div>
       </div>

@@ -56,7 +56,6 @@ export const staffSidebarSections: StaffSidebarSection[] = [
       link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),
       link("My Course Units", "/courses", BookOpen),
       link("My Aegrotat Units", "/workspace/aegrotat-units", ClipboardCheck),
-      link("Class Attendance", "/attendance", CalendarDays),
       link("Teaching Cover", "/cover-requests", UsersRound),
     ]),
     link("Results Workspace", "/workspace/results", Award),

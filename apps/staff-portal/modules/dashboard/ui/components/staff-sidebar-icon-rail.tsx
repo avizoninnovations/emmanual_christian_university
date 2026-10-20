@@ -5,7 +5,6 @@ import {
   Award,
   BookOpen,
   CalendarDays,
-  ClipboardCheck,
   FileSpreadsheet,
   FileText,
   LayoutDashboard,
@@ -23,7 +22,6 @@ import {
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
-  { title: "Class Attendance", url: "/attendance", icon: ClipboardCheck },
   { title: "Teaching Timetable", url: "/timetable", icon: CalendarDays },
   { title: "Teaching Cover", url: "/cover-requests", icon: UserCheck },
   { title: "Course Allocations", url: "/hod/allocations", icon: Layers },

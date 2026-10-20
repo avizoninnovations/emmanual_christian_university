@@ -272,7 +272,7 @@ export const ECU_DEFAULT_ROLES: Array<{
     name: "Lecturer",
     code: "lecturer",
     description:
-      "Teaching staff. Enters attendance, submits marks, accesses allocated courses.",
+      "Teaching staff. Submits marks and accesses allocated courses.",
     tier: 4,
     category: "academic",
   },

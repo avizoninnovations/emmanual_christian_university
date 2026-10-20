@@ -403,26 +403,6 @@ export default defineSchema({
     .index("by_status", ["status"]),
 
   /**
-   * Class Lecture Session Attendance
-   */
-  attendanceRecords: defineTable({
-    courseId: v.id("courses"),
-    periodId: v.id("academicPeriods"),
-    lecturerId: v.string(),
-    date: v.string(), // YYYY-MM-DD
-    topic: v.optional(v.string()),
-    records: v.array(
-      v.object({
-        studentId: v.id("students"),
-        status: v.union(v.literal("present"), v.literal("absent"), v.literal("late")),
-      })
-    ),
-    ...timestamps,
-  })
-    .index("by_course_period", ["courseId", "periodId"])
-    .index("by_course_period_date", ["courseId", "periodId", "date"]),
-
-  /**
    * 8B. University Lecture Timetable & Room Scheduling
    */
   timetables: defineTable({

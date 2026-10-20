@@ -157,16 +157,6 @@ export const insertDemoData = internalMutation({
       }
     }
 
-    for (const attendance of fixture.attendanceRecords) {
-      const courseId = courseIds[attendance.courseCode]!;
-      const periodId = periodIds[attendance.periodKey]!;
-      const existing = await ctx.db.query("attendanceRecords").withIndex("by_course_period_date", (q) => q.eq("courseId", courseId).eq("periodId", periodId).eq("date", attendance.date)).first();
-      if (!existing) {
-        await ctx.db.insert("attendanceRecords", { courseId, periodId, lecturerId: staffIds[attendance.lecturerEmail]!, date: attendance.date, topic: attendance.topic, records: attendance.records.map((record) => ({ studentId: studentIds[record.studentRegistrationNumber]!, status: record.status as "present" | "absent" | "late" })), createdAt: now, updatedAt: now });
-        inserted++;
-      }
-    }
-
     for (const meeting of fixture.lectureTimetables) {
       const courseId = courseIds[meeting.courseCode]!;
       const periodId = periodIds[meeting.periodKey]!;

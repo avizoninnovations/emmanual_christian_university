@@ -101,7 +101,7 @@ export default function StaffDashboardView() {
 
             <Card className="rounded-2xl border-0 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between gap-3 px-5 pb-3 pt-5">
-                <div><CardTitle className="text-base font-semibold">Your teaching courses</CardTitle><p className="mt-1 text-sm text-muted-foreground">Open a course to take attendance or manage marks.</p></div>
+                <div><CardTitle className="text-base font-semibold">Your teaching courses</CardTitle><p className="mt-1 text-sm text-muted-foreground">Open a course to manage marks.</p></div>
                 <Button asChild variant="ghost" size="sm" className="shrink-0 rounded-lg text-primary"><Link href="/courses">All courses<ArrowRight className="ml-1.5 size-4" /></Link></Button>
               </CardHeader>
               <CardContent className="grid gap-2.5 px-5 pb-5 sm:grid-cols-2">
@@ -123,8 +123,7 @@ export default function StaffDashboardView() {
             <Card className="rounded-2xl border-0 shadow-sm">
               <CardHeader className="px-5 pb-2 pt-5"><CardTitle className="text-base font-semibold">Go to</CardTitle><p className="text-sm text-muted-foreground">Common teaching tools</p></CardHeader>
               <CardContent className="space-y-1 px-3 pb-3">
-                <QuickLink href="/courses" icon={BookOpen} title="Teaching courses" detail="Course lists, attendance, and marks" />
-                <QuickLink href="/attendance" icon={Check} title="Class attendance" detail="Record or review attendance" />
+                <QuickLink href="/courses" icon={BookOpen} title="Teaching courses" detail="Course lists and marks" />
                 <QuickLink href="/timetable" icon={CalendarDays} title="Teaching timetable" detail="See your scheduled classes" />
               </CardContent>
             </Card>

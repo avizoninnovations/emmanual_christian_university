@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
-import { BookOpen, CalendarDays, ChevronDown, ChevronRight, GraduationCap, Layers, Users } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Home, Users } from "lucide-react";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent } from "@workspace/ui/components/card";
@@ -13,26 +14,20 @@ import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-
 type CoursePeriod = NonNullable<ReturnType<typeof useQuery<typeof api.allocations.getLecturerCoursePeriods>>>[number];
 
 export function LecturerCourseUnitsView() {
+  const [openSection, setOpenSection] = useState<string | null>("current");
   const periods = useQuery(api.allocations.getLecturerCoursePeriods, {});
   if (periods === undefined) return <StaffDataSkeleton label="your course units" />;
 
   const upcoming = periods.filter(({ period }) => period.status === "upcoming");
   const current = periods.filter(({ period }) => period.status === "active");
   const past = periods.filter(({ period }) => period.status === "completed");
-  const unitCount = periods.reduce((total, period) => total + period.courses.length, 0);
-
   return <main className="mx-auto min-h-full w-full max-w-7xl space-y-5 p-4 md:p-6">
-    <header className="space-y-1">
-      <p className="text-xs text-muted-foreground">Results <span className="px-1">/</span> Lecturer Courses</p>
-      <h1 className="text-2xl font-semibold tracking-tight">My Course Units</h1>
-      <p className="text-sm text-muted-foreground">View units assigned to you across upcoming, current, and completed semesters.</p>
+    <header className="flex h-8 items-center gap-2 text-sm">
+      <Link href="/" className="flex items-center gap-1.5 text-primary hover:underline"><Home className="size-4" /><span>Home</span></Link>
+      <ChevronRight className="size-4 text-muted-foreground" />
+      <BookOpen className="size-5 text-muted-foreground" />
+      <span className="font-semibold uppercase tracking-wide">Courses</span>
     </header>
-
-    <div className="grid gap-3 sm:grid-cols-3">
-      <SummaryCard icon={Layers} label="Assigned units" value={unitCount} />
-      <SummaryCard icon={CalendarDays} label="Upcoming semesters" value={upcoming.length} />
-      <SummaryCard icon={GraduationCap} label="Past semesters" value={past.length} />
-    </div>
 
     {periods.length === 0 && <Card className="rounded-2xl border-0 shadow-sm"><CardContent className="flex flex-col items-center gap-2 py-12 text-center">
       <BookOpen className="size-8 text-muted-foreground/60" />
@@ -40,27 +35,19 @@ export function LecturerCourseUnitsView() {
       <p className="max-w-lg text-sm text-muted-foreground">When your Head of Department assigns you course units, they will appear here under the semester they belong to.</p>
     </CardContent></Card>}
 
-    <div className="space-y-3">
-      <SemesterSection title="Next Semester" periods={upcoming} tone="muted" defaultOpen />
-      <SemesterSection title="Current Semester" periods={current} tone="current" defaultOpen />
-      <SemesterSection title="Past Semesters" periods={past} tone="past" defaultOpen={past.length > 0} />
+    <div className="space-y-2">
+      <SemesterSection title="Next Semester" periods={upcoming} open={openSection === "next"} onOpenChange={(open) => setOpenSection(open ? "next" : null)} />
+      <SemesterSection title="Current Semester" periods={current} open={openSection === "current"} onOpenChange={(open) => setOpenSection(open ? "current" : null)} />
+      <SemesterSection title="Past Semesters" periods={past} open={openSection === "past"} onOpenChange={(open) => setOpenSection(open ? "past" : null)} />
     </div>
   </main>;
 }
 
-function SummaryCard({ icon: Icon, label, value }: { icon: typeof Layers; label: string; value: number }) {
-  return <Card className="rounded-2xl border-0 shadow-sm"><CardContent className="flex items-center justify-between p-4">
-    <div><p className="text-2xl font-semibold tabular-nums">{value}</p><p className="text-xs text-muted-foreground">{label}</p></div>
-    <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="size-4" /></span>
-  </CardContent></Card>;
-}
-
-function SemesterSection({ title, periods, tone, defaultOpen }: {
-  title: string; periods: CoursePeriod[]; tone: "muted" | "current" | "past"; defaultOpen: boolean;
+function SemesterSection({ title, periods, open, onOpenChange }: {
+  title: string; periods: CoursePeriod[]; open: boolean; onOpenChange: (open: boolean) => void;
 }) {
-  const headerTone = tone === "current" ? "bg-primary text-primary-foreground" : tone === "past" ? "bg-muted text-foreground" : "bg-muted/60 text-foreground";
-  return <Collapsible defaultOpen={defaultOpen} className="overflow-hidden rounded-2xl bg-card shadow-sm">
-    <CollapsibleTrigger asChild><Button variant="ghost" className={`group h-12 w-full justify-between rounded-none px-4 ${headerTone}`}>
+  return <Collapsible open={open} onOpenChange={onOpenChange} className="overflow-hidden rounded-xl bg-card shadow-sm">
+    <CollapsibleTrigger asChild><Button variant="ghost" className="group h-11 w-full justify-between rounded-none bg-muted/60 px-4 text-foreground data-[state=open]:bg-primary data-[state=open]:text-primary-foreground">
       <span className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide"><BookOpen className="size-4" />{title}</span>
       <span className="flex items-center gap-2"><Badge variant="secondary" className="rounded-full">{periods.reduce((count, period) => count + period.courses.length, 0)}</Badge><ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" /></span>
     </Button></CollapsibleTrigger>

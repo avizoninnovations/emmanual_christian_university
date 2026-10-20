@@ -128,12 +128,12 @@ function NavigationGroup({ section, items, pathname, open, onOpenChange, openNes
   const Icon = section.icon;
   return <Collapsible open={open} onOpenChange={onOpenChange} className="group/nav mb-1">
     <SidebarMenu><SidebarMenuItem><CollapsibleTrigger asChild>
-      <SidebarMenuButton tooltip={section.title} className="h-10 gap-3 rounded-md px-3 text-[13px] font-normal text-muted-foreground hover:bg-sidebar-accent/80 hover:text-sidebar-foreground">
+      <SidebarMenuButton tooltip={section.title} className="h-10 gap-2 rounded-md px-2 text-[13px] font-normal text-muted-foreground hover:bg-sidebar-accent/80 hover:text-sidebar-foreground">
         <Icon className="size-5 shrink-0" /><span className="flex-1 truncate uppercase">{section.title}</span>
         <ChevronDown className="size-3.5 shrink-0 transition-transform duration-300 group-data-[state=open]/nav:rotate-180 group-data-[collapsible=icon]:hidden" />
       </SidebarMenuButton>
     </CollapsibleTrigger><CollapsibleContent>
-      <SidebarMenuSub className="mx-4 mb-1 mt-0.5 gap-0.5 border-sidebar-border/70 pl-2">
+      <SidebarMenuSub className="mx-1 mb-1 mt-0.5 gap-0.5 border-sidebar-border/70 px-1">
         <EntryList items={items} pathname={pathname} parentPath={section.key} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} />
       </SidebarMenuSub>
     </CollapsibleContent></SidebarMenuItem></SidebarMenu>
@@ -145,12 +145,12 @@ function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathCh
 }) {
   return <>{items.map((item) => {
     const Icon = item.icon;
-    if (item.kind === "link") return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild isActive={pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`))} className="h-9 gap-2.5 px-2 text-[13px] text-muted-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-primary hover:text-sidebar-foreground"><Link href={item.url}><Icon className="size-4 shrink-0" /><span className="truncate">{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
+    if (item.kind === "link") return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild isActive={pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`))} className="h-9 gap-1.5 px-1.5 text-[13px] text-muted-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-primary hover:text-sidebar-foreground"><Link href={item.url}><Icon className="size-4 shrink-0" /><span className="truncate">{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
     const path = `${parentPath}/${item.key}`;
     const expanded = openNestedPath === path || Boolean(openNestedPath?.startsWith(`${path}/`));
     return <SidebarMenuSubItem key={path}><Collapsible open={expanded} onOpenChange={(isOpen) => onNestedPathChange(path, isOpen)}>
-      <CollapsibleTrigger asChild><SidebarMenuSubButton className="h-9 gap-2.5 px-2 text-[13px] text-muted-foreground hover:text-sidebar-foreground"><Icon className="size-4 shrink-0" /><span className="flex-1 truncate">{item.title}</span>{expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</SidebarMenuSubButton></CollapsibleTrigger>
-      <CollapsibleContent><SidebarMenuSub className="ml-3 mr-0 gap-0.5 border-sidebar-border/70 pl-2"><EntryList items={item.items} pathname={pathname} parentPath={path} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} /></SidebarMenuSub></CollapsibleContent>
+      <CollapsibleTrigger asChild><SidebarMenuSubButton className="h-9 gap-1.5 px-1.5 text-[13px] text-muted-foreground hover:text-sidebar-foreground"><Icon className="size-4 shrink-0" /><span className="flex-1 truncate">{item.title}</span>{expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</SidebarMenuSubButton></CollapsibleTrigger>
+      <CollapsibleContent><SidebarMenuSub className="ml-1 mr-0 gap-0.5 border-sidebar-border/70 px-1"><EntryList items={item.items} pathname={pathname} parentPath={path} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} /></SidebarMenuSub></CollapsibleContent>
     </Collapsible></SidebarMenuSubItem>;
   })}</>;
 }

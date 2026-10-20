@@ -133,10 +133,6 @@ export function CourseAllocationView() {
               HOD Management
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Assign departmental teaching faculty to semester course units for{" "}
-            <strong>{activePeriod?.name || "Active Academic Period"}</strong>.
-          </p>
         </div>
       </div>
 

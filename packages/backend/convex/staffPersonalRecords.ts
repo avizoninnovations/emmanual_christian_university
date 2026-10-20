@@ -31,7 +31,7 @@ const personalDetailKeys = new Set([
 const entryDataKeys: Record<string, readonly string[]> = {
   contact: ["contactType", "value", "label"],
   bankAccount: ["bank", "accountTitle", "bankBranch", "accountNumber"],
-  qualification: ["qualification", "institution", "award", "startYear", "endYear", "country"],
+  qualification: ["qualification", "courseOrFieldOfStudy", "institute", "startYear", "endYear", "fileName", "institution", "award", "country"],
   experience: ["position", "employer", "department", "startDate", "endDate", "responsibilities"],
   employment: ["movementType", "position", "unit", "division", "jobType", "startDate", "endDate"],
   publication: ["title", "publicationType", "journalOrPublisher", "year", "link"],
@@ -196,7 +196,7 @@ export const saveMyProfileEntry = auditedMutation({
     const profile = await getOwnProfile(ctx);
     assertAllowedKeys(args.data, entryDataKeys[args.section] ?? [], args.section);
     if (args.fileId) {
-      if (args.section !== "document") throw new ConvexError({ message: "Only document records accept attachments.", code: "INVALID_FILE" });
+      if (args.section !== "document" && args.section !== "qualification") throw new ConvexError({ message: "This profile record does not accept attachments.", code: "INVALID_FILE" });
       await validateProfileUpload(ctx, args.fileId, ["application/pdf", "image/png", "image/jpeg", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"], 10 * 1024 * 1024);
     }
     const now = Date.now();

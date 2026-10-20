@@ -96,9 +96,6 @@ export function LecturerCoursesView() {
               {courses.length} Assigned
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage student continuous assessments, final exams (30% CW / 70% Exam), and class attendance.
-          </p>
         </div>
       </div>
 

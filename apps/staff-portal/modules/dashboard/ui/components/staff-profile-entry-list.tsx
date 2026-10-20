@@ -44,7 +44,8 @@ export function StaffProfileEntryList({ section, entries }: StaffProfileEntryLis
     try {
       const file = form.get("profileFile");
       let fileId: Id<"_storage"> | undefined;
-      if (section === "document" && file instanceof File && file.size > 0) {
+      if (entry?.fileId) data.fileName = entry.data.fileName ?? "";
+      if ((section === "document" || section === "qualification") && file instanceof File && file.size > 0) {
         if (file.size > 10 * 1024 * 1024) throw new Error("Files must be 10 MB or smaller.");
         const uploadUrl = await generateUploadUrl({});
         const response = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
@@ -81,7 +82,7 @@ export function StaffProfileEntryList({ section, entries }: StaffProfileEntryLis
                 <div className="min-w-0 flex-1">
                   <p className="font-medium">{entry.title || definition.title}</p>
                   <dl className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-                    {definition.fields.slice(1).map((label) => <div key={label} className="min-w-0"><dt className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{label}</dt><dd className="mt-0.5 break-words text-sm">{entry.data[fieldKey(label)] || <span className="text-muted-foreground">Not provided</span>}</dd></div>)}
+                    {definition.fields.slice(1).map((label) => <div key={label} className="min-w-0"><dt className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{label}</dt><dd className="mt-0.5 break-words text-sm">{entry.data[fieldKey(label)] || legacyQualificationValue(entry, label) || <span className="text-muted-foreground">Not provided</span>}</dd></div>)}
                   </dl>
                   {entry.data.fileName && <p className="mt-3 text-xs text-muted-foreground">File: {entry.data.fileName}</p>}
                   {entry.fileUrl && <a href={entry.fileUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-sm font-medium text-primary underline underline-offset-4">View attached file</a>}
@@ -111,7 +112,7 @@ function EntryEditor({ section, record, onClose, onSave }: { section: EntrySecti
   const fileInput = useRef<HTMLInputElement>(null);
   const schema = z.record(z.string(), z.string().max(5000, "Keep each field under 5,000 characters."));
   const defaultValues = definition.fields.reduce<Record<string, string>>((values, label) => {
-    values[fieldKey(label)] = record && record !== "new" ? record.data[fieldKey(label)] ?? "" : "";
+    values[fieldKey(label)] = record && record !== "new" ? record.data[fieldKey(label)] ?? legacyQualificationValue(record, label) ?? "" : "";
     return values;
   }, {});
   const form = useForm<Record<string, string>>({ resolver: zodResolver(schema), defaultValues });
@@ -136,7 +137,7 @@ function EntryEditor({ section, record, onClose, onSave }: { section: EntrySecti
             {definition.fields.map((label, index) => <FormField key={label} control={form.control} name={fieldKey(label)} render={({ field }) => <FormItem className={index === definition.fields.length - 1 && label.length > 24 ? "sm:col-span-2" : ""}>
               <FormLabel>{label}</FormLabel><FormControl>{label === "Responsibilities" || label === "Address" || label === "Notes" ? <Textarea {...field} /> : <Input {...field} type={inputType(label)} />}</FormControl><FormMessage />
             </FormItem>} />)}
-            {section === "document" && <div className="sm:col-span-2"><Label htmlFor="profileFile">Upload the document</Label><Input ref={fileInput} id="profileFile" name="profileFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" className="mt-1" /><p className="mt-1 text-xs text-muted-foreground">PDF, image, or Word file up to 10 MB.</p></div>}
+            {(section === "document" || section === "qualification") && <div className="sm:col-span-2"><Label htmlFor="profileFile">{section === "qualification" ? "Upload an academic document" : "Upload the document"}</Label><Input ref={fileInput} id="profileFile" name="profileFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" className="mt-1" /><p className="mt-1 text-xs text-muted-foreground">PDF, image, or Word file up to 10 MB.</p></div>}
           </div>
           <DialogFooter><Button type="button" variant="outline" onClick={onClose}>Cancel</Button><Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? "Saving…" : "Save record"}</Button></DialogFooter>
         </form></Form>
@@ -147,6 +148,12 @@ function EntryEditor({ section, record, onClose, onSave }: { section: EntrySecti
 
 function fieldKey(label: string) {
   return label.toLowerCase().replace(/[^a-z0-9 ]/g, "").split(" ").filter(Boolean).map((word, index) => index === 0 ? word : `${word[0]?.toUpperCase() ?? ""}${word.slice(1)}`).join("");
+}
+
+function legacyQualificationValue(record: ProfileEntry, label: string) {
+  if (record.section !== "qualification") return undefined;
+  const legacyKey = { Institute: "institution", "Course or field of study": "award" }[label as "Institute" | "Course or field of study"];
+  return legacyKey ? record.data[legacyKey] : undefined;
 }
 
 function inputType(label: string): "text" | "date" | "email" | "tel" | "number" {

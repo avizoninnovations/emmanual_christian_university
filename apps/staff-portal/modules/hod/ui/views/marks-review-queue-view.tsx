@@ -160,9 +160,6 @@ export function MarksReviewQueueView() {
               Academic Approvals
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Review continuous assessments (30%) and final examination marks (70%) submitted by department instructors.
-          </p>
         </div>
       </div>
 

@@ -5,8 +5,8 @@ import {
   type LucideIcon,
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
   Layers, Mail, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
-  DoorOpen, ShieldAlert, MessageSquareWarning, Scale, ChartNoAxesCombined, Utensils,
-  Building2, Award, Bus, Boxes, PackageCheck, Sparkles, BriefcaseBusiness, MonitorPlay,
+  DoorOpen, ShieldAlert, MessageSquareWarning, Scale, ChartNoAxesCombined,
+  Building2, BriefcaseBusiness, MonitorPlay,
   ChevronDown, ChevronRight,
 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/collapsible";
@@ -18,11 +18,11 @@ import {
 type SidebarLink = { kind: "link"; title: string; url: string; icon: LucideIcon };
 type SidebarGroupEntry = { kind: "group"; key: string; title: string; icon: LucideIcon; items: SidebarEntry[] };
 type SidebarEntry = SidebarLink | SidebarGroupEntry;
-type StaffSidebarSection = { key: string; title: string; icon: LucideIcon; items: SidebarEntry[]; roles?: string[] };
+type StaffSidebarSection = { key: string; title: string; icon: LucideIcon; items: SidebarEntry[]; url?: string; roles?: string[] };
 const link = (title: string, url: string, icon: LucideIcon): SidebarLink => ({ kind: "link", title, url, icon });
 const group = (key: string, title: string, icon: LucideIcon, items: SidebarEntry[]): SidebarGroupEntry => ({ kind: "group", key, title, icon, items });
 
-const alphaItems: SidebarEntry[] = [
+const workspaceItems: SidebarEntry[] = [
   link("My Memos", "/workspace/memos", Mail),
   group("finance", "My Finance", Wallet, [
     link("Finance Overview", "/workspace/finance", Wallet),
@@ -40,33 +40,63 @@ const alphaItems: SidebarEntry[] = [
       link("My Defenses", "/workspace/defenses", Scale),
     ]),
   ]),
-  group("my-teaching", "My Teaching", BookOpen, [
-    link("Teaching Workspace", "/workspace/my-teaching", BookOpen),
-    link("My Teaching Reports", "/workspace/teaching-reports", FileSpreadsheet),
-  ]),
-  link("Meals", "/workspace/meals", Utensils),
 ];
 
 export const staffSidebarSections: StaffSidebarSection[] = [
-  { key: "my-alpha", title: "My Alpha", icon: BriefcaseBusiness, items: alphaItems },
-  { key: "faculty", title: "Faculty Central", icon: Building2, items: [link("Faculty Workspace", "/workspace/faculty-central", Building2)] },
-  { key: "results", title: "Results", icon: Award, items: [
-    group("lecturer-courses", "Lecturer Courses", BookOpen, [
-      link("My Aggregated Units", "/workspace/aggregated-units", Layers),
-      link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),
-      link("My Course Units", "/courses", BookOpen),
-      link("My Aegrotat Units", "/workspace/aegrotat-units", ClipboardCheck),
-      link("Teaching Cover", "/cover-requests", UsersRound),
-    ]),
-    link("Results Workspace", "/workspace/results", Award),
+  { key: "my-workspace", title: "My Workspace", icon: BriefcaseBusiness, items: workspaceItems },
+  { key: "faculty", title: "Faculty Central", icon: Building2, url: "/workspace/faculty-central", items: [] },
+  { key: "lecturer-courses", title: "Lecturer Courses", icon: BookOpen, items: [
+    link("My Aggregated Units", "/workspace/aggregated-units", Layers),
+    link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),
+    link("My Course Units", "/courses", BookOpen),
+    link("My Aegrotat Units", "/workspace/aegrotat-units", ClipboardCheck),
+    link("Teaching Cover", "/cover-requests", UsersRound),
   ] },
-  { key: "timetable", title: "Timetable", icon: CalendarDays, items: [link("Teaching Timetable", "/timetable", CalendarDays)] },
+  { key: "timetable", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
   { key: "leadership", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
-  { key: "procurement", title: "Procurement", icon: PackageCheck, items: [link("Procurement Workspace", "/workspace/procurement", PackageCheck)] },
-  { key: "inventory", title: "Inventory", icon: Boxes, items: [link("Inventory Workspace", "/workspace/inventory", Boxes)] },
-  { key: "vehicles", title: "Vehicles", icon: Bus, items: [link("Vehicle Workspace", "/workspace/vehicles", Bus)] },
-  { key: "extras", title: "Alpha Extras", icon: Sparkles, items: [link("University Tools", "/workspace/alpha-extras", Sparkles)] },
 ];
+
+export type StaffBreadcrumb = { label: string; href?: string; icon: LucideIcon };
+
+function findBreadcrumbs(items: SidebarEntry[], pathname: string, parents: StaffBreadcrumb[] = []): StaffBreadcrumb[] | undefined {
+  for (const item of items) {
+    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && pathname.startsWith(`${item.url}/`)))) {
+      const routeSuffix = pathname === item.url ? [] : [{ label: routeSegmentLabel(pathname.split("/").filter(Boolean).at(-1) ?? ""), icon: item.icon }];
+      const linkCrumb = pathname === item.url ? { label: item.title, icon: item.icon } : { label: item.title, href: item.url, icon: item.icon };
+      return [...parents, linkCrumb, ...routeSuffix];
+    }
+    if (item.kind === "group") {
+      const match = findBreadcrumbs(item.items, pathname, [...parents, { label: item.title, icon: item.icon }]);
+      if (match) return match;
+    }
+  }
+  return undefined;
+}
+
+function routeSegmentLabel(segment: string): string {
+  return segment.replace(/[-_]/g, " ").replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+export function getStaffBreadcrumbs(pathname: string): StaffBreadcrumb[] {
+  for (const section of staffSidebarSections) {
+    if (section.url && (section.url === pathname || pathname.startsWith(`${section.url}/`))) {
+      return [
+        { label: section.title, icon: section.icon },
+        ...(section.url === pathname ? [] : [{ label: routeSegmentLabel(pathname.split("/").filter(Boolean).at(-1) ?? ""), icon: section.icon }]),
+      ];
+    }
+    const match = findBreadcrumbs(section.items, pathname);
+    if (match) return [{ label: section.title, icon: section.icon }, ...match];
+  }
+
+  const segments = pathname.split("/").filter(Boolean);
+  if (!segments.length) return [{ label: "Staff Dashboard", icon: Layers }];
+  return segments.map((segment, index) => ({
+    label: routeSegmentLabel(segment),
+    icon: Layers,
+    ...(index < segments.length - 1 ? { href: `/${segments.slice(0, index + 1).join("/")}` } : {}),
+  }));
+}
 
 function findActiveEntry(items: SidebarEntry[], pathname: string, parents: string[] = []): string[] | undefined {
   for (const item of items) {
@@ -81,6 +111,9 @@ function findActiveEntry(items: SidebarEntry[], pathname: string, parents: strin
 
 export function findStaffSidebarNavigation(pathname: string): { sectionKey: string; nestedPath: string | null } | undefined {
   for (const section of staffSidebarSections) {
+    if (section.url && (section.url === pathname || pathname.startsWith(`${section.url}/`))) {
+      return { sectionKey: section.key, nestedPath: null };
+    }
     const parents = findActiveEntry(section.items, pathname);
     if (parents) return { sectionKey: section.key, nestedPath: parents.length ? [section.key, ...parents].join("/") : null };
   }
@@ -102,7 +135,18 @@ export function StaffSidebarNavigation({ pathname, query, openSection, onOpenCha
     {sections.map((section) => {
       const sectionMatches = section.title.toLowerCase().includes(normalizedQuery);
       const items = filterEntries(section.items, normalizedQuery, sectionMatches);
-      if (!items.length) return null;
+      if (section.url && normalizedQuery && !sectionMatches) return null;
+      if (!items.length && !section.url) return null;
+      if (section.url) {
+        const Icon = section.icon;
+        return <SidebarMenu key={section.key} className="mb-1">
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={pathname === section.url || pathname.startsWith(`${section.url}/`)} tooltip={section.title} className="h-10 gap-2 rounded-md px-2 text-[13px] font-normal text-muted-foreground hover:bg-sidebar-accent/80 hover:text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-primary">
+              <Link href={section.url}><Icon className="size-5 shrink-0" /><span className="truncate uppercase">{section.title}</span></Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>;
+      }
       return <NavigationGroup key={section.key} section={section} items={items} pathname={pathname} open={openSection === section.key} onOpenChange={(isOpen) => onOpenChange(section.key, isOpen)} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} />;
     })}
   </SidebarGroupContent></SidebarGroup>;

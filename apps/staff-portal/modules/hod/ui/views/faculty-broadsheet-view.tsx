@@ -170,9 +170,6 @@ export function FacultyBroadsheetView() {
               Senate Format
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Departmental master marksheet compilation for Faculty Board review and Senate degree confirmation.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

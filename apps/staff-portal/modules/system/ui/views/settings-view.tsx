@@ -96,7 +96,6 @@ export function SettingsView() {
             </div>
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Administrative Settings</h1>
-                <p className="text-muted-foreground text-sm font-medium">Manage your profile and university-wide configurations</p>
             </div>
         </div>
       </div>

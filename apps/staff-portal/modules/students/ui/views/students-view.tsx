@@ -37,7 +37,6 @@ export const StudentsView = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Student Directory Analytics</h1>
-          <p className="text-sm text-muted-foreground mt-1">Review enrollment trends, academic distributions, and student statuses.</p>
         </div>
       </div>
 

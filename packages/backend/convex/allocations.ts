@@ -125,7 +125,7 @@ export const getLecturerCoursePeriods = query({
       .query("courseAllocations")
       .withIndex("by_lecturer", (q) => q.eq("lecturerId", userId))
       .order("desc")
-      .take(200);
+      .collect();
 
     const periodIds = [...new Set(allocations.map((allocation) => allocation.periodId))];
     const periods = await Promise.all(periodIds.map((periodId) => ctx.db.get(periodId)));

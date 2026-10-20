@@ -19,7 +19,7 @@ export const DashboardLayout = async ({ children }: { children: React.ReactNode 
           style={{ "--sidebar-width-icon": "6rem" } as React.CSSProperties}
         >
           <DashboardSidebar />
-          <main className="flex min-h-screen flex-1 flex-col bg-muted/40">
+          <main className="portal-content-area flex min-h-screen flex-1 flex-col bg-muted/40">
             <DashboardTopbar />
             {children}
           </main>

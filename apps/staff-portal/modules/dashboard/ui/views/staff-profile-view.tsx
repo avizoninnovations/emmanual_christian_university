@@ -51,11 +51,6 @@ export default function StaffProfileView() {
 
   return (
     <main className="min-h-full min-w-0 w-full bg-transparent p-4 md:p-6">
-      <header className="mb-5">
-        <p className="text-xs font-medium text-muted-foreground">Staff <span className="px-1">/</span> Personal Records</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight">My Profile</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Review and maintain your staff information.</p>
-      </header>
       <div className="grid min-w-0 w-full items-start gap-5 xl:grid-cols-[260px_minmax(0,1fr)]">
         <StaffIdentity user={user} roles={roles} photoUrl={result.photoUrl} />
         <Tabs defaultValue="bio" className="min-w-0">

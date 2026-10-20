@@ -6,6 +6,7 @@ import { SidebarProvider } from "@workspace/ui/components/sidebar";
 import { Provider } from "jotai";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { DashboardSidebar } from "../components/dashboard-sidebar";
+import { StaffRouteBreadcrumbs } from "../components/staff-route-breadcrumbs";
 
 /**
  * Dashboard layout that wraps all authenticated pages.
@@ -36,7 +37,8 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider defaultOpen={true} style={{ "--sidebar-width": "210px" } as React.CSSProperties}>
       <DashboardSidebar />
-      <main className="flex flex-1 flex-col">
+      <main className="portal-content-area flex flex-1 flex-col">
+        <StaffRouteBreadcrumbs />
         {children}
       </main>
     </SidebarProvider>

@@ -17,6 +17,7 @@ export const getFaculties = query({
   },
 });
 
+
 export const createFaculty = mutation({
   args: {
     name: v.string(),

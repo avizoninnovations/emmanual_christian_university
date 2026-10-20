@@ -174,9 +174,6 @@ export function TeachingCoverView() {
               Faculty Workflows
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Formal institutional arrangements for class coverage during pastoral ministry, diocesan missions, and academic travel.
-          </p>
         </div>
 
         <Button

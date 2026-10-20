@@ -117,9 +117,6 @@ export function SupplementaryExamsView() {
               Grade D & Special Candidates
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage candidates sitting supplementary examination papers under South Sudan MoHEST Grade C capping guidelines.
-          </p>
         </div>
 
         <div className="relative w-full sm:w-64">

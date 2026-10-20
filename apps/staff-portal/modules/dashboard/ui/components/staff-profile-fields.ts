@@ -54,7 +54,7 @@ export const profileFields: Record<StaffProfileSection, StaffProfileField[]> = {
 export const entrySections = {
   contact: { title: "Contact information", fields: ["Contact type", "Value", "Label"] },
   bankAccount: { title: "Other bank accounts", fields: ["Bank", "Account title", "Bank branch", "Account number"] },
-  qualification: { title: "Academic background", fields: ["Qualification", "Institution", "Award", "Start year", "End year", "Country"] },
+  qualification: { title: "Academic background", fields: ["Qualification", "Course or field of study", "Institute", "Start year", "End year"] },
   experience: { title: "Work experience", fields: ["Position", "Employer", "Department", "Start date", "End date", "Responsibilities"] },
   employment: { title: "Employment history", fields: ["Movement type", "Position", "Unit", "Division", "Job type", "Start date", "End date"] },
   publication: { title: "Publications", fields: ["Title", "Publication type", "Journal or publisher", "Year", "Link"] },

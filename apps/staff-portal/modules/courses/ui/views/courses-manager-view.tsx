@@ -131,9 +131,6 @@ export function CoursesManagerView() {
               {courses.length} courses
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage curriculum units, credit weightings, and program course matrices.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

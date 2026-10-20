@@ -34,9 +34,6 @@ export const AcademicStructureView = () => {
       {/* ── Page Header ── */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Academic Structure</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Manage the university's faculties, departments, and academic programs.
-        </p>
       </div>
 
       {/* ── Summary Cards ── */}

@@ -209,9 +209,6 @@ export const FinanceView = () => {
               {activePeriod ? `${activePeriod.name} (${activePeriod.year})` : "All Periods"}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage tuition billing, payment recording, fee structures, and examination clearance.
-          </p>
         </div>
 
         {/* Global Action Buttons */}

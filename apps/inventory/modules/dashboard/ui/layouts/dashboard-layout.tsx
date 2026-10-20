@@ -14,7 +14,7 @@ export const DashboardLayout = async ({ children }: { children: React.ReactNode 
       <Provider>
         <SidebarProvider defaultOpen={defaultOpen}>
           <DashboardSidebar />
-          <main className="flex flex-1 flex-col">
+          <main className="portal-content-area flex flex-1 flex-col">
             {children}
           </main>
         </SidebarProvider>

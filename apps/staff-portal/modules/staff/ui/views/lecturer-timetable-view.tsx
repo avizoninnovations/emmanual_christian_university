@@ -144,9 +144,6 @@ export function LecturerTimetableView() {
               Weekly Grid
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Weekly lecture schedules, assigned lecture rooms, and automated collision detection.
-          </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">

@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminSidebar } from "@/modules/dashboard/ui/components/admin-sidebar";
+import { StaffRouteBreadcrumbs } from "@/modules/dashboard/ui/components/staff-route-breadcrumbs";
 import { SidebarProvider, SidebarTrigger } from "@workspace/ui/components/sidebar";
 import Image from "next/image";
 
@@ -12,7 +13,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="p-2 md:hidden">
           <SidebarTrigger />
         </div>
-        <div className="flex-1 overflow-y-auto w-full relative">
+        <div className="portal-content-area flex-1 overflow-y-auto w-full relative">
           {/* ── Background Watermark ── */}
           <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none z-0 overflow-hidden">
             <Image 
@@ -25,6 +26,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
           
           <div className="relative z-10 w-full min-h-full">
+            <StaffRouteBreadcrumbs />
             {children}
           </div>
         </div>

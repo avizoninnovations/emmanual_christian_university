@@ -116,6 +116,7 @@ export const getCourseGradebook = query({
         return {
           studentId: sid,
           studentName: user?.name ?? "Student",
+          studentAccessNumber: student?.accessNumber ?? "—",
           studentRegNumber: student?.registrationNumber ?? "—",
           assignmentMarks: assignment,
           testMarks: test,

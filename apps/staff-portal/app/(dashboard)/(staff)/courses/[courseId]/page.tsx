@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { CourseWorkspaceView } from "@/modules/staff/ui/views/course-workspace-view";
+import { ClassResultsEntryView } from "@/modules/marks/ui/views/class-results-entry-view";
 import { Id } from "@workspace/backend/_generated/dataModel";
 
 interface CourseDetailPageProps {
@@ -12,7 +12,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
   const resolvedParams = use(params);
 
   return (
-    <CourseWorkspaceView
+    <ClassResultsEntryView
       courseId={resolvedParams.courseId as Id<"courses">}
     />
   );

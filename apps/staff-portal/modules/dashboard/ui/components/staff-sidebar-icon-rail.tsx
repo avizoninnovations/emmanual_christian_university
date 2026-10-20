@@ -3,13 +3,17 @@
 import Link from "next/link";
 import {
   Award,
+  Building2,
   BookOpen,
   CalendarDays,
   FileSpreadsheet,
   FileText,
   LayoutDashboard,
   Layers,
+  Mail,
+  UserRound,
   UserCheck,
+  Wallet,
 } from "lucide-react";
 import {
   SidebarGroup,
@@ -21,6 +25,11 @@ import {
 
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "My Memos", url: "/workspace/memos", icon: Mail },
+  { title: "My Finance", url: "/workspace/finance", icon: Wallet },
+  { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
+  { title: "Personal Records", url: "/profile", icon: UserRound },
+  { title: "Faculty Central", url: "/workspace/faculty-central", icon: Building2 },
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
   { title: "Timetable", url: "/timetable", icon: CalendarDays },
   { title: "Teaching Cover", url: "/cover-requests", icon: UserCheck },

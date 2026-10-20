@@ -127,12 +127,12 @@ export const StaffSidebar = () => {
         <SidebarContent className="relative z-10 gap-0 overflow-x-hidden overflow-y-auto px-2 py-1">
           <StaffSidebarIconRail pathname={pathname} hasLeadership={Boolean(hasLeadership)} />
           <div className="group-data-[collapsible=icon]:hidden">
-          <SidebarGroup className="px-0 py-3">
+          <SidebarGroup className="border-b border-sidebar-border/60 px-1 py-3">
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Staff Dashboard" className="h-11 rounded-md px-3 text-muted-foreground shadow-sm hover:bg-sidebar-accent/80 hover:text-sidebar-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground">
-                    <Link href="/"><LayoutDashboard className="size-5" /><span className="text-xs font-semibold uppercase">Staff Dashboard</span></Link>
+                  <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
+                    <Link href="/"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === "/" ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><LayoutDashboard className="size-4" /></span><span>Dashboard</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

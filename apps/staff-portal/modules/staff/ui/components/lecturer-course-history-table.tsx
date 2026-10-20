@@ -35,12 +35,12 @@ export function LecturerCourseHistoryTable({ periods }: { periods: CoursePeriod[
           </Button></CollapsibleTrigger>
           <CollapsibleContent className="border-t border-border/50 px-2 pb-2 pt-1 sm:px-3">
             <div className="overflow-x-auto"><Table>
-              <TableHeader><TableRow className="hover:bg-transparent"><TableHead>Semester</TableHead><TableHead>Course</TableHead><TableHead>Program</TableHead><TableHead>Hours</TableHead><TableHead>Stream</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow className="hover:bg-transparent"><TableHead>Semester</TableHead><TableHead>Course</TableHead><TableHead>Program</TableHead><TableHead>Students</TableHead><TableHead>Stream</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
               <TableBody>{courses.map((course) => <TableRow key={course.allocationId}>
                 <TableCell className="min-w-40 whitespace-nowrap">{period.name} {period.year} · Sem {period.term}</TableCell>
                 <TableCell className="min-w-56"><span className="block font-medium">{course.title}</span><span className="font-mono text-xs text-muted-foreground">{course.code}</span></TableCell>
                 <TableCell className="min-w-40">{course.programName}<span className="block text-xs text-muted-foreground">Year {course.yearOfStudy} · Curriculum semester {course.semester}</span></TableCell>
-                <TableCell className="tabular-nums">—</TableCell><TableCell>None</TableCell>
+                <TableCell className="tabular-nums">{course.studentCount}</TableCell><TableCell>None</TableCell>
                 <TableCell className="text-right"><Button asChild size="sm" variant="ghost" className="h-8 rounded-sm whitespace-nowrap px-2 text-primary"><Link href={`/courses/${course.courseId}`}>Manage Class Results</Link></Button></TableCell>
               </TableRow>)}</TableBody>
             </Table></div>

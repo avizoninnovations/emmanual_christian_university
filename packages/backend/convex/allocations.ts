@@ -17,6 +17,7 @@ type LecturerCourseCard = {
   semester: number;
   departmentName: string;
   programName: string;
+  studentCount: number;
 };
 
 // Helper to fetch user map
@@ -139,6 +140,19 @@ export const getLecturerCoursePeriods = query({
     const programIds = [...new Set(courses.flatMap((course) => course ? [course.programId] : []))];
     const programs = await Promise.all(programIds.map((programId) => ctx.db.get(programId)));
     const programMap = new Map(programs.filter((program) => program !== null).map((program) => [program._id, program.name]));
+    const studentCounts = await Promise.all(allocations.map(async (allocation) => {
+      const registrations = await ctx.db
+        .query("studentCourseRegistrations")
+        .withIndex("by_course_period", (q) =>
+          q.eq("courseId", allocation.courseId).eq("periodId", allocation.periodId)
+        )
+        .collect();
+      const studentIds = new Set(registrations
+        .filter((registration) => registration.status === "registered" || registration.status === "completed")
+        .map((registration) => registration.studentId));
+      return [String(allocation._id), studentIds.size] as const;
+    }));
+    const studentCountByAllocation = new Map(studentCounts);
     const grouped = new Map<string, { period: NonNullable<(typeof periods)[number]>; courses: LecturerCourseCard[] }>();
 
     for (const allocation of allocations) {
@@ -157,6 +171,7 @@ export const getLecturerCoursePeriods = query({
         semester: course.semester,
         departmentName: departmentMap.get(course.departmentId) ?? "—",
         programName: programMap.get(course.programId) ?? "—",
+        studentCount: studentCountByAllocation.get(String(allocation._id)) ?? 0,
       });
       grouped.set(key, { period, courses: periodCourses });
     }

@@ -51,7 +51,10 @@ export function SearchableSelect({
           disabled={disabled}
           className={cn("w-full justify-between rounded-sm font-normal", className)}
         >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+          <span
+            title={selected?.label}
+            className={cn("min-w-0 flex-1 truncate text-left", !selected && "text-muted-foreground")}
+          >
             {selected?.label ?? placeholder}
           </span>
           <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
@@ -72,7 +75,7 @@ export function SearchableSelect({
                 }}
               >
                 <Check className={cn("size-4", value === option.value ? "opacity-100" : "opacity-0")} />
-                <span className="truncate">{option.label}</span>
+                <span title={option.label} className="min-w-0 flex-1 truncate">{option.label}</span>
               </CommandItem>
             ))}
           </CommandList>

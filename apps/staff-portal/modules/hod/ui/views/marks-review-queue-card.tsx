@@ -44,6 +44,12 @@ export function MarksReviewQueueCard({ course, periodId }: { course: Course; per
             <p className="truncate text-sm font-medium">{course.lecturerName || "Unassigned"}</p>
           </div>
         </div>
+        <div aria-label="Student marks breakdown" className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <span><strong className="font-semibold text-foreground">{course.approvedCount}</strong> approved</span>
+          <span><strong className="font-semibold text-foreground">{course.submittedCount}</strong> pending</span>
+          <span><strong className="font-semibold text-foreground">{course.draftCount}</strong> draft / returned</span>
+          <span><strong className="font-semibold text-foreground">{Math.max(course.studentCount - course.marksEnteredCount, 0)}</strong> not entered</span>
+        </div>
         <Button asChild size="sm" variant={submitted || approved ? "default" : "outline"} className="w-full justify-start gap-2 rounded-sm shadow-sm">
           <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
             <ActionIcon className="size-4" />{approved ? "View approved marks" : submitted ? "Review submitted marks" : "Open course unit"}

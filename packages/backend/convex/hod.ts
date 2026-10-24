@@ -1,6 +1,7 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server.js";
+import type { Doc } from "./_generated/dataModel.js";
 import { mutation } from "./lib/mutations.js";
 import { academicActor, assertDepartmentManager, classContext, managedDepartments, staffName } from "./lib/academicAccess.js";
 import { appointDepartmentHead } from "./lib/departmentLeadership.js";
@@ -74,21 +75,30 @@ export const courses = query({
         .filter(row => row.status === "registered" || row.status === "completed")
         .map(row => row.studentId))];
       const marksByStudent = new Map(assessments.map(mark => [mark.studentId, mark]));
-      const hasMarks = assessments.some(mark => mark.courseworkEntered !== false || mark.examEntered !== false);
-      const submittedCount = assessments.filter(mark => mark.status === "submitted").length;
+      const markForStudent = (studentId: typeof enrolledStudentIds[number]) => marksByStudent.get(studentId);
+      const marksEnteredCount = enrolledStudentIds.filter(studentId => hasEnteredMark(markForStudent(studentId))).length;
+      const submittedCount = enrolledStudentIds.filter(studentId => markForStudent(studentId)?.status === "submitted").length;
       const approvedCount = enrolledStudentIds.filter(studentId => {
         const mark = marksByStudent.get(studentId);
         return mark?.status === "approved" && !mark.publicationWithdrawn;
       }).length;
+      const draftCount = enrolledStudentIds.filter(studentId => {
+        const mark = markForStudent(studentId);
+        return hasEnteredMark(mark) && (mark?.status === "draft" || mark?.status === "returned");
+      }).length;
       const fullyApproved = enrolledStudentIds.length > 0 && registrations.length < 501
         && assessments.length < 501 && approvedCount === enrolledStudentIds.length;
-      return { ...course, programName: program?.name ?? "", allocation, hasMarks, hasSubmitted: submittedCount > 0,
-        fullyApproved, studentCount: enrolledStudentIds.length, marksEnteredCount: assessments.filter(mark => mark.courseworkEntered !== false || mark.examEntered !== false).length,
-        submittedCount, approvedCount,
+      return { ...course, programName: program?.name ?? "", allocation, hasMarks: marksEnteredCount > 0, hasSubmitted: submittedCount > 0,
+        fullyApproved, studentCount: enrolledStudentIds.length, marksEnteredCount, submittedCount, approvedCount, draftCount,
         lecturerName: allocation ? (await staffName(ctx, allocation.lecturerId)).name : "Unassigned" };
     })) };
   },
 });
+
+function hasEnteredMark(mark: Doc<"studentAssessments"> | undefined) {
+  return !!mark && ((mark.approvedSnapshot?.courseworkEntered ?? mark.courseworkEntered) !== false
+    || (mark.approvedSnapshot?.examEntered ?? mark.examEntered) !== false);
+}
 
 export const overview = query({
   args: { departmentId: v.id("departments"), periodId: v.id("academicPeriods") },

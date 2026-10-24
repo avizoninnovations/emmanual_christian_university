@@ -26,6 +26,7 @@ import type * as lib_academicAudit from "../lib/academicAudit.js";
 import type * as lib_academicResults from "../lib/academicResults.js";
 import type * as lib_academicStanding from "../lib/academicStanding.js";
 import type * as lib_academicWorkflowSchema from "../lib/academicWorkflowSchema.js";
+import type * as lib_demoAcademicWorkflowSeed from "../lib/demoAcademicWorkflowSeed.js";
 import type * as lib_demoPortalSeed from "../lib/demoPortalSeed.js";
 import type * as lib_departmentLeadership from "../lib/departmentLeadership.js";
 import type * as lib_markPermissionAccess from "../lib/markPermissionAccess.js";
@@ -77,6 +78,7 @@ declare const fullApi: ApiFromModules<{
   "lib/academicResults": typeof lib_academicResults;
   "lib/academicStanding": typeof lib_academicStanding;
   "lib/academicWorkflowSchema": typeof lib_academicWorkflowSchema;
+  "lib/demoAcademicWorkflowSeed": typeof lib_demoAcademicWorkflowSeed;
   "lib/demoPortalSeed": typeof lib_demoPortalSeed;
   "lib/departmentLeadership": typeof lib_departmentLeadership;
   "lib/markPermissionAccess": typeof lib_markPermissionAccess;

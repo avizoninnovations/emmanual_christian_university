@@ -60,7 +60,7 @@ export function SearchableSelect({
           <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] p-0">
+      <PopoverContent align="start" className="w-max min-w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-0">
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
@@ -75,7 +75,7 @@ export function SearchableSelect({
                 }}
               >
                 <Check className={cn("size-4", value === option.value ? "opacity-100" : "opacity-0")} />
-                <span title={option.label} className="min-w-0 flex-1 truncate">{option.label}</span>
+                <span title={option.label} className="min-w-0 flex-1 whitespace-normal break-words">{option.label}</span>
               </CommandItem>
             ))}
           </CommandList>

@@ -193,7 +193,21 @@ function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathCh
     const Icon = item.icon;
     if (item.kind === "link") {
       const active = pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`));
-      return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild size="sm" isActive={active} className={`h-9 gap-1.5 rounded-md border-l-2 px-1.5 font-normal whitespace-nowrap transition-colors data-[active=true]:border-primary data-[active=true]:bg-primary/5 data-[active=true]:font-semibold data-[active=true]:text-primary hover:bg-primary/5 [&>span:last-child]:overflow-visible [&>span:last-child]:text-clip ${active ? "border-primary bg-primary/5" : "border-transparent"}`}><Link href={item.url}><span className={`flex size-6 shrink-0 items-center justify-center rounded-md transition-colors ${active ? "bg-primary/10 text-primary" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-3.5" /></span><span>{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
+      return <SidebarMenuSubItem key={item.url}>
+        <SidebarMenuSubButton
+          asChild
+          size="sm"
+          isActive={active}
+          className={`h-9 gap-1.5 rounded-sm border-b-2 border-l-0 px-1.5 font-normal whitespace-nowrap transition-colors data-[active=true]:border-b-primary/70 data-[active=true]:bg-primary/5 data-[active=true]:font-semibold data-[active=true]:text-primary hover:bg-primary/5 [&>span:last-child]:overflow-visible [&>span:last-child]:text-clip ${active ? "border-b-primary/70 bg-primary/5" : "border-b-transparent"}`}
+        >
+          <Link href={item.url} aria-current={active ? "page" : undefined}>
+            <span className={`flex size-6 shrink-0 items-center justify-center rounded-sm transition-colors ${active ? "bg-primary/10 text-primary" : "bg-muted text-sidebar-accent-foreground"}`}>
+              <Icon className="size-3.5" />
+            </span>
+            <span>{item.title}</span>
+          </Link>
+        </SidebarMenuSubButton>
+      </SidebarMenuSubItem>;
     }
     const path = `${parentPath}/${item.key}`;
     const expanded = openNestedPath === path || Boolean(openNestedPath?.startsWith(`${path}/`));

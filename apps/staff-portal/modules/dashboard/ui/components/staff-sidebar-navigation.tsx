@@ -137,8 +137,8 @@ export function StaffSidebarNavigation({ pathname, query, openSection, onOpenCha
         const Icon = section.icon;
         return <SidebarMenu key={section.key} className="mb-0">
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname === section.url || pathname.startsWith(`${section.url}/`)} tooltip={section.title} className="h-10 gap-3 rounded-lg px-3 text-sm font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
-              <Link href={section.url}><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === section.url || pathname.startsWith(`${section.url}/`) ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="truncate">{section.title}</span></Link>
+            <SidebarMenuButton asChild isActive={pathname === section.url || pathname.startsWith(`${section.url}/`)} tooltip={section.title} className="h-10 gap-3 rounded-lg px-3 text-sm font-medium transition-colors data-[active=true]:bg-primary data-[active=true]:text-primary-foreground hover:bg-primary/10 hover:text-primary">
+              <Link href={section.url}><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === section.url || pathname.startsWith(`${section.url}/`) ? "bg-primary-foreground/15 text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="truncate">{section.title}</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>;
@@ -165,10 +165,11 @@ function NavigationGroup({ section, items, pathname, open, onOpenChange, openNes
   openNestedPath: string | null; onNestedPathChange: (path: string, open: boolean) => void;
 }) {
   const Icon = section.icon;
+  const hasActiveRoute = pathnameMatches(items, pathname);
   return <Collapsible open={open} onOpenChange={onOpenChange} className="group/nav mb-1">
     <SidebarMenu><SidebarMenuItem><CollapsibleTrigger asChild>
-      <SidebarMenuButton tooltip={section.title} className="h-10 gap-3 rounded-lg px-3 text-sm font-normal data-[active=true]:bg-muted data-[active=true]:text-foreground hover:bg-muted/70">
-        <span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${open || pathnameMatches(items, pathname) ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="flex-1 truncate">{section.title}</span>
+      <SidebarMenuButton tooltip={section.title} aria-expanded={open} className={`h-10 gap-3 rounded-lg px-3 text-sm transition-colors hover:bg-primary/10 hover:text-primary ${hasActiveRoute ? "bg-primary/10 font-semibold text-primary" : "font-normal"}`}>
+        <span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${hasActiveRoute ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="flex-1 truncate">{section.title}</span>
         <ChevronDown className="size-4 shrink-0 transition-transform duration-[400ms] group-data-[state=open]/nav:rotate-180 group-data-[collapsible=icon]:hidden" />
       </SidebarMenuButton>
     </CollapsibleTrigger><CollapsibleContent>
@@ -190,11 +191,14 @@ function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathCh
 }) {
   return <>{items.map((item) => {
     const Icon = item.icon;
-    if (item.kind === "link") return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild size="sm" isActive={pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`))} className="h-9 gap-1.5 rounded-md px-1.5 font-normal whitespace-nowrap data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70 [&>span:last-child]:overflow-visible [&>span:last-child]:text-clip"><Link href={item.url}><span className={`flex size-6 shrink-0 items-center justify-center rounded-md ${pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)) ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-3.5" /></span><span>{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
+    if (item.kind === "link") {
+      const active = pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`));
+      return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild size="sm" isActive={active} className={`h-9 gap-1.5 rounded-md border-l-2 px-1.5 font-normal whitespace-nowrap transition-colors data-[active=true]:border-primary data-[active=true]:bg-primary/5 data-[active=true]:font-semibold data-[active=true]:text-primary hover:bg-primary/5 [&>span:last-child]:overflow-visible [&>span:last-child]:text-clip ${active ? "border-primary bg-primary/5" : "border-transparent"}`}><Link href={item.url}><span className={`flex size-6 shrink-0 items-center justify-center rounded-md transition-colors ${active ? "bg-primary/10 text-primary" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-3.5" /></span><span>{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
+    }
     const path = `${parentPath}/${item.key}`;
     const expanded = openNestedPath === path || Boolean(openNestedPath?.startsWith(`${path}/`));
     return <SidebarMenuSubItem key={path}><Collapsible open={expanded} onOpenChange={(isOpen) => onNestedPathChange(path, isOpen)}>
-      <CollapsibleTrigger asChild><SidebarMenuSubButton className="h-10 gap-3 rounded-lg px-3 text-sm font-normal hover:bg-muted/70"><span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-sidebar-accent-foreground"><Icon className="size-4" /></span><span className="flex-1 truncate">{item.title}</span>{expanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}</SidebarMenuSubButton></CollapsibleTrigger>
+      <CollapsibleTrigger asChild><SidebarMenuSubButton className={`h-10 gap-3 rounded-lg px-3 text-sm transition-colors hover:bg-primary/5 hover:text-primary ${expanded || pathnameMatches(item.items, pathname) ? "bg-primary/5 font-medium text-primary" : "font-normal"}`}><span className={`flex size-7 shrink-0 items-center justify-center rounded-md ${expanded || pathnameMatches(item.items, pathname) ? "bg-primary/10 text-primary" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="flex-1 truncate">{item.title}</span>{expanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}</SidebarMenuSubButton></CollapsibleTrigger>
       <CollapsibleContent><SidebarMenuSub className="ml-1 mr-0 gap-0.5 border-sidebar-border/70 px-1"><EntryList items={item.items} pathname={pathname} parentPath={path} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} /></SidebarMenuSub></CollapsibleContent>
     </Collapsible></SidebarMenuSubItem>;
   })}</>;

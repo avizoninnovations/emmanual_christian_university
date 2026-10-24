@@ -131,8 +131,8 @@ export const StaffSidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
-                    <Link href="/"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === "/" ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><LayoutDashboard className="size-4" /></span><span>Dashboard</span></Link>
+                  <SidebarMenuButton asChild isActive={pathname === "/"} tooltip="Dashboard" className="h-10 gap-3 rounded-lg px-3 font-medium transition-colors data-[active=true]:bg-primary data-[active=true]:text-primary-foreground hover:bg-primary/10 hover:text-primary">
+                    <Link href="/"><span className={`flex size-7 shrink-0 items-center justify-center rounded-md transition-colors ${pathname === "/" ? "bg-primary-foreground/15 text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><LayoutDashboard className="size-4" /></span><span>Dashboard</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

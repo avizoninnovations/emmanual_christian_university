@@ -17,7 +17,8 @@ export function CourseAllocationTable({ courses, canAssign, periodStatus, onAssi
       <Table className="min-w-[860px]">
         <TableHeader>
           <TableRow className="bg-muted/45 hover:bg-muted/45">
-            <TableHead className="h-11 pl-5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Course unit</TableHead>
+            <TableHead className="h-11 w-14 pl-5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">No.</TableHead>
+            <TableHead className="h-11 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Course unit</TableHead>
             <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Program</TableHead>
             <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Assigned lecturer</TableHead>
             <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</TableHead>
@@ -25,12 +26,13 @@ export function CourseAllocationTable({ courses, canAssign, periodStatus, onAssi
           </TableRow>
         </TableHeader>
         <TableBody>
-          {courses.map(course => {
+          {courses.map((course, index) => {
             const assigned = Boolean(course.allocation);
             const assignmentLocked = course.hasSubmitted;
             return (
               <TableRow key={course._id} className="group transition-colors hover:bg-muted/25">
-                <TableCell className="py-4 pl-5">
+                <TableCell className="py-4 pl-5 font-mono text-xs tabular-nums text-muted-foreground">{index + 1}</TableCell>
+                <TableCell className="py-4">
                   <div className="flex items-start gap-3">
                     <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-sm bg-primary/8 text-primary">
                       <BookOpen className="size-4" />

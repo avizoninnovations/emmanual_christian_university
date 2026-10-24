@@ -15,7 +15,8 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: Course[]
       <Table className="min-w-[760px]">
         <TableHeader>
           <TableRow className="bg-muted/45 hover:bg-muted/45">
-            <TableHead className="h-11 pl-5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Course unit</TableHead>
+            <TableHead className="h-11 w-14 pl-5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">No.</TableHead>
+            <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Course unit</TableHead>
             <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Program</TableHead>
             <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Lecturer</TableHead>
             <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Review status</TableHead>
@@ -23,14 +24,15 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: Course[]
           </TableRow>
         </TableHeader>
         <TableBody>
-          {courses.map(course => {
+          {courses.map((course, index) => {
             const submitted = course.hasSubmitted;
             const approved = course.hasApproved;
             const Icon = submitted ? CircleDot : CheckCheck;
             const reviewLabel = submitted && approved ? "Mixed · pending review" : submitted ? "Awaiting review" : approved ? "Approved marks" : "No pending review";
             return (
               <TableRow key={course._id} className="transition-colors hover:bg-muted/25">
-                <TableCell className="py-4 pl-5">
+                <TableCell className="py-4 pl-5 font-mono text-xs tabular-nums text-muted-foreground">{index + 1}</TableCell>
+                <TableCell className="py-4">
                   <span className="block max-w-[24rem] truncate font-medium">{course.title}</span>
                   <span className="mt-1 block font-mono text-xs text-muted-foreground">{course.code}</span>
                 </TableCell>

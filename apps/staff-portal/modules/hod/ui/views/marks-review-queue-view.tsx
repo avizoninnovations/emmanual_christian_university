@@ -1,2 +1,2 @@
 import { DepartmentCoursesView } from "./department-courses-view";
-export function MarksReviewQueueView() { return <DepartmentCoursesView mode="review" />; }
+export function MarksReviewQueueView() { return <DepartmentCoursesView />; }

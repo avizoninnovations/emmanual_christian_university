@@ -14,6 +14,7 @@ import type * as allocations from "../allocations.js";
 import type * as audit_logger from "../audit_logger.js";
 import type * as broadsheet from "../broadsheet.js";
 import type * as calendar from "../calendar.js";
+import type * as courseRosterSeed from "../courseRosterSeed.js";
 import type * as courses from "../courses.js";
 import type * as demoSeed from "../demoSeed.js";
 import type * as departmentAllocations from "../departmentAllocations.js";
@@ -67,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   audit_logger: typeof audit_logger;
   broadsheet: typeof broadsheet;
   calendar: typeof calendar;
+  courseRosterSeed: typeof courseRosterSeed;
   courses: typeof courses;
   demoSeed: typeof demoSeed;
   departmentAllocations: typeof departmentAllocations;

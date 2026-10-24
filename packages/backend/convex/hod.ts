@@ -64,12 +64,13 @@ export const courses = query({
       .filter(q => q.eq(q.field("status"), "active"))
       .paginate(args.paginationOpts);
     return { ...page, page: await Promise.all(page.page.map(async course => {
-      const [allocation, program, submitted] = await Promise.all([
+      const [allocation, program, submitted, approved] = await Promise.all([
         ctx.db.query("courseAllocations").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).unique(),
         ctx.db.get(course.programId),
         ctx.db.query("studentAssessments").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).filter(q => q.eq(q.field("status"), "submitted")).first(),
+        ctx.db.query("studentAssessments").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).filter(q => q.and(q.eq(q.field("status"), "approved"), q.neq(q.field("publicationWithdrawn"), true))).first(),
       ]);
-      return { ...course, programName: program?.name ?? "", allocation, hasSubmitted: !!submitted,
+      return { ...course, programName: program?.name ?? "", allocation, hasSubmitted: !!submitted, hasApproved: !!approved,
         lecturerName: allocation ? (await staffName(ctx, allocation.lecturerId)).name : "Unassigned" };
     })) };
   },

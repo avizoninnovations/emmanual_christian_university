@@ -1,7 +1,6 @@
 import { internal } from "./_generated/api.js";
 import type { Doc, Id } from "./_generated/dataModel.js";
-import { internalAction, internalMutation, internalQuery, type ActionCtx } from "./_generated/server.js";
-import { components } from "./_generated/api.js";
+import { internalAction, internalMutation, internalQuery } from "./_generated/server.js";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 
@@ -25,7 +24,6 @@ const TARGET_MINIMUM = 20;
 const TARGET_RANGE = 11;
 const ROSTER_CANDIDATE_LIMIT = 60;
 const COURSE_BATCH_SIZE = 5;
-const STUDENT_CLEANUP_BATCH_SIZE = 50;
 
 type CoursePage = {
   page: Doc<"courses">[];
@@ -33,14 +31,8 @@ type CoursePage = {
   continueCursor: string;
   period: Doc<"academicPeriods">;
 };
-type PlaceholderStudentPage = {
-  page: Doc<"students">[];
-  isDone: boolean;
-  continueCursor: string;
-  placeholders: Doc<"students">[];
-};
-
 type BatchResult = { courses: number; studentsAdded: number; registrationsAdded: number; aboveRange: number; underfilled: number };
+type SeedSummary = BatchResult & { periodName: string; existingNamesCleaned: number };
 
 export const activeCoursePage = internalQuery({
   args: { paginationOpts: paginationOptsValidator },
@@ -57,8 +49,8 @@ export const activeCoursePage = internalQuery({
 
 export const seedAllActiveCourseRosters = internalAction({
   args: {},
-  handler: async ctx => {
-    const cleaned = await cleanPlaceholderNames(ctx);
+  handler: async (ctx): Promise<SeedSummary> => {
+    const cleaned: number = await ctx.runAction(internal.courseRosterCleanup.cleanPlaceholderNames, {});
     let cursor: string | null = null;
     let isDone = false;
     const summary = { periodName: "", courses: 0, studentsAdded: 0, registrationsAdded: 0, aboveRange: 0, underfilled: 0, existingNamesCleaned: cleaned };
@@ -87,34 +79,6 @@ export const seedAllActiveCourseRosters = internalAction({
     }
 
     return summary;
-  },
-});
-
-export const placeholderStudentPage = internalQuery({
-  args: { paginationOpts: paginationOptsValidator },
-  handler: async (ctx, args) => {
-    const page = await ctx.db.query("students").paginate(args.paginationOpts);
-    return {
-      ...page,
-      placeholders: page.page.filter(student => student.firstName?.startsWith("Demo ") && student.surname === "Agriculture Student"),
-    };
-  },
-});
-
-export const cleanStudentNames = internalMutation({
-  args: { students: v.array(v.object({ id: v.id("students"), firstName: v.string(), surname: v.string() })) },
-  handler: async (ctx, args) => {
-    const now = Date.now();
-    for (const student of args.students) {
-      await ctx.db.patch(student.id, { firstName: student.firstName, surname: student.surname, updatedAt: now });
-    }
-    const departments = await ctx.db.query("departments").collect();
-    for (const department of departments) {
-      if (department.name.startsWith("Demo Department of ")) {
-        await ctx.db.patch(department._id, { name: department.name.replace("Demo Department of ", "Department of "), updatedAt: now });
-      }
-    }
-    return args.students.length;
   },
 });
 
@@ -213,51 +177,6 @@ export const seedRosterBatch = internalMutation({
     return { courses: courses.length, studentsAdded, registrationsAdded, aboveRange, underfilled };
   },
 });
-
-async function cleanPlaceholderNames(ctx: ActionCtx) {
-  let cursor: string | null = null;
-  let isDone = false;
-  let cleaned = 0;
-
-  while (!isDone) {
-    const page: PlaceholderStudentPage = await ctx.runQuery(internal.courseRosterSeed.placeholderStudentPage, {
-      paginationOpts: { numItems: STUDENT_CLEANUP_BATCH_SIZE, cursor },
-    });
-    if (page.placeholders.length) {
-      const updates = page.placeholders.map(student => {
-        const names = realisticExistingName(student.registrationNumber);
-        return { id: student._id, ...names };
-      });
-      await ctx.runMutation(internal.courseRosterSeed.cleanStudentNames, { students: updates });
-      for (const student of page.placeholders) {
-        const name = realisticExistingName(student.registrationNumber);
-        const user = await ctx.runQuery(components.betterAuth.adapter.findOne, {
-          model: "user",
-          where: [{ field: "_id", value: student.userId, operator: "eq" }],
-        });
-        if (user?._id) {
-          await ctx.runMutation(components.betterAuth.adapter.updateOne, { input: {
-            model: "user",
-            where: [{ field: "_id", value: user._id, operator: "eq" }],
-            update: { name: `${name.firstName} ${name.surname}` },
-          } });
-        }
-      }
-      cleaned += updates.length;
-    }
-    isDone = page.isDone;
-    cursor = page.continueCursor;
-  }
-  return cleaned;
-}
-
-function realisticExistingName(registrationNumber: string) {
-  const seed = stableHash(registrationNumber);
-  return {
-    firstName: GIVEN_NAMES[seed % GIVEN_NAMES.length]!,
-    surname: FAMILY_NAMES[Math.floor(seed / GIVEN_NAMES.length) % FAMILY_NAMES.length]!,
-  };
-}
 
 function rosterPrefix(programId: Id<"programs">) {
   return `course-roster:${programId}:`;

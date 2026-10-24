@@ -56,7 +56,7 @@ export function FacultyBroadsheetView() {
   const periods = metadata?.periods || [];
 
   const activeProgramId = selectedProgramId || programs[0]?._id;
-  const activePeriodId = selectedPeriodId || periods[0]?._id;
+  const activePeriodId = selectedPeriodId || periods.find(period => period.status === "active")?._id || periods[0]?._id;
 
   const broadsheet = useQuery(
     api.broadsheet.getDepartmentBroadsheet,

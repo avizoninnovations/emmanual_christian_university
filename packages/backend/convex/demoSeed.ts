@@ -8,6 +8,7 @@ import { demoStudentProfile, seedPortalServices } from "./lib/demoPortalSeed.js"
 import { logAction } from "./audit_logger.js";
 import { ConvexError } from "convex/values";
 import { seedDemoAcademicWorkflow } from "./lib/demoAcademicWorkflowSeed.js";
+import { seedDemoAgricultureMarks } from "./lib/demoAgricultureMarksSeed.js";
 
 const stamp = () => Date.now();
 
@@ -49,7 +50,7 @@ export const seedDemoData = internalAction({
       userIds[account.email] = userId;
     }
 
-    const insert = makeFunctionReference<"mutation", { userIds: Record<string, string> }, { inserted: number; workflowRecords: number; students: number; staff: number; courseUnits: number; authAccounts: number }>("demoSeed:insertDemoData");
+    const insert = makeFunctionReference<"mutation", { userIds: Record<string, string> }, { inserted: number; workflowRecords: number; agricultureMarks: number; students: number; staff: number; courseUnits: number; authAccounts: number }>("demoSeed:insertDemoData");
     return await ctx.runMutation(insert, { userIds });
   },
 });
@@ -208,9 +209,11 @@ export const insertDemoData = internalMutation({
 
     const workflowRecords = await seedDemoAcademicWorkflow(ctx, { courseIds, departmentIds, periodIds, staffIds });
     inserted += workflowRecords;
+    const agricultureMarks = await seedDemoAgricultureMarks(ctx, { courseIds, departmentIds, periodIds, staffIds });
+    inserted += agricultureMarks;
     inserted += await seedPortalServices(ctx, { studentIds, courseIds, periodIds, staffIds, now });
     await logAction(ctx, { action: "SEED_DEMO_PORTAL", resource: "students", details: "Updated fictional demo profiles, student/access identifiers, and linked portal service fixtures." });
-    return { inserted, workflowRecords, students: fixture.studentAccounts.length, staff: fixture.staffAccounts.length, courseUnits: Object.keys(courseIds).length, authAccounts: Object.keys(userIds).length };
+    return { inserted, workflowRecords, agricultureMarks, students: fixture.studentAccounts.length, staff: fixture.staffAccounts.length, courseUnits: Object.keys(courseIds).length, authAccounts: Object.keys(userIds).length };
   },
 });
 

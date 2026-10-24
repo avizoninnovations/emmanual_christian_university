@@ -8,20 +8,28 @@
     "officialProgramCount": 19,
     "syntheticCourseUnitCount": 76,
     "syntheticTestStaffCount": 6,
-    "syntheticTestStudentCount": 28,
-    "warning": "All records except faculty and program display names are fictional demo data. Do not present generated units, codes, durations, fees, grades, timetables or accounts as official ECU records. An additional 20 synthetic agribusiness learners are seeded into four first-year course units to support class roster and marks-entry testing.",
+    "syntheticTestStudentCount": 72,
+    "warning": "All records except faculty and program display names are fictional demo data. Agriculture BSc, Diploma, and Certificate programs each have 22 synthetic learners with approved marks across their Semester 1 and Semester 2 course units. Do not present generated units, codes, durations, fees, grades, timetables, accounts, or marks as official ECU records.",
     "databaseWritePerformed": false,
     "retakeCaseCount": 4,
     "studentLogin": "student number, access number, or legacy demo registration number; password is verified by Better Auth",
     "profileReference": "https://alpha.ucu.ac.ug/students/pages/profile/profile-overview",
     "identifierFormat": "Synthetic S26/ECU/PROGRAM/NNN student numbers and ECU0001 access numbers; ECU is the university code, not a campus.",
     "profileDataSynthetic": true,
-    "additionalCourseUnitTestStudentCount": 20,
+    "additionalCourseUnitTestStudentCount": 44,
     "additionalCourseUnitTestCourseCodes": [
       "D-AGR-0101",
       "D-AGR-0102",
       "D-AGR-0103",
-      "D-AGR-0104"
+      "D-AGR-0104",
+      "D-AGR-0201",
+      "D-AGR-0202",
+      "D-AGR-0203",
+      "D-AGR-0204",
+      "D-AGR-0301",
+      "D-AGR-0302",
+      "D-AGR-0303",
+      "D-AGR-0304"
     ]
   },
   "academicPeriods": [
@@ -2549,6 +2557,1502 @@
         "phone": "+211910000120",
         "email": "guardian120@example.invalid"
       }
+    },
+    {
+      "email": "demo20261001@students.ecu-ssd.org",
+      "name": "Demo Diploma 001 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/001",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/001",
+      "accessNumber": "ECU0301",
+      "firstName": "Demo Diploma 001",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-02-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000301",
+      "contactEmail": "learner301.demo@example.invalid",
+      "address": "Demo household DIP 001, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 001",
+        "relationship": "Guardian",
+        "phone": "+211901000301",
+        "email": "guardian301.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261002@students.ecu-ssd.org",
+      "name": "Demo Diploma 002 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/002",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/002",
+      "accessNumber": "ECU0302",
+      "firstName": "Demo Diploma 002",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-03-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000302",
+      "contactEmail": "learner302.demo@example.invalid",
+      "address": "Demo household DIP 002, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 002",
+        "relationship": "Guardian",
+        "phone": "+211901000302",
+        "email": "guardian302.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261003@students.ecu-ssd.org",
+      "name": "Demo Diploma 003 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/003",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/003",
+      "accessNumber": "ECU0303",
+      "firstName": "Demo Diploma 003",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-04-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000303",
+      "contactEmail": "learner303.demo@example.invalid",
+      "address": "Demo household DIP 003, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 003",
+        "relationship": "Guardian",
+        "phone": "+211901000303",
+        "email": "guardian303.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261004@students.ecu-ssd.org",
+      "name": "Demo Diploma 004 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/004",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/004",
+      "accessNumber": "ECU0304",
+      "firstName": "Demo Diploma 004",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-05-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000304",
+      "contactEmail": "learner304.demo@example.invalid",
+      "address": "Demo household DIP 004, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 004",
+        "relationship": "Guardian",
+        "phone": "+211901000304",
+        "email": "guardian304.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261005@students.ecu-ssd.org",
+      "name": "Demo Diploma 005 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/005",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/005",
+      "accessNumber": "ECU0305",
+      "firstName": "Demo Diploma 005",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2005-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000305",
+      "contactEmail": "learner305.demo@example.invalid",
+      "address": "Demo household DIP 005, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 005",
+        "relationship": "Guardian",
+        "phone": "+211901000305",
+        "email": "guardian305.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261006@students.ecu-ssd.org",
+      "name": "Demo Diploma 006 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/006",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/006",
+      "accessNumber": "ECU0306",
+      "firstName": "Demo Diploma 006",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2000-07-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000306",
+      "contactEmail": "learner306.demo@example.invalid",
+      "address": "Demo household DIP 006, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 006",
+        "relationship": "Guardian",
+        "phone": "+211901000306",
+        "email": "guardian306.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261007@students.ecu-ssd.org",
+      "name": "Demo Diploma 007 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/007",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/007",
+      "accessNumber": "ECU0307",
+      "firstName": "Demo Diploma 007",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-08-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000307",
+      "contactEmail": "learner307.demo@example.invalid",
+      "address": "Demo household DIP 007, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 007",
+        "relationship": "Guardian",
+        "phone": "+211901000307",
+        "email": "guardian307.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261008@students.ecu-ssd.org",
+      "name": "Demo Diploma 008 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/008",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/008",
+      "accessNumber": "ECU0308",
+      "firstName": "Demo Diploma 008",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-01-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000308",
+      "contactEmail": "learner308.demo@example.invalid",
+      "address": "Demo household DIP 008, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 008",
+        "relationship": "Guardian",
+        "phone": "+211901000308",
+        "email": "guardian308.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261009@students.ecu-ssd.org",
+      "name": "Demo Diploma 009 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/009",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/009",
+      "accessNumber": "ECU0309",
+      "firstName": "Demo Diploma 009",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-02-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000309",
+      "contactEmail": "learner309.demo@example.invalid",
+      "address": "Demo household DIP 009, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 009",
+        "relationship": "Guardian",
+        "phone": "+211901000309",
+        "email": "guardian309.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261010@students.ecu-ssd.org",
+      "name": "Demo Diploma 010 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/010",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/010",
+      "accessNumber": "ECU0310",
+      "firstName": "Demo Diploma 010",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-03-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000310",
+      "contactEmail": "learner310.demo@example.invalid",
+      "address": "Demo household DIP 010, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 010",
+        "relationship": "Guardian",
+        "phone": "+211901000310",
+        "email": "guardian310.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261011@students.ecu-ssd.org",
+      "name": "Demo Diploma 011 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/011",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/011",
+      "accessNumber": "ECU0311",
+      "firstName": "Demo Diploma 011",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2005-04-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000311",
+      "contactEmail": "learner311.demo@example.invalid",
+      "address": "Demo household DIP 011, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 011",
+        "relationship": "Guardian",
+        "phone": "+211901000311",
+        "email": "guardian311.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261012@students.ecu-ssd.org",
+      "name": "Demo Diploma 012 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/012",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/012",
+      "accessNumber": "ECU0312",
+      "firstName": "Demo Diploma 012",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2000-05-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000312",
+      "contactEmail": "learner312.demo@example.invalid",
+      "address": "Demo household DIP 012, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 012",
+        "relationship": "Guardian",
+        "phone": "+211901000312",
+        "email": "guardian312.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261013@students.ecu-ssd.org",
+      "name": "Demo Diploma 013 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/013",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/013",
+      "accessNumber": "ECU0313",
+      "firstName": "Demo Diploma 013",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000313",
+      "contactEmail": "learner313.demo@example.invalid",
+      "address": "Demo household DIP 013, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 013",
+        "relationship": "Guardian",
+        "phone": "+211901000313",
+        "email": "guardian313.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261014@students.ecu-ssd.org",
+      "name": "Demo Diploma 014 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/014",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/014",
+      "accessNumber": "ECU0314",
+      "firstName": "Demo Diploma 014",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-07-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000314",
+      "contactEmail": "learner314.demo@example.invalid",
+      "address": "Demo household DIP 014, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 014",
+        "relationship": "Guardian",
+        "phone": "+211901000314",
+        "email": "guardian314.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261015@students.ecu-ssd.org",
+      "name": "Demo Diploma 015 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/015",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/015",
+      "accessNumber": "ECU0315",
+      "firstName": "Demo Diploma 015",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-08-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000315",
+      "contactEmail": "learner315.demo@example.invalid",
+      "address": "Demo household DIP 015, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 015",
+        "relationship": "Guardian",
+        "phone": "+211901000315",
+        "email": "guardian315.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261016@students.ecu-ssd.org",
+      "name": "Demo Diploma 016 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/016",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/016",
+      "accessNumber": "ECU0316",
+      "firstName": "Demo Diploma 016",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-01-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000316",
+      "contactEmail": "learner316.demo@example.invalid",
+      "address": "Demo household DIP 016, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 016",
+        "relationship": "Guardian",
+        "phone": "+211901000316",
+        "email": "guardian316.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261017@students.ecu-ssd.org",
+      "name": "Demo Diploma 017 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/017",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/017",
+      "accessNumber": "ECU0317",
+      "firstName": "Demo Diploma 017",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2005-02-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000317",
+      "contactEmail": "learner317.demo@example.invalid",
+      "address": "Demo household DIP 017, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 017",
+        "relationship": "Guardian",
+        "phone": "+211901000317",
+        "email": "guardian317.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261018@students.ecu-ssd.org",
+      "name": "Demo Diploma 018 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/018",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/018",
+      "accessNumber": "ECU0318",
+      "firstName": "Demo Diploma 018",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2000-03-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000318",
+      "contactEmail": "learner318.demo@example.invalid",
+      "address": "Demo household DIP 018, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 018",
+        "relationship": "Guardian",
+        "phone": "+211901000318",
+        "email": "guardian318.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261019@students.ecu-ssd.org",
+      "name": "Demo Diploma 019 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/019",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/019",
+      "accessNumber": "ECU0319",
+      "firstName": "Demo Diploma 019",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-04-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000319",
+      "contactEmail": "learner319.demo@example.invalid",
+      "address": "Demo household DIP 019, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 019",
+        "relationship": "Guardian",
+        "phone": "+211901000319",
+        "email": "guardian319.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261020@students.ecu-ssd.org",
+      "name": "Demo Diploma 020 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/020",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/020",
+      "accessNumber": "ECU0320",
+      "firstName": "Demo Diploma 020",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-05-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000320",
+      "contactEmail": "learner320.demo@example.invalid",
+      "address": "Demo household DIP 020, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 020",
+        "relationship": "Guardian",
+        "phone": "+211901000320",
+        "email": "guardian320.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261021@students.ecu-ssd.org",
+      "name": "Demo Diploma 021 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/021",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/021",
+      "accessNumber": "ECU0321",
+      "firstName": "Demo Diploma 021",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000321",
+      "contactEmail": "learner321.demo@example.invalid",
+      "address": "Demo household DIP 021, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 021",
+        "relationship": "Guardian",
+        "phone": "+211901000321",
+        "email": "guardian321.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20261022@students.ecu-ssd.org",
+      "name": "Demo Diploma 022 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/BDAG/022",
+      "programCode": "DEMO-AGR-DIP",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/BDAG/022",
+      "accessNumber": "ECU0322",
+      "firstName": "Demo Diploma 022",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-07-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000322",
+      "contactEmail": "learner322.demo@example.invalid",
+      "address": "Demo household DIP 022, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian DIP 022",
+        "relationship": "Guardian",
+        "phone": "+211901000322",
+        "email": "guardian322.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262001@students.ecu-ssd.org",
+      "name": "Demo Certificate 001 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/001",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/001",
+      "accessNumber": "ECU0401",
+      "firstName": "Demo Certificate 001",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-02-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000401",
+      "contactEmail": "learner401.demo@example.invalid",
+      "address": "Demo household CERT 001, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 001",
+        "relationship": "Guardian",
+        "phone": "+211901000401",
+        "email": "guardian401.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262002@students.ecu-ssd.org",
+      "name": "Demo Certificate 002 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/002",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/002",
+      "accessNumber": "ECU0402",
+      "firstName": "Demo Certificate 002",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-03-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000402",
+      "contactEmail": "learner402.demo@example.invalid",
+      "address": "Demo household CERT 002, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 002",
+        "relationship": "Guardian",
+        "phone": "+211901000402",
+        "email": "guardian402.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262003@students.ecu-ssd.org",
+      "name": "Demo Certificate 003 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/003",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/003",
+      "accessNumber": "ECU0403",
+      "firstName": "Demo Certificate 003",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-04-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000403",
+      "contactEmail": "learner403.demo@example.invalid",
+      "address": "Demo household CERT 003, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 003",
+        "relationship": "Guardian",
+        "phone": "+211901000403",
+        "email": "guardian403.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262004@students.ecu-ssd.org",
+      "name": "Demo Certificate 004 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/004",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/004",
+      "accessNumber": "ECU0404",
+      "firstName": "Demo Certificate 004",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-05-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000404",
+      "contactEmail": "learner404.demo@example.invalid",
+      "address": "Demo household CERT 004, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 004",
+        "relationship": "Guardian",
+        "phone": "+211901000404",
+        "email": "guardian404.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262005@students.ecu-ssd.org",
+      "name": "Demo Certificate 005 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/005",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/005",
+      "accessNumber": "ECU0405",
+      "firstName": "Demo Certificate 005",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2005-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000405",
+      "contactEmail": "learner405.demo@example.invalid",
+      "address": "Demo household CERT 005, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 005",
+        "relationship": "Guardian",
+        "phone": "+211901000405",
+        "email": "guardian405.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262006@students.ecu-ssd.org",
+      "name": "Demo Certificate 006 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/006",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/006",
+      "accessNumber": "ECU0406",
+      "firstName": "Demo Certificate 006",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2000-07-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000406",
+      "contactEmail": "learner406.demo@example.invalid",
+      "address": "Demo household CERT 006, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 006",
+        "relationship": "Guardian",
+        "phone": "+211901000406",
+        "email": "guardian406.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262007@students.ecu-ssd.org",
+      "name": "Demo Certificate 007 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/007",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/007",
+      "accessNumber": "ECU0407",
+      "firstName": "Demo Certificate 007",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-08-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000407",
+      "contactEmail": "learner407.demo@example.invalid",
+      "address": "Demo household CERT 007, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 007",
+        "relationship": "Guardian",
+        "phone": "+211901000407",
+        "email": "guardian407.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262008@students.ecu-ssd.org",
+      "name": "Demo Certificate 008 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/008",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/008",
+      "accessNumber": "ECU0408",
+      "firstName": "Demo Certificate 008",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-01-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000408",
+      "contactEmail": "learner408.demo@example.invalid",
+      "address": "Demo household CERT 008, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 008",
+        "relationship": "Guardian",
+        "phone": "+211901000408",
+        "email": "guardian408.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262009@students.ecu-ssd.org",
+      "name": "Demo Certificate 009 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/009",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/009",
+      "accessNumber": "ECU0409",
+      "firstName": "Demo Certificate 009",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-02-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000409",
+      "contactEmail": "learner409.demo@example.invalid",
+      "address": "Demo household CERT 009, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 009",
+        "relationship": "Guardian",
+        "phone": "+211901000409",
+        "email": "guardian409.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262010@students.ecu-ssd.org",
+      "name": "Demo Certificate 010 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/010",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/010",
+      "accessNumber": "ECU0410",
+      "firstName": "Demo Certificate 010",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-03-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000410",
+      "contactEmail": "learner410.demo@example.invalid",
+      "address": "Demo household CERT 010, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 010",
+        "relationship": "Guardian",
+        "phone": "+211901000410",
+        "email": "guardian410.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262011@students.ecu-ssd.org",
+      "name": "Demo Certificate 011 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/011",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/011",
+      "accessNumber": "ECU0411",
+      "firstName": "Demo Certificate 011",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2005-04-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000411",
+      "contactEmail": "learner411.demo@example.invalid",
+      "address": "Demo household CERT 011, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 011",
+        "relationship": "Guardian",
+        "phone": "+211901000411",
+        "email": "guardian411.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262012@students.ecu-ssd.org",
+      "name": "Demo Certificate 012 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/012",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/012",
+      "accessNumber": "ECU0412",
+      "firstName": "Demo Certificate 012",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2000-05-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000412",
+      "contactEmail": "learner412.demo@example.invalid",
+      "address": "Demo household CERT 012, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 012",
+        "relationship": "Guardian",
+        "phone": "+211901000412",
+        "email": "guardian412.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262013@students.ecu-ssd.org",
+      "name": "Demo Certificate 013 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/013",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/013",
+      "accessNumber": "ECU0413",
+      "firstName": "Demo Certificate 013",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000413",
+      "contactEmail": "learner413.demo@example.invalid",
+      "address": "Demo household CERT 013, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 013",
+        "relationship": "Guardian",
+        "phone": "+211901000413",
+        "email": "guardian413.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262014@students.ecu-ssd.org",
+      "name": "Demo Certificate 014 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/014",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/014",
+      "accessNumber": "ECU0414",
+      "firstName": "Demo Certificate 014",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-07-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000414",
+      "contactEmail": "learner414.demo@example.invalid",
+      "address": "Demo household CERT 014, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 014",
+        "relationship": "Guardian",
+        "phone": "+211901000414",
+        "email": "guardian414.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262015@students.ecu-ssd.org",
+      "name": "Demo Certificate 015 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/015",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/015",
+      "accessNumber": "ECU0415",
+      "firstName": "Demo Certificate 015",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-08-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000415",
+      "contactEmail": "learner415.demo@example.invalid",
+      "address": "Demo household CERT 015, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 015",
+        "relationship": "Guardian",
+        "phone": "+211901000415",
+        "email": "guardian415.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262016@students.ecu-ssd.org",
+      "name": "Demo Certificate 016 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/016",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/016",
+      "accessNumber": "ECU0416",
+      "firstName": "Demo Certificate 016",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-01-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000416",
+      "contactEmail": "learner416.demo@example.invalid",
+      "address": "Demo household CERT 016, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 016",
+        "relationship": "Guardian",
+        "phone": "+211901000416",
+        "email": "guardian416.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262017@students.ecu-ssd.org",
+      "name": "Demo Certificate 017 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/017",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/017",
+      "accessNumber": "ECU0417",
+      "firstName": "Demo Certificate 017",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2005-02-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000417",
+      "contactEmail": "learner417.demo@example.invalid",
+      "address": "Demo household CERT 017, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 017",
+        "relationship": "Guardian",
+        "phone": "+211901000417",
+        "email": "guardian417.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262018@students.ecu-ssd.org",
+      "name": "Demo Certificate 018 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/018",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/018",
+      "accessNumber": "ECU0418",
+      "firstName": "Demo Certificate 018",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2000-03-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000418",
+      "contactEmail": "learner418.demo@example.invalid",
+      "address": "Demo household CERT 018, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 018",
+        "relationship": "Guardian",
+        "phone": "+211901000418",
+        "email": "guardian418.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262019@students.ecu-ssd.org",
+      "name": "Demo Certificate 019 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/019",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/019",
+      "accessNumber": "ECU0419",
+      "firstName": "Demo Certificate 019",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2001-04-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000419",
+      "contactEmail": "learner419.demo@example.invalid",
+      "address": "Demo household CERT 019, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 019",
+        "relationship": "Guardian",
+        "phone": "+211901000419",
+        "email": "guardian419.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262020@students.ecu-ssd.org",
+      "name": "Demo Certificate 020 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/020",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/020",
+      "accessNumber": "ECU0420",
+      "firstName": "Demo Certificate 020",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2002-05-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000420",
+      "contactEmail": "learner420.demo@example.invalid",
+      "address": "Demo household CERT 020, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 020",
+        "relationship": "Guardian",
+        "phone": "+211901000420",
+        "email": "guardian420.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262021@students.ecu-ssd.org",
+      "name": "Demo Certificate 021 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/021",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/021",
+      "accessNumber": "ECU0421",
+      "firstName": "Demo Certificate 021",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "male",
+      "dateOfBirth": "2003-06-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000421",
+      "contactEmail": "learner421.demo@example.invalid",
+      "address": "Demo household CERT 021, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 021",
+        "relationship": "Guardian",
+        "phone": "+211901000421",
+        "email": "guardian421.demo@example.invalid"
+      }
+    },
+    {
+      "email": "demo20262022@students.ecu-ssd.org",
+      "name": "Demo Certificate 022 Agriculture Student",
+      "password": "UniSystem2026!",
+      "authRole": "user",
+      "registrationNumber": "S26/ECU/CAG/022",
+      "programCode": "DEMO-AGR-CERT",
+      "yearOfStudy": 1,
+      "term": 2,
+      "year": 2026,
+      "currentPeriodKey": "2026-term-2",
+      "status": "active",
+      "financeStatus": "cleared",
+      "syntheticAccount": true,
+      "legacyRegistrationNumber": "DEMO/AGR/CAG/022",
+      "accessNumber": "ECU0422",
+      "firstName": "Demo Certificate 022",
+      "surname": "Agriculture Student",
+      "otherName": "",
+      "gender": "female",
+      "dateOfBirth": "2004-07-15",
+      "nationality": "South Sudanese",
+      "phone": "+211900000422",
+      "contactEmail": "learner422.demo@example.invalid",
+      "address": "Demo household CERT 022, Yei River County, South Sudan",
+      "yearOfEntry": 2026,
+      "programType": "Day",
+      "emergencyContact": {
+        "name": "Demo Guardian CERT 022",
+        "relationship": "Guardian",
+        "phone": "+211901000422",
+        "email": "guardian422.demo@example.invalid"
+      }
     }
   ],
   "courseAllocations": [
@@ -3629,6 +5133,1062 @@
       "courseCode": "D-AGR-0104",
       "periodKey": "2026-term-2",
       "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/001",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/001",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/001",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/001",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/002",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/002",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/002",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/002",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/003",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/003",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/003",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/003",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/004",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/004",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/004",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/004",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/005",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/005",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/005",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/005",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/006",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/006",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/006",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/006",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/007",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/007",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/007",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/007",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/008",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/008",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/008",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/008",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/009",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/009",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/009",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/009",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/010",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/010",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/010",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/010",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/011",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/011",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/011",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/011",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/012",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/012",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/012",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/012",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/013",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/013",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/013",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/013",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/014",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/014",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/014",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/014",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/015",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/015",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/015",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/015",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/016",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/016",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/016",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/016",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/017",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/017",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/017",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/017",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/018",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/018",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/018",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/018",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/019",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/019",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/019",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/019",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/020",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/020",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/020",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/020",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/021",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/021",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/021",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/021",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/022",
+      "courseCode": "D-AGR-0201",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/022",
+      "courseCode": "D-AGR-0202",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/022",
+      "courseCode": "D-AGR-0203",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/BDAG/022",
+      "courseCode": "D-AGR-0204",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/001",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/001",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/001",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/001",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/002",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/002",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/002",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/002",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/003",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/003",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/003",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/003",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/004",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/004",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/004",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/004",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/005",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/005",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/005",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/005",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/006",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/006",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/006",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/006",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/007",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/007",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/007",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/007",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/008",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/008",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/008",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/008",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/009",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/009",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/009",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/009",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/010",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/010",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/010",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/010",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/011",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/011",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/011",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/011",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/012",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/012",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/012",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/012",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/013",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/013",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/013",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/013",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/014",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/014",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/014",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/014",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/015",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/015",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/015",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/015",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/016",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/016",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/016",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/016",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/017",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/017",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/017",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/017",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/018",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/018",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/018",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/018",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/019",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/019",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/019",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/019",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/020",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/020",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/020",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/020",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/021",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/021",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/021",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/021",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/022",
+      "courseCode": "D-AGR-0301",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/022",
+      "courseCode": "D-AGR-0302",
+      "periodKey": "2026-term-1",
+      "status": "completed"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/022",
+      "courseCode": "D-AGR-0303",
+      "periodKey": "2026-term-2",
+      "status": "registered"
+    },
+    {
+      "studentRegistrationNumber": "S26/ECU/CAG/022",
+      "courseCode": "D-AGR-0304",
+      "periodKey": "2026-term-2",
+      "status": "registered"
     }
   ],
   "retakeCases": [
@@ -3673,7 +6233,7 @@
       "examMarks": 46.9,
       "finalScore": 67,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3682,10 +6242,10 @@
       "courseCode": "D-THEO-0102",
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.theology.demo@ecu-ssd.org",
-      "assignmentMarks": 7.0,
-      "testMarks": 14.0,
-      "courseworkMarks": 21.0,
-      "examMarks": 49.0,
+      "assignmentMarks": 7,
+      "testMarks": 14,
+      "courseworkMarks": 21,
+      "examMarks": 49,
       "finalScore": 70,
       "grade": "B+",
       "gradePoints": 3.5,
@@ -3703,7 +6263,7 @@
       "examMarks": 43.4,
       "finalScore": 62,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3718,7 +6278,7 @@
       "examMarks": 46.9,
       "finalScore": 67,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3733,7 +6293,7 @@
       "examMarks": 26.6,
       "finalScore": 38,
       "grade": "F",
-      "gradePoints": 0.0,
+      "gradePoints": 0,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3763,7 +6323,7 @@
       "examMarks": 44.1,
       "finalScore": 63,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3778,7 +6338,7 @@
       "examMarks": 47.6,
       "finalScore": 68,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3793,7 +6353,7 @@
       "examMarks": 48.3,
       "finalScore": 69,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3823,7 +6383,7 @@
       "examMarks": 44.8,
       "finalScore": 64,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3838,7 +6398,7 @@
       "examMarks": 48.3,
       "finalScore": 69,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3853,7 +6413,7 @@
       "examMarks": 26.6,
       "finalScore": 38,
       "grade": "F",
-      "gradePoints": 0.0,
+      "gradePoints": 0,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3878,12 +6438,12 @@
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
       "assignmentMarks": 6.5,
-      "testMarks": 13.0,
+      "testMarks": 13,
       "courseworkMarks": 19.5,
       "examMarks": 45.5,
       "finalScore": 65,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3892,10 +6452,10 @@
       "courseCode": "D-EDU-0104",
       "periodKey": "2026-term-2",
       "lecturerEmail": "lecturer.education.demo@ecu-ssd.org",
-      "assignmentMarks": 7.0,
-      "testMarks": 14.0,
-      "courseworkMarks": 21.0,
-      "examMarks": 49.0,
+      "assignmentMarks": 7,
+      "testMarks": 14,
+      "courseworkMarks": 21,
+      "examMarks": 49,
       "finalScore": 70,
       "grade": "B+",
       "gradePoints": 3.5,
@@ -3943,7 +6503,7 @@
       "examMarks": 46.2,
       "finalScore": 66,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3973,7 +6533,7 @@
       "examMarks": 26.6,
       "finalScore": 38,
       "grade": "F",
-      "gradePoints": 0.0,
+      "gradePoints": 0,
       "status": "approved",
       "syntheticMark": true
     },
@@ -3983,7 +6543,7 @@
       "periodKey": "2026-term-1",
       "lecturerEmail": "lecturer.business.demo@ecu-ssd.org",
       "assignmentMarks": 7.5,
-      "testMarks": 15.0,
+      "testMarks": 15,
       "courseworkMarks": 22.5,
       "examMarks": 52.5,
       "finalScore": 75,
@@ -4003,7 +6563,7 @@
       "examMarks": 46.9,
       "finalScore": 67,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -4063,7 +6623,7 @@
       "examMarks": 47.6,
       "finalScore": 68,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -4093,7 +6653,7 @@
       "examMarks": 26.6,
       "finalScore": 38,
       "grade": "F",
-      "gradePoints": 0.0,
+      "gradePoints": 0,
       "status": "approved",
       "syntheticMark": true
     },
@@ -4123,7 +6683,7 @@
       "examMarks": 48.3,
       "finalScore": 69,
       "grade": "B",
-      "gradePoints": 3.0,
+      "gradePoints": 3,
       "status": "approved",
       "syntheticMark": true
     },
@@ -4606,7 +7166,7 @@
       "grade": "A",
       "minScore": 80,
       "maxScore": 100,
-      "gpaValue": 4.0
+      "gpaValue": 4
     },
     {
       "grade": "B+",
@@ -4618,7 +7178,7 @@
       "grade": "B",
       "minScore": 60,
       "maxScore": 69.99,
-      "gpaValue": 3.0
+      "gpaValue": 3
     },
     {
       "grade": "C+",
@@ -4630,19 +7190,19 @@
       "grade": "C",
       "minScore": 50,
       "maxScore": 54.99,
-      "gpaValue": 2.0
+      "gpaValue": 2
     },
     {
       "grade": "D",
       "minScore": 40,
       "maxScore": 49.99,
-      "gpaValue": 1.0
+      "gpaValue": 1
     },
     {
       "grade": "F",
       "minScore": 0,
       "maxScore": 39.99,
-      "gpaValue": 0.0
+      "gpaValue": 0
     }
   ],
   "studentServices": {

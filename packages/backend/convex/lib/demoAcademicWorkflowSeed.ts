@@ -12,7 +12,7 @@ type DemoReferences = {
 const HOD_EMAIL = "hod.demo@ecu-ssd.org";
 const REVIEWER_EMAIL = "lecturer.theology.demo@ecu-ssd.org";
 const LECTURER_EMAIL = "lecturer.agriculture.demo@ecu-ssd.org";
-const MARKS_COURSE = "D-AGR-0103";
+const MARKS_COURSE = "D-AGR-0104";
 const UPCOMING_COURSES = ["D-AGR-0101", "D-AGR-0102"];
 
 /** Adds linked demo records for HOD allocation, review, mark entry, and time-bound permissions. */

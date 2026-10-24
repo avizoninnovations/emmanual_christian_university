@@ -1,14 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { usePaginatedQuery } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
 import {
-  ArrowUpRight,
   BookOpen,
   Check,
-  Clock3,
   GraduationCap,
   Search,
   UserRound,
@@ -27,7 +24,7 @@ import { useHodScope } from "../../hooks/use-hod-scope";
 import { AllocationDialog } from "../components/allocation-dialog";
 import { HodScopePicker } from "../components/hod-scope-picker";
 
-type CourseFilter = "all" | "assigned" | "unassigned" | "review";
+type CourseFilter = "all" | "assigned" | "unassigned";
 
 export function CourseAllocationView() {
   const scope = useHodScope();
@@ -50,7 +47,6 @@ export function CourseAllocationView() {
     all: courses.results.length,
     assigned: courses.results.filter(course => Boolean(course.allocation)).length,
     unassigned: courses.results.filter(course => !course.allocation).length,
-    review: courses.results.filter(course => course.hasSubmitted).length,
   }), [courses.results]);
 
   const visibleCourses = useMemo(() => {
@@ -58,8 +54,7 @@ export function CourseAllocationView() {
     return courses.results.filter(course => {
       const matchesFilter = filter === "all"
         || (filter === "assigned" && Boolean(course.allocation))
-        || (filter === "unassigned" && !course.allocation)
-        || (filter === "review" && course.hasSubmitted);
+        || (filter === "unassigned" && !course.allocation);
       const matchesSearch = !query
         || [course.title, course.code, course.programName, course.lecturerName]
           .some(value => value.toLowerCase().includes(query));
@@ -85,11 +80,10 @@ export function CourseAllocationView() {
             {selectedPeriod && <Badge variant={selectedPeriod.status === "active" ? "secondary" : "outline"} className="capitalize">{selectedPeriod.status} period</Badge>}
           </div>
 
-          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <AllocationSummary label="Course units loaded" value={counts.all} icon={BookOpen} />
             <AllocationSummary label="Assigned" value={counts.assigned} icon={Check} />
             <AllocationSummary label="Awaiting assignment" value={counts.unassigned} icon={UserRound} />
-            <AllocationSummary label="Marks for review" value={counts.review} icon={Clock3} />
           </section>
 
           <section className="space-y-4">
@@ -114,7 +108,6 @@ export function CourseAllocationView() {
               <FilterButton label="All units" count={counts.all} active={filter === "all"} onClick={() => setFilter("all")} />
               <FilterButton label="Assigned" count={counts.assigned} active={filter === "assigned"} onClick={() => setFilter("assigned")} />
               <FilterButton label="Unassigned" count={counts.unassigned} active={filter === "unassigned"} onClick={() => setFilter("unassigned")} />
-              <FilterButton label="Marks for review" count={counts.review} active={filter === "review"} onClick={() => setFilter("review")} />
             </div>
 
             {courses.status === "LoadingFirstPage" ? (
@@ -127,7 +120,6 @@ export function CourseAllocationView() {
                   <CourseAllocationCard
                     key={course._id}
                     course={course}
-                    periodId={scope.periodId!}
                     canAssign={canAssign}
                     onAssign={() => setAssignment({ id: course._id, title: course.code })}
                   />
@@ -206,14 +198,13 @@ function FilterButton({ label, count, active, onClick }: { label: string; count:
 
 type Course = FunctionReturnType<typeof api.hod.courses>["page"][number];
 
-function CourseAllocationCard({ course, periodId, canAssign, onAssign }: {
+function CourseAllocationCard({ course, canAssign, onAssign }: {
   course: Course;
-  periodId: Id<"academicPeriods">;
   canAssign: boolean;
   onAssign: () => void;
 }) {
   const assigned = Boolean(course.allocation);
-  const blockedByReview = assigned && course.hasSubmitted;
+  const assignmentLocked = assigned && course.hasSubmitted;
   const lecturerInitials = String(course.lecturerName ?? "")
     .split(/\s+/)
     .slice(0, 2)
@@ -253,28 +244,18 @@ function CourseAllocationCard({ course, periodId, canAssign, onAssign }: {
             <p className="text-xs text-muted-foreground">Assigned lecturer</p>
             <p className="truncate text-sm font-medium">{assigned ? course.lecturerName : "No lecturer assigned"}</p>
           </div>
-          {course.hasSubmitted && <Badge variant="secondary" className="shrink-0 gap-1"><Clock3 className="size-3" />Review</Badge>}
         </div>
-
-        {blockedByReview && (
-          <p className="text-xs text-muted-foreground">Resolve submitted marks before reassigning this course.</p>
-        )}
 
         <div className="flex items-center justify-between gap-2 pt-1">
           <Button
             size="sm"
             variant={assigned ? "outline" : "default"}
             className="rounded-sm shadow-none"
-            disabled={!canAssign || blockedByReview}
-            title={!canAssign ? "Historical assignments are locked" : blockedByReview ? "Review submitted marks before reassigning" : undefined}
+            disabled={!canAssign || assignmentLocked}
+            title={!canAssign ? "Historical assignments are locked" : assignmentLocked ? "This assignment cannot be changed right now" : undefined}
             onClick={onAssign}
           >
             {assigned ? "Reassign lecturer" : "Assign lecturer"}
-          </Button>
-          <Button asChild size="sm" variant="ghost" className="rounded-sm px-2">
-            <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`} aria-label={`Open ${course.code}`}>
-              <span className="sr-only">Open class</span><ArrowUpRight className="size-4" />
-            </Link>
           </Button>
         </div>
       </CardContent>

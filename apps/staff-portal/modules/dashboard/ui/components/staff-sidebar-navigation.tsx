@@ -33,12 +33,7 @@ const staffServiceItems: SidebarEntry[] = [
 ];
 
 export const staffSidebarSections: StaffSidebarSection[] = [
-  { key: "memos", category: "MY WORKSPACE", title: "My Memos", icon: Mail, url: "/workspace/memos", items: [] },
-  { key: "faculty", category: "MY WORKSPACE", title: "Faculty Central", icon: Building2, url: "/workspace/faculty-central", items: [] },
-  { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
-  { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },
-  { key: "personal-records", category: "HR RECORDS", title: "Personal Records", icon: UserRound, url: "/profile", items: [] },
-  { key: "staff-services", category: "HR RECORDS", title: "Staff Services", icon: BriefcaseBusiness, items: staffServiceItems },
+  { key: "leadership", category: "ACADEMICS", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
   { key: "lecturer-courses", category: "ACADEMICS", title: "Lecturer Courses", icon: BookOpen, items: [
     link("My Aggregated Units", "/workspace/aggregated-units", Layers),
     link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),
@@ -48,7 +43,12 @@ export const staffSidebarSections: StaffSidebarSection[] = [
     link("Mark Edit Requests", "/workspace/mark-permissions", ClipboardCheck),
   ] },
   { key: "timetable", category: "ACADEMICS", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
-  { key: "leadership", category: "ACADEMICS", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
+  { key: "faculty", category: "MY WORKSPACE", title: "Faculty Central", icon: Building2, url: "/workspace/faculty-central", items: [] },
+  { key: "memos", category: "MY WORKSPACE", title: "My Memos", icon: Mail, url: "/workspace/memos", items: [] },
+  { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
+  { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },
+  { key: "personal-records", category: "HR RECORDS", title: "Personal Records", icon: UserRound, url: "/profile", items: [] },
+  { key: "staff-services", category: "HR RECORDS", title: "Staff Services", icon: BriefcaseBusiness, items: staffServiceItems },
 ];
 
 export type StaffBreadcrumb = { label: string; href?: string; icon: LucideIcon };

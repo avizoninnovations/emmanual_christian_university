@@ -36,6 +36,26 @@ export const staffOptions = query({
   },
 });
 
+export const lecturerOptions = query({
+  args: { departmentId: v.id("departments"), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    await assertDepartmentManager(ctx, args.departmentId);
+    const page = await ctx.db.query("staffProfiles")
+      .withIndex("by_status", q => q.eq("status", "active"))
+      .paginate(args.paginationOpts);
+    const lecturers = page.page.filter(profile =>
+      profile.roles.some(role => ["lecturer", "senior_lecturer", "hod"].includes(role)),
+    );
+    return {
+      ...page,
+      page: await Promise.all(lecturers.map(async profile => ({
+        ...profile,
+        ...await staffName(ctx, profile.userId),
+      }))),
+    };
+  },
+});
+
 export const courses = query({
   args: { departmentId: v.id("departments"), periodId: v.id("academicPeriods"), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {

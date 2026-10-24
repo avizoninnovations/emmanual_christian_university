@@ -19,7 +19,6 @@ export const allocateLecturerToCourse = mutation({
     ]);
     if (!period || (period.status === "completed" && !actor.isAdmin)) throw new ConvexError("Historical allocations require an administrator.");
     if (!lecturer || lecturer.status !== "active" || !lecturer.roles.some(role => ["lecturer", "senior_lecturer", "hod"].includes(role))) throw new ConvexError("Choose an active lecturer or HOD.");
-    if (!actor.isAdmin && lecturer.departmentId !== course.departmentId && actor.department.hodId !== lecturer.userId) throw new ConvexError("The lecturer must belong to your department.");
     if (!args.reason.trim()) throw new ConvexError("Enter an assignment or reassignment reason.");
     if (submitted && existing?.lecturerId !== args.lecturerId) throw new ConvexError("Review or return submitted marks before reassigning this class.");
     const now = Date.now();

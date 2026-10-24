@@ -13,7 +13,7 @@ export function MarksReviewQueueCard({ course, periodId }: { course: Course; per
   const submitted = course.hasSubmitted;
   const approved = course.hasApproved;
   const Icon = submitted ? CircleDot : CheckCheck;
-  const reviewLabel = submitted ? "Awaiting review" : approved ? "Approved" : "No submission";
+  const reviewLabel = submitted && approved ? "Mixed · pending review" : submitted ? "Awaiting review" : approved ? "Approved marks" : "No pending review";
 
   return (
     <Card className="group relative gap-0 overflow-hidden rounded-sm border-border/80 py-0 shadow-sm transition-shadow hover:shadow-md">

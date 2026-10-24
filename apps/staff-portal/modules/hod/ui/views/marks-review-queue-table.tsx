@@ -27,7 +27,7 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: Course[]
             const submitted = course.hasSubmitted;
             const approved = course.hasApproved;
             const Icon = submitted ? CircleDot : CheckCheck;
-            const reviewLabel = submitted ? "Awaiting review" : approved ? "Approved" : "No submission";
+            const reviewLabel = submitted && approved ? "Mixed · pending review" : submitted ? "Awaiting review" : approved ? "Approved marks" : "No pending review";
             return (
               <TableRow key={course._id} className="transition-colors hover:bg-muted/25">
                 <TableCell className="py-4 pl-5">

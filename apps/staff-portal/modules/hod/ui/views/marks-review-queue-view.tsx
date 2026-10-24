@@ -14,7 +14,7 @@ import { MarksReviewQueueCard } from "./marks-review-queue-card";
 import { MarksReviewQueueTable } from "./marks-review-queue-table";
 import { NominatedReviews } from "./nominated-reviews";
 
-type QueueFilter = "pending" | "approved" | "all";
+type QueueFilter = "pending" | "approved" | "independent" | "all";
 
 export function MarksReviewQueueView() {
   const scope = useHodScope();
@@ -29,12 +29,12 @@ export function MarksReviewQueueView() {
   const [search, setSearch] = useState("");
   const period = scope.context?.periods.find(item => item._id === scope.periodId);
   const pendingCount = queue.results.filter(course => course.hasSubmitted).length;
-  const approvedCount = queue.results.filter(course => course.hasApproved).length;
+  const approvedCount = queue.results.filter(course => !course.hasSubmitted && course.hasApproved).length;
   const visibleCourses = useMemo(() => {
     const query = search.trim().toLowerCase();
     return queue.results.filter(course => {
       if (filter === "pending" && !course.hasSubmitted) return false;
-      if (filter === "approved" && !course.hasApproved) return false;
+      if (filter === "approved" && (course.hasSubmitted || !course.hasApproved)) return false;
       return !query || [course.title, course.code, course.programName, course.lecturerName]
         .some(value => value.toLowerCase().includes(query));
     });
@@ -59,32 +59,37 @@ export function MarksReviewQueueView() {
         <>
           <Tabs defaultValue="grid" className="w-full">
             <div className="flex flex-wrap items-end justify-between gap-3 border-b">
-              <div className="flex gap-5">
+              <div className="flex flex-wrap gap-x-5">
                 <QueueFilterButton label="Awaiting review" count={pendingCount} active={filter === "pending"} onClick={() => setFilter("pending")} />
                 <QueueFilterButton label="Approved" count={approvedCount} active={filter === "approved"} onClick={() => setFilter("approved")} />
+                <QueueFilterButton label="Independent review" active={filter === "independent"} onClick={() => setFilter("independent")} />
                 <QueueFilterButton label="All course units" count={queue.results.length} active={filter === "all"} onClick={() => setFilter("all")} />
               </div>
-              <TabsList className="border-0">
+              {filter !== "independent" && <TabsList className="border-0">
                 <TabsTrigger value="grid" aria-label="Grid view" className="flex-none gap-2"><LayoutGrid />Grid</TabsTrigger>
                 <TabsTrigger value="table" aria-label="Tabular view" className="flex-none gap-2"><List />Table</TabsTrigger>
-              </TabsList>
+              </TabsList>}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/20 px-3 py-3">
-              <p className="text-sm font-medium">{filter === "pending" ? "Submitted marks" : filter === "approved" ? "Approved results" : "Department course units"}</p>
-              <div className="relative w-full sm:max-w-sm">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  aria-label="Search marks review queue"
-                  placeholder="Search course, program, or lecturer"
-                  value={search}
-                  onChange={event => setSearch(event.target.value)}
-                  className="h-10 rounded-sm bg-background pl-9"
-                />
+            {filter !== "independent" ? <>
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/20 px-3 py-3">
+                <p className="text-sm font-medium">{filter === "pending" ? "Submitted marks" : filter === "approved" ? "Approved results" : "Department course units"}</p>
+                <div className="relative w-full sm:max-w-sm">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    aria-label="Search marks review queue"
+                    placeholder="Search course, program, or lecturer"
+                    value={search}
+                    onChange={event => setSearch(event.target.value)}
+                    className="h-10 rounded-sm bg-background pl-9"
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="pt-4">
+              <div className="px-3 pt-2 text-xs text-muted-foreground">
+                Counts cover loaded course units. Units with both pending and approved student marks are counted under Awaiting review.
+                {queue.status === "CanLoadMore" && " Load more to update the counts."}
+              </div>
+              <div className="pt-3">
               <TabsContent value="grid" className="mt-0">
                 {queue.status === "LoadingFirstPage" ? <QueueGridSkeleton /> : (
                   <QueueResults courses={visibleCourses} filter={filter} search={search} clear={() => { setSearch(""); setFilter("all"); }}>
@@ -106,20 +111,20 @@ export function MarksReviewQueueView() {
                   <Button variant="outline" className="rounded-sm" onClick={() => queue.loadMore(25)}>Load more course units</Button>
                 </div>
               )}
-            </div>
+              </div>
+            </> : <div className="pt-4"><NominatedReviews /></div>}
           </Tabs>
-          <NominatedReviews />
         </>
       )}
     </div>
   );
 }
 
-function QueueFilterButton({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
+function QueueFilterButton({ label, count, active, onClick }: { label: string; count?: number; active: boolean; onClick: () => void }) {
   return (
     <Button type="button" variant="ghost" aria-pressed={active} onClick={onClick}
       className={`h-10 gap-2 rounded-none border-b-2 px-1 text-sm hover:bg-transparent ${active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground"}`}>
-      {label}<span className={`text-xs tabular-nums ${active ? "text-primary" : "text-muted-foreground"}`}>{count}</span>
+      {label}{count !== undefined && <span className={`text-xs tabular-nums ${active ? "text-primary" : "text-muted-foreground"}`}>{count}</span>}
     </Button>
   );
 }

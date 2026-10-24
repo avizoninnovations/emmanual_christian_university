@@ -5,7 +5,7 @@ import { academicActor, assertDepartmentManager, staffName } from "./lib/academi
 import { academicEvent } from "./lib/academicAudit.js";
 
 export const allocateLecturerToCourse = mutation({
-  args: { courseId: v.id("courses"), lecturerId: v.string(), periodId: v.id("academicPeriods"), reason: v.string() },
+  args: { courseId: v.id("courses"), lecturerId: v.string(), periodId: v.id("academicPeriods"), reason: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const course = await ctx.db.get(args.courseId);
     if (!course || course.status !== "active") throw new ConvexError("Choose an active course.");
@@ -19,7 +19,8 @@ export const allocateLecturerToCourse = mutation({
     ]);
     if (!period || (period.status === "completed" && !actor.isAdmin)) throw new ConvexError("Historical allocations require an administrator.");
     if (!lecturer || lecturer.status !== "active" || !lecturer.roles.some(role => ["lecturer", "senior_lecturer", "hod"].includes(role))) throw new ConvexError("Choose an active lecturer or HOD.");
-    if (!args.reason.trim()) throw new ConvexError("Enter an assignment or reassignment reason.");
+    const reason = args.reason?.trim();
+    if (reason && reason.length > 500) throw new ConvexError("Keep the assignment reason under 500 characters.");
     if (submitted && existing?.lecturerId !== args.lecturerId) throw new ConvexError("Review or return submitted marks before reassigning this class.");
     const now = Date.now();
     if (lecturer.roles.includes("hod") && !lecturer.roles.some(role => ["lecturer", "senior_lecturer"].includes(role))) {
@@ -33,25 +34,28 @@ export const allocateLecturerToCourse = mutation({
     else id = await ctx.db.insert("courseAllocations", { ...values, courseId: args.courseId,
       periodId: args.periodId, departmentId: course.departmentId, createdAt: now });
     await academicEvent(ctx, { actorId: actor.userId, departmentId: course.departmentId, courseId: args.courseId,
-      periodId: args.periodId, action: "ALLOCATE_COURSE", details: `${course.code}: ${existing?.lecturerId ?? "unassigned"} → ${args.lecturerId}. ${args.reason.trim()}` });
+      periodId: args.periodId, action: "ALLOCATE_COURSE",
+      details: `${course.code}: ${existing?.lecturerId ?? "unassigned"} → ${args.lecturerId}${reason ? `. ${reason}` : ""}` });
     return id;
   },
 });
 
 export const deallocateLecturer = mutation({
-  args: { allocationId: v.id("courseAllocations"), reason: v.string() },
+  args: { allocationId: v.id("courseAllocations"), reason: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const allocation = await ctx.db.get(args.allocationId);
     if (!allocation) throw new ConvexError("Allocation not found.");
     const actor = await assertDepartmentManager(ctx, allocation.departmentId);
-    if (!args.reason.trim()) throw new ConvexError("Enter a reason for removing the assignment.");
+    const reason = args.reason?.trim();
+    if (reason && reason.length > 500) throw new ConvexError("Keep the removal reason under 500 characters.");
     const period = await ctx.db.get(allocation.periodId);
     if (period?.status === "completed") throw new ConvexError("Historical teaching assignments must be retained.");
     const mark = await ctx.db.query("studentAssessments").withIndex("by_course_period", q => q.eq("courseId", allocation.courseId).eq("periodId", allocation.periodId)).first();
     if (mark) throw new ConvexError("Marks exist for this class. Reassign the lecturer to preserve the teaching record.");
     await ctx.db.delete(allocation._id);
     await academicEvent(ctx, { actorId: actor.userId, departmentId: allocation.departmentId,
-      courseId: allocation.courseId, periodId: allocation.periodId, action: "REMOVE_ALLOCATION", details: args.reason.trim() });
+      courseId: allocation.courseId, periodId: allocation.periodId, action: "REMOVE_ALLOCATION",
+      details: reason || "Removed lecturer assignment." });
   },
 });
 

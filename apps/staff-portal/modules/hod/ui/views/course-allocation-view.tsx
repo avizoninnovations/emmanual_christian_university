@@ -35,7 +35,12 @@ export function CourseAllocationView() {
       : "skip",
     { initialNumItems: 25 },
   );
-  const [assignment, setAssignment] = useState<{ id: Id<"courses">; title: string }>();
+  const [assignment, setAssignment] = useState<{
+    id: Id<"courses">;
+    title: string;
+    allocationId?: Id<"courseAllocations">;
+    currentLecturer?: { userId: string; name: string };
+  }>();
   const [filter, setFilter] = useState<CourseFilter>("all");
   const [search, setSearch] = useState("");
   const selectedPeriod = scope.context?.periods.find(period => period._id === scope.periodId);
@@ -121,7 +126,14 @@ export function CourseAllocationView() {
                     key={course._id}
                     course={course}
                     canAssign={canAssign}
-                    onAssign={() => setAssignment({ id: course._id, title: course.code })}
+                    onAssign={() => setAssignment({
+                      id: course._id,
+                      title: course.code,
+                      allocationId: course.allocation?._id,
+                      currentLecturer: course.allocation
+                        ? { userId: course.allocation.lecturerId, name: course.lecturerName }
+                        : undefined,
+                    })}
                   />
                 ))}
               </div>
@@ -159,6 +171,8 @@ export function CourseAllocationView() {
           periodId={scope.periodId}
           departmentId={scope.departmentId}
           close={() => setAssignment(undefined)}
+          allocationId={assignment.allocationId}
+          currentLecturer={assignment.currentLecturer}
         />
       )}
     </div>

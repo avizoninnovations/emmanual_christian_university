@@ -97,7 +97,7 @@ function SidebarResizeHandle({ width, onResize }: { width: number; onResize: (wi
         if (event.currentTarget.hasPointerCapture(event.pointerId)) onResize(event.clientX);
       }}
       onKeyDown={handleKeyDown}
-      className="fixed top-16 bottom-0 z-40 w-2 -translate-x-1/2 cursor-col-resize touch-none select-none outline-none after:absolute after:inset-y-0 after:left-1/2 after:w-px after:bg-transparent hover:after:bg-primary/50 focus-visible:after:bg-primary"
+      className="fixed top-16 bottom-0 z-40 w-2 -translate-x-1/2 cursor-col-resize touch-none select-none bg-transparent outline-none"
       style={{ left: width }}
     />
   );

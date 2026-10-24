@@ -10,6 +10,7 @@ type DemoReferences = {
 };
 
 const HOD_EMAIL = "hod.demo@ecu-ssd.org";
+const REVIEWER_EMAIL = "lecturer.theology.demo@ecu-ssd.org";
 const LECTURER_EMAIL = "lecturer.agriculture.demo@ecu-ssd.org";
 const MARKS_COURSE = "D-AGR-0103";
 const UPCOMING_COURSES = ["D-AGR-0101", "D-AGR-0102"];
@@ -19,11 +20,12 @@ export async function seedDemoAcademicWorkflow(ctx: MutationCtx, refs: DemoRefer
   const now = Date.now();
   const departmentId = refs.departmentIds["dept-agriculture"];
   const hodId = refs.staffIds[HOD_EMAIL];
+  const reviewerId = refs.staffIds[REVIEWER_EMAIL];
   const lecturerId = refs.staffIds[LECTURER_EMAIL];
   const currentPeriodId = refs.periodIds["2026-term-2"];
   const courseId = refs.courseIds[MARKS_COURSE];
 
-  if (!departmentId || !hodId || !lecturerId || !currentPeriodId || !courseId) return 0;
+  if (!departmentId || !hodId || !reviewerId || !lecturerId || !currentPeriodId || !courseId) return 0;
 
   let inserted = 0;
   const department = await ctx.db.get(departmentId);
@@ -47,6 +49,14 @@ export async function seedDemoAcademicWorkflow(ctx: MutationCtx, refs: DemoRefer
       await ctx.db.patch(hod._id, { roles: [...new Set([...hod.roles, "hod", "staff"])], updatedAt: now });
       inserted++;
     }
+  }
+  const independentReviewer = await ctx.db.query("staffProfiles")
+    .withIndex("by_userId", q => q.eq("userId", reviewerId)).unique();
+  if (independentReviewer && !independentReviewer.roles.includes("hod")) {
+    await ctx.db.patch(independentReviewer._id, {
+      roles: [...new Set([...independentReviewer.roles, "hod", "staff"])], updatedAt: now,
+    });
+    inserted++;
   }
 
   const nextSemester = await ctx.db.query("academicPeriods")
@@ -77,11 +87,11 @@ export async function seedDemoAcademicWorkflow(ctx: MutationCtx, refs: DemoRefer
     .withIndex("by_courseId_and_periodId", q => q.eq("courseId", courseId).eq("periodId", currentPeriodId)).unique();
   if (!book) {
     await ctx.db.insert("academicGradebooks", {
-      courseId, periodId: currentPeriodId, departmentId, reviewerId: hodId, createdAt: now, updatedAt: now,
+      courseId, periodId: currentPeriodId, departmentId, reviewerId, createdAt: now, updatedAt: now,
     });
     inserted++;
-  } else if (!book.reviewerId) {
-    await ctx.db.patch(book._id, { reviewerId: hodId, updatedAt: now });
+  } else if (!book.reviewerId || book.reviewerId === hodId) {
+    await ctx.db.patch(book._id, { reviewerId, updatedAt: now });
     inserted++;
   }
 

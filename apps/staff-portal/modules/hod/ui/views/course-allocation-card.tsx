@@ -5,16 +5,18 @@ import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent } from "@workspace/ui/components/card";
+import { AssignmentLockInfo } from "../components/assignment-lock-info";
 
 export type Course = FunctionReturnType<typeof api.hod.courses>["page"][number];
 
-export function CourseAllocationCard({ course, canAssign, onAssign }: {
+export function CourseAllocationCard({ course, canAssign, periodStatus, onAssign }: {
   course: Course;
   canAssign: boolean;
+  periodStatus?: string;
   onAssign: () => void;
 }) {
   const assigned = Boolean(course.allocation);
-  const assignmentLocked = assigned && course.hasSubmitted;
+  const assignmentLocked = course.hasSubmitted;
   const lecturerInitials = String(course.lecturerName ?? "")
     .split(/\s+/)
     .slice(0, 2)
@@ -55,16 +57,19 @@ export function CourseAllocationCard({ course, canAssign, onAssign }: {
           </div>
         </div>
         <div className="flex items-center justify-between gap-2 pt-1">
-          <Button
-            size="sm"
-            variant={assigned ? "outline" : "default"}
-            className="rounded-sm shadow-none"
-            disabled={!canAssign || assignmentLocked}
-            title={!canAssign ? "Historical assignments are locked" : assignmentLocked ? "This assignment cannot be changed right now" : undefined}
-            onClick={onAssign}
-          >
-            {assigned ? "Reassign lecturer" : "Assign lecturer"}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              size="sm"
+              variant={assigned ? "outline" : "default"}
+              className="rounded-sm shadow-none"
+              disabled={!canAssign || assignmentLocked}
+              title={!canAssign ? "Historical assignments are locked" : assignmentLocked ? "This assignment cannot be changed right now" : undefined}
+              onClick={onAssign}
+            >
+              {assigned ? "Reassign lecturer" : "Assign lecturer"}
+            </Button>
+            <AssignmentLockInfo submittedMarks={assignmentLocked} periodLocked={!canAssign} periodStatus={periodStatus} />
+          </div>
         </div>
       </CardContent>
     </Card>

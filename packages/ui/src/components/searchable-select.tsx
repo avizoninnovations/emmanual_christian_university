@@ -49,7 +49,7 @@ export function SearchableSelect({
           aria-label={ariaLabel}
           aria-expanded={open}
           disabled={disabled}
-          className={cn("w-full min-w-0 max-w-full justify-between rounded-sm font-normal", className)}
+          className={cn("w-full min-w-0 max-w-full justify-between overflow-hidden rounded-sm font-normal", className)}
         >
           <span
             title={selected?.label}

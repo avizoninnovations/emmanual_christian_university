@@ -3,11 +3,13 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { BookOpen, UserRound, UserRoundPen, UserRoundPlus } from "lucide-react";
+import { AssignmentLockInfo } from "../components/assignment-lock-info";
 import type { Course } from "./course-allocation-card";
 
-export function CourseAllocationTable({ courses, canAssign, onAssign }: {
+export function CourseAllocationTable({ courses, canAssign, periodStatus, onAssign }: {
   courses: Course[];
   canAssign: boolean;
+  periodStatus?: string;
   onAssign: (course: Course) => void;
 }) {
   return (
@@ -25,7 +27,7 @@ export function CourseAllocationTable({ courses, canAssign, onAssign }: {
         <TableBody>
           {courses.map(course => {
             const assigned = Boolean(course.allocation);
-            const assignmentLocked = assigned && course.hasSubmitted;
+            const assignmentLocked = course.hasSubmitted;
             return (
               <TableRow key={course._id} className="group transition-colors hover:bg-muted/25">
                 <TableCell className="py-4 pl-5">
@@ -62,17 +64,20 @@ export function CourseAllocationTable({ courses, canAssign, onAssign }: {
                   </span>
                 </TableCell>
                 <TableCell className="py-4 pr-5 text-right">
-                  <Button
-                    size="sm"
-                    variant={assigned ? "outline" : "default"}
-                    className="rounded-sm transition-colors"
-                    disabled={!canAssign || assignmentLocked}
-                    title={!canAssign ? "Historical assignments are locked" : assignmentLocked ? "This assignment cannot be changed right now" : undefined}
-                    onClick={() => onAssign(course)}
-                  >
-                    {assigned ? <UserRoundPen /> : <UserRoundPlus />}
-                    {assigned ? "Reassign lecturer" : "Assign lecturer"}
-                  </Button>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button
+                      size="sm"
+                      variant={assigned ? "outline" : "default"}
+                      className="rounded-sm transition-colors"
+                      disabled={!canAssign || assignmentLocked}
+                      title={!canAssign ? "Historical assignments are locked" : assignmentLocked ? "This assignment cannot be changed right now" : undefined}
+                      onClick={() => onAssign(course)}
+                    >
+                      {assigned ? <UserRoundPen /> : <UserRoundPlus />}
+                      {assigned ? "Reassign lecturer" : "Assign lecturer"}
+                    </Button>
+                    <AssignmentLockInfo submittedMarks={assignmentLocked} periodLocked={!canAssign} periodStatus={periodStatus} />
+                  </div>
                 </TableCell>
               </TableRow>
             );

@@ -103,9 +103,9 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
               control={form.control}
               name="lecturerId"
               render={({ field }) => (
-                <FormItem className="min-w-0">
+                <FormItem className="w-full min-w-0">
                   <FormLabel>Lecturer</FormLabel>
-                  <FormControl className="min-w-0">
+                  <FormControl className="w-full min-w-0">
                     <SearchableSelect
                       value={field.value}
                       onValueChange={field.onChange}

@@ -130,7 +130,7 @@ export function CourseAllocationView() {
                   </div>
                 ) : visibleCourses.length ? (
                   <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
-                    {visibleCourses.map(course => <CourseAllocationCard key={course._id} course={course} canAssign={canAssign} onAssign={() => openAssignment(course)} />)}
+                    {visibleCourses.map(course => <CourseAllocationCard key={course._id} course={course} canAssign={canAssign} periodStatus={selectedPeriod?.status} onAssign={() => openAssignment(course)} />)}
                   </div>
                 ) : <EmptyAllocations search={search} filter={filter} clearFilters={() => { setSearch(""); setFilter("all"); }} />}
               </TabsContent>
@@ -138,7 +138,7 @@ export function CourseAllocationView() {
                 {courses.status === "LoadingFirstPage" ? (
                   <Skeleton className="h-72 rounded-sm" />
                 ) : visibleCourses.length ? (
-                  <CourseAllocationTable courses={visibleCourses} canAssign={canAssign} onAssign={openAssignment} />
+                  <CourseAllocationTable courses={visibleCourses} canAssign={canAssign} periodStatus={selectedPeriod?.status} onAssign={openAssignment} />
                 ) : (
                   <EmptyAllocations search={search} filter={filter} clearFilters={() => { setSearch(""); setFilter("all"); }} />
                 )}

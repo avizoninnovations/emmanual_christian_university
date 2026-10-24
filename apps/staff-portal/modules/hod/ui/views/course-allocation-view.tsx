@@ -91,10 +91,10 @@ export function CourseAllocationView() {
                 </div>
               </div>
               <TabsList className="h-auto w-fit gap-3 rounded-none bg-transparent p-0">
-                <TabsTrigger value="grid" className="h-10 gap-2 rounded-none border-b-2 border-transparent px-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none">
+                <TabsTrigger value="grid" className="h-10 gap-2 rounded-none border-0 border-b-2 border-transparent bg-transparent px-3 text-muted-foreground data-[state=active]:border-b-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary data-[state=active]:shadow-none">
                   <LayoutGrid className="size-4" />Grid view
                 </TabsTrigger>
-                <TabsTrigger value="table" className="h-10 gap-2 rounded-none border-b-2 border-transparent px-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none">
+                <TabsTrigger value="table" className="h-10 gap-2 rounded-none border-0 border-b-2 border-transparent bg-transparent px-3 text-muted-foreground data-[state=active]:border-b-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary data-[state=active]:shadow-none">
                   <List className="size-4" />Tabular view
                 </TabsTrigger>
               </TabsList>

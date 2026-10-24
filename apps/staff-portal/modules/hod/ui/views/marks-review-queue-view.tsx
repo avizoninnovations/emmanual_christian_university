@@ -14,7 +14,7 @@ import { MarksReviewQueueCard } from "./marks-review-queue-card";
 import { MarksReviewQueueTable } from "./marks-review-queue-table";
 import { NominatedReviews } from "./nominated-reviews";
 
-type QueueFilter = "pending" | "approved" | "independent" | "all";
+type QueueFilter = "pending" | "mixed" | "noMarks" | "hasMarks" | "approved" | "independent" | "all";
 
 export function MarksReviewQueueView() {
   const scope = useHodScope();
@@ -28,13 +28,19 @@ export function MarksReviewQueueView() {
   const [filter, setFilter] = useState<QueueFilter>("pending");
   const [search, setSearch] = useState("");
   const period = scope.context?.periods.find(item => item._id === scope.periodId);
-  const pendingCount = queue.results.filter(course => course.hasSubmitted).length;
-  const approvedCount = queue.results.filter(course => !course.hasSubmitted && course.hasApproved).length;
+  const pendingCount = queue.results.filter(course => course.hasSubmitted && course.approvedCount === 0).length;
+  const mixedCount = queue.results.filter(course => course.hasSubmitted && course.approvedCount > 0).length;
+  const noMarksCount = queue.results.filter(course => !course.hasMarks).length;
+  const hasMarksCount = queue.results.filter(course => course.hasMarks).length;
+  const approvedCount = queue.results.filter(course => course.fullyApproved).length;
   const visibleCourses = useMemo(() => {
     const query = search.trim().toLowerCase();
     return queue.results.filter(course => {
-      if (filter === "pending" && !course.hasSubmitted) return false;
-      if (filter === "approved" && (course.hasSubmitted || !course.hasApproved)) return false;
+      if (filter === "pending" && (!course.hasSubmitted || course.approvedCount > 0)) return false;
+      if (filter === "mixed" && (!course.hasSubmitted || course.approvedCount === 0)) return false;
+      if (filter === "noMarks" && course.hasMarks) return false;
+      if (filter === "hasMarks" && !course.hasMarks) return false;
+      if (filter === "approved" && !course.fullyApproved) return false;
       return !query || [course.title, course.code, course.programName, course.lecturerName]
         .some(value => value.toLowerCase().includes(query));
     });
@@ -61,7 +67,10 @@ export function MarksReviewQueueView() {
             <div className="flex flex-wrap items-end justify-between gap-3 border-b">
               <div className="flex flex-wrap gap-x-5">
                 <QueueFilterButton label="Awaiting review" count={pendingCount} active={filter === "pending"} onClick={() => setFilter("pending")} />
-                <QueueFilterButton label="Approved" count={approvedCount} active={filter === "approved"} onClick={() => setFilter("approved")} />
+                <QueueFilterButton label="Pending + approved" count={mixedCount} active={filter === "mixed"} onClick={() => setFilter("mixed")} />
+                <QueueFilterButton label="No marks" count={noMarksCount} active={filter === "noMarks"} onClick={() => setFilter("noMarks")} />
+                <QueueFilterButton label="Marks entered" count={hasMarksCount} active={filter === "hasMarks"} onClick={() => setFilter("hasMarks")} />
+                <QueueFilterButton label="Fully approved" count={approvedCount} active={filter === "approved"} onClick={() => setFilter("approved")} />
                 <QueueFilterButton label="Independent review" active={filter === "independent"} onClick={() => setFilter("independent")} />
                 <QueueFilterButton label="All course units" count={queue.results.length} active={filter === "all"} onClick={() => setFilter("all")} />
               </div>
@@ -73,7 +82,7 @@ export function MarksReviewQueueView() {
 
             {filter !== "independent" ? <>
               <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/20 px-3 py-3">
-                <p className="text-sm font-medium">{filter === "pending" ? "Submitted marks" : filter === "approved" ? "Approved results" : "Department course units"}</p>
+                <p className="text-sm font-medium">{filterTitle(filter)}</p>
                 <div className="relative w-full sm:max-w-sm">
                   <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -86,7 +95,7 @@ export function MarksReviewQueueView() {
                 </div>
               </div>
               <div className="px-3 pt-2 text-xs text-muted-foreground">
-                Counts cover loaded course units. Units with both pending and approved student marks are counted under Awaiting review.
+                Marks entered includes any course unit with at least one student's marks. Pending + approved identifies a class with both statuses; fully approved means every enrolled student has approved marks.
                 {queue.status === "CanLoadMore" && " Load more to update the counts."}
               </div>
               <div className="pt-3">
@@ -136,11 +145,40 @@ function QueueResults({ courses, filter, search, clear, children }: {
   return (
     <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-sm border border-dashed bg-card px-6 text-center">
       <ClipboardCheck className="size-8 text-muted-foreground/70" />
-      <p className="font-medium">{search ? "No matching course units" : filter === "pending" ? "No marks are awaiting review" : filter === "approved" ? "No approved results yet" : "No course units found"}</p>
-      <p className="max-w-md text-sm text-muted-foreground">{search ? "Try a different course code, program, or lecturer name." : filter === "approved" ? "Course units with approved student marks for this semester will appear here." : "When lecturers submit marks for this semester, the course units will appear here."}</p>
+      <p className="font-medium">{search ? "No matching course units" : emptyTitle(filter)}</p>
+      <p className="max-w-md text-sm text-muted-foreground">{search ? "Try a different course code, program, or lecturer name." : emptyDescription(filter)}</p>
       {(search || filter !== "all") && <Button variant="ghost" size="sm" onClick={clear}>Show all course units</Button>}
     </div>
   );
+}
+
+function filterTitle(filter: QueueFilter) {
+  switch (filter) {
+    case "pending": return "Awaiting review";
+    case "mixed": return "Pending and approved marks";
+    case "noMarks": return "No marks entered";
+    case "hasMarks": return "Course units with marks entered";
+    case "approved": return "Fully approved results";
+    case "independent": return "Independent reviews";
+    case "all": return "All department course units";
+  }
+}
+
+function emptyTitle(filter: QueueFilter) {
+  if (filter === "pending") return "No marks are awaiting review";
+  if (filter === "mixed") return "No course units have both pending and approved marks";
+  if (filter === "noMarks") return "Every course unit has marks entered";
+  if (filter === "hasMarks") return "No marks have been entered";
+  if (filter === "approved") return "No course units are fully approved";
+  return "No course units found";
+}
+
+function emptyDescription(filter: QueueFilter) {
+  if (filter === "noMarks") return "Course units appear here when no student has any marks entered.";
+  if (filter === "hasMarks") return "Course units appear here as soon as at least one student's marks are entered.";
+  if (filter === "mixed") return "A course unit appears here when some student marks are approved while other submitted marks still await review.";
+  if (filter === "approved") return "A course unit appears here after every enrolled student has approved marks.";
+  return "When lecturers submit marks for this semester, the course units will appear here.";
 }
 
 function QueueGridSkeleton() {

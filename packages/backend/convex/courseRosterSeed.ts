@@ -123,7 +123,7 @@ export const seedRosterBatch = internalMutation({
       const program = programById.get(course.programId);
       if (!program) continue;
 
-      const registrations = registrationsByCourse[courseIndex];
+      const registrations = registrationsByCourse[courseIndex] ?? [];
       const activeStudents = registrations.filter(row => row.status === "registered" || row.status === "completed");
       const target = TARGET_MINIMUM + (stableHash(course.code) % TARGET_RANGE);
       const cohort = cohortKey(program._id, course.yearOfStudy);

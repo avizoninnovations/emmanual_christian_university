@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, CheckCheck, CircleDot, UserRound } from "lucide-react";
+import { BookOpen, CheckCheck, CircleDot, ClipboardCheck, Eye, UserRound } from "lucide-react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
@@ -11,9 +11,11 @@ type Course = FunctionReturnType<typeof api.hod.courses>["page"][number];
 
 export function MarksReviewQueueCard({ course, periodId }: { course: Course; periodId: Id<"academicPeriods"> }) {
   const submitted = course.hasSubmitted;
-  const approved = course.hasApproved;
-  const Icon = submitted ? CircleDot : CheckCheck;
-  const reviewLabel = submitted && approved ? "Mixed · pending review" : submitted ? "Awaiting review" : approved ? "Approved marks" : "No pending review";
+  const approved = course.fullyApproved;
+  const Icon = submitted ? CircleDot : approved ? CheckCheck : course.hasMarks ? CheckCheck : BookOpen;
+  const reviewLabel = submitted && course.approvedCount > 0 ? `Pending + approved · ${course.approvedCount}/${course.studentCount}`
+    : submitted ? "Awaiting review" : approved ? `Fully approved · ${course.approvedCount}/${course.studentCount}` : course.hasMarks ? "Marks entered" : "No marks entered";
+  const ActionIcon = approved ? Eye : submitted ? ClipboardCheck : BookOpen;
 
   return (
     <Card className="group relative gap-0 overflow-hidden rounded-sm border-border/80 py-0 shadow-sm transition-shadow hover:shadow-md">
@@ -25,7 +27,7 @@ export function MarksReviewQueueCard({ course, periodId }: { course: Course; per
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-center gap-1.5">
             <Badge variant="outline" className="rounded-sm bg-background font-mono text-xs">{course.code}</Badge>
-            <Badge variant={submitted ? "secondary" : "outline"} className={submitted ? "rounded-sm bg-primary/10 text-primary" : "rounded-sm"}>
+            <Badge variant={submitted || approved ? "secondary" : "outline"} className={submitted || approved ? "rounded-sm bg-primary/10 text-primary" : "rounded-sm"}>
               <Icon className="mr-1 size-3.5" />{reviewLabel}
             </Badge>
           </div>
@@ -42,9 +44,9 @@ export function MarksReviewQueueCard({ course, periodId }: { course: Course; per
             <p className="truncate text-sm font-medium">{course.lecturerName || "Unassigned"}</p>
           </div>
         </div>
-        <Button asChild size="sm" variant={submitted ? "default" : "outline"} className="w-full justify-between rounded-sm">
+        <Button asChild size="sm" variant={submitted || approved ? "default" : "outline"} className="w-full justify-start gap-2 rounded-sm shadow-sm">
           <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
-            {submitted ? "Review submitted marks" : "Open course unit"}<span aria-hidden="true">→</span>
+            <ActionIcon className="size-4" />{approved ? "View approved marks" : submitted ? "Review submitted marks" : "Open course unit"}
           </Link>
         </Button>
       </CardContent>

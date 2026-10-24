@@ -64,13 +64,27 @@ export const courses = query({
       .filter(q => q.eq(q.field("status"), "active"))
       .paginate(args.paginationOpts);
     return { ...page, page: await Promise.all(page.page.map(async course => {
-      const [allocation, program, submitted, approved] = await Promise.all([
+      const [allocation, program, registrations, assessments] = await Promise.all([
         ctx.db.query("courseAllocations").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).unique(),
         ctx.db.get(course.programId),
-        ctx.db.query("studentAssessments").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).filter(q => q.eq(q.field("status"), "submitted")).first(),
-        ctx.db.query("studentAssessments").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).filter(q => q.and(q.eq(q.field("status"), "approved"), q.neq(q.field("publicationWithdrawn"), true))).first(),
+        ctx.db.query("studentCourseRegistrations").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).take(501),
+        ctx.db.query("studentAssessments").withIndex("by_course_period", q => q.eq("courseId", course._id).eq("periodId", args.periodId)).take(501),
       ]);
-      return { ...course, programName: program?.name ?? "", allocation, hasSubmitted: !!submitted, hasApproved: !!approved,
+      const enrolledStudentIds = [...new Set(registrations
+        .filter(row => row.status === "registered" || row.status === "completed")
+        .map(row => row.studentId))];
+      const marksByStudent = new Map(assessments.map(mark => [mark.studentId, mark]));
+      const hasMarks = assessments.some(mark => mark.courseworkEntered !== false || mark.examEntered !== false);
+      const submittedCount = assessments.filter(mark => mark.status === "submitted").length;
+      const approvedCount = enrolledStudentIds.filter(studentId => {
+        const mark = marksByStudent.get(studentId);
+        return mark?.status === "approved" && !mark.publicationWithdrawn;
+      }).length;
+      const fullyApproved = enrolledStudentIds.length > 0 && registrations.length < 501
+        && assessments.length < 501 && approvedCount === enrolledStudentIds.length;
+      return { ...course, programName: program?.name ?? "", allocation, hasMarks, hasSubmitted: submittedCount > 0,
+        fullyApproved, studentCount: enrolledStudentIds.length, marksEnteredCount: assessments.filter(mark => mark.courseworkEntered !== false || mark.examEntered !== false).length,
+        submittedCount, approvedCount,
         lecturerName: allocation ? (await staffName(ctx, allocation.lecturerId)).name : "Unassigned" };
     })) };
   },

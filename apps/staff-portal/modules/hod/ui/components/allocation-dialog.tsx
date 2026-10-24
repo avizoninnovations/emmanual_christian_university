@@ -10,7 +10,7 @@ import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
+import { SearchableSelect, type SearchableSelectOption } from "@workspace/ui/components/searchable-select";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
@@ -63,6 +63,17 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
     defaultValues: { lecturerId: currentLecturer?.userId ?? "", reason: "" },
   });
   const currentLecturerInPage = staff.results.some(row => row.userId === currentLecturer?.userId);
+  const lecturerOptions: SearchableSelectOption[] = [
+    ...(allocationId ? [{ value: UNASSIGNED_VALUE, label: "Leave unassigned", keywords: "remove clear" }] : []),
+    ...staff.results.map(row => ({
+      value: row.userId,
+      label: `${row.name} · ${row.staffId}`,
+      keywords: row.staffId,
+    })),
+    ...(currentLecturer && !currentLecturerInPage
+      ? [{ value: currentLecturer.userId, label: `${currentLecturer.name} · Currently assigned`, keywords: "current assigned" }]
+      : []),
+  ];
   const save = form.handleSubmit(async values => {
     const reason = values.reason?.trim() || undefined;
     const reasonArgs = reason ? { reason } : {};
@@ -94,20 +105,17 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Lecturer</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger><SelectValue placeholder="Select a lecturer" /></SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {staff.results.map(row => (
-                        <SelectItem key={row._id} value={row.userId}>{row.name} · {row.staffId}</SelectItem>
-                      ))}
-                      {currentLecturer && !currentLecturerInPage && (
-                        <SelectItem value={currentLecturer.userId}>{currentLecturer.name} · Currently assigned</SelectItem>
-                      )}
-                      {allocationId && <SelectItem value={UNASSIGNED_VALUE}>Leave unassigned</SelectItem>}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <SearchableSelect
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      options={lecturerOptions}
+                      placeholder="Select a lecturer"
+                      searchPlaceholder="Search lecturers by name or staff ID..."
+                      emptyMessage="No eligible lecturers found."
+                      aria-label="Lecturer"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { mutation } from "./_generated/server.js";
+import { mutation } from "./lib/mutations.js";
 import { assertClassReviewer, entered, requireEnrollment } from "./lib/academicAccess.js";
 import { academicEvent } from "./lib/academicAudit.js";
 import { approvedSnapshot } from "./lib/academicResults.js";

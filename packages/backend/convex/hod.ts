@@ -1,6 +1,7 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server.js";
+import { query } from "./_generated/server.js";
+import { mutation } from "./lib/mutations.js";
 import { academicActor, assertDepartmentManager, classContext, managedDepartments, staffName } from "./lib/academicAccess.js";
 import { appointDepartmentHead } from "./lib/departmentLeadership.js";
 import { academicEvent } from "./lib/academicAudit.js";
@@ -58,8 +59,38 @@ export const activity = query({
   args: { departmentId: v.id("departments"), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
     await assertDepartmentManager(ctx, args.departmentId);
-    return ctx.db.query("academicEvents").withIndex("by_departmentId", q => q.eq("departmentId", args.departmentId))
+    const page = await ctx.db.query("academicEvents")
+      .withIndex("by_departmentId", q => q.eq("departmentId", args.departmentId))
       .order("desc").paginate(args.paginationOpts);
+    const staffIds = [...new Set(page.page.map(event => event.actorId))];
+    const courseIds = [...new Set(page.page.flatMap(event => event.courseId ? [event.courseId] : []))];
+    const periodIds = [...new Set(page.page.flatMap(event => event.periodId ? [event.periodId] : []))];
+    const studentIds = [...new Set(page.page.flatMap(event => event.studentId ? [event.studentId] : []))];
+    const [staff, courses, periods, students] = await Promise.all([
+      Promise.all(staffIds.map(async id => [id, await staffName(ctx, id)] as const)),
+      Promise.all(courseIds.map(async id => [id, await ctx.db.get(id)] as const)),
+      Promise.all(periodIds.map(async id => [id, await ctx.db.get(id)] as const)),
+      Promise.all(studentIds.map(async id => [id, await ctx.db.get(id)] as const)),
+    ]);
+    const staffById = new Map(staff);
+    const coursesById = new Map(courses);
+    const periodsById = new Map(periods);
+    const studentsById = new Map(students);
+    return {
+      ...page,
+      page: page.page.map(event => {
+        const course = event.courseId ? coursesById.get(event.courseId) : null;
+        const period = event.periodId ? periodsById.get(event.periodId) : null;
+        const student = event.studentId ? studentsById.get(event.studentId) : null;
+        return {
+          ...event,
+          actorName: staffById.get(event.actorId)?.name ?? (event.actorId === "system" ? "System" : "Staff member"),
+          courseLabel: course ? `${course.code} · ${course.title}` : "—",
+          periodLabel: period ? `${period.name} ${period.year}` : "—",
+          studentLabel: student ? `${student.firstName} ${student.surname} (${student.registrationNumber})` : "—",
+        };
+      }),
+    };
   },
 });
 

@@ -1,6 +1,7 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { query, mutation, internalMutation } from "./_generated/server.js";
+import { query, internalMutation } from "./_generated/server.js";
+import { mutation } from "./lib/mutations.js";
 import { internal } from "./_generated/api.js";
 import { academicActor, assertDepartmentManager, classContext, requireEnrollment, staffName } from "./lib/academicAccess.js";
 import { academicEvent } from "./lib/academicAudit.js";

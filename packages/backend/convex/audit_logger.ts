@@ -1,5 +1,6 @@
 import { MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
+import type { MutationAuditState } from "./lib/mutations";
 
 /**
  * Reusable helper to log an administrative action.
@@ -17,6 +18,9 @@ export async function logAction(
     location?: string;
   }
 ) {
+  const auditState = (ctx as MutationCtx & { auditState?: MutationAuditState }).auditState;
+  if (auditState && await auditState.recordExplicitAction(args)) return;
+
   const identity = await ctx.auth.getUserIdentity();
   
   const userId = identity?.subject ?? "system";

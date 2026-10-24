@@ -3,6 +3,7 @@ import { mutation, internalMutation } from "./lib/mutations";
 import { query } from "./_generated/server.js";
 import { logAction } from "./audit_logger";
 import { paginationOptsValidator } from "convex/server";
+import { assertAdmin } from "./lib/utils";
 
 /**
  * Robust paginated query for audit logs with backend filtering.
@@ -19,6 +20,7 @@ export const getAuditLogs = query({
     pageSize: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     let query = ctx.db.query("auditLogs").order("desc");
 
     // ── Efficient Filtering ──
@@ -97,6 +99,7 @@ export const getAuditStats = query({
     endDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await assertAdmin(ctx);
     const query = (args.startDate !== undefined || args.endDate !== undefined)
       ? ctx.db.query("auditLogs")
           .withIndex("by_createdAt", q => 

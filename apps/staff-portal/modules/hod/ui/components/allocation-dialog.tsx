@@ -98,14 +98,14 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
           <DialogTitle>{allocationId ? "Update lecturer assignment" : "Assign lecturer"} · {title}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={save} className="space-y-4">
+          <form onSubmit={save} className="min-w-0 w-full space-y-4">
             <FormField
               control={form.control}
               name="lecturerId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="min-w-0">
                   <FormLabel>Lecturer</FormLabel>
-                  <FormControl>
+                  <FormControl className="min-w-0">
                     <SearchableSelect
                       value={field.value}
                       onValueChange={field.onChange}

@@ -172,7 +172,7 @@ function NavigationGroup({ section, items, pathname, open, onOpenChange, openNes
         <ChevronDown className="size-4 shrink-0 transition-transform duration-[400ms] group-data-[state=open]/nav:rotate-180 group-data-[collapsible=icon]:hidden" />
       </SidebarMenuButton>
     </CollapsibleTrigger><CollapsibleContent>
-      <SidebarMenuSub className="mx-0 gap-1 border-l-0 px-0 py-1">
+      <SidebarMenuSub className="ml-4 mr-0 gap-1 border-l border-sidebar-border/70 py-1 pl-2.5 pr-0">
         <EntryList items={items} pathname={pathname} parentPath={section.key} openNestedPath={openNestedPath} onNestedPathChange={onNestedPathChange} />
       </SidebarMenuSub>
     </CollapsibleContent></SidebarMenuItem></SidebarMenu>

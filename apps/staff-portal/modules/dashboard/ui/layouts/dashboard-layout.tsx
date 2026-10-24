@@ -2,7 +2,7 @@
 
 import { AuthGuard } from "@/modules/auth/ui/components/auth-guard";
 
-import { SidebarProvider } from "@workspace/ui/components/sidebar";
+import { ResizableSidebarProvider } from "../components/resizable-sidebar-provider";
 import { Provider } from "jotai";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { DashboardSidebar } from "../components/dashboard-sidebar";
@@ -35,12 +35,12 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarProvider defaultOpen={true} style={{ "--sidebar-width": "210px" } as React.CSSProperties}>
+    <ResizableSidebarProvider defaultOpen defaultWidth={210}>
       <DashboardSidebar />
       <main className="portal-content-area flex flex-1 flex-col">
         <StaffRouteBreadcrumbs />
         {children}
       </main>
-    </SidebarProvider>
+    </ResizableSidebarProvider>
   );
 }

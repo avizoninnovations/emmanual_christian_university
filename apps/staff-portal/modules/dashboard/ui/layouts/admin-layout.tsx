@@ -2,12 +2,13 @@
 
 import { AdminSidebar } from "@/modules/dashboard/ui/components/admin-sidebar";
 import { StaffRouteBreadcrumbs } from "@/modules/dashboard/ui/components/staff-route-breadcrumbs";
-import { SidebarProvider, SidebarTrigger } from "@workspace/ui/components/sidebar";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar";
+import { ResizableSidebarProvider } from "@/modules/dashboard/ui/components/resizable-sidebar-provider";
 import Image from "next/image";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider defaultOpen={true} style={{ "--sidebar-width": "210px" } as React.CSSProperties}>
+    <ResizableSidebarProvider defaultOpen defaultWidth={210}>
       <AdminSidebar />
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="p-2 md:hidden">
@@ -31,6 +32,6 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </main>
-    </SidebarProvider>
+    </ResizableSidebarProvider>
   );
 };

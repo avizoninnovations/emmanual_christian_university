@@ -8,13 +8,12 @@ import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { Skeleton } from "@workspace/ui/components/skeleton";
-import { BookOpen, ClipboardCheck, KeyRound, UsersRound } from "lucide-react";
 import { useHodScope } from "../../hooks/use-hod-scope";
 import { HodScopePicker } from "../components/hod-scope-picker";
 import { AllocationDialog } from "../components/allocation-dialog";
 import { NominatedReviews } from "./nominated-reviews";
 
-export function DepartmentCoursesView({ mode }: { mode: "overview" | "allocations" | "review" }) {
+export function DepartmentCoursesView({ mode }: { mode: "allocations" | "review" }) {
   const scope = useHodScope();
   const { results, status, loadMore } = usePaginatedQuery(api.hod.courses,
     scope.departmentId && scope.periodId ? { departmentId: scope.departmentId, periodId: scope.periodId } : "skip", { initialNumItems: 25 });
@@ -24,12 +23,6 @@ export function DepartmentCoursesView({ mode }: { mode: "overview" | "allocation
   return <div className="w-full space-y-5 p-4 lg:p-6">
     <HodScopePicker scope={scope} />
     {mode === "review" && <NominatedReviews />}
-    {mode === "overview" && <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{[
-      { href: "/hod/allocations", label: "Course Allocations", icon: BookOpen },
-      { href: "/hod/review-queue", label: "Marks Review", icon: ClipboardCheck },
-      { href: "/hod/edit-permissions", label: "Edit Permissions", icon: KeyRound },
-      { href: "/hod/lecturers", label: "Department Lecturers", icon: UsersRound },
-    ].map(item => <Button key={item.href} asChild variant="outline" className="h-16 justify-start gap-3"><Link href={item.href}><item.icon className="size-5 text-primary" />{item.label}</Link></Button>)}</div>}
     {scope.departmentId && scope.periodId && <section className="rounded-sm border bg-card">
       <Table><TableHeader><TableRow><TableHead>Course unit</TableHead><TableHead>Program</TableHead><TableHead>Lecturer</TableHead><TableHead>Review</TableHead><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
         <TableBody>{status === "LoadingFirstPage" ? <TableRow><TableCell colSpan={5}><Skeleton className="h-28" /></TableCell></TableRow>

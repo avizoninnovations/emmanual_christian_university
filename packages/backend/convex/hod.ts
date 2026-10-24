@@ -55,6 +55,74 @@ export const courses = query({
   },
 });
 
+export const overview = query({
+  args: { departmentId: v.id("departments"), periodId: v.id("academicPeriods") },
+  handler: async (ctx, args) => {
+    const { department } = await assertDepartmentManager(ctx, args.departmentId);
+    const period = await ctx.db.get(args.periodId);
+    if (!period) throw new ConvexError("Choose a valid semester.");
+
+    const [courseRows, allocationRows, eventRows] = await Promise.all([
+      ctx.db.query("courses").withIndex("by_department", q => q.eq("departmentId", args.departmentId))
+        .filter(q => q.eq(q.field("status"), "active")).take(301),
+      ctx.db.query("courseAllocations").withIndex("by_department_period", q => q.eq("departmentId", args.departmentId).eq("periodId", args.periodId)).take(301),
+      ctx.db.query("academicEvents").withIndex("by_departmentId", q => q.eq("departmentId", args.departmentId)).order("desc").take(100),
+    ]);
+
+    const courses = courseRows.slice(0, 300);
+    const courseIds = new Set(courses.map(course => course._id));
+    const allocations = allocationRows.filter(allocation => courseIds.has(allocation.courseId));
+    const assignedCourseIds = new Set(allocations.map(allocation => allocation.courseId));
+    const lecturerCourses = new Map<string, Set<string>>();
+    for (const allocation of allocations) {
+      const assigned = lecturerCourses.get(allocation.lecturerId) ?? new Set<string>();
+      assigned.add(allocation.courseId);
+      lecturerCourses.set(allocation.lecturerId, assigned);
+    }
+
+    const workload = [...lecturerCourses.entries()]
+      .map(([userId, courseIds]) => ({ userId, courseCount: courseIds.size }))
+      .sort((left, right) => right.courseCount - left.courseCount)
+      .slice(0, 6);
+    const recentEvents = eventRows.filter(event => event.periodId === args.periodId).slice(0, 8);
+    const staffIds = [...new Set([
+      ...workload.map(item => item.userId),
+      ...recentEvents.map(event => event.actorId).filter(id => id !== "system"),
+    ])];
+    const eventCourseIds = [...new Set(recentEvents.flatMap(event => event.courseId ? [event.courseId] : []))];
+    const [staff, eventCourses] = await Promise.all([
+      Promise.all(staffIds.map(async id => [id, await staffName(ctx, id)] as const)),
+      Promise.all(eventCourseIds.map(async id => [id, await ctx.db.get(id)] as const)),
+    ]);
+    const staffById = new Map(staff);
+    const eventCourseById = new Map(eventCourses);
+
+    return {
+      departmentName: department.name,
+      periodName: `${period.name} ${period.year}`,
+      activeCourseCount: courses.length,
+      courseCountCapped: courseRows.length > 300,
+      assignedCourseCount: courses.filter(course => assignedCourseIds.has(course._id)).length,
+      unassignedCourseCount: courses.filter(course => !assignedCourseIds.has(course._id)).length,
+      lecturerCount: lecturerCourses.size,
+      lecturerWorkload: workload.map(item => ({
+        name: staffById.get(item.userId)?.name ?? "Staff member",
+        courseCount: item.courseCount,
+      })),
+      recentEvents: recentEvents.map(event => ({
+        _id: event._id,
+        actorName: event.actorId === "system" ? "System" : staffById.get(event.actorId)?.name ?? "Staff member",
+        action: event.action,
+        details: event.details,
+        createdAt: event.createdAt,
+        courseLabel: event.courseId
+          ? `${eventCourseById.get(event.courseId)?.code ?? "Course"} · ${eventCourseById.get(event.courseId)?.title ?? "Course unit"}`
+          : null,
+      })),
+    };
+  },
+});
+
 export const activity = query({
   args: { departmentId: v.id("departments"), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {

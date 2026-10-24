@@ -1,3 +1,3 @@
-import { DepartmentCoursesView } from "@/modules/hod/ui/views/department-courses-view";
+import { DepartmentOverviewView } from "@/modules/hod/ui/views/department-overview-view";
 export const metadata={title:"Department Overview | ECU Staff"};
-export default function Page(){return <DepartmentCoursesView mode="overview"/>}
+export default function Page(){return <DepartmentOverviewView/>}

@@ -34,10 +34,10 @@ export function LecturerCourseUnitsView() {
     </CardContent></Card>}
 
     <Tabs defaultValue="grid" className="min-w-0 space-y-4">
-      <div className="min-w-0 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-border/60">
-        <TabsList aria-label="Course view" className="h-auto w-max min-w-full justify-start gap-3 rounded-none bg-transparent p-0 shadow-none">
-          <TabsTrigger value="grid" className="h-11 flex-none cursor-pointer rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-3 text-sm font-medium text-muted-foreground shadow-none transition-colors hover:bg-transparent hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary data-[state=active]:shadow-none">Grid View</TabsTrigger>
-          <TabsTrigger value="table" className="h-11 flex-none cursor-pointer rounded-none border-x-0 border-t-0 border-b-2 border-transparent bg-transparent px-3 text-sm font-medium text-muted-foreground shadow-none transition-colors hover:bg-transparent hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-primary data-[state=active]:shadow-none">Tabular View</TabsTrigger>
+      <div className="min-w-0 overflow-x-auto overflow-y-hidden overscroll-x-contain">
+        <TabsList aria-label="Course view" className="w-max min-w-full justify-start">
+          <TabsTrigger value="grid" className="flex-none">Grid View</TabsTrigger>
+          <TabsTrigger value="table" className="flex-none">Tabular View</TabsTrigger>
         </TabsList>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-md bg-card px-4 py-3 shadow-sm">

@@ -101,24 +101,15 @@ export function SettingsView() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div className="flex items-center justify-between border-b pb-1">
-            <TabsList className="bg-transparent border-none gap-2 h-auto p-0">
-                <TabsTrigger 
-                    value="profile" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 text-xs font-bold uppercase tracking-wider"
-                >
+        <div className="flex items-center justify-between">
+            <TabsList className="gap-2">
+                <TabsTrigger value="profile" className="px-4 text-xs uppercase tracking-wider">
                     <User className="size-3.5 mr-2" /> My Profile
                 </TabsTrigger>
-                <TabsTrigger 
-                    value="branding" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 text-xs font-bold uppercase tracking-wider"
-                >
+                <TabsTrigger value="branding" className="px-4 text-xs uppercase tracking-wider">
                     <Globe className="size-3.5 mr-2" /> University Branding
                 </TabsTrigger>
-                <TabsTrigger 
-                    value="security" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 text-xs font-bold uppercase tracking-wider"
-                >
+                <TabsTrigger value="security" className="px-4 text-xs uppercase tracking-wider">
                     <Shield className="size-3.5 mr-2" /> Security
                 </TabsTrigger>
             </TabsList>

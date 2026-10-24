@@ -258,7 +258,7 @@ export const FinanceView = () => {
 
       {/* ── Tabs Navigation ── */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <TabsList className="grid grid-cols-2 sm:grid-cols-6 w-full max-w-4xl">
             <TabsTrigger value="overview" className="gap-1.5 text-xs">
               <TrendingUp className="size-3.5" /> Overview

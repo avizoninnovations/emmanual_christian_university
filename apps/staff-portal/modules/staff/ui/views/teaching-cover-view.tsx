@@ -187,7 +187,7 @@ export function TeachingCoverView() {
 
       {/* ── Tabs ── */}
       <Tabs defaultValue="my-requests" className="space-y-4">
-        <TabsList className="bg-muted p-1">
+        <TabsList>
           <TabsTrigger value="my-requests" className="gap-2">
             <Send className="size-4" />
             My Requests ({myRequests.length})

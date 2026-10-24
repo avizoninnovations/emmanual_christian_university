@@ -259,7 +259,7 @@ export const SponsorsManagerView = () => {
       {/* ── Tabs Content ── */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <TabsList className="bg-muted/40 p-1">
+          <TabsList>
             <TabsTrigger value="directory" className="text-xs gap-1.5">
               <Building2 className="size-3.5" /> Sponsors Directory ({filteredSponsors.length})
             </TabsTrigger>

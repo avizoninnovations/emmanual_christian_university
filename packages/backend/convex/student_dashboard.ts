@@ -1,3 +1,4 @@
+import { publishedAssessment } from "./lib/academicResults.js";
 import { query } from "./_generated/server.js";
 import { assertAuthenticated } from "./lib/utils.js";
 
@@ -17,7 +18,7 @@ export const getMyJourney = query({
     const periods = await Promise.all(periodIds.map(id => ctx.db.get(id)));
     const periodMap = new Map(periods.flatMap(period => period ? [[period._id, period] as const] : []));
     const credits = new Map(curriculum.map(course => [course._id, course.creditUnits]));
-    const approved = assessments.filter(mark => mark.status === "approved");
+    const approved = assessments.flatMap(mark => { const result = publishedAssessment(mark); return result ? [result] : []; });
     const passed = new Set(approved.filter(mark => mark.finalScore >= 60 && !mark.resultCode).map(mark => mark.courseId));
     const failed = new Set(approved.filter(mark => mark.finalScore < 60 || mark.resultCode).map(mark => mark.courseId));
     const timeline = registrations.flatMap(registration => {
@@ -29,7 +30,7 @@ export const getMyJourney = query({
       const ledger = ledgers.find(row => row.periodId === period._id);
       return [{ id: registration._id, name: period.name, year: period.year, yearOfStudy: registration.yearOfStudy, semester: registration.semester, startDate: period.startDate, endDate: period.endDate, gpa, feesPercentage: ledger && ledger.totalDue > 0 ? Math.min(100, Math.round(ledger.totalPaid / ledger.totalDue * 100)) : 0 }];
     }).sort((a, b) => a.startDate.localeCompare(b.startDate));
-    const currentMarks = assessments.filter(mark => mark.periodId === student.currentPeriodId);
+    const currentMarks = approved.filter(mark => mark.periodId === student.currentPeriodId);
     const currentPeriod = student.currentPeriodId ? periodMap.get(student.currentPeriodId) : null;
     return {
       totalCourses: curriculum.length, completedCourses: passed.size, passed: passed.size,

@@ -58,7 +58,7 @@ export function LecturerCourseUnitsView() {
           <SemesterSection title="Next Semester" periods={upcoming} open={openSection === "next"} onOpenChange={(open) => setOpenSection(open ? "next" : null)} />
           <SemesterSection title="Current Semester" periods={current} open={openSection === "current"} onOpenChange={(open) => setOpenSection(open ? "current" : null)} />
           <SemesterSection title="Past Semesters" periods={past} open={openSection === "past"} onOpenChange={(open) => setOpenSection(open ? "past" : null)} />
-        </div> : <div className="space-y-5">{visiblePeriods.map(({ period, courses }) => <section key={period._id} className="space-y-3"><SemesterHeading period={period} count={courses.length} /><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{courses.map((course) => <CourseUnitCard key={course.allocationId} course={course} />)}</div></section>)}</div>}
+        </div> : <div className="space-y-5">{visiblePeriods.map(({ period, courses }) => <section key={period._id} className="space-y-3"><SemesterHeading period={period} count={courses.length} /><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{courses.map((course) => <CourseUnitCard key={course.allocationId} course={course} periodId={period._id} />)}</div></section>)}</div>}
       </TabsContent>
       <TabsContent value="table" className="mt-0 focus-visible:outline-none"><LecturerCourseHistoryTable periods={visiblePeriods} /></TabsContent>
     </Tabs>
@@ -80,13 +80,13 @@ function SemesterSection({ title, periods, open, onOpenChange }: {
     <CollapsibleContent className="space-y-5 p-4">
       {periods.length === 0 ? <p className="px-2 py-4 text-sm text-muted-foreground">{title === "Next Semester" ? "No upcoming allocations yet. New assignments from your HOD will appear here." : title === "Current Semester" ? "No course units are assigned for the active semester." : "Completed semester allocations will appear here."}</p> : periods.map(({ period, courses }) => <section key={period._id} className="space-y-3">
         <SemesterHeading period={period} count={courses.length} />
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{courses.map((course) => <CourseUnitCard key={course.allocationId} course={course} />)}</div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{courses.map((course) => <CourseUnitCard key={course.allocationId} course={course} periodId={period._id} />)}</div>
       </section>)}
     </CollapsibleContent>
   </Collapsible>;
 }
 
-function CourseUnitCard({ course }: { course: CoursePeriod["courses"][number] }) {
+function CourseUnitCard({ course, periodId }: { course: CoursePeriod["courses"][number]; periodId: string }) {
   return <Card className="overflow-hidden rounded-md border-0 bg-background shadow-sm transition-shadow hover:shadow-md">
     <div aria-hidden="true" className="flex h-20 items-end bg-gradient-to-br from-muted via-muted/80 to-primary/10 p-3">
       <Badge variant="secondary" className="font-mono">{course.code}</Badge>
@@ -94,7 +94,7 @@ function CourseUnitCard({ course }: { course: CoursePeriod["courses"][number] })
     <CardContent className="space-y-3 p-4">
       <div className="min-h-12"><h3 className="line-clamp-2 text-sm font-semibold">{course.title}</h3><p className="mt-1 truncate text-xs text-muted-foreground">{course.programName} · {course.departmentName}</p></div>
       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground"><Badge variant="outline" className="rounded-sm">Year {course.yearOfStudy} · Sem {course.semester}</Badge><Badge variant="outline" className="rounded-sm">{course.creditUnits} CU</Badge></div>
-      <div className="flex items-center justify-between border-t border-border/60 pt-3"><span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Users className="size-3.5" />Teaching assignment</span><Button asChild size="sm" variant="ghost" className="h-8 gap-1 text-primary"><Link href={`/courses/${course.courseId}`}>Open unit <ChevronRight className="size-3.5" /></Link></Button></div>
+      <div className="flex items-center justify-between border-t border-border/60 pt-3"><span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Users className="size-3.5" />Teaching assignment</span><Button asChild size="sm" variant="ghost" className="h-8 gap-1 text-primary"><Link href={`/courses/${course.courseId}?periodId=${periodId}`}>Open unit <ChevronRight className="size-3.5" /></Link></Button></div>
     </CardContent>
   </Card>;
 }

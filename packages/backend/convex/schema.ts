@@ -2,6 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import { tables as authTables } from "./betterAuth/schema.js";
 import { studentPersonalFields } from "./lib/studentProfileFields.js";
+import { academicWorkflowTables, scoreSnapshot } from "./lib/academicWorkflowSchema.js";
 
 const academicPeriodFields = {
   term: v.number(), // Semester/Term 1, 2, or 3
@@ -15,6 +16,7 @@ const timestamps = {
 
 export default defineSchema({
   ...authTables,
+  ...academicWorkflowTables,
 
   /**
    * Extended staff profile linked to the Better Auth `user` table.
@@ -39,6 +41,7 @@ export default defineSchema({
     ...timestamps,
   })
     .index("by_userId", ["userId"])
+    .index("by_departmentId", ["departmentId"])
     .index("by_staffId", ["staffId"])
     .index("by_status", ["status"]),
 
@@ -86,6 +89,7 @@ export default defineSchema({
     status: v.union(v.literal("active"), v.literal("inactive")),
     ...timestamps,
   })
+    .index("by_hodId", ["hodId"])
     .index("by_faculty", ["facultyId"])
     .index("by_status", ["status"]),
 
@@ -137,9 +141,12 @@ export default defineSchema({
     lecturerId: v.string(), // staff userId
     periodId: v.id("academicPeriods"),
     departmentId: v.id("departments"),
+    revision: v.optional(v.number()),
+    assignedBy: v.optional(v.string()),
     ...timestamps,
   })
     .index("by_lecturer", ["lecturerId"])
+    .index("by_lecturerId_and_periodId", ["lecturerId", "periodId"])
     .index("by_course_period", ["courseId", "periodId"])
     .index("by_period", ["periodId"])
     .index("by_department_period", ["departmentId", "periodId"]),
@@ -377,6 +384,15 @@ export default defineSchema({
     courseId: v.id("courses"),
     periodId: v.id("academicPeriods"),
     lecturerId: v.string(),
+    departmentId: v.optional(v.id("departments")),
+    revision: v.optional(v.number()),
+    courseworkEntered: v.optional(v.boolean()),
+    examEntered: v.optional(v.boolean()),
+    submittedBy: v.optional(v.string()),
+    submittedAt: v.optional(v.number()),
+    approvedSnapshot: v.optional(scoreSnapshot),
+    editPermissionId: v.optional(v.id("markEditPermissions")),
+    publicationWithdrawn: v.optional(v.boolean()),
     assignmentMarks: v.optional(v.number()), // 0 - 10 (South Sudan CA Component 1: Assignment)
     testMarks: v.optional(v.number()),       // 0 - 20 (South Sudan CA Component 2: CAT/Midterm)
     courseworkMarks: v.number(), // 0 - 30 (Combined CA)
@@ -398,6 +414,7 @@ export default defineSchema({
     ...timestamps,
   })
     .index("by_course_period", ["courseId", "periodId"])
+    .index("by_periodId", ["periodId"])
     .index("by_student", ["studentId"])
     .index("by_student_course_period", ["studentId", "courseId", "periodId"])
     .index("by_status", ["status"]),

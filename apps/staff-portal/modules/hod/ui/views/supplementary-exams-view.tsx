@@ -2,7 +2,7 @@
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { usePaginatedQuery, useMutation } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import {
@@ -47,15 +47,15 @@ import {
 } from "@workspace/ui/components/dialog";
 
 export function SupplementaryExamsView() {
+  const candidates = usePaginatedQuery(api.marks.getSupplementaryCandidates, {}, { initialNumItems: 50 });
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
+  const [selectedCandidate, setSelectedCandidate] = useState<(typeof candidates.results)[number] | null>(null);
   const [rawScoreInput, setRawScoreInput] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const candidates = useQuery(api.marks.getSupplementaryCandidates, {});
   const recordSupplementary = useMutation(api.marks.recordSupplementaryMark);
 
-  const handleOpenRecordDialog = (c: any) => {
+  const handleOpenRecordDialog = (c: (typeof candidates.results)[number]) => {
     setSelectedCandidate(c);
     setRawScoreInput(c.supplementaryScore ? String(c.supplementaryScore) : "");
   };
@@ -73,6 +73,7 @@ export function SupplementaryExamsView() {
       const res = await recordSupplementary({
         assessmentId: selectedCandidate.assessmentId,
         rawScore: raw,
+        expectedRevision: selectedCandidate.revision,
       });
 
       toast.success(
@@ -87,11 +88,11 @@ export function SupplementaryExamsView() {
     }
   };
 
-  if (!candidates) {
+  if (candidates.status === "LoadingFirstPage") {
     return <StaffDataSkeleton label="supplementary examination candidates" />;
   }
 
-  const filtered = candidates.filter((c) => {
+  const filtered = candidates.results.filter((c) => {
     const q = searchQuery.toLowerCase();
     return (
       c.studentName.toLowerCase().includes(q) ||
@@ -153,9 +154,7 @@ export function SupplementaryExamsView() {
               <CardTitle className="text-base font-semibold">
                 Eligible Supplementary Candidates
               </CardTitle>
-              <CardDescription className="text-xs">
-                {filtered.length} candidate(s) listed for supplementary examination assessment.
-              </CardDescription>
+              <CardDescription className="text-xs">{filtered.length} candidate(s) on this page.</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -241,6 +240,7 @@ export function SupplementaryExamsView() {
               )}
             </TableBody>
           </Table>
+          {candidates.status === "CanLoadMore" && <div className="p-3"><Button variant="outline" onClick={() => candidates.loadMore(50)}>Load more candidates</Button></div>}
         </CardContent>
       </Card>
 

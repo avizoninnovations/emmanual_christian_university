@@ -1,7 +1,9 @@
 # ECU Head of Department workspace implementation plan
 
-Status: proposed implementation plan; application and database changes have not been applied.
+Status: core workflow implemented in the working tree; migration and operational acceptance remain.
 Source review: 24 October 2026, repository revision `0f96b3c`.
+
+Implementation update: department leadership, allocations, scoped gradebooks, mark edit permissions, mark review/publication, student result filtering, audit history, and staff entry points are now implemented. The data model adds compatible workflow fields and audit tables; existing numeric zeros are retained, while new missing marks use entered flags. Approved values are preserved as snapshots during correction. Existing 50/60 pass threshold ambiguity remains unresolved and no threshold policy was silently changed.
 
 ## 1. Outcome and scope
 
@@ -162,7 +164,7 @@ Add compound indexes with names matching fields. Paginate rosters, grants, queue
 | 5. Individual edit permissions | Request/grant/revoke/expire, scoped row/component entry, correction resubmission | A missing assessment can be entered within the grant; expiry blocks writes; correction needs approval |
 | 6. Migration and operational completion | Existing data migration, dashboard totals, audit history, supplementary/retake compatibility, realistic fixtures | Published history is preserved, legacy grants are retired, all callers use the shared permission/publication rules |
 
-Deliver each phase as a reviewable commit and push it, following the user's standing preference. Start implementation with phase 1; exposing more HOD buttons before fixing the backend scope and publication rules would leave the workflow incomplete.
+Deliver each phase as a reviewable commit and push it, following the user's standing preference. Phases 1–5 have implementation in the working tree. The initial delivery uses approved snapshots embedded on assessment records and department assignment history rather than separate revision/publication tables, keeping schema migration compatible with existing data. Remaining phase 6 work includes a dry-run data audit/backfill, richer dashboard counts/workload summaries, and production browser verification.
 
 ## 9. Migration and verification plan
 

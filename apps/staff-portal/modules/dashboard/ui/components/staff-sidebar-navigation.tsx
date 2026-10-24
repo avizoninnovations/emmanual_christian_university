@@ -45,16 +45,17 @@ export const staffSidebarSections: StaffSidebarSection[] = [
     link("My Course Units", "/courses", BookOpen),
     link("My Aegrotat Units", "/workspace/aegrotat-units", ClipboardCheck),
     link("Teaching Cover", "/cover-requests", UsersRound),
+    link("Mark Edit Requests", "/workspace/mark-permissions", ClipboardCheck),
   ] },
   { key: "timetable", category: "ACADEMICS", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
-  { key: "leadership", category: "ACADEMICS", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
+  { key: "leadership", category: "ACADEMICS", title: "Academic Leadership", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
 ];
 
 export type StaffBreadcrumb = { label: string; href?: string; icon: LucideIcon };
 
 function findBreadcrumbs(items: SidebarEntry[], pathname: string, parents: StaffBreadcrumb[] = []): StaffBreadcrumb[] | undefined {
   for (const item of items) {
-    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && pathname.startsWith(`${item.url}/`)))) {
+    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)))) {
       const routeSuffix = pathname === item.url ? [] : [{ label: routeSegmentLabel(pathname.split("/").filter(Boolean).at(-1) ?? ""), icon: item.icon }];
       const linkCrumb = pathname === item.url ? { label: item.title, icon: item.icon } : { label: item.title, href: item.url, icon: item.icon };
       return [...parents, linkCrumb, ...routeSuffix];
@@ -94,7 +95,7 @@ export function getStaffBreadcrumbs(pathname: string): StaffBreadcrumb[] {
 
 function findActiveEntry(items: SidebarEntry[], pathname: string, parents: string[] = []): string[] | undefined {
   for (const item of items) {
-    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && pathname.startsWith(`${item.url}/`)))) return parents;
+    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)))) return parents;
     if (item.kind === "group") {
       const match = findActiveEntry(item.items, pathname, [...parents, item.key]);
       if (match) return match;
@@ -180,7 +181,7 @@ function NavigationGroup({ section, items, pathname, open, onOpenChange, openNes
 
 function pathnameMatches(items: SidebarEntry[], pathname: string): boolean {
   return items.some((item) => item.kind === "link"
-    ? pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`))
+    ? pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`))
     : pathnameMatches(item.items, pathname));
 }
 
@@ -189,7 +190,7 @@ function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathCh
 }) {
   return <>{items.map((item) => {
     const Icon = item.icon;
-    if (item.kind === "link") return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild isActive={pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`))} className="h-10 gap-3 rounded-lg px-3 text-sm font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70"><Link href={item.url}><span className={`flex size-7 shrink-0 items-center justify-center rounded-md ${pathname === item.url || (item.url !== "/" && pathname.startsWith(`${item.url}/`)) ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="truncate">{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
+    if (item.kind === "link") return <SidebarMenuSubItem key={item.url}><SidebarMenuSubButton asChild isActive={pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`))} className="h-10 gap-3 rounded-lg px-3 text-sm font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70"><Link href={item.url}><span className={`flex size-7 shrink-0 items-center justify-center rounded-md ${pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)) ? "bg-primary text-primary-foreground" : "bg-muted text-sidebar-accent-foreground"}`}><Icon className="size-4" /></span><span className="truncate">{item.title}</span></Link></SidebarMenuSubButton></SidebarMenuSubItem>;
     const path = `${parentPath}/${item.key}`;
     const expanded = openNestedPath === path || Boolean(openNestedPath?.startsWith(`${path}/`));
     return <SidebarMenuSubItem key={path}><Collapsible open={expanded} onOpenChange={(isOpen) => onNestedPathChange(path, isOpen)}>

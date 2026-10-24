@@ -1,3 +1,4 @@
+import { publishedAssessment } from "./lib/academicResults.js";
 import { ConvexError } from "convex/values";
 import { v } from "convex/values";
 import { components } from "./_generated/api.js";
@@ -306,7 +307,7 @@ export const getMyRetakeOptions = query({
     if (!student) return { period: null, courses: [], registrations: [], limits: { onSemester: 2, offSemester: 1 }, usage: { onSemester: 0, offSemester: 0 } };
     const period = await getCurrentPeriod(ctx, student);
     const assessments = await ctx.db.query("studentAssessments").withIndex("by_student", (q: any) => q.eq("studentId", student._id)).take(300);
-    const failed = assessments.filter((assessment: any) => assessment.status === "approved" && (assessment.grade === "F" || assessment.grade === "D"));
+    const failed = assessments.flatMap(assessment => { const result = publishedAssessment(assessment); return result && (result.grade === "F" || result.grade === "D") ? [result] : []; });
     const failedCourseIds = [...new Set(failed.map((assessment: any) => assessment.courseId))];
     const [program, courses] = await Promise.all([
       ctx.db.get(student.programId as Id<"programs">),
@@ -343,7 +344,7 @@ export const registerRetakeCourse = mutation({
       ctx.db.query("studentCourseRegistrations").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).take(100),
     ]);
     if (!course) throw new ConvexError("Course not found.");
-    if (!assessments.some((assessment: any) => assessment.status === "approved" && (assessment.grade === "F" || assessment.grade === "D"))) throw new ConvexError("This course is not eligible for retake registration.");
+    if (!assessments.some(assessment => { const result = publishedAssessment(assessment); return result && (result.grade === "F" || result.grade === "D"); })) throw new ConvexError("This course is not eligible for retake registration.");
     const existing = registrations.find((registration: any) => registration.courseId === args.courseId);
     if (existing) throw new ConvexError("This course is already registered for the current semester.");
     const retakeMode = course.semester === period.term ? "on_semester" : "off_semester";

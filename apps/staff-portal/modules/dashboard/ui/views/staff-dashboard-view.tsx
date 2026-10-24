@@ -87,7 +87,7 @@ export default function StaffDashboardView() {
                 ) : (
                   <div className="space-y-2">
                     {pendingCourses.slice(0, 4).map((course) => (
-                      <Link key={course.allocationId} href={`/courses/${course.courseId}`} className="group flex items-center gap-3 rounded-xl bg-muted/45 p-3 transition-colors hover:bg-muted/75">
+                      <Link key={course.allocationId} href={`/courses/${course.courseId}?periodId=${course.periodId}`} className="group flex items-center gap-3 rounded-xl bg-muted/45 p-3 transition-colors hover:bg-muted/75">
                         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background text-primary shadow-sm"><BookOpen className="size-4" /></span>
                         <span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{course.code} · {course.title}</span><span className="mt-0.5 block text-xs text-muted-foreground">Gradebook {course.gradebookStatus} · {course.enrolledCount} students</span></span>
                         <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
@@ -108,7 +108,7 @@ export default function StaffDashboardView() {
                 {courses === undefined ? <CourseCardsSkeleton /> : courseList.length === 0 ? (
                   <p className="col-span-full rounded-xl bg-muted/50 p-4 text-sm text-muted-foreground">No teaching courses are allocated for this academic period.</p>
                 ) : courseList.slice(0, 6).map((course) => (
-                  <Link key={course.allocationId} href={`/courses/${course.courseId}`} className="group rounded-xl bg-muted/45 p-4 transition-colors hover:bg-muted/75">
+                  <Link key={course.allocationId} href={`/courses/${course.courseId}?periodId=${course.periodId}`} className="group rounded-xl bg-muted/45 p-4 transition-colors hover:bg-muted/75">
                     <div className="flex items-start justify-between gap-2"><span className="font-mono text-xs font-semibold text-primary">{course.code}</span><ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" /></div>
                     <p className="mt-2 line-clamp-2 min-h-10 text-sm font-medium leading-5">{course.title}</p>
                     <p className="mt-2 text-xs text-muted-foreground">{course.creditUnits} CU <span aria-hidden="true">·</span> {course.enrolledCount} students</p>

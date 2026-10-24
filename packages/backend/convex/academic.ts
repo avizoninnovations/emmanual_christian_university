@@ -1,3 +1,4 @@
+import { appointDepartmentHead } from "./lib/departmentLeadership.js";
 import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations";
@@ -125,6 +126,8 @@ export const createDepartment = mutation({
       status: "active",
     });
 
+    if (args.hodId) await appointDepartmentHead(ctx, id, args.hodId, "Department creation");
+
     await logAction(ctx, {
       action: "CREATE_DEPARTMENT",
       resource: "departments",
@@ -147,8 +150,9 @@ export const updateDepartment = mutation({
   },
   handler: async (ctx, args) => {
     await assertAdmin(ctx);
-    const { id, ...updates } = args;
+    const { id, hodId, ...updates } = args;
     await ctx.db.patch(id, updates);
+    if (hodId !== undefined) await appointDepartmentHead(ctx, id, hodId, "Department update");
 
     await logAction(ctx, {
       action: "UPDATE_DEPARTMENT",

@@ -14,6 +14,8 @@ import {
   UserRound,
   UserCheck,
   Wallet,
+  ClipboardCheck,
+  UsersRound,
 } from "lucide-react";
 import {
   SidebarGroup,
@@ -33,8 +35,13 @@ const railLinks = [
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
   { title: "Timetable", url: "/timetable", icon: CalendarDays },
   { title: "Teaching Cover", url: "/cover-requests", icon: UserCheck },
+  { title: "Mark Edit Requests", url: "/workspace/mark-permissions", icon: ClipboardCheck },
   { title: "Course Allocations", url: "/hod/allocations", icon: Layers },
+  { title: "Department Overview", url: "/hod", icon: Building2 },
   { title: "Marks Review Queue", url: "/hod/review-queue", icon: FileSpreadsheet },
+  { title: "Edit Permissions", url: "/hod/edit-permissions", icon: ClipboardCheck },
+  { title: "Department Lecturers", url: "/hod/lecturers", icon: UsersRound },
+  { title: "Academic Activity", url: "/hod/activity", icon: FileText },
   { title: "Senate Broadsheet", url: "/hod/broadsheet", icon: Award },
   { title: "Supplementary Exams", url: "/hod/supplementaries", icon: FileText },
 ];
@@ -48,7 +55,7 @@ export function StaffSidebarIconRail({ pathname, hasLeadership }: { pathname: st
         <SidebarGroupContent>
           <SidebarMenu className="gap-1">
             {links.map(({ title, url, icon: Icon }) => {
-              const active = url === "/" ? pathname === url : pathname === url || pathname.startsWith(`${url}/`);
+              const active = url === "/" || url === "/hod" ? pathname === url : pathname === url || pathname.startsWith(`${url}/`);
               return (
                 <SidebarMenuItem key={url} className="flex justify-center py-1">
                   <SidebarMenuButton asChild isActive={active} tooltip={title} aria-label={title} className="mx-auto flex size-10 justify-center rounded-lg p-0 hover:bg-sidebar-accent/80 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-0!">

@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-skeleton";
 import { useClassResultsEntry, type StudentFilter } from "@/modules/marks/hooks/use-class-results-entry";
 import { ClassResultsTable } from "@/modules/marks/ui/components/class-results-table";
+import { MarkPermissionDialog } from "@/modules/hod/ui/components/mark-permission-dialog";
 
 const filters: { key: StudentFilter; title: string }[] = [
   { key: "all", title: "All Students" },
@@ -25,6 +26,7 @@ export function ClassResultsEntryView({ courseId }: { courseId: Id<"courses"> })
   const entry = useClassResultsEntry(courseId);
   const fileInput = useRef<HTMLInputElement>(null);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
+  const [accessStudent, setAccessStudent] = useState<{ id: Id<"students">; name: string }>();
 
   if (entry.isLoading) return <StaffDataSkeleton label="class results" />;
   if (!entry.gradebook) return <div className="p-6 text-sm text-muted-foreground">No active Semester is available for mark entry.</div>;
@@ -32,13 +34,13 @@ export function ClassResultsEntryView({ courseId }: { courseId: Id<"courses"> })
   const { gradebook, course, students, marks, filter, setFilter, search, setSearch, dirty, saving, submitting, isLocked } = entry;
   const countFor = (key: StudentFilter) => students.filter((student) => {
     const values = marks.get(student.studentId);
-    const cw = values?.coursework ?? student.courseworkMarks;
-    const exam = values?.exam ?? student.examMarks;
+    const cw = values?.coursework ?? (student.courseworkEntered ? student.courseworkMarks : "");
+    const exam = values?.exam ?? (student.examEntered ? student.examMarks : "");
     const total = Number(cw) + Number(exam);
-    if (key === "incomplete") return cw === 0 || cw === "" || exam === 0 || exam === "";
-    if (key === "complete") return cw !== 0 && cw !== "" && exam !== 0 && exam !== "";
-    if (key === "passed") return total >= 60;
-    if (key === "below-pass") return total > 0 && total < 60;
+    if (key === "incomplete") return cw === "" || exam === "";
+    if (key === "complete") return cw !== "" && exam !== "";
+    if (key === "passed") return total >= 50;
+    if (key === "below-pass") return cw !== "" && exam !== "" && total < 50;
     return true;
   }).length;
 
@@ -107,18 +109,19 @@ export function ClassResultsEntryView({ courseId }: { courseId: Id<"courses"> })
       </div>
     </div>
 
-    <ClassResultsTable entry={entry} />
+    <ClassResultsTable entry={entry} onRequestAccess={setAccessStudent} />
     <AlertDialog open={confirmSubmit} onOpenChange={setConfirmSubmit}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Submit these marks for review?</AlertDialogTitle>
-          <AlertDialogDescription>Submitting {students.length} student marks will lock this gradebook while the Head of Department reviews it.</AlertDialogDescription>
+      <AlertDialogDescription>Submitting complete editable marks on this page will lock those student records while the Head of Department reviews them.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction disabled={submitting} onClick={(event) => { event.preventDefault(); void entry.submit().then(() => setConfirmSubmit(false)); }}><Send className="mr-2 size-4" /> Submit marks</AlertDialogAction>
+          <AlertDialogAction disabled={submitting} onClick={(event) => { event.preventDefault(); void entry.submit().then(success => { if (success) setConfirmSubmit(false); }); }}><Send className="mr-2 size-4" /> Submit marks</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+    {accessStudent && gradebook.period && <MarkPermissionDialog courseId={courseId} periodId={gradebook.period._id} studentId={accessStudent.id} studentName={accessStudent.name} mode="request" close={() => setAccessStudent(undefined)} />}
   </div>;
 }

@@ -1,3 +1,5 @@
+import { assertDepartmentManager, managedDepartments } from "./lib/academicAccess.js";
+import { publishedAssessment } from "./lib/academicResults.js";
 import { query } from "./_generated/server.js";
 import { v } from "convex/values";
 import { components } from "./_generated/api.js";
@@ -22,7 +24,8 @@ export const getProgramsAndPeriods = query({
   args: {},
   handler: async (ctx) => {
     await assertAuthenticated(ctx);
-    const programs = await ctx.db.query("programs").collect();
+    const scope = await managedDepartments(ctx);
+    const programs = (await Promise.all(scope.departments.map(department => ctx.db.query("programs").withIndex("by_department", q => q.eq("departmentId", department._id)).take(200)))).flat();
     const periods = await ctx.db.query("academicPeriods").order("desc").collect();
     return { programs, periods };
   },
@@ -40,6 +43,7 @@ export const getDepartmentBroadsheet = query({
     const program = await ctx.db.get(args.programId);
     const period = await ctx.db.get(args.periodId);
     if (!program || !period) return null;
+    await assertDepartmentManager(ctx, program.departmentId);
 
     const department = program.departmentId
       ? await ctx.db.get(program.departmentId)
@@ -88,13 +92,15 @@ export const getDepartmentBroadsheet = query({
 
         const courseResults = await Promise.all(
           courses.map(async (c) => {
-            const mark = await ctx.db
+            const workingMark = await ctx.db
               .query("studentAssessments")
               .withIndex("by_student_course_period", (q: any) =>
                 q.eq("studentId", st._id).eq("courseId", c._id).eq("periodId", args.periodId)
               )
               .first();
 
+            const mark = workingMark ? publishedAssessment(workingMark) : null;
+            if (!mark) return null;
             const cw = mark?.courseworkMarks ?? 0;
             const exam = mark?.examMarks ?? 0;
             const total = mark?.finalScore ?? Math.round(cw + exam);
@@ -123,8 +129,8 @@ export const getDepartmentBroadsheet = query({
               finalScore: total,
               grade,
               gradePoints: gp,
-              isSupplementary: mark?.isSupplementary ?? false,
-              isApproved: mark?.status === "approved",
+              isSupplementary: mark.isSupplementary ?? false,
+              isApproved: true,
             };
           })
         );
@@ -166,7 +172,7 @@ export const getDepartmentBroadsheet = query({
           registrationNumber: st.registrationNumber,
           name: user?.name ?? "Student",
           email: user?.email ?? "—",
-          courseResults,
+          courseResults: courseResults.filter((result): result is NonNullable<typeof result> => result !== null),
           totalAttemptedCU,
           totalPassedCU,
           gpa,

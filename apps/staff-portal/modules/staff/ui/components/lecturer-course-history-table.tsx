@@ -41,7 +41,7 @@ export function LecturerCourseHistoryTable({ periods }: { periods: CoursePeriod[
                 <TableCell className="min-w-56"><span className="block font-medium">{course.title}</span><span className="font-mono text-xs text-muted-foreground">{course.code}</span></TableCell>
                 <TableCell className="min-w-40">{course.programName}<span className="block text-xs text-muted-foreground">Year {course.yearOfStudy} · Curriculum semester {course.semester}</span></TableCell>
                 <TableCell className="tabular-nums">{course.studentCount}</TableCell><TableCell>None</TableCell>
-                <TableCell className="text-right"><Button asChild size="sm" variant="ghost" className="h-8 rounded-sm whitespace-nowrap px-2 text-primary"><Link href={`/courses/${course.courseId}`}>Manage Class Results</Link></Button></TableCell>
+                <TableCell className="text-right"><Button asChild size="sm" variant="ghost" className="h-8 rounded-sm whitespace-nowrap px-2 text-primary"><Link href={`/courses/${course.courseId}?periodId=${period._id}`}>Manage Class Results</Link></Button></TableCell>
               </TableRow>)}</TableBody>
             </Table></div>
           </CollapsibleContent>

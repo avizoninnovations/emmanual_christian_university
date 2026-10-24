@@ -1,3 +1,4 @@
+import { publishedAssessment } from "./lib/academicResults.js";
 import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
@@ -384,7 +385,9 @@ export const getMyAcademicResults = query({
 
     // Group by periodId
     const periodMap = new Map<string, typeof assessments>();
-    for (const a of assessments) {
+    for (const raw of assessments) {
+      const a = publishedAssessment(raw);
+      if (!a) continue;
       const list = periodMap.get(a.periodId) || [];
       list.push(a);
       periodMap.set(a.periodId, list);

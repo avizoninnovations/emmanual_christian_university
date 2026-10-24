@@ -247,7 +247,7 @@ export function LecturerCoursesView() {
                   asChild
                   className="h-8 text-xs gap-1 flex-1 bg-primary text-primary-foreground"
                 >
-                  <Link href={`/courses/${course.courseId}`}>
+                  <Link href={`/courses/${course.courseId}?periodId=${course.periodId}`}>
                     <FileSpreadsheet className="size-3.5" />
                     Gradebook
                     <ChevronRight className="size-3 ml-auto" />

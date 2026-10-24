@@ -1,0 +1,9 @@
+"use client";
+import Link from "next/link";
+import { usePaginatedQuery } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
+import { Button } from "@workspace/ui/components/button";
+import { Badge } from "@workspace/ui/components/badge";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
+export function NominatedReviews(){const queue=usePaginatedQuery(api.hod.reviewAssignments,{}, {initialNumItems:20});return <section className="space-y-2 rounded-sm border bg-card p-3"><h2 className="font-semibold">Classes assigned for independent review</h2><Table><TableHeader><TableRow><TableHead>Course</TableHead><TableHead>Semester</TableHead><TableHead>Status</TableHead><TableHead/></TableRow></TableHeader><TableBody>{queue.status==="LoadingFirstPage"?<TableRow><TableCell colSpan={4}><Skeleton className="h-16"/></TableCell></TableRow>:queue.results.map(row=><TableRow key={row._id}><TableCell>{row.courseCode} · {row.courseTitle}</TableCell><TableCell>{row.periodName}</TableCell><TableCell><Badge variant={row.hasSubmitted?"secondary":"outline"}>{row.hasSubmitted?"Awaiting review":"No pending marks"}</Badge></TableCell><TableCell className="text-right"><Button asChild size="sm" variant="ghost"><Link href={`/hod/review-queue/${row.courseId}?periodId=${row.periodId}`}>Open</Link></Button></TableCell></TableRow>)}{queue.status!=="LoadingFirstPage"&&!queue.results.length&&<TableRow><TableCell colSpan={4} className="h-16 text-center text-sm text-muted-foreground">No classes have been assigned to you for independent review.</TableCell></TableRow>}</TableBody></Table>{queue.status==="CanLoadMore"&&<Button variant="outline" size="sm" onClick={()=>queue.loadMore(20)}>Load more</Button>}</section>}

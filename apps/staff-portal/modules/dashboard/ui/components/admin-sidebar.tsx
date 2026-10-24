@@ -124,6 +124,11 @@ const navGroups: NavGroup[] = [
         ],
       },
       {
+        title: "Department Heads",
+        url: "/admin/academic/hod-appointments",
+        icon: UserCheck,
+      },
+      {
         title: "Senate Broadsheet",
         url: "/hod/broadsheet",
         icon: Award,

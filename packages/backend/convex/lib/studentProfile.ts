@@ -2,6 +2,7 @@ import { components } from "../_generated/api.js";
 import type { QueryCtx } from "../_generated/server.js";
 import { assertAuthenticated } from "./utils.js";
 import { getDegreeClassification } from "./academicStanding.js";
+import { publishedAssessment } from "./academicResults.js";
 
 export async function getStudentProfile(ctx: QueryCtx) {
   const userId = await assertAuthenticated(ctx);
@@ -21,7 +22,7 @@ export async function getStudentProfile(ctx: QueryCtx) {
     student.sponsorId ? ctx.db.get(student.sponsorId) : null,
     student.photoId ? ctx.storage.getUrl(student.photoId) : null,
   ]);
-  const approved = assessments.filter(mark => mark.status === "approved");
+  const approved = assessments.flatMap(mark => { const published = publishedAssessment(mark); return published ? [published] : []; });
   const courseIds = [...new Set(approved.map(mark => mark.courseId))];
   const courses = await Promise.all(courseIds.map(id => ctx.db.get(id)));
   const courseMap = new Map(courses.flatMap(course => course ? [[course._id, course] as const] : []));

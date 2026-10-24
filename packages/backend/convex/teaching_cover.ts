@@ -1,3 +1,4 @@
+import { assertDepartmentManager } from "./lib/academicAccess.js";
 import { ConvexError } from "convex/values";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
@@ -169,10 +170,13 @@ export const reviewCoverRequest = mutation({
     reviewNotes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const reviewerId = await assertRole(ctx, ["admin", "hod", "dean"]);
+    const { userId: reviewerId } = await assertRole(ctx, ["admin", "hod"]);
 
     const req = await ctx.db.get(args.id);
     if (!req) throw new ConvexError("Teaching cover request not found.");
+    const reviewedCourse = await ctx.db.get(req.courseId);
+    if (!reviewedCourse) throw new ConvexError("Course not found.");
+    await assertDepartmentManager(ctx, reviewedCourse.departmentId);
 
     await ctx.db.patch(args.id, {
       status: args.action,

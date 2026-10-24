@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
@@ -368,7 +368,7 @@ export function FacultyBroadsheetView() {
                 {/* Sub-Header Row for Course Metrics */}
                 <TableRow>
                   {broadsheet.courses.map((c: any) => (
-                    <div key={c._id} className="contents">
+                    <Fragment key={c._id}>
                       <TableHead className="w-10 text-center text-[10px] p-1 border-r font-mono">
                         CW
                       </TableHead>
@@ -381,7 +381,7 @@ export function FacultyBroadsheetView() {
                       <TableHead className="w-10 text-center text-[10px] p-1 border-r font-semibold">
                         GR
                       </TableHead>
-                    </div>
+                    </Fragment>
                   ))}
                 </TableRow>
               </TableHeader>
@@ -411,17 +411,17 @@ export function FacultyBroadsheetView() {
                         const res = st.courseResults.find((r: any) => r.courseId === c._id);
                         if (!res) {
                           return (
-                            <div key={c._id} className="contents">
+                            <Fragment key={c._id}>
                               <TableCell className="text-center text-muted-foreground p-1 border-r">-</TableCell>
                               <TableCell className="text-center text-muted-foreground p-1 border-r">-</TableCell>
                               <TableCell className="text-center text-muted-foreground p-1 border-r">-</TableCell>
                               <TableCell className="text-center text-muted-foreground p-1 border-r">-</TableCell>
-                            </div>
+                            </Fragment>
                           );
                         }
 
                         return (
-                          <div key={c._id} className="contents">
+                          <Fragment key={c._id}>
                             <TableCell className="text-center font-mono text-[11px] p-1 border-r">
                               {res.coursework}
                             </TableCell>
@@ -448,7 +448,7 @@ export function FacultyBroadsheetView() {
                                 {res.grade}
                               </span>
                             </TableCell>
-                          </div>
+                          </Fragment>
                         );
                       })}
 

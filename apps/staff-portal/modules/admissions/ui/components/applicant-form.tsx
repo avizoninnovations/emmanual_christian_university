@@ -32,7 +32,7 @@ export function ApplicantForm({ onBack }: { onBack: () => void }) {
       <CardContent className="p-6 sm:p-8">
         <div className="mb-8 flex items-center gap-4">
           <Button variant="outline" size="icon" onClick={onBack} aria-label="Back to applications"><ArrowLeft className="size-5" /></Button>
-          <div><h2 className="text-2xl font-bold">New Application</h2><p className="text-sm text-muted-foreground">Capture the details used by the student's profile and academic records.</p></div>
+          <h2 className="text-2xl font-bold">New Application</h2>
         </div>
         <Form {...form}>
           <form onSubmit={submit} className="max-w-4xl space-y-8">

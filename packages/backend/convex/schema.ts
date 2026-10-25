@@ -4,6 +4,7 @@ import { tables as authTables } from "./betterAuth/schema.js";
 import { studentPersonalFields } from "./lib/studentProfileFields.js";
 import { academicWorkflowTables, scoreSnapshot } from "./lib/academicWorkflowSchema.js";
 import { staffServiceTables } from "./lib/staffServiceSchema.js";
+import { admissionsTables } from "./lib/admissionsSchema.js";
 
 const academicPeriodFields = {
   term: v.number(), // Semester/Term 1, 2, or 3
@@ -19,6 +20,7 @@ export default defineSchema({
   ...authTables,
   ...academicWorkflowTables,
   ...staffServiceTables,
+  ...admissionsTables,
 
   /**
    * Extended staff profile linked to the Better Auth `user` table.
@@ -206,10 +208,17 @@ export default defineSchema({
     programId: v.id("programs"),
     admissionType: v.union(v.literal("National"), v.literal("Direct")),
     status: v.union(v.literal("new"), v.literal("reviewing"), v.literal("accepted"), v.literal("rejected"), v.literal("enrolled")),
+    applicationNumber: v.optional(v.string()),
     applicationDate: v.number(),
+    decisionNote: v.optional(v.string()),
+    offerIssuedAt: v.optional(v.number()),
+    offerAcceptedAt: v.optional(v.number()),
+    reportedAt: v.optional(v.number()),
     ...academicPeriodFields,
     ...timestamps,
   })
+    .index("by_application_number", ["applicationNumber"])
+    .index("by_email", ["email"])
     .index("by_program", ["programId"])
     .index("by_status", ["status"])
     .index("by_period", ["term", "year"]),
@@ -241,6 +250,7 @@ export default defineSchema({
     .index("by_regNumber", ["registrationNumber"])
     .index("by_accessNumber", ["accessNumber"])
     .index("by_legacyRegistrationNumber", ["legacyRegistrationNumber"])
+    .index("by_applicant", ["applicantId"])
     .index("by_program", ["programId"])
     .index("by_sponsor", ["sponsorId"])
     .index("by_status", ["status"])
@@ -255,6 +265,7 @@ export default defineSchema({
     status: v.union(v.literal("pending"), v.literal("registered"), v.literal("withdrawn")),
     registeredAt: v.optional(v.number()),
     registeredBy: v.optional(v.string()),
+    registrationSource: v.optional(v.union(v.literal("student"), v.literal("admissions"))),
     academicClearedBy: v.optional(v.string()),
     accountsClearedBy: v.optional(v.string()),
     accountsClearedAt: v.optional(v.number()),

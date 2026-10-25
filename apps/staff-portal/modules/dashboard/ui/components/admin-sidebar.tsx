@@ -148,11 +148,11 @@ const navGroups: NavGroup[] = [
       //   url: "/admin/academic-calendar",
       //   icon: CalendarDays,
       // },
-      // {
-      //   title: "Admissions",
-      //   url: "/admin/admissions",
-      //   icon: ClipboardList,
-      // },
+      {
+        title: "Admissions Office",
+        url: "/admin/admissions",
+        icon: ClipboardList,
+      },
       // {
       //   title: "Students",
       //   url: "/admin/students",

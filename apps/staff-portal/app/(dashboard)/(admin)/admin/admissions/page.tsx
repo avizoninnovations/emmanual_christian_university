@@ -5,7 +5,7 @@ import { AdmissionsView } from "@/modules/admissions/ui/views/admissions-view";
 
 export default function AdmissionsPage() {
   return (
-    <AdminGuard>
+    <AdminGuard allowedRoles={["registrar", "admissions_officer"]}>
       <AdmissionsView />
     </AdminGuard>
   );

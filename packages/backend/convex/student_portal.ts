@@ -199,12 +199,12 @@ export const registerSemesterCourses = mutation({
     if (!semesterRegistration) {
       await ctx.db.insert("studentSemesterRegistrations", {
         studentId: student._id, periodId: args.periodId, yearOfStudy: student.yearOfStudy, semester: period.term,
-        status: "registered", registeredAt: Date.now(), registeredBy: "Self-registration",
+        status: "registered", registeredAt: Date.now(), registeredBy: "Self-registration", registrationSource: "student",
       });
     } else if (semesterRegistration.status !== "registered") {
       await ctx.db.patch(semesterRegistration._id, {
         yearOfStudy: student.yearOfStudy, semester: period.term, status: "registered",
-        registeredAt: Date.now(), registeredBy: "Self-registration", updatedAt: Date.now(),
+        registeredAt: Date.now(), registeredBy: "Self-registration", registrationSource: "student", updatedAt: Date.now(),
       });
     }
 

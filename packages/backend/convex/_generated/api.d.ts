@@ -10,6 +10,8 @@
 
 import type * as academic from "../academic.js";
 import type * as admissions from "../admissions.js";
+import type * as admissionsDocuments from "../admissionsDocuments.js";
+import type * as admissionsEnrollment from "../admissionsEnrollment.js";
 import type * as allocations from "../allocations.js";
 import type * as assessmentApplications from "../assessmentApplications.js";
 import type * as audit_logger from "../audit_logger.js";
@@ -31,6 +33,7 @@ import type * as lib_academicAudit from "../lib/academicAudit.js";
 import type * as lib_academicResults from "../lib/academicResults.js";
 import type * as lib_academicStanding from "../lib/academicStanding.js";
 import type * as lib_academicWorkflowSchema from "../lib/academicWorkflowSchema.js";
+import type * as lib_admissionsSchema from "../lib/admissionsSchema.js";
 import type * as lib_courseUnitAggregationAccess from "../lib/courseUnitAggregationAccess.js";
 import type * as lib_demoAcademicWorkflowSeed from "../lib/demoAcademicWorkflowSeed.js";
 import type * as lib_demoAgricultureMarksSeed from "../lib/demoAgricultureMarksSeed.js";
@@ -73,6 +76,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   academic: typeof academic;
   admissions: typeof admissions;
+  admissionsDocuments: typeof admissionsDocuments;
+  admissionsEnrollment: typeof admissionsEnrollment;
   allocations: typeof allocations;
   assessmentApplications: typeof assessmentApplications;
   audit_logger: typeof audit_logger;
@@ -94,6 +99,7 @@ declare const fullApi: ApiFromModules<{
   "lib/academicResults": typeof lib_academicResults;
   "lib/academicStanding": typeof lib_academicStanding;
   "lib/academicWorkflowSchema": typeof lib_academicWorkflowSchema;
+  "lib/admissionsSchema": typeof lib_admissionsSchema;
   "lib/courseUnitAggregationAccess": typeof lib_courseUnitAggregationAccess;
   "lib/demoAcademicWorkflowSeed": typeof lib_demoAcademicWorkflowSeed;
   "lib/demoAgricultureMarksSeed": typeof lib_demoAgricultureMarksSeed;

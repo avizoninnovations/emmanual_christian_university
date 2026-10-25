@@ -36,6 +36,7 @@ export const getCourseGradebook = query({
         isUnlocked: false, isSupplementary: mark?.isSupplementary ?? false,
         supplementaryScore: mark?.supplementaryScore, originalScore: mark?.originalScore, originalGrade: mark?.originalGrade,
         approvedSnapshot: mark?.approvedSnapshot,
+        publicationWithdrawn: mark?.publicationWithdrawn ?? false,
       };
     }));
     const overallStatus = students.length && students.every(row => row.status === "approved") ? "approved"

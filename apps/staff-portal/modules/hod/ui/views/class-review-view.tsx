@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "convex/react";
-import { ArrowLeft, BookOpen, CheckCheck, Clock3, Search, Settings2, X } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCheck, Clock3, MoreHorizontal, Search, Settings2, X } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
@@ -12,6 +12,7 @@ import { Input } from "@workspace/ui/components/input";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { useSidebar } from "@workspace/ui/components/sidebar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import { MarkPermissionDialog, displayDeadline } from "../components/mark-permission-dialog";
 import { ReviewDecisionDialog } from "../components/review-decision-dialog";
 import { GradebookSettingsDialog } from "../components/gradebook-settings-dialog";
@@ -39,6 +40,9 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
     return gradebook?.students.filter(row => !query || [row.studentName, row.studentRegNumber, row.studentAccessNumber]
       .some(value => value.toLowerCase().includes(query))) ?? [];
   }, [gradebook?.students, search]);
+  const isActionable = (row: NonNullable<typeof gradebook>['students'][number]) =>
+    row.courseworkEntered && row.examEntered && (row.status === "submitted"
+      || (row.status === "approved" && !!row.approvedSnapshot && !row.publicationWithdrawn));
   const contentRegionStyle = {
     left: sidebarOpen && !isMobile ? "var(--sidebar-width)" : 0,
     width: sidebarOpen && !isMobile ? "calc(100% - var(--sidebar-width))" : "100%",
@@ -51,12 +55,13 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
     </div>
   </div>;
 
-  const selectedRows = gradebook.students.filter(row => selected.has(row.studentId));
+  const selectedRows = gradebook.students.filter(row => selected.has(row.studentId) && isActionable(row));
+  const selectableVisibleStudents = visibleStudents.filter(isActionable);
   const submittedCount = gradebook.students.filter(row => row.status === "submitted").length;
   const approvedCount = gradebook.students.filter(row => row.status === "approved").length;
   const missingCount = gradebook.students.filter(row => !row.courseworkEntered || !row.examEntered).length;
   const captureDecision = (action: Decision["action"]) => setDecision({ action, rows: selectedRows
-    .filter(row => action === "withdraw" ? row.status === "approved" || !!row.approvedSnapshot : row.status === "submitted")
+    .filter(row => action === "withdraw" ? row.status === "approved" && !!row.approvedSnapshot && !row.publicationWithdrawn : row.status === "submitted")
     .map(row => ({ studentId: row.studentId, revision: row.revision })) });
   const changePage = (next: (string | null)[]) => { setSelected(new Set()); setCursors(next); };
 
@@ -102,13 +107,15 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
           </section>
 
           <section className="space-y-3">
-            <div className="flex flex-col gap-3 rounded-sm border bg-card p-3 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex flex-wrap items-center gap-2">
-                <Button size="sm" disabled={!gradebook.canReview || !selectedRows.some(row => row.status === "submitted")} onClick={() => captureDecision("approve")}>Approve selected</Button>
-                <Button size="sm" variant="outline" disabled={!gradebook.canReview || !selectedRows.some(row => row.status === "submitted")} onClick={() => captureDecision("return")}>Return selected</Button>
-                <Button size="sm" variant="ghost" disabled={!gradebook.canReview || !selectedRows.some(row => row.status === "approved" || !!row.approvedSnapshot)} onClick={() => captureDecision("withdraw")}>Withdraw published results</Button>
-                {selected.size > 0 && <span className="text-xs text-muted-foreground">{selected.size} selected on this page</span>}
-              </div>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              {selectedRows.length > 0 && <div className="flex flex-wrap items-center gap-2 rounded-sm border bg-card p-3">
+                <span className="mr-1 text-xs text-muted-foreground">{selectedRows.length} selected</span>
+                {gradebook.canReview && selectedRows.some(row => row.status === "submitted") && <>
+                  <Button size="sm" onClick={() => captureDecision("approve")}>Approve selected</Button>
+                  <Button size="sm" variant="outline" onClick={() => captureDecision("return")}>Return selected</Button>
+                </>}
+                {gradebook.canReview && selectedRows.some(row => row.status === "approved" && !!row.approvedSnapshot && !row.publicationWithdrawn) && <Button size="sm" variant="outline" onClick={() => captureDecision("withdraw")}>Withdraw published results</Button>}
+              </div>}
               <div className="relative w-full lg:max-w-sm">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input aria-label="Search students" placeholder="Search name or student number" value={search} onChange={event => setSearch(event.target.value)} className="h-10 bg-background pl-9" />
@@ -124,20 +131,27 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                 <Table className="min-w-[1000px]">
                   <TableHeader className="sticky top-0 z-10 bg-muted/70">
                     <TableRow>
-                      <TableHead className="w-12 pl-4"><Checkbox aria-label="Select all visible students" checked={visibleStudents.length > 0 && visibleStudents.every(row => selected.has(row.studentId))} onCheckedChange={checked => setSelected(current => { const next = new Set(current); for (const row of visibleStudents) checked ? next.add(row.studentId) : next.delete(row.studentId); return next; })} /></TableHead>
-                      <TableHead className="w-12">No.</TableHead><TableHead>Student</TableHead><TableHead className="text-right">Coursework / 30</TableHead><TableHead className="text-right">Exam / 70</TableHead><TableHead className="text-right">Total / 100</TableHead><TableHead>Status</TableHead><TableHead>Editing access</TableHead>
+                      <TableHead className="w-12 pl-4"><Checkbox aria-label="Select all eligible visible students" disabled={!selectableVisibleStudents.length || !gradebook.canReview} checked={selectableVisibleStudents.length > 0 && selectableVisibleStudents.every(row => selected.has(row.studentId))} onCheckedChange={checked => setSelected(current => { const next = new Set(current); for (const row of selectableVisibleStudents) checked ? next.add(row.studentId) : next.delete(row.studentId); return next; })} /></TableHead>
+                      <TableHead className="w-12">No.</TableHead><TableHead>Student</TableHead><TableHead className="text-right">Coursework / 30</TableHead><TableHead className="text-right">Exam / 70</TableHead><TableHead className="text-right">Total / 100</TableHead><TableHead>Status</TableHead><TableHead className="w-16 text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {visibleStudents.map((row, index) => <TableRow key={row.studentId} className="hover:bg-muted/25">
-                      <TableCell className="pl-4"><Checkbox aria-label={`Select ${row.studentName}`} checked={selected.has(row.studentId)} onCheckedChange={checked => setSelected(current => { const next = new Set(current); checked ? next.add(row.studentId) : next.delete(row.studentId); return next; })} /></TableCell>
+                      <TableCell className="pl-4"><Checkbox aria-label={`Select ${row.studentName}`} disabled={!gradebook.canReview || !isActionable(row)} checked={selected.has(row.studentId)} onCheckedChange={checked => setSelected(current => { const next = new Set(current); checked ? next.add(row.studentId) : next.delete(row.studentId); return next; })} /></TableCell>
                       <TableCell className="font-mono text-xs tabular-nums text-muted-foreground">{index + 1 + (cursors.length - 1) * 50}</TableCell>
                       <TableCell className="min-w-64"><span className="block font-medium">{row.studentName}</span><span className="mt-1 block font-mono text-xs text-muted-foreground">{row.studentRegNumber} <span className="px-1">·</span> {row.studentAccessNumber}</span></TableCell>
                       <TableCell className="text-right tabular-nums">{row.courseworkEntered ? row.courseworkMarks : <MissingValue />}</TableCell>
                       <TableCell className="text-right tabular-nums">{row.examEntered ? row.examMarks : <MissingValue />}</TableCell>
                       <TableCell className="text-right font-semibold tabular-nums">{row.courseworkEntered && row.examEntered ? row.finalScore : "—"}{row.approvedSnapshot && <span className="block text-xs font-normal text-muted-foreground">Published: {row.approvedSnapshot.finalScore}</span>}</TableCell>
                       <TableCell><MarkStatus status={row.status} reason={row.returnReason} /></TableCell>
-                      <TableCell>{gradebook.isManager && <Button size="sm" variant="outline" onClick={() => setGrantStudent({ id: row.studentId, name: row.studentName })}>Grant access</Button>}{row.permission && <p className="mt-1 text-xs text-muted-foreground">Until {displayDeadline(row.permission.expiresAt)} EAT</p>}</TableCell>
+                      <TableCell className="text-right">{gradebook.isManager ? <DropdownMenu>
+                        <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={`Actions for ${row.studentName}`}><MoreHorizontal className="size-4" /></Button></DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                          <DropdownMenuItem disabled={!!row.permission && row.permission.expiresAt > Date.now()} onSelect={() => setGrantStudent({ id: row.studentId, name: row.studentName })}>
+                            {row.permission && row.permission.expiresAt > Date.now() ? `Editing access until ${displayDeadline(row.permission.expiresAt)}` : "Grant editing access"}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu> : <span className="text-xs text-muted-foreground">—</span>}</TableCell>
                     </TableRow>)}
                     {!visibleStudents.length && <TableRow><TableCell colSpan={8} className="h-32 text-center text-sm text-muted-foreground">{search ? "No students match this search." : "No registered students in this course and semester."}</TableCell></TableRow>}
                   </TableBody>

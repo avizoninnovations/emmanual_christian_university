@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { tables as authTables } from "./betterAuth/schema.js";
 import { studentPersonalFields } from "./lib/studentProfileFields.js";
 import { academicWorkflowTables, scoreSnapshot } from "./lib/academicWorkflowSchema.js";
+import { staffServiceTables } from "./lib/staffServiceSchema.js";
 
 const academicPeriodFields = {
   term: v.number(), // Semester/Term 1, 2, or 3
@@ -17,6 +18,7 @@ const timestamps = {
 export default defineSchema({
   ...authTables,
   ...academicWorkflowTables,
+  ...staffServiceTables,
 
   /**
    * Extended staff profile linked to the Better Auth `user` table.

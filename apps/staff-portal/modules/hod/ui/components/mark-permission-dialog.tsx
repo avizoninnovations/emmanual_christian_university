@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@workspace/ui/components/form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { Button } from "@workspace/ui/components/button";
@@ -37,7 +37,8 @@ export function MarkPermissionDialog({ courseId, periodId, studentId, studentNam
       toast.success(mode === "grant" ? "Editing permission granted" : "Editing request sent to the HOD"); close();
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not save the permission")); }
   });
-  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle>{mode === "grant" ? "Grant editing access" : "Request editing access"} · {studentName}</DialogTitle></DialogHeader>
+  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle>{mode === "grant" ? "Grant editing access" : "Request editing access"} · {studentName}</DialogTitle>
+    <DialogDescription>{mode === "grant" ? "Allow this lecturer to edit the selected marks until the expiry time." : "Request time-limited access to correct this student’s marks."}</DialogDescription></DialogHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4">
       <FormField control={form.control} name="components" render={({ field }) => <FormItem><FormLabel>Allowed components</FormLabel><Select value={field.value} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="both">Coursework and examination</SelectItem><SelectItem value="coursework">Coursework only</SelectItem><SelectItem value="exam">Examination only</SelectItem></SelectContent></Select><FormMessage /></FormItem>} />
       <FormField control={form.control} name="expiresAt" render={({ field }) => <FormItem><FormLabel>Expires at</FormLabel><FormControl><NairobiDateTimePicker value={field.value} onChange={field.onChange} label="Choose permission expiry" /></FormControl><FormMessage /></FormItem>} />

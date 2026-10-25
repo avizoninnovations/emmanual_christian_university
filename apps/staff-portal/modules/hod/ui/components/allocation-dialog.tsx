@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { SearchableSelect, type SearchableSelectOption } from "@workspace/ui/components/searchable-select";
 import { Textarea } from "@workspace/ui/components/textarea";
@@ -96,6 +96,7 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{allocationId ? "Update lecturer assignment" : "Assign lecturer"} · {title}</DialogTitle>
+          <DialogDescription>Choose a lecturer for this course unit, or leave it unassigned. Add a reason if the change needs context.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={save} className="min-w-0 w-full space-y-4">

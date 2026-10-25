@@ -12,7 +12,7 @@ import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -109,7 +109,8 @@ function PermissionDecisionDialog({ decision, close }: { decision: Decision; clo
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not update this permission")); }
   });
   const title = decision.action === "grant" ? "Approve editing access" : decision.action === "reject" ? "Reject editing request" : "Revoke editing access";
-  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>
+  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle>{title}</DialogTitle>
+    <DialogDescription>{decision.action === "grant" ? "Grant time-limited mark editing access for this request." : decision.action === "reject" ? "Provide a reason so the lecturer understands why the request was rejected." : "Provide a reason for revoking this editing access."}</DialogDescription></DialogHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4">
       {decision.action === "grant" && <FormField control={form.control} name="expiry" render={({ field }) => <FormItem><FormLabel>Access expires</FormLabel><FormControl><NairobiDateTimePicker value={field.value} onChange={field.onChange} label="Choose access expiry" /></FormControl><FormMessage /></FormItem>} />}
       {decision.action !== "grant" && <FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />}

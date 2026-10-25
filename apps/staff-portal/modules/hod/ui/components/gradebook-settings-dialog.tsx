@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { api } from "@workspace/backend/_generated/api";
 import { Button } from "@workspace/ui/components/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 import { parseNairobi } from "./mark-permission-dialog";
@@ -39,7 +39,7 @@ export function GradebookSettingsDialog({ courseId, periodId, entriesCloseAt, cl
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not update marks entry settings")); }
   });
   return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent>
-    <DialogHeader><DialogTitle>Marks entry settings</DialogTitle></DialogHeader>
+    <DialogHeader><DialogTitle>Marks entry settings</DialogTitle><DialogDescription>Set the marks entry deadline and choose who reviews submitted marks.</DialogDescription></DialogHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4">
       <FormField control={form.control} name="deadline" render={({ field }) => <FormItem>
         <FormLabel>Marks entry deadline (East Africa Time)</FormLabel>

@@ -17,16 +17,21 @@ export const availableCourses = query({
     const userId = await assertAuthenticated(ctx);
     const student = await getCurrentStudent(ctx, userId);
     const period = await ctx.db.query("academicPeriods").withIndex("by_status", q => q.eq("status", "active")).first();
-    if (!period) return { period: null, student: { programId: student.programId, yearOfStudy: student.yearOfStudy }, courses: [], capped: false, registrationLoadCapped: false };
-    const [allocations, registrations, requests] = await Promise.all([
-      ctx.db.query("courseAllocations").withIndex("by_period", q => q.eq("periodId", period._id)).take(501),
+    if (!period) return { period: null, student: { programId: student.programId, yearOfStudy: student.yearOfStudy }, courses: [], registrationLoadCapped: false };
+    const [registrations, requests] = await Promise.all([
       ctx.db.query("studentCourseRegistrations").withIndex("by_student_period", q => q.eq("studentId", student._id).eq("periodId", period._id)).take(101),
       ctx.db.query("studentCourseUnitAggregations").withIndex("by_student_period", q => q.eq("studentId", student._id).eq("periodId", period._id)).take(501),
     ]);
-    const [courses, lecturers] = await Promise.all([
-      Promise.all(allocations.map(async allocation => [allocation.courseId, await ctx.db.get(allocation.courseId)] as const)),
-      Promise.all([...new Set(allocations.map(allocation => allocation.lecturerId))].map(async id => [id, await staffName(ctx, id)] as const)),
-    ]);
+    const enrolledCourseIds = [...new Set(registrations.filter(row => row.status === "registered").map(row => row.courseId))];
+    const allocations = await Promise.all(enrolledCourseIds.map(courseId => ctx.db.query("courseAllocations")
+      .withIndex("by_course_period", q => q.eq("courseId", courseId).eq("periodId", period._id)).unique()));
+    const allocationMap = new Map(allocations.flatMap(allocation => allocation ? [[String(allocation.courseId), allocation] as const] : []));
+    const courses = await Promise.all(enrolledCourseIds.map(async id => [id, await ctx.db.get(id)] as const));
+    const assignedLecturerIds = enrolledCourseIds.flatMap(id => {
+      const allocation = allocationMap.get(String(id));
+      return allocation ? [allocation.lecturerId] : [];
+    });
+    const lecturers = await Promise.all([...new Set(assignedLecturerIds)].map(async id => [id, await staffName(ctx, id)] as const));
     const courseMap = new Map(courses);
     const lecturerMap = new Map(lecturers);
     const departmentIds = [...new Set(courses.flatMap(([, course]) => course ? [course.departmentId] : []))];
@@ -37,26 +42,26 @@ export const availableCourses = query({
     ]);
     const departmentMap = new Map(departments);
     const programMap = new Map(programs);
-    const registered = new Set(registrations.filter(row => row.status !== "dropped").map(row => row.courseId));
     const requestMap = new Map(requests.map(request => [String(request.courseId), request]));
-    const options = allocations.flatMap(allocation => {
-      const course = courseMap.get(allocation.courseId);
-      if (!course || course.status !== "active" || course.semester !== period.term || departmentMap.get(course.departmentId)?.status !== "active" || registered.has(course._id)) return [];
-      if (course.programId === student.programId && course.yearOfStudy === student.yearOfStudy && course.semester === period.term) return [];
+    const options = enrolledCourseIds.flatMap(courseId => {
+      const course = courseMap.get(courseId);
+      const allocation = allocationMap.get(String(courseId));
+      if (!course) return [];
       const existing = requestMap.get(String(course._id));
-      if (existing && requestIsActive(existing.status)) return [];
       return [{
-        courseId: course._id, allocationId: allocation._id, code: course.code, title: course.title,
+        courseId: course._id, allocationId: allocation?._id, code: course.code, title: course.title,
         creditUnits: course.creditUnits, programId: course.programId, yearOfStudy: course.yearOfStudy,
         semester: course.semester, departmentName: departmentMap.get(course.departmentId)?.name ?? "—",
         programName: programMap.get(course.programId)?.name ?? "—",
-        lecturerName: lecturerMap.get(allocation.lecturerId)?.name ?? "Staff member",
+        lecturerName: allocation ? lecturerMap.get(allocation.lecturerId)?.name ?? "Staff member" : "No lecturer assigned",
+        requestStatus: existing?.status,
+        canRequest: course.status === "active" && departmentMap.get(course.departmentId)?.status === "active" && !!allocation,
         periodId: period._id, periodName: `${period.name} ${period.year}`,
       }];
     });
     const registrationLoadCapped = registrations.length > 100;
-    return { period, student: { programId: student.programId, yearOfStudy: student.yearOfStudy }, courses: registrationLoadCapped ? [] : options.slice(0, 500),
-      capped: allocations.length > 500, registrationLoadCapped };
+    return { period, student: { programId: student.programId, yearOfStudy: student.yearOfStudy }, courses: registrationLoadCapped ? [] : options,
+      registrationLoadCapped };
   },
 });
 
@@ -88,12 +93,10 @@ export const submitRequest = mutation({
       ctx.db.query("studentCourseUnitAggregations").withIndex("by_student_course_period", q => q.eq("studentId", student._id).eq("courseId", args.courseId).eq("periodId", period._id)).unique(),
     ]);
     const department = course ? await ctx.db.get(course.departmentId) : null;
-    if (!course || course.status !== "active" || course.semester !== period.term || !allocation || !department || department.status !== "active") throw new ConvexError("This course unit is not offered for aggregation in the active semester.");
+    if (!course || course.status !== "active" || !allocation || !department || department.status !== "active") throw new ConvexError("This course unit is not available for a missed-paper request in the active semester.");
     if (registrations.length > 100) throw new ConvexError("Your current registration list is too large to verify safely. Contact the Registrar before requesting an aggregated unit.");
-    if (course.programId === student.programId && course.yearOfStudy === student.yearOfStudy && course.semester === period.term) {
-      throw new ConvexError("This course belongs to your regular semester registration. Use Course Registration instead.");
-    }
-    if (registrations.some(row => row.courseId === course._id && row.status !== "dropped")) throw new ConvexError("You are already registered or awaiting approval for this course unit.");
+    const registration = registrations.find(row => row.courseId === course._id && row.status === "registered");
+    if (!registration) throw new ConvexError("You can request a missed paper only for a course unit you are enrolled in this semester.");
     if (existing && requestIsActive(existing.status)) throw new ConvexError("You already have an active request for this course unit.");
     const now = Date.now();
     const requestFields = {
@@ -102,7 +105,7 @@ export const submitRequest = mutation({
       reason, requestedAt: now, status: "pending_lecturer" as const, lecturerDecision: undefined,
       lecturerDecisionNote: undefined, lecturerDecidedBy: undefined, lecturerDecidedAt: undefined,
       hodDecisionNote: undefined, hodDecidedBy: undefined, hodDecidedAt: undefined,
-      withdrawnAt: undefined, registrationId: undefined, updatedAt: now,
+      withdrawnAt: undefined, registrationId: registration._id, updatedAt: now,
     };
     if (existing) await ctx.db.patch(existing._id, requestFields);
     else await ctx.db.insert("studentCourseUnitAggregations", { ...requestFields, createdAt: now });
@@ -200,40 +203,16 @@ export const decideAsHod = mutation({
       || allocation.lecturerId !== request.lecturerId || (allocation.revision ?? 0) !== request.allocationRevision) {
       throw new ConvexError("Course or lecturer assignment changed. This request can no longer be approved.");
     }
-    if (args.decision === "approved" && (period.status !== "active" || course.status !== "active")) throw new ConvexError("This Academic Period or course is no longer active, so enrollment cannot be approved.");
-    const existingRegistration = registrations.find(row => row.courseId === request.courseId);
-    if (args.decision === "approved" && existingRegistration && existingRegistration.status !== "dropped") {
-      throw new ConvexError("The student already has an active registration for this course unit.");
-    }
+    const registration = registrations.find(row => row.courseId === request.courseId && row.status === "registered");
+    if (!registration && args.decision === "approved") throw new ConvexError("The student is no longer enrolled in this course unit for the requested semester.");
+    if (args.decision === "approved" && (period.status !== "active" || course.status !== "active")) throw new ConvexError("This Academic Period or course is no longer active, so the missed-paper request cannot be approved.");
     const now = Date.now();
-    if (args.decision === "approved" && registrations.length > 100) throw new ConvexError("The student's current course load is too large to verify safely. Contact the Registrar before approving.");
-    if (args.decision === "approved") {
-      const activeRegistrations = registrations.filter(row => row.status === "registered" || row.status === "completed");
-      const registeredCourses = await Promise.all(activeRegistrations.map(row => ctx.db.get(row.courseId)));
-      const currentCreditUnits = registeredCourses.reduce((total, registeredCourse) => total + (registeredCourse?.creditUnits ?? 0), 0);
-      if (currentCreditUnits + course.creditUnits > 24 && (!note || note.length < 5)) {
-        throw new ConvexError("This approval exceeds the regular 24 CU load. Add an HOD note documenting the exception.");
-      }
-    }
-    let registrationId: Id<"studentCourseRegistrations"> | undefined;
-    if (args.decision === "approved") {
-      if (existingRegistration) {
-        registrationId = existingRegistration._id;
-        await ctx.db.patch(existingRegistration._id, { status: "registered", registrationKind: "aggregated", retakeMode: undefined,
-          retakeApprovedBy: undefined, retakeApprovedAt: undefined, updatedAt: now });
-      } else {
-        registrationId = await ctx.db.insert("studentCourseRegistrations", {
-          studentId: request.studentId, courseId: request.courseId, periodId: request.periodId,
-          status: "registered", registrationKind: "aggregated", createdAt: now, updatedAt: now,
-        });
-      }
-    }
     await ctx.db.patch(request._id, { status: args.decision, hodDecisionNote: note, hodDecidedBy: actor.userId,
-      hodDecidedAt: now, registrationId, updatedAt: now });
+      hodDecidedAt: now, registrationId: registration?._id, updatedAt: now });
     const student = await ctx.db.get(request.studentId);
     await academicEvent(ctx, { actorId: actor.userId, departmentId: request.departmentId, courseId: request.courseId, periodId: request.periodId,
       studentId: request.studentId, action: args.decision === "approved" ? "HOD_APPROVED_AGGREGATION" : "HOD_DECLINED_AGGREGATION",
-      details: `${student?.registrationNumber ?? "Student"} · ${course.code}: ${args.decision === "approved" ? "aggregation approved and course enrollment created" : `aggregation declined${note ? `: ${note}` : ""}`}.` });
+      details: `${student?.registrationNumber ?? "Student"} · ${course.code}: ${args.decision === "approved" ? "missed-paper request approved for the existing enrollment" : `aggregation declined${note ? `: ${note}` : ""}`}.` });
     return { status: args.decision };
   },
 });

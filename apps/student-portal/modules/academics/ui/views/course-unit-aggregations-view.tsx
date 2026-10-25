@@ -17,13 +17,11 @@ import { CourseAggregationRequestDialog } from "../components/course-aggregation
 
 type Candidate = FunctionReturnType<typeof api.courseUnitAggregations.availableCourses>["courses"][number];
 type StudentRequest = FunctionReturnType<typeof api.courseUnitAggregations.myRequests>["page"][number];
-type EnrolledCourse = FunctionReturnType<typeof api.student_portal.getMyRegisteredCourses>[number];
 
 export function CourseUnitAggregationsView() {
   const available = useQuery(api.courseUnitAggregations.availableCourses, {});
   const periodId = available?.period?._id;
   const requests = usePaginatedQuery(api.courseUnitAggregations.myRequests, periodId ? { periodId } : "skip", { initialNumItems: 20 });
-  const enrolledCourses = useQuery(api.student_portal.getMyRegisteredCourses, periodId ? {} : "skip");
   const submitRequest = useMutation(api.courseUnitAggregations.submitRequest);
   const withdrawRequest = useMutation(api.courseUnitAggregations.withdrawRequest);
   const [selected, setSelected] = useState<Candidate | null>(null);
@@ -40,7 +38,7 @@ export function CourseUnitAggregationsView() {
     setBusy(true);
     try {
       await submitRequest({ courseId: selected.courseId, reason });
-      toast.success("Your request has been sent to the lecturer for review.");
+      toast.success("Your missed-paper request has been sent to the lecturer for review.");
       setDialogOpen(false);
       setSelected(null);
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not submit your request.")); }
@@ -58,32 +56,28 @@ export function CourseUnitAggregationsView() {
     <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><BookOpen className="size-5 text-primary" /><h1 className="text-xl font-semibold">Course Unit Aggregation</h1></div>
       {available?.period && <Badge variant="secondary" className="rounded-sm">{available.period.name} {available.period.year}</Badge>}</div>
     <div className="flex flex-wrap gap-x-5 gap-y-2 border-y border-border/60 py-3 text-sm text-muted-foreground">
-      <span className="flex items-center gap-1.5"><UsersRound className="size-4" />Lecturer review</span><span>→</span><span className="flex items-center gap-1.5"><Clock3 className="size-4" />HOD approval</span><span>→</span><span>Approved units appear in My Courses</span>
+      <span className="flex items-center gap-1.5"><UsersRound className="size-4" />Lecturer review</span><span>→</span><span className="flex items-center gap-1.5"><Clock3 className="size-4" />HOD decision</span><span>for your missed paper</span>
     </div>
     <Tabs defaultValue="available">
       <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
-        <TabsTrigger value="available" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">Available units</TabsTrigger>
-        <TabsTrigger value="enrolled" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">Enrolled this semester <span className="ml-1 tabular-nums">{enrolledCourses?.length ?? 0}</span></TabsTrigger>
+        <TabsTrigger value="available" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">Enrolled course units <span className="ml-1 tabular-nums">{courses.length}</span></TabsTrigger>
         <TabsTrigger value="requests" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">My requests <span className="ml-1 tabular-nums">{requestRows.length}{requests.status === "CanLoadMore" ? "+" : ""}</span></TabsTrigger>
       </TabsList>
       <TabsContent value="available" className="space-y-4 pt-4">
-        {available?.registrationLoadCapped && <p role="alert" className="rounded-sm bg-amber-500/10 px-3 py-2 text-sm text-amber-800 dark:text-amber-200">Your current registration list needs manual verification. Contact the Registrar before requesting an aggregated unit.</p>}
-        <div className="relative max-w-md"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input className="pl-9" placeholder="Search course unit, program, or lecturer" value={search} onChange={event => setSearch(event.target.value)} /></div>
+        <p className="text-sm text-muted-foreground">Choose a course unit you are enrolled in this semester to request a missed paper.</p>
+        {available?.registrationLoadCapped && <p role="alert" className="rounded-sm bg-amber-500/10 px-3 py-2 text-sm text-amber-800 dark:text-amber-200">Your registration list needs manual verification. Contact the Registrar before submitting a request.</p>}
+        <div className="relative max-w-md"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input className="pl-9" placeholder="Search your enrolled course units" value={search} onChange={event => setSearch(event.target.value)} /></div>
         {available === undefined ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{[1, 2, 3].map(item => <Skeleton key={item} className="h-36" />)}</div>
           : courses.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{courses.map(course => <Card key={course.courseId} className="rounded-sm border-border/70 shadow-none transition-colors hover:border-primary/30">
             <CardContent className="space-y-3 p-4"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-mono text-xs text-muted-foreground">{course.code} · {course.creditUnits} CU</p><h2 className="mt-1 line-clamp-2 font-semibold">{course.title}</h2></div><BookOpen className="size-5 shrink-0 text-primary" /></div>
-              <p className="text-xs text-muted-foreground">{course.programName} · Year {course.yearOfStudy}, Semester {course.semester}</p>
-              <p className="text-xs text-muted-foreground">{course.departmentName} · {course.lecturerName}</p>
-              <Button className="h-9 w-full rounded-sm" onClick={() => { setSelected(course); setDialogOpen(true); }}><Send className="mr-2 size-4" />Request this unit</Button>
+              <p className="text-xs text-muted-foreground">Enrolled in {course.periodName}</p>
+              <p className="text-xs text-muted-foreground">{course.lecturerName}</p>
+              <Button className="h-9 w-full rounded-sm" disabled={!course.canRequest || course.requestStatus === "pending_lecturer" || course.requestStatus === "pending_hod" || course.requestStatus === "approved"} onClick={() => { setSelected(course); setDialogOpen(true); }}>
+                <Send className="mr-2 size-4" />{course.requestStatus === "pending_lecturer" ? "With lecturer" : course.requestStatus === "pending_hod" ? "With HOD" : course.requestStatus === "approved" ? "Approved" : !course.canRequest ? "Unavailable for review" : "Request missed paper"}
+              </Button>
             </CardContent>
           </Card>)}</div>
-          : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center"><BookOpen className="mx-auto size-8 text-muted-foreground" /><p className="mt-3 font-medium">{available?.registrationLoadCapped ? "Course load verification required." : !available?.period ? "No active Academic Period." : normalized ? "No course units match your search." : "No aggregated course units are available."}</p><p className="mt-1 text-sm text-muted-foreground">{available?.registrationLoadCapped ? "The Registrar can confirm your current registration before you submit." : !available?.period ? "Requests open when the university starts an active semester." : "Units already in your regular semester plan are handled through Course Registration."}</p></CardContent></Card>}
-        {available?.capped && <p className="text-xs text-muted-foreground">Showing the first 500 currently allocated course units. Narrow your search or contact your Department.</p>}
-      </TabsContent>
-      <TabsContent value="enrolled" className="space-y-3 pt-4">
-        {enrolledCourses === undefined ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{[1, 2, 3].map(item => <Skeleton key={item} className="h-20" />)}</div>
-          : enrolledCourses.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{enrolledCourses.map((course: EnrolledCourse) => <Card key={course.registrationId} className="rounded-sm border-border/70 shadow-none"><CardContent className="flex items-start justify-between gap-3 p-4"><div className="min-w-0"><p className="font-mono text-xs text-muted-foreground">{course.code} · {course.creditUnits} CU</p><h2 className="mt-1 font-medium">{course.title}</h2><p className="mt-1 text-xs text-muted-foreground">{course.lecturerName}</p></div><Badge variant="secondary" className="shrink-0 rounded-sm">Enrolled</Badge></CardContent></Card>)}</div>
-          : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center text-sm text-muted-foreground">You have no enrolled course units for this semester.</CardContent></Card>}
+          : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center"><BookOpen className="mx-auto size-8 text-muted-foreground" /><p className="mt-3 font-medium">{available?.registrationLoadCapped ? "Registration verification required." : !available?.period ? "No active Academic Period." : normalized ? "No course units match your search." : "No enrolled course units for this semester."}</p><p className="mt-1 text-sm text-muted-foreground">{available?.registrationLoadCapped ? "The Registrar can confirm your current enrollment before you submit." : !available?.period ? "Requests open when the university starts an active semester." : normalized ? "Try another course code or title." : "Only course units registered in the active semester are shown here."}</p></CardContent></Card>}
       </TabsContent>
       <TabsContent value="requests" className="space-y-3 pt-4">
         {requests.status === "LoadingFirstPage" ? <div className="space-y-3">{[1, 2].map(item => <Skeleton key={item} className="h-28" />)}</div>

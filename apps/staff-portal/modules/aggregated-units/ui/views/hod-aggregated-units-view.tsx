@@ -38,7 +38,7 @@ export function HodAggregatedUnitsView() {
     setBusy(true);
     try {
       await decide({ requestId: selected._id, decision, note });
-      toast.success(decision === "approved" ? "Course enrollment approved." : "Aggregation request declined.");
+      toast.success(decision === "approved" ? "Missed-paper request approved." : "Aggregation request declined.");
       setSelected(null);
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not review this request.")); }
     finally { setBusy(false); }

@@ -57,7 +57,7 @@ export const getMyAegrotatApplications = query({
 });
 
 export const submitAegrotatApplication = mutation({
-  args: { courseId: v.id("courses"), reason: v.string(), attachmentId: v.optional(v.id("_storage")) },
+  args: { courseId: v.id("courses"), reason: v.string(), applicationType: v.optional(v.union(v.literal("illness"), v.literal("bereavement"), v.literal("other"))), attachmentId: v.optional(v.id("_storage")) },
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getStudent(ctx, userId);
@@ -69,11 +69,22 @@ export const submitAegrotatApplication = mutation({
       .filter((q: any) => q.eq(q.field("courseId"), args.courseId)).first();
     if (!registration || registration.status !== "registered") throw new ConvexError("Select a course you are registered in this semester.");
     if (args.reason.trim().length < 10) throw new ConvexError("Please provide more detail about your application.");
-    return await ctx.db.insert("aegrotatApplications", {
+    const previous = await ctx.db.query("aegrotatApplications")
+      .withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id))
+      .filter((q: any) => q.eq(q.field("courseId"), args.courseId))
+      .order("desc").first();
+    if (previous && (previous.status === "submitted" || previous.status === "under_review")) {
+      throw new ConvexError("You already have an application under review for this course unit.");
+    }
+    const applicationId = await ctx.db.insert("aegrotatApplications", {
       studentId: student._id, periodId: period._id, courseId: args.courseId,
-      reason: args.reason.trim(), attachmentId: args.attachmentId,
+      reason: args.reason.trim(), applicationType: args.applicationType ?? "other", attachmentId: args.attachmentId,
       status: "submitted", submittedAt: Date.now(),
     });
+    const course = await ctx.db.get(args.courseId);
+    await logAction(ctx, { action: "SUBMIT_ASSESSMENT_APPLICATION", resource: "aegrotatApplications",
+      details: `${student.registrationNumber} submitted a ${args.applicationType ?? "other"} assessment application for ${course?.code ?? "a course unit"}.` });
+    return applicationId;
   },
 });
 

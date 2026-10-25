@@ -22,7 +22,8 @@ function PageHeading({ eyebrow, title, note }: { eyebrow: string; title: string;
 function StatusBadge({ status }: { status: string }) {
   const approved = status === "approved";
   const rejected = status === "rejected" || status === "returned";
-  return <Badge variant="outline" className={approved ? "border-emerald-200 bg-emerald-50 text-emerald-700" : rejected ? "border-rose-200 bg-rose-50 text-rose-700" : "border-amber-200 bg-amber-50 text-amber-700"}>{status.replaceAll("_", " ")}</Badge>;
+  const label = status === "submitted" ? "With lecturer" : status === "under_review" ? "In review" : status === "rejected" ? "Declined" : status.replaceAll("_", " ");
+  return <Badge variant="outline" className={approved ? "border-emerald-200 bg-emerald-50 text-emerald-700" : rejected ? "border-rose-200 bg-rose-50 text-rose-700" : "border-amber-200 bg-amber-50 text-amber-700"}>{label.replaceAll("_", " ")}</Badge>;
 }
 
 async function uploadFile(url: string, file: File): Promise<Id<"_storage">> {
@@ -37,6 +38,7 @@ export function AegrotatView() {
   const submit = useMutation(api.student_services.submitAegrotatApplication);
   const getUploadUrl = useMutation(api.student_services.generateStudentUploadUrl);
   const [courseId, setCourseId] = useState("");
+  const [applicationType, setApplicationType] = useState<"illness" | "bereavement" | "other">("illness");
   const [reason, setReason] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -47,27 +49,28 @@ export function AegrotatView() {
     setBusy(true);
     try {
       const attachmentId = file ? await uploadFile(await getUploadUrl({}), file) : undefined;
-      await submit({ courseId: courseId as Id<"courses">, reason, attachmentId });
-      setReason(""); setCourseId(""); setFile(null);
-      toast.success("Aegrotat application submitted.");
+      await submit({ courseId: courseId as Id<"courses">, applicationType, reason, attachmentId });
+      setReason(""); setCourseId(""); setFile(null); setApplicationType("illness");
+      toast.success("Special assessment application sent to your lecturer.");
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not submit application.")); }
     finally { setBusy(false); }
   }
 
   return <div className={shell}>
-    <PageHeading eyebrow="Registration" title="Aegrotat Applications" note="Apply for consideration when illness or exceptional circumstances affect an assessment." />
+    <PageHeading eyebrow="Registration" title="Special Assessment Application" note="Ask your course lecturer to review an assessment affected by illness or other exceptional circumstances." />
     {!data ? <Loading /> : <>
-      <Card className="border-blue-100 bg-blue-50/70 shadow-none"><CardContent className="flex gap-3 p-4 text-sm text-blue-900"><AlertCircle className="mt-0.5 size-4 shrink-0" /><p>Applications are reviewed by the university. Include supporting evidence where available. Submission does not guarantee approval.</p></CardContent></Card>
+      <Card className="border-blue-100 bg-blue-50/70 shadow-none"><CardContent className="flex gap-3 p-4 text-sm text-blue-900"><AlertCircle className="mt-0.5 size-4 shrink-0" /><p>Select the course unit, explain what happened, and attach evidence if you have it. The lecturer assigned to that unit reviews your application; it does not go to the HOD.</p></CardContent></Card>
       <Card><CardHeader><CardTitle className="text-base">New Application</CardTitle><CardDescription>{data.period?.name ?? "Current semester"}</CardDescription></CardHeader><CardContent>
         <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
-          <label><span className={labelClass}>Course Unit</span><select required value={courseId} onChange={(e) => setCourseId(e.target.value)} className={inputClass}><option value="">Select a registered course</option>{data.courses.filter((course) => course !== null).map((course) => <option key={course.id} value={course.id}>{course.code} · {course.title}</option>)}</select></label>
-          <label><span className={labelClass}>Supporting Document</span><input type="file" accept="application/pdf,image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className={`${inputClass} py-2`} /></label>
-          <label className="md:col-span-2"><span className={labelClass}>Reason for Application</span><textarea required minLength={10} value={reason} onChange={(e) => setReason(e.target.value)} rows={4} className="w-full rounded-md border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Explain the circumstances and assessment affected." /></label>
-          <div className="md:col-span-2"><Button disabled={busy || data.courses.length === 0}>{busy && <Loader2 className="mr-2 size-4 animate-spin" />}Submit Application</Button></div>
+          <label><span className={labelClass}>Enrolled course unit</span><select required value={courseId} onChange={(e) => setCourseId(e.target.value)} className={inputClass}><option value="">Choose a course unit</option>{data.courses.filter((course) => course !== null).map((course) => <option key={course.id} value={course.id}>{course.code} · {course.title}</option>)}</select></label>
+          <label><span className={labelClass}>Circumstance</span><select required value={applicationType} onChange={(e) => setApplicationType(e.target.value as typeof applicationType)} className={inputClass}><option value="illness">Illness</option><option value="bereavement">Bereavement</option><option value="other">Other exceptional circumstance</option></select></label>
+          <label><span className={labelClass}>Supporting evidence (optional)</span><input type="file" accept="application/pdf,image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className={`${inputClass} py-2`} /></label>
+          <label className="md:col-span-2"><span className={labelClass}>What happened?</span><textarea required minLength={10} value={reason} onChange={(e) => setReason(e.target.value)} rows={4} className="w-full rounded-md border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Describe the circumstance and which assessment it affected." /></label>
+          <div className="md:col-span-2"><Button disabled={busy || data.courses.length === 0}>{busy && <Loader2 className="mr-2 size-4 animate-spin" />}Send to lecturer</Button></div>
         </form>
       </CardContent></Card>
-      <Card><CardHeader><CardTitle className="text-base">Submitted Applications</CardTitle></CardHeader><CardContent className="space-y-3">
-        {data.applications.length === 0 ? <Empty message="No aegrotat applications have been submitted." /> : data.applications.map((item) => <div key={item._id} className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-start sm:justify-between"><div><p className="font-medium text-slate-800">{item.courseTitle}</p><p className="mt-1 max-w-2xl whitespace-pre-wrap text-sm text-slate-500">{item.reason}</p>{item.attachmentUrl && <a className="mt-2 inline-flex items-center gap-1 text-xs text-blue-700 underline" href={item.attachmentUrl} target="_blank" rel="noreferrer"><FileText className="size-3.5" /> Supporting document</a>}</div><StatusBadge status={item.status} /></div>)}
+      <Card><CardHeader><CardTitle className="text-base">Your applications</CardTitle></CardHeader><CardContent className="space-y-3">
+        {data.applications.length === 0 ? <Empty message="You have not submitted an assessment application." /> : data.applications.map((item) => <div key={item._id} className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-start sm:justify-between"><div><p className="font-medium text-slate-800">{item.courseTitle} · {(item.applicationType ?? "other").replaceAll("_", " ")}</p><p className="mt-1 max-w-2xl whitespace-pre-wrap text-sm text-slate-500">{item.reason}</p><p className="mt-1 text-xs text-slate-500">Submitted {new Date(item.submittedAt).toLocaleDateString("en-GB", { dateStyle: "medium" })}</p>{item.attachmentUrl && <a className="mt-2 inline-flex items-center gap-1 text-xs text-blue-700 underline" href={item.attachmentUrl} target="_blank" rel="noreferrer"><FileText className="size-3.5" /> View supporting evidence</a>}{item.reviewNote && <p className="mt-2 text-sm text-rose-700">Lecturer note: {item.reviewNote}</p>}</div><StatusBadge status={item.status} /></div>)}
       </CardContent></Card>
     </>}
   </div>;

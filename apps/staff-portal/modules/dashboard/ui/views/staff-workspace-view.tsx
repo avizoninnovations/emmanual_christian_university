@@ -4,9 +4,11 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { staffWorkspaces } from "./staff-workspace-content";
 import { AggregatedUnitsView } from "@/modules/aggregated-units/ui/views/aggregated-units-view";
+import { AssessmentApplicationsView } from "@/modules/assessment-applications/ui/views/assessment-applications-view";
 
 export function StaffWorkspaceView({ workspace }: { workspace: string }) {
   if (workspace === "aggregated-units") return <AggregatedUnitsView />;
+  if (workspace === "aegrotat-units") return <AssessmentApplicationsView />;
   const page = staffWorkspaces[workspace];
   if (!page) notFound();
 

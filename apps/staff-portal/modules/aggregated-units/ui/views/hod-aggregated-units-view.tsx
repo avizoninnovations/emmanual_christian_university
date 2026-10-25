@@ -38,14 +38,14 @@ export function HodAggregatedUnitsView() {
     setBusy(true);
     try {
       await decide({ requestId: selected._id, decision, note });
-      toast.success(decision === "approved" ? "Missed-paper request approved." : "Aggregation request declined.");
+      toast.success(decision === "approved" ? "Missed-paper request approved." : "Missed-paper request declined.");
       setSelected(null);
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not review this request.")); }
     finally { setBusy(false); }
   }
 
   return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5">
-    <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><CheckCheck className="size-5 text-primary" /><h1 className="text-xl font-semibold">Aggregated Unit Requests</h1></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><CheckCheck className="size-5 text-primary" /><h1 className="text-xl font-semibold">Missed Paper Approvals</h1></div>
       {scope.context?.departments.length ? <Select value={scope.departmentId} onValueChange={scope.setDepartment}><SelectTrigger className="w-full sm:w-64"><SelectValue placeholder="Choose department" /></SelectTrigger><SelectContent>
         {scope.context.departments.map(department => <SelectItem key={department._id} value={department._id}>{department.name}</SelectItem>)}
       </SelectContent></Select> : <Badge variant="outline" className="rounded-sm">No managed department</Badge>}</div>

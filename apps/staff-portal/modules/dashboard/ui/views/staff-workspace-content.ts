@@ -41,8 +41,8 @@ export const staffWorkspaces: Record<string, StaffWorkspace> = {
   "e-learning-courses": { title: "E-Learning Courses", sections: [
     { title: "Online Courses", fields: ["Course unit", "Online course", "Enrollment", "Learning platform status"] },
   ] },
-  "aegrotat-units": { title: "My Aegrotat Units", sections: [
-    { title: "Aegrotat Units", fields: ["Student", "Course unit", "Academic Period", "Approval status", "Required action"] },
+  "aegrotat-units": { title: "Special Assessment Applications", sections: [
+    { title: "Applications", fields: ["Student", "Course unit", "Circumstance", "Supporting evidence", "Review status"] },
   ] },
   "faculty-central": { title: "Faculty Central", sections: [
     { title: "Faculty Workspace", fields: ["Faculty", "Department", "Staff responsibilities"] },

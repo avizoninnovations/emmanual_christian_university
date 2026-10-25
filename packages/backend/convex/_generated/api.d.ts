@@ -11,6 +11,7 @@
 import type * as academic from "../academic.js";
 import type * as admissions from "../admissions.js";
 import type * as allocations from "../allocations.js";
+import type * as assessmentApplications from "../assessmentApplications.js";
 import type * as audit_logger from "../audit_logger.js";
 import type * as broadsheet from "../broadsheet.js";
 import type * as calendar from "../calendar.js";
@@ -69,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   academic: typeof academic;
   admissions: typeof admissions;
   allocations: typeof allocations;
+  assessmentApplications: typeof assessmentApplications;
   audit_logger: typeof audit_logger;
   broadsheet: typeof broadsheet;
   calendar: typeof calendar;

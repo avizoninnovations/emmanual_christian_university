@@ -468,11 +468,13 @@ export default defineSchema({
     applicationType: v.optional(v.union(v.literal("illness"), v.literal("bereavement"), v.literal("other"))),
     attachmentId: v.optional(v.id("_storage")),
     status: v.union(v.literal("submitted"), v.literal("under_review"), v.literal("approved"), v.literal("rejected")),
+    reviewedBy: v.optional(v.string()), reviewedAt: v.optional(v.number()), reviewNote: v.optional(v.string()),
     submittedAt: v.number(),
     ...timestamps,
   })
     .index("by_student", ["studentId"])
-    .index("by_student_period", ["studentId", "periodId"]),
+    .index("by_student_period", ["studentId", "periodId"])
+    .index("by_period", ["periodId"]),
 
   deadSemesterRequests: defineTable({
     studentId: v.id("students"),

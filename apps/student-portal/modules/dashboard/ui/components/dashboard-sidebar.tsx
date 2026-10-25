@@ -169,8 +169,8 @@ export const DashboardSidebar = () => {
               <IconRailLink title="Register" url="/academics/registration" icon={CheckSquare} active={isActive("/academics/registration")} />
               <IconRailLink title="Dead Year Dead Sem" url="/registration/dead-year-dead-sem" icon={CalendarDays} active={isActive("/registration/dead-year-dead-sem")} />
               <IconRailLink title="Retake Registration" url="/academics/retakes" icon={BookOpen} active={isActive("/academics/retakes")} />
-              <IconRailLink title="Course Unit Aggregation" url="/academics/aggregated-units" icon={Layers} active={isActive("/academics/aggregated-units")} />
-              <IconRailLink title="Aegrotat" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
+              <IconRailLink title="Missed Paper Request" url="/academics/aggregated-units" icon={Layers} active={isActive("/academics/aggregated-units")} />
+              <IconRailLink title="Special Assessment" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
           <SidebarGroup className="border-b border-border px-1 py-2">
@@ -215,8 +215,8 @@ export const DashboardSidebar = () => {
             { title: "Register", url: "/academics/registration" },
             { title: "Dead Year Dead Sem", url: "/registration/dead-year-dead-sem" },
             { title: "Retake Registration", url: "/academics/retakes" },
-            { title: "Course Unit Aggregation", url: "/academics/aggregated-units" },
-            { title: "Aegrotat", url: "/registration/aegrotat" },
+            { title: "Missed Paper Request", url: "/academics/aggregated-units" },
+            { title: "Special Assessment", url: "/registration/aegrotat" },
           ]} /></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 

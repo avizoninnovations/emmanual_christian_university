@@ -34,14 +34,14 @@ export function AggregatedUnitsView() {
     setBusy(true);
     try {
       await decide({ requestId: selected._id, decision, note });
-      toast.success(decision === "approved" ? "Endorsed and sent to the HOD for a decision." : "Aggregation request declined.");
+      toast.success(decision === "approved" ? "Endorsed and sent to the HOD for a decision." : "Missed-paper request declined.");
       setSelected(null);
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not review this request.")); }
     finally { setBusy(false); }
   }
 
   return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5">
-    <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><Layers className="size-5 text-primary" /><h1 className="text-xl font-semibold">My Aggregated Units</h1></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><Layers className="size-5 text-primary" /><h1 className="text-xl font-semibold">Missed Paper Requests</h1></div>
       <Badge variant="secondary" className="rounded-sm">{requests.results.length}{requests.status === "CanLoadMore" ? "+" : ""} loaded</Badge></div>
     <Tabs value={status} onValueChange={value => setStatus(value as AggregationRequest["status"])}>
       <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">

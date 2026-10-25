@@ -26,7 +26,7 @@ export function AggregationRequestTable({ requests, onSelect, loading }: {
           <TableCell><RequestStatus status={request.status} /></TableCell>
           <TableCell className="text-right"><Button variant="ghost" size="sm" className="h-8 rounded-sm text-primary" onClick={() => onSelect(request)}><Eye className="mr-1.5 size-4" />Details</Button></TableCell>
         </TableRow>)}
-        {!loading && requests.length === 0 && <TableRow><TableCell colSpan={7} className="h-32 text-center text-sm text-muted-foreground">No aggregation requests in this view.</TableCell></TableRow>}
+        {!loading && requests.length === 0 && <TableRow><TableCell colSpan={7} className="h-32 text-center text-sm text-muted-foreground">No missed-paper requests in this view.</TableCell></TableRow>}
       </TableBody>
     </Table>
   </div>;

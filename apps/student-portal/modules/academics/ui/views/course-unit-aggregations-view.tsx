@@ -53,7 +53,7 @@ export function CourseUnitAggregationsView() {
   }
 
   return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5">
-    <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><BookOpen className="size-5 text-primary" /><h1 className="text-xl font-semibold">Course Unit Aggregation</h1></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><BookOpen className="size-5 text-primary" /><h1 className="text-xl font-semibold">Missed Paper Request</h1></div>
       {available?.period && <Badge variant="secondary" className="rounded-sm">{available.period.name} {available.period.year}</Badge>}</div>
     <div className="flex flex-wrap gap-x-5 gap-y-2 border-y border-border/60 py-3 text-sm text-muted-foreground">
       <span className="flex items-center gap-1.5"><UsersRound className="size-4" />Lecturer review</span><span>→</span><span className="flex items-center gap-1.5"><Clock3 className="size-4" />HOD decision</span><span>for your missed paper</span>

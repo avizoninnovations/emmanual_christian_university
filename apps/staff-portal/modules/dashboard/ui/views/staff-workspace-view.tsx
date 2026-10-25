@@ -3,8 +3,10 @@ import { ClipboardList } from "lucide-react";
 import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { staffWorkspaces } from "./staff-workspace-content";
+import { AggregatedUnitsView } from "@/modules/aggregated-units/ui/views/aggregated-units-view";
 
 export function StaffWorkspaceView({ workspace }: { workspace: string }) {
+  if (workspace === "aggregated-units") return <AggregatedUnitsView />;
   const page = staffWorkspaces[workspace];
   if (!page) notFound();
 

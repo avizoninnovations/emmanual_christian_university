@@ -174,6 +174,7 @@ export const registerSemesterCourses = mutation({
       .collect();
 
     for (const reg of existing) {
+      if (reg.registrationKind === "aggregated") continue;
       if (!args.courseIds.includes(reg.courseId)) {
         await ctx.db.delete(reg._id);
       }

@@ -19,6 +19,7 @@ const routeNames: Record<string, string> = {
   finance: "Financial Statement",
   "exam-card": "Exam Permit",
   registration: "Registration",
+  "aggregated-units": "Course Unit Aggregation",
   "dead-year-dead-sem": "Dead Year / Dead Sem",
   aegrotat: "Aegrotat",
   evaluation: "Evaluation",

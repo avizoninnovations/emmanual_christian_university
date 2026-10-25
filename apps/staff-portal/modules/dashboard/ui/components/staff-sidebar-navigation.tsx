@@ -33,7 +33,7 @@ const staffServiceItems: SidebarEntry[] = [
 ];
 
 export const staffSidebarSections: StaffSidebarSection[] = [
-  { key: "leadership", category: "ACADEMICS", title: "Department Management", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
+  { key: "leadership", category: "ACADEMICS", title: "Department Management", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Aggregated Unit Requests", "/hod/aggregated-units", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
   { key: "lecturer-courses", category: "ACADEMICS", title: "Lecturer Courses", icon: BookOpen, items: [
     link("My Aggregated Units", "/workspace/aggregated-units", Layers),
     link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),

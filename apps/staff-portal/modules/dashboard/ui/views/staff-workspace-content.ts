@@ -38,9 +38,6 @@ export const staffWorkspaces: Record<string, StaffWorkspace> = {
   defenses: { title: "My Defenses", sections: [
     { title: "Defense Response", fields: ["Case reference", "Notice", "Response due", "Response", "Attachments", "Status"] },
   ] },
-  "aggregated-units": { title: "My Aggregated Units", sections: [
-    { title: "Unit Summary", fields: ["Academic Period", "Course unit", "Program", "Year and semester", "Credit units"] },
-  ] },
   "e-learning-courses": { title: "E-Learning Courses", sections: [
     { title: "Online Courses", fields: ["Course unit", "Online course", "Enrollment", "Learning platform status"] },
   ] },

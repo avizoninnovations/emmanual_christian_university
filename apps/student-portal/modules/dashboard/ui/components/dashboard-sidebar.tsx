@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboardIcon, BookOpen, UserIcon, SchoolIcon, CalendarDays,
-  ClipboardCheck, Vote, Award, DollarSign, FileText,
+  ClipboardCheck, Vote, Award, DollarSign, FileText, Layers,
   CheckSquare, ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
@@ -169,6 +169,7 @@ export const DashboardSidebar = () => {
               <IconRailLink title="Register" url="/academics/registration" icon={CheckSquare} active={isActive("/academics/registration")} />
               <IconRailLink title="Dead Year Dead Sem" url="/registration/dead-year-dead-sem" icon={CalendarDays} active={isActive("/registration/dead-year-dead-sem")} />
               <IconRailLink title="Retake Registration" url="/academics/retakes" icon={BookOpen} active={isActive("/academics/retakes")} />
+              <IconRailLink title="Course Unit Aggregation" url="/academics/aggregated-units" icon={Layers} active={isActive("/academics/aggregated-units")} />
               <IconRailLink title="Aegrotat" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
@@ -214,6 +215,7 @@ export const DashboardSidebar = () => {
             { title: "Register", url: "/academics/registration" },
             { title: "Dead Year Dead Sem", url: "/registration/dead-year-dead-sem" },
             { title: "Retake Registration", url: "/academics/retakes" },
+            { title: "Course Unit Aggregation", url: "/academics/aggregated-units" },
             { title: "Aegrotat", url: "/registration/aegrotat" },
           ]} /></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>

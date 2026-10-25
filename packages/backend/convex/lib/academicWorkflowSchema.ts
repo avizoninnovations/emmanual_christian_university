@@ -13,6 +13,20 @@ export const grantStatus = v.union(v.literal("requested"), v.literal("granted"),
 const timestamps = { createdAt: v.number(), updatedAt: v.number() };
 
 export const academicWorkflowTables = {
+  studentCourseUnitAggregations: defineTable({
+    studentId: v.id("students"), courseId: v.id("courses"), periodId: v.id("academicPeriods"),
+    departmentId: v.id("departments"), lecturerId: v.string(), allocationId: v.id("courseAllocations"),
+    allocationRevision: v.number(), reason: v.string(), requestedAt: v.number(),
+    status: v.union(v.literal("pending_lecturer"), v.literal("pending_hod"), v.literal("approved"), v.literal("rejected"), v.literal("withdrawn")),
+    lecturerDecision: v.optional(v.union(v.literal("approved"), v.literal("rejected"))),
+    lecturerDecisionNote: v.optional(v.string()), lecturerDecidedBy: v.optional(v.string()), lecturerDecidedAt: v.optional(v.number()),
+    hodDecisionNote: v.optional(v.string()), hodDecidedBy: v.optional(v.string()), hodDecidedAt: v.optional(v.number()),
+    registrationId: v.optional(v.id("studentCourseRegistrations")), ...timestamps,
+  }).index("by_student_and_requestedAt", ["studentId", "requestedAt"])
+    .index("by_student_period", ["studentId", "periodId"])
+    .index("by_student_course_period", ["studentId", "courseId", "periodId"])
+    .index("by_lecturerId_and_status_and_requestedAt", ["lecturerId", "status", "requestedAt"])
+    .index("by_departmentId_and_status_and_requestedAt", ["departmentId", "status", "requestedAt"]),
   departmentLeadershipAssignments: defineTable({
     departmentId: v.id("departments"), staffUserId: v.string(), appointedBy: v.string(),
     startsAt: v.number(), endedAt: v.optional(v.number()), endedBy: v.optional(v.string()),

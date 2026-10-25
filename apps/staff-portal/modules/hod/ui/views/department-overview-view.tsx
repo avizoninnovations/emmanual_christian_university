@@ -26,6 +26,7 @@ import { HodScopePicker } from "../components/hod-scope-picker";
 
 const departmentActions = [
   { title: "Course Allocations", href: "/hod/allocations", icon: Layers },
+  { title: "Aggregated Unit Requests", href: "/hod/aggregated-units", icon: Layers },
   { title: "Marks Review Queue", href: "/hod/review-queue", icon: ClipboardCheck },
   { title: "Edit Permissions", href: "/hod/edit-permissions", icon: KeyRound },
   { title: "Department Lecturers", href: "/hod/lecturers", icon: UsersRound },

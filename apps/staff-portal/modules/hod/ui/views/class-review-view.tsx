@@ -11,6 +11,7 @@ import { Checkbox } from "@workspace/ui/components/checkbox";
 import { Input } from "@workspace/ui/components/input";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
+import { useSidebar } from "@workspace/ui/components/sidebar";
 import { MarkPermissionDialog, displayDeadline } from "../components/mark-permission-dialog";
 import { ReviewDecisionDialog } from "../components/review-decision-dialog";
 import { GradebookSettingsDialog } from "../components/gradebook-settings-dialog";
@@ -20,6 +21,7 @@ type Props = ClassKey & { onClose: () => void };
 type Decision = { action: "approve" | "return" | "withdraw"; rows: { studentId: Id<"students">; revision: number }[] };
 
 export function ClassReviewView({ courseId, periodId, onClose }: Props) {
+  const { open: sidebarOpen, isMobile } = useSidebar();
   const [cursors, setCursors] = useState<(string | null)[]>([null]);
   const [selected, setSelected] = useState<Set<Id<"students">>>(new Set());
   const [decision, setDecision] = useState<Decision>();
@@ -37,8 +39,12 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
     return gradebook?.students.filter(row => !query || [row.studentName, row.studentRegNumber, row.studentAccessNumber]
       .some(value => value.toLowerCase().includes(query))) ?? [];
   }, [gradebook?.students, search]);
+  const contentRegionStyle = {
+    left: sidebarOpen && !isMobile ? "var(--sidebar-width)" : 0,
+    width: sidebarOpen && !isMobile ? "calc(100% - var(--sidebar-width))" : "100%",
+  };
 
-  if (!gradebook) return <div className="fixed inset-0 z-[100] overflow-y-auto bg-background p-5" role="dialog" aria-modal="true" aria-label="Class marks">
+  if (!gradebook) return <div className="fixed inset-y-0 z-20 overflow-y-auto bg-background p-5" style={contentRegionStyle} role="dialog" aria-modal="true" aria-label="Class marks">
     <div className="mx-auto w-full max-w-[1600px] space-y-5">
       <Button variant="outline" onClick={onClose}><ArrowLeft className="mr-2 size-4" />Back to marks review</Button>
       <Skeleton className="h-28 rounded-sm" /><Skeleton className="h-14 rounded-sm" /><Skeleton className="h-[60vh] rounded-sm" />
@@ -55,7 +61,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
   const changePage = (next: (string | null)[]) => { setSelected(new Set()); setCursors(next); };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-background text-foreground" role="dialog" aria-modal="true" aria-label="Class marks">
+    <div className="fixed inset-y-0 z-20 flex flex-col overflow-hidden bg-background text-foreground" style={contentRegionStyle} role="dialog" aria-modal="true" aria-label="Class marks">
       <header className="shrink-0 border-b bg-background shadow-sm">
         <div className="mx-auto flex w-full max-w-[1800px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">

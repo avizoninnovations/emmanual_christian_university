@@ -26,7 +26,7 @@ export function AcademicActivityView() {
   return (
     <div className="space-y-5 p-4 lg:p-6">
       <HodScopePicker scope={scope} />
-      <div className="overflow-x-auto rounded-sm border bg-card">
+      <div className="w-full overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

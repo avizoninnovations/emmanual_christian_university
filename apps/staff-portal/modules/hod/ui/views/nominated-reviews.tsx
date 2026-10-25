@@ -6,7 +6,6 @@ import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 
@@ -14,24 +13,20 @@ export function NominatedReviews({ onOpen }: { onOpen: (courseId: Id<"courses">,
   const queue = usePaginatedQuery(api.hod.reviewAssignments, {}, { initialNumItems: 20 });
 
   return (
-    <Card className="gap-0 rounded-sm py-0">
-      <CardHeader className="border-b px-4 py-3">
-        <div className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-sm bg-primary/10 text-primary"><ShieldCheck className="size-4" /></span>
-          <div>
-            <CardTitle className="text-sm">Independent review assignments</CardTitle>
-            <p className="mt-1 text-xs text-muted-foreground">Classes assigned to you to review marks independently, so lecturers do not approve their own marks.</p>
-          </div>
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <span className="flex size-9 items-center justify-center rounded-sm bg-primary/10 text-primary"><ShieldCheck className="size-4" /></span>
+        <div>
+          <h2 className="text-sm font-semibold">Independent review assignments</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Classes assigned to you to review marks independently, so lecturers do not approve their own marks.</p>
         </div>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
+      </div>
           <Table className="min-w-[620px]">
             <TableHeader>
-              <TableRow className="bg-muted/35 hover:bg-muted/35">
-                <TableHead className="pl-5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Course unit</TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Semester</TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</TableHead>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="pl-5">Course unit</TableHead>
+                <TableHead>Semester</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead className="pr-5 text-right" />
               </TableRow>
             </TableHeader>
@@ -63,9 +58,7 @@ export function NominatedReviews({ onOpen }: { onOpen: (courseId: Id<"courses">,
               )}
             </TableBody>
           </Table>
-        </div>
-        {queue.status === "CanLoadMore" && <div className="flex justify-center border-t p-3"><Button variant="outline" size="sm" className="rounded-sm" onClick={() => queue.loadMore(20)}>Load more assignments</Button></div>}
-      </CardContent>
-    </Card>
+      {queue.status === "CanLoadMore" && <div className="flex justify-center pt-3"><Button variant="outline" size="sm" className="rounded-sm" onClick={() => queue.loadMore(20)}>Load more assignments</Button></div>}
+    </div>
   );
 }

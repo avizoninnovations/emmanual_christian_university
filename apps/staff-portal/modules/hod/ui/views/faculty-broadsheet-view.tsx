@@ -23,9 +23,6 @@ import { Button } from "@workspace/ui/components/button";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
 } from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import {
@@ -310,24 +307,21 @@ export function FacultyBroadsheetView() {
       {!broadsheet ? (
         <StaffDataSkeleton label="departmental broadsheet" />
       ) : (
-        <Card className="shadow-sm border overflow-hidden">
-          <CardHeader className="pb-3 print:hidden">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-base font-semibold">
-                  {broadsheet.program.name} ({broadsheet.program.code}) &bull; Year {selectedYearOfStudy}
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  {broadsheet.period.name} ({broadsheet.period.year}) &bull; Department of {broadsheet.program.departmentName}
-                </CardDescription>
-              </div>
-              <Badge variant="outline" className="text-xs">
-                {broadsheet.courses.length} Curriculum Units Evaluated
-              </Badge>
+        <section className="space-y-3">
+          <div className="flex items-center justify-between print:hidden">
+            <div>
+              <h2 className="text-base font-semibold">
+                {broadsheet.program.name} ({broadsheet.program.code}) &bull; Year {selectedYearOfStudy}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {broadsheet.period.name} ({broadsheet.period.year}) &bull; Department of {broadsheet.program.departmentName}
+              </p>
             </div>
-          </CardHeader>
+            <Badge variant="outline" className="text-xs">
+              {broadsheet.courses.length} Curriculum Units Evaluated
+            </Badge>
+          </div>
 
-          <CardContent className="p-0 overflow-x-auto">
             <Table className="text-xs border-collapse">
               <TableHeader className="bg-muted/50 text-[11px]">
                 {/* Top Header Row */}
@@ -483,8 +477,7 @@ export function FacultyBroadsheetView() {
                 )}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+        </section>
       )}
 
       {/* ── Official Senate Sign-Off Block ── */}

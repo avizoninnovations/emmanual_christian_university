@@ -89,7 +89,7 @@ function SummaryCard({ label, value, detail, icon: Icon }: { label: string; valu
 function LecturerTable({ lecturers, onDetails, emptySearch, onClearSearch }: { lecturers: Lecturer[]; onDetails: (lecturer: Lecturer) => void; emptySearch: boolean; onClearSearch: () => void }) {
   return <div className="w-full overflow-x-auto">
     <Table>
-      <TableHeader className="bg-muted/40"><TableRow className="hover:bg-transparent">
+      <TableHeader><TableRow className="hover:bg-transparent">
         <TableHead className="w-12">#</TableHead><TableHead>Lecturer</TableHead><TableHead>Staff ID</TableHead>
         <TableHead>Academic role</TableHead><TableHead>Course units</TableHead><TableHead>Account</TableHead><TableHead className="text-right">Actions</TableHead>
       </TableRow></TableHeader>

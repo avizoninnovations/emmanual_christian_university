@@ -49,9 +49,8 @@ export function PermissionListView({ manager = true }: { manager?: boolean }) {
           {statuses.map(item => <TabsTrigger key={item} value={item} className="rounded-none border-b-2 border-transparent px-1 py-2 capitalize shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none">{item === "requested" ? "Pending requests" : item}</TabsTrigger>)}
         </TabsList>
       </Tabs>
-      <div className="overflow-hidden rounded-sm border bg-card">
-        <div className="overflow-x-auto"><Table className="min-w-[900px]">
-          <TableHeader className="bg-muted/35"><TableRow>
+      <Table className="min-w-[900px]">
+          <TableHeader><TableRow className="hover:bg-transparent">
             <TableHead>Student / course</TableHead><TableHead>Lecturer</TableHead><TableHead>Components</TableHead><TableHead>Expires (EAT)</TableHead><TableHead>Reason</TableHead><TableHead className="w-24 text-right">Actions</TableHead>
           </TableRow></TableHeader>
           <TableBody>
@@ -70,8 +69,7 @@ export function PermissionListView({ manager = true }: { manager?: boolean }) {
             </TableRow>)}
             {rows.status !== "LoadingFirstPage" && !rows.results.length && <TableRow><TableCell colSpan={6} className="h-28 text-center text-sm text-muted-foreground">No {status} permissions.</TableCell></TableRow>}
           </TableBody>
-        </Table></div>
-      </div>
+        </Table>
       {rows.status === "CanLoadMore" && <div className="flex justify-center"><Button variant="outline" onClick={() => rows.loadMore(25)}>Load more permissions</Button></div>}
       {decision && <PermissionDecisionDialog decision={decision} close={() => setDecision(undefined)} />}
     </div>

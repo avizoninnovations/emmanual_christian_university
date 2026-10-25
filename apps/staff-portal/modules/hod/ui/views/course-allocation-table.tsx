@@ -13,16 +13,15 @@ export function CourseAllocationTable({ courses, canAssign, periodStatus, onAssi
   onAssign: (course: Course) => void;
 }) {
   return (
-    <div className="w-full overflow-x-auto rounded-sm border bg-card shadow-sm">
-      <Table className="min-w-[860px]">
+    <Table className="min-w-[860px]">
         <TableHeader>
-          <TableRow className="bg-muted/45 hover:bg-muted/45">
-            <TableHead className="h-11 w-14 pl-5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">No.</TableHead>
-            <TableHead className="h-11 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Course unit</TableHead>
-            <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Program</TableHead>
-            <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Assigned lecturer</TableHead>
-            <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</TableHead>
-            <TableHead className="pr-5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Action</TableHead>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="w-14 pl-5">No.</TableHead>
+            <TableHead>Course unit</TableHead>
+            <TableHead>Program</TableHead>
+            <TableHead>Assigned lecturer</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="pr-5 text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -85,8 +84,7 @@ export function CourseAllocationTable({ courses, canAssign, periodStatus, onAssi
             );
           })}
         </TableBody>
-      </Table>
-    </div>
+    </Table>
   );
 }
 

@@ -24,9 +24,6 @@ import { Input } from "@workspace/ui/components/input";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
 } from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import {
@@ -147,22 +144,14 @@ export function SupplementaryExamsView() {
       </Card>
 
       {/* ── Candidate Table ── */}
-      <Card className="shadow-sm border">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-base font-semibold">
-                Eligible Supplementary Candidates
-              </CardTitle>
-              <CardDescription className="text-xs">{filtered.length} candidate(s) on this page.</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="p-0">
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-base font-semibold">Eligible Supplementary Candidates</h2>
+          <p className="text-xs text-muted-foreground">{filtered.length} candidate(s) on this page.</p>
+        </div>
           <Table>
-            <TableHeader className="bg-muted/40">
-              <TableRow>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
                 <TableHead className="pl-6">Reg Number</TableHead>
                 <TableHead>Student Name</TableHead>
                 <TableHead>Course Unit</TableHead>
@@ -240,9 +229,8 @@ export function SupplementaryExamsView() {
               )}
             </TableBody>
           </Table>
-          {candidates.status === "CanLoadMore" && <div className="p-3"><Button variant="outline" onClick={() => candidates.loadMore(50)}>Load more candidates</Button></div>}
-        </CardContent>
-      </Card>
+          {candidates.status === "CanLoadMore" && <div className="pt-3"><Button variant="outline" onClick={() => candidates.loadMore(50)}>Load more candidates</Button></div>}
+      </section>
 
       {/* ── Record Supplementary Dialog ── */}
       <Dialog open={!!selectedCandidate} onOpenChange={(o) => !o && setSelectedCandidate(null)}>

@@ -136,12 +136,11 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-sm border bg-card shadow-sm">
+            <div>
               <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/30 px-4 py-3">
                 <p className="text-sm font-semibold">Student marks</p>
                 <p className="text-xs text-muted-foreground">Showing {visibleStudents.length} of {gradebook.students.length} students on this page · 50 per page</p>
               </div>
-              <div className="overflow-x-auto">
                 <Table className="min-w-[1000px]">
                   <TableHeader className="sticky top-0 z-10 bg-muted/70">
                     <TableRow>
@@ -175,7 +174,6 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                     {!visibleStudents.length && <TableRow><TableCell colSpan={8} className="h-32 text-center text-sm text-muted-foreground">{search ? "No students match this search." : "No registered students in this course and semester."}</TableCell></TableRow>}
                   </TableBody>
                 </Table>
-              </div>
               <div className="flex justify-end gap-2 border-t bg-muted/15 p-3">
                 <Button variant="outline" size="sm" disabled={cursors.length === 1} onClick={() => changePage(cursors.slice(0, -1))}>Previous</Button>
                 <Button variant="outline" size="sm" disabled={gradebook.isDone} onClick={() => changePage([...cursors, gradebook.continueCursor])}>Next 50 students</Button>

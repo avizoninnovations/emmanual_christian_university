@@ -101,7 +101,7 @@ export function CourseAllocationView() {
             </div>
 
             <section className="mt-4 space-y-4">
-              <div className="flex flex-wrap items-end justify-between gap-4 rounded-sm border bg-card p-3">
+              <div className="flex flex-wrap items-end justify-between gap-4">
                 <div className="flex flex-wrap gap-x-5">
                   <FilterButton label="All units" count={counts.all} active={filter === "all"} onClick={() => setFilter("all")} />
                   <FilterButton label="Assigned" count={counts.assigned} active={filter === "assigned"} onClick={() => setFilter("assigned")} />

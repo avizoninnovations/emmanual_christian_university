@@ -30,7 +30,7 @@ export function CourseUnitAggregationsView() {
   const [withdrawing, setWithdrawing] = useState<string | null>(null);
   const normalized = search.trim().toLowerCase();
   const courses = useMemo(() => (available?.courses ?? []).filter(course => !normalized || [course.code, course.title, course.programName, course.departmentName, course.lecturerName].some(value => value.toLowerCase().includes(normalized))).sort((left, right) => left.title.localeCompare(right.title)), [available?.courses, normalized]);
-  const requestRows = requests.results;
+  const requestRows = requests.results.filter(request => request.status !== "withdrawn");
 
   async function send(reason: string) {
     if (!selected) return;
@@ -79,7 +79,7 @@ export function CourseUnitAggregationsView() {
       <TabsContent value="requests" className="space-y-3 pt-4">
         {requests.status === "LoadingFirstPage" ? <div className="space-y-3">{[1, 2].map(item => <Skeleton key={item} className="h-28" />)}</div>
           : requestRows.length ? <div className="space-y-3">{requestRows.map(request => <RequestCard key={request._id} request={request} withdrawing={withdrawing === String(request._id)} onWithdraw={() => withdraw(request)} />)}</div>
-          : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center text-sm text-muted-foreground">You have not submitted any aggregation requests.</CardContent></Card>}
+          : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center text-sm text-muted-foreground">You have no requests to display.</CardContent></Card>}
         {requests.status === "CanLoadMore" && <div className="flex justify-center"><Button variant="outline" onClick={() => requests.loadMore(20)}>Load older requests</Button></div>}
       </TabsContent>
     </Tabs>

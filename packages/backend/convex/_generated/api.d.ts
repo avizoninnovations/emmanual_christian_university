@@ -47,6 +47,7 @@ import type * as markPermissions from "../markPermissions.js";
 import type * as markReview from "../markReview.js";
 import type * as marks from "../marks.js";
 import type * as migration from "../migration.js";
+import type * as retakeRegistrations from "../retakeRegistrations.js";
 import type * as roles from "../roles.js";
 import type * as seed from "../seed.js";
 import type * as staffPersonalRecords from "../staffPersonalRecords.js";
@@ -106,6 +107,7 @@ declare const fullApi: ApiFromModules<{
   markReview: typeof markReview;
   marks: typeof marks;
   migration: typeof migration;
+  retakeRegistrations: typeof retakeRegistrations;
   roles: typeof roles;
   seed: typeof seed;
   staffPersonalRecords: typeof staffPersonalRecords;

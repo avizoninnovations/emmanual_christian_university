@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/componen
 import { staffWorkspaces } from "./staff-workspace-content";
 import { AggregatedUnitsView } from "@/modules/aggregated-units/ui/views/aggregated-units-view";
 import { AssessmentApplicationsView } from "@/modules/assessment-applications/ui/views/assessment-applications-view";
+import { RetakeApprovalsView } from "@/modules/retake-approvals/ui/views/retake-approvals-view";
 
 export function StaffWorkspaceView({ workspace }: { workspace: string }) {
   if (workspace === "aggregated-units") return <AggregatedUnitsView />;
   if (workspace === "aegrotat-units") return <AssessmentApplicationsView />;
+  if (workspace === "retake-approvals") return <RetakeApprovalsView />;
   const page = staffWorkspaces[workspace];
   if (!page) notFound();
 

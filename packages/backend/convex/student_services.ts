@@ -1,10 +1,9 @@
-import { publishedAssessment } from "./lib/academicResults.js";
 import { ConvexError } from "convex/values";
 import { v } from "convex/values";
 import { components } from "./_generated/api.js";
 import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
-import { assertAuthenticated, assertRole } from "./lib/utils.js";
+import { assertAuthenticated } from "./lib/utils.js";
 import { Id } from "./_generated/dataModel.js";
 import { logAction } from "./audit_logger.js";
 
@@ -307,77 +306,5 @@ export const getElectoralCommittee = query({
   handler: async (ctx) => {
     await assertAuthenticated(ctx);
     return await ctx.db.query("electoralCommitteeMembers").withIndex("by_status", (q) => q.eq("status", "active")).collect();
-  },
-});
-
-export const getMyRetakeOptions = query({
-  args: {},
-  handler: async (ctx) => {
-    const userId = await assertAuthenticated(ctx);
-    const student = await getStudent(ctx, userId);
-    if (!student) return { period: null, courses: [], registrations: [], limits: { onSemester: 2, offSemester: 1 }, usage: { onSemester: 0, offSemester: 0 } };
-    const period = await getCurrentPeriod(ctx, student);
-    const assessments = await ctx.db.query("studentAssessments").withIndex("by_student", (q: any) => q.eq("studentId", student._id)).take(300);
-    const failed = assessments.flatMap(assessment => { const result = publishedAssessment(assessment); return result && (result.grade === "F" || result.grade === "D") ? [result] : []; });
-    const failedCourseIds = [...new Set(failed.map((assessment: any) => assessment.courseId))];
-    const [program, courses] = await Promise.all([
-      ctx.db.get(student.programId as Id<"programs">),
-      Promise.all(failedCourseIds.map(async (courseId: Id<"courses">) => {
-      const course = await ctx.db.get(courseId as Id<"courses">);
-      const mode = period && course?.semester === period.term ? "on_semester" : "off_semester";
-      return course ? { id: course._id, code: course.code, title: course.title, grade: failed.find((a: any) => a.courseId === courseId)?.grade ?? "F", creditUnits: course.creditUnits, mode } : null;
-      })),
-    ]);
-    const registrations = period ? await ctx.db.query("studentCourseRegistrations").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).take(100) : [];
-    const retakes = registrations.filter((registration: any) => registration.registrationKind === "retake");
-    return {
-      period: period ? { id: period._id, name: period.name } : null,
-      courses: courses.filter((course) => course !== null),
-      registrations: retakes.map((registration: any) => ({ courseId: registration.courseId, status: registration.status, mode: registration.retakeMode ?? "on_semester" })),
-      limits: { onSemester: program?.onSemesterRetakeLimit ?? 2, offSemester: program?.offSemesterRetakeLimit ?? 1 },
-      usage: { onSemester: retakes.filter((registration: any) => registration.retakeMode === "on_semester").length, offSemester: retakes.filter((registration: any) => registration.retakeMode === "off_semester").length },
-    };
-  },
-});
-
-export const registerRetakeCourse = mutation({
-  args: { courseId: v.id("courses") },
-  handler: async (ctx, args) => {
-    const userId = await assertAuthenticated(ctx);
-    const student = await getStudent(ctx, userId);
-    if (!student) throw new ConvexError("Student profile not found.");
-    const period = await getCurrentPeriod(ctx, student);
-    if (!period) throw new ConvexError("There is no active academic period.");
-    const [course, program, assessments, registrations] = await Promise.all([
-      ctx.db.get(args.courseId),
-      ctx.db.get(student.programId as Id<"programs">),
-      ctx.db.query("studentAssessments").withIndex("by_student_course_period", (q: any) => q.eq("studentId", student._id).eq("courseId", args.courseId)).take(30),
-      ctx.db.query("studentCourseRegistrations").withIndex("by_student_period", (q: any) => q.eq("studentId", student._id).eq("periodId", period._id)).take(100),
-    ]);
-    if (!course) throw new ConvexError("Course not found.");
-    if (!assessments.some(assessment => { const result = publishedAssessment(assessment); return result && (result.grade === "F" || result.grade === "D"); })) throw new ConvexError("This course is not eligible for retake registration.");
-    const existing = registrations.find((registration: any) => registration.courseId === args.courseId);
-    if (existing) throw new ConvexError("This course is already registered for the current semester.");
-    const retakeMode = course.semester === period.term ? "on_semester" : "off_semester";
-    const limit = retakeMode === "on_semester" ? program?.onSemesterRetakeLimit ?? 2 : program?.offSemesterRetakeLimit ?? 1;
-    const used = registrations.filter((registration: any) => registration.registrationKind === "retake" && registration.retakeMode === retakeMode && registration.status !== "dropped").length;
-    if (used >= limit) throw new ConvexError(`Your program allows up to ${limit} ${retakeMode === "on_semester" ? "on-semester" : "off-semester"} retake${limit === 1 ? "" : "s"}.`);
-    const status = retakeMode === "on_semester" ? "registered" : "pending_approval";
-    const registrationId = await ctx.db.insert("studentCourseRegistrations", { studentId: student._id, courseId: args.courseId, periodId: period._id, status, registrationKind: "retake", retakeMode });
-    await logAction(ctx, { action: "REGISTER_RETAKE", resource: "studentCourseRegistrations", details: `Student ${student.registrationNumber} requested ${retakeMode} retake ${course.code}.` });
-    return { registrationId, status, retakeMode };
-  },
-});
-
-export const reviewOffSemesterRetake = mutation({
-  args: { registrationId: v.id("studentCourseRegistrations"), approved: v.boolean() },
-  handler: async (ctx, args) => {
-    const { userId } = await assertRole(ctx, ["admin", "hod", "registrar"]);
-    const registration = await ctx.db.get(args.registrationId);
-    if (!registration || registration.registrationKind !== "retake" || registration.retakeMode !== "off_semester") throw new ConvexError("This is not an off-semester retake request.");
-    if (registration.status !== "pending_approval") throw new ConvexError("This retake request has already been reviewed.");
-    await ctx.db.patch(registration._id, { status: args.approved ? "registered" : "dropped", retakeApprovedBy: userId, retakeApprovedAt: Date.now() });
-    await logAction(ctx, { action: args.approved ? "APPROVE_OFF_SEMESTER_RETAKE" : "REJECT_OFF_SEMESTER_RETAKE", resource: "studentCourseRegistrations", details: `Off-semester retake ${registration._id} was ${args.approved ? "approved" : "rejected"}.` });
-    return { status: args.approved ? "registered" : "dropped" };
   },
 });

@@ -34,6 +34,7 @@ const railLinks = [
   { title: "Faculty Central", url: "/workspace/faculty-central", icon: Building2 },
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
   { title: "Assessment Applications", url: "/workspace/aegrotat-units", icon: ClipboardCheck },
+  { title: "Retake Approvals", url: "/workspace/retake-approvals", icon: ClipboardCheck },
   { title: "Missed Paper Requests", url: "/workspace/aggregated-units", icon: Layers },
   { title: "Timetable", url: "/timetable", icon: CalendarDays },
   { title: "Teaching Cover", url: "/cover-requests", icon: UserCheck },
@@ -49,8 +50,9 @@ const railLinks = [
   { title: "Supplementary Exams", url: "/hod/supplementaries", icon: FileText },
 ];
 
-export function StaffSidebarIconRail({ pathname, hasLeadership }: { pathname: string; hasLeadership: boolean }) {
-  const links = railLinks.filter((link) => hasLeadership || !link.url.startsWith("/hod/"));
+export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes }: { pathname: string; hasLeadership: boolean; canReviewRetakes: boolean }) {
+  const links = railLinks.filter((link) => (hasLeadership || !link.url.startsWith("/hod/"))
+    && (canReviewRetakes || link.url !== "/workspace/retake-approvals"));
 
   return (
     <div className="hidden group-data-[collapsible=icon]:block">

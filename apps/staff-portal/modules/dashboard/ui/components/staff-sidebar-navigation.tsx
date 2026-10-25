@@ -42,6 +42,7 @@ export const staffSidebarSections: StaffSidebarSection[] = [
     link("Teaching Cover", "/cover-requests", UsersRound),
     link("Mark Edit Requests", "/workspace/mark-permissions", ClipboardCheck),
   ] },
+  { key: "retake-approvals", category: "ACADEMICS", title: "Retake Approvals", icon: ClipboardCheck, url: "/workspace/retake-approvals", roles: ["hod", "registrar", "admin"], items: [] },
   { key: "timetable", category: "ACADEMICS", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
   { key: "faculty", category: "MY WORKSPACE", title: "Faculty Central", icon: Building2, url: "/workspace/faculty-central", items: [] },
   { key: "memos", category: "MY WORKSPACE", title: "My Memos", icon: Mail, url: "/workspace/memos", items: [] },

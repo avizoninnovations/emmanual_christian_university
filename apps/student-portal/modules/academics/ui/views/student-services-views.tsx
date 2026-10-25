@@ -108,29 +108,7 @@ export function DeadSemesterView() {
   </div>;
 }
 
-export function RetakeView() {
-  const data = useQuery(api.student_services.getMyRetakeOptions, {});
-  const register = useMutation(api.student_services.registerRetakeCourse);
-  const [busy, setBusy] = useState<string | null>(null);
-  async function enroll(courseId: Id<"courses">) {
-    setBusy(courseId);
-    try {
-      const result = await register({ courseId });
-      toast.success(result.status === "pending_approval" ? "Off-semester retake submitted for approval." : "Retake course registered.");
-    }
-    catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not register retake.")); }
-    finally { setBusy(null); }
-  }
-  return <div className={shell}><PageHeading eyebrow="Registration" title="Retake Registration" note="Retake failed course units within your program limit. Off-semester retakes require HOD or Registrar approval." />
-    {!data ? <Loading /> : <Card><CardHeader><CardTitle className="text-base">Eligible Courses</CardTitle><CardDescription>{data.period?.name ?? "No active semester"}</CardDescription></CardHeader><CardContent className="space-y-3">
-      <div className="grid gap-3 rounded-lg border bg-muted/30 p-4 text-sm sm:grid-cols-2"><p><span className="font-medium">On-semester:</span> {data.usage.onSemester} of {data.limits.onSemester} used</p><p><span className="font-medium">Off-semester:</span> {data.usage.offSemester} of {data.limits.offSemester} used</p></div>
-      {data.courses.length === 0 ? <Empty message="No approved results currently require a retake." /> : data.courses.map((course) => {
-        const registration = data.registrations.find((item) => item.courseId === course.id);
-        const isOffSemester = course.mode === "off_semester";
-        return <div key={course.id} className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="rounded-md bg-primary/10 p-2 text-primary"><BookOpen className="size-4" /></span><div><p className="font-medium">{course.title}</p><p className="text-xs text-muted-foreground">{course.code} · {course.creditUnits} CU · Previous grade {course.grade}</p><p className="mt-1 text-xs text-muted-foreground">{isOffSemester ? "Off-semester retake — approval required" : "On-semester retake — registers immediately"}</p></div></div>{registration ? <StatusBadge status={registration.status} /> : <Button disabled={busy === course.id || !data.period} onClick={() => enroll(course.id)}>{busy === course.id && <Loader2 className="mr-2 size-4 animate-spin" />}{isOffSemester ? "Request Approval" : "Register Retake"}</Button>}</div>;
-      })}</CardContent></Card>}
-  </div>;
-}
+export { RetakeRegistrationView as RetakeView } from "./retake-registration-view";
 
 const evaluationQuestions = ["The lecturer communicated course content clearly.", "The lecturer was prepared and organized for classes.", "The lecturer encouraged participation and questions.", "Assessment and feedback supported my learning.", "The lecturer treated students fairly and respectfully."];
 

@@ -163,11 +163,18 @@ export default defineSchema({
     retakeMode: v.optional(v.union(v.literal("on_semester"), v.literal("off_semester"))),
     retakeApprovedBy: v.optional(v.string()),
     retakeApprovedAt: v.optional(v.number()),
+    retakeDecision: v.optional(v.union(v.literal("approved"), v.literal("rejected"))),
+    retakeDecisionNote: v.optional(v.string()),
+    retakeReviewedBy: v.optional(v.string()),
+    retakeReviewedAt: v.optional(v.number()),
+    retakeSourcePeriodId: v.optional(v.id("academicPeriods")),
+    retakeSourceGrade: v.optional(v.string()),
     ...timestamps,
   })
     .index("by_student", ["studentId"])
     .index("by_course_period", ["courseId", "periodId"])
-    .index("by_student_period", ["studentId", "periodId"]),
+    .index("by_student_period", ["studentId", "periodId"])
+    .index("by_status_and_registrationKind", ["status", "registrationKind"]),
 
   /**
    * 4. Academic Calendar (Periods/Semesters)

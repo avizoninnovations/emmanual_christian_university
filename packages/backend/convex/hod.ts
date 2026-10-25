@@ -228,8 +228,7 @@ export const reviewAssignments = query({
 
 export const configureGradebook = mutation({
   args: { courseId: v.id("courses"), periodId: v.id("academicPeriods"),
-    entriesCloseAt: v.optional(v.union(v.number(), v.null())), freezeAtDeadline: v.optional(v.boolean()),
-    reviewerId: v.optional(v.union(v.string(), v.null())) },
+    entriesCloseAt: v.optional(v.union(v.number(), v.null())), reviewerId: v.optional(v.union(v.string(), v.null())) },
   handler: async (ctx, args) => {
     const context = await classContext(ctx, args.courseId, args.periodId);
     if (!context.isManager) throw new ConvexError("Only the department HOD can set the entry deadline.");
@@ -243,7 +242,6 @@ export const configureGradebook = mutation({
     if (typeof args.entriesCloseAt === "number" && !Number.isFinite(args.entriesCloseAt)) throw new ConvexError("Enter a valid deadline.");
     const values = {
       entriesCloseAt: args.entriesCloseAt === undefined ? context.book?.entriesCloseAt : args.entriesCloseAt ?? undefined,
-      freezeAtDeadline: args.freezeAtDeadline ?? context.book?.freezeAtDeadline ?? true,
       reviewerId: args.reviewerId === undefined ? context.book?.reviewerId : args.reviewerId ?? undefined,
       updatedAt: Date.now(),
     };
@@ -251,6 +249,6 @@ export const configureGradebook = mutation({
     else await ctx.db.insert("academicGradebooks", { ...values, courseId: args.courseId, periodId: args.periodId,
       departmentId: context.course.departmentId, createdAt: Date.now() });
     await academicEvent(ctx, { actorId: context.userId, departmentId: context.course.departmentId,
-      courseId: args.courseId, periodId: args.periodId, action: "CONFIGURE_GRADEBOOK", details: `Updated marks deadline, freeze setting, or reviewer for ${context.course.code}.` });
+      courseId: args.courseId, periodId: args.periodId, action: "CONFIGURE_GRADEBOOK", details: `Updated marks deadline or reviewer for ${context.course.code}.` });
   },
 });

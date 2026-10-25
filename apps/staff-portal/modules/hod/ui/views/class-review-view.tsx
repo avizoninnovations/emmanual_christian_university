@@ -60,7 +60,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
   const submittedCount = gradebook.students.filter(row => row.status === "submitted").length;
   const approvedCount = gradebook.students.filter(row => row.status === "approved").length;
   const missingCount = gradebook.students.filter(row => !row.courseworkEntered || !row.examEntered).length;
-  const entryDeadlinePassed = gradebook.freezeAtDeadline && !!gradebook.entriesCloseAt && Date.now() >= gradebook.entriesCloseAt;
+  const entryDeadlinePassed = !!gradebook.entriesCloseAt && Date.now() >= gradebook.entriesCloseAt;
   const canGrantAccess = (row: (typeof gradebook.students)[number]) => gradebook.isManager
     && (row.status === "approved" || ((row.status === "draft" || row.status === "returned")
       && (entryDeadlinePassed || gradebook.period.status !== "active" || row.requiresPermission)));
@@ -117,7 +117,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
             <div className="flex items-center gap-3"><span className="flex size-9 items-center justify-center rounded-sm bg-primary/10 text-primary"><CalendarDays className="size-4" /></span>
               <div><p className="text-xs font-medium text-muted-foreground">Marks entry deadline</p><p className="text-sm font-semibold">{displayDeadline(gradebook.entriesCloseAt)} EAT</p></div>
             </div>
-            <Badge variant={entryDeadlinePassed ? "outline" : "secondary"}>{entryDeadlinePassed ? "Entry window closed" : gradebook.freezeAtDeadline ? "Freezes at deadline" : "Deadline set"}</Badge>
+            <Badge variant={entryDeadlinePassed ? "outline" : "secondary"}>{entryDeadlinePassed ? "Entry window closed" : "Freezes at deadline"}</Badge>
           </section>}
 
           <section className="space-y-3">
@@ -187,7 +187,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
       {decision && decision.rows.length > 0 && <ReviewDecisionDialog courseId={courseId} periodId={periodId} rows={decision.rows} decision={decision.action} close={() => { setDecision(undefined); setSelected(new Set()); }} />}
       {grantStudent && <MarkPermissionDialog courseId={courseId} periodId={periodId} studentId={grantStudent.id} studentName={grantStudent.name} mode="grant" close={() => setGrantStudent(undefined)} />}
       {settings && <GradebookSettingsDialog courseId={courseId} periodId={periodId} entriesCloseAt={gradebook.entriesCloseAt}
-        freezeAtDeadline={gradebook.freezeAtDeadline} close={() => setSettings(false)} />}
+        close={() => setSettings(false)} />}
     </div>
   );
 }

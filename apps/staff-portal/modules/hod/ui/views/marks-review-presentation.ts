@@ -12,9 +12,7 @@ export function getMarksReviewPresentation(course: ReviewCourse) {
   return {
     missingCount,
     actionKind,
-    actionLabel: actionKind === "review" ? "Review submitted marks"
-      : actionKind === "approved" ? "View approved marks"
-        : actionKind === "missing" ? "View missing marks" : "Open course unit",
+    actionLabel: "View class marks",
     highlightAction: actionKind !== "open",
   } as const;
 }

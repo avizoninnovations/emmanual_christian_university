@@ -18,7 +18,7 @@ import { AggregationRequestDetails } from "../components/aggregation-request-det
 
 const tabs: { value: AggregationRequest["status"]; label: string }[] = [
   { value: "pending_hod", label: "Needs HOD decision" }, { value: "pending_lecturer", label: "With lecturer" },
-  { value: "approved", label: "Approved" }, { value: "rejected", label: "Declined" }, { value: "withdrawn", label: "Withdrawn" },
+  { value: "approved", label: "Approved" }, { value: "rejected", label: "Declined" }, { value: "withdrawn", label: "Withdrawn by student" },
 ];
 
 export function HodAggregatedUnitsView() {

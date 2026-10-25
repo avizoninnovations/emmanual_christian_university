@@ -43,6 +43,9 @@ export function AggregationRequestDetails({ request, mode, busy, onClose, onDeci
           <RequestStatus status={request.status} />
         </SheetHeader>
         <div className="space-y-6 px-6 py-5">
+          {request.status === "withdrawn" && <p role="status" className="rounded-sm bg-muted/60 px-4 py-3 text-sm text-muted-foreground">
+            The student withdrew this request{request.withdrawnAt ? ` on ${formatTime(request.withdrawnAt)}` : ""}. No review or approval is required.
+          </p>}
           <section><SectionTitle icon={UserRound}>Student</SectionTitle><dl className="mt-3 grid gap-x-6 gap-y-4 sm:grid-cols-2">
             <Detail label="Name" value={request.studentName} /><Detail label="Registration number" value={request.registrationNumber} />
             <Detail label="Access number" value={request.accessNumber} /><Detail label="Program" value={request.programName} />

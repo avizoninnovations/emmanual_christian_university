@@ -21,6 +21,7 @@ export const academicWorkflowTables = {
     lecturerDecision: v.optional(v.union(v.literal("approved"), v.literal("rejected"))),
     lecturerDecisionNote: v.optional(v.string()), lecturerDecidedBy: v.optional(v.string()), lecturerDecidedAt: v.optional(v.number()),
     hodDecisionNote: v.optional(v.string()), hodDecidedBy: v.optional(v.string()), hodDecidedAt: v.optional(v.number()),
+    withdrawnAt: v.optional(v.number()),
     registrationId: v.optional(v.id("studentCourseRegistrations")), ...timestamps,
   }).index("by_student_and_requestedAt", ["studentId", "requestedAt"])
     .index("by_student_period", ["studentId", "periodId"])

@@ -38,7 +38,7 @@ export function RequestStatus({ status }: { status: AggregationRequest["status"]
     : status === "pending_hod" ? "bg-primary/10 text-primary"
     : status === "withdrawn" ? "bg-muted text-muted-foreground" : "bg-amber-500/10 text-amber-700 dark:text-amber-300";
   const label: Record<AggregationRequest["status"], string> = {
-    pending_lecturer: "With lecturer", pending_hod: "With HOD", approved: "Approved", rejected: "Declined", withdrawn: "Withdrawn",
+    pending_lecturer: "With lecturer", pending_hod: "With HOD", approved: "Approved", rejected: "Declined", withdrawn: "Withdrawn by student",
   };
   return <Badge variant="secondary" className={`rounded-sm font-medium ${color}`}>{label[status]}</Badge>;
 }

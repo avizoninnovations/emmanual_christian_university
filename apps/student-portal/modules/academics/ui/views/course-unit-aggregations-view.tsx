@@ -46,7 +46,7 @@ export function CourseUnitAggregationsView() {
 
   async function withdraw(request: StudentRequest) {
     setWithdrawing(String(request._id));
-    try { await withdrawRequest({ requestId: request._id }); toast.success("Request withdrawn."); }
+    try { await withdrawRequest({ requestId: request._id }); toast.success("Request withdrawn. The lecturer can see that you withdrew it."); }
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not withdraw this request.")); }
     finally { setWithdrawing(null); }
   }

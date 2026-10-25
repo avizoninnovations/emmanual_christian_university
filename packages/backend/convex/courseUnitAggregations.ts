@@ -100,7 +100,7 @@ export const submitRequest = mutation({
       reason, requestedAt: now, status: "pending_lecturer" as const, lecturerDecision: undefined,
       lecturerDecisionNote: undefined, lecturerDecidedBy: undefined, lecturerDecidedAt: undefined,
       hodDecisionNote: undefined, hodDecidedBy: undefined, hodDecidedAt: undefined,
-      registrationId: undefined, updatedAt: now,
+      withdrawnAt: undefined, registrationId: undefined, updatedAt: now,
     };
     if (existing) await ctx.db.patch(existing._id, requestFields);
     else await ctx.db.insert("studentCourseUnitAggregations", { ...requestFields, createdAt: now });
@@ -118,7 +118,8 @@ export const withdrawRequest = mutation({
     const request = await ctx.db.get(args.requestId);
     if (!request || request.studentId !== student._id) throw new ConvexError("This aggregation request was not found.");
     if (request.status !== "pending_lecturer" && request.status !== "pending_hod") throw new ConvexError("Only a request awaiting a decision can be withdrawn.");
-    await ctx.db.patch(request._id, { status: "withdrawn", updatedAt: Date.now() });
+    const withdrawnAt = Date.now();
+    await ctx.db.patch(request._id, { status: "withdrawn", withdrawnAt, updatedAt: withdrawnAt });
     await academicEvent(ctx, { actorId: userId, departmentId: request.departmentId, courseId: request.courseId, periodId: request.periodId,
       studentId: student._id, action: "AGGREGATED_UNIT_WITHDRAWN", details: `${student.registrationNumber} withdrew an aggregated course unit request.` });
     return { status: "withdrawn" as const };

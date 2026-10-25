@@ -47,7 +47,8 @@ export const getCourseGradebook = query({
       returnReason: students.find(row => row.returnReason)?.returnReason,
       isLecturer: access.isLecturer, isManager: access.isManager,
       canReview: access.isReviewer && access.allocation?.lecturerId !== access.userId,
-      entriesCloseAt: access.book?.entriesCloseAt, isDone: page.isDone, continueCursor: page.continueCursor,
+      entriesCloseAt: access.book?.entriesCloseAt, freezeAtDeadline: access.book?.freezeAtDeadline !== false,
+      isDone: page.isDone, continueCursor: page.continueCursor,
       reviewerId: access.book?.reviewerId,
     };
   },

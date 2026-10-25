@@ -25,7 +25,8 @@ export const saveGradebookDraft = mutation({
         permissionForStudent(ctx, item.studentId, args.courseId, args.periodId),
       ]);
       if ((existing?.revision ?? 0) !== item.revision) throw new ConvexError("Marks changed since you opened this page. Reload before saving.");
-      const ordinary = access.period.status === "active" && (!access.book?.entriesCloseAt || now < access.book.entriesCloseAt)
+      const deadlineAllowsEntry = access.book?.freezeAtDeadline === false || !access.book?.entriesCloseAt || now < access.book.entriesCloseAt;
+      const ordinary = access.period.status === "active" && deadlineAllowsEntry
         && (!existing || ["draft", "returned"].includes(existing.status)) && !existing?.editPermissionId;
       const granted = permissionActive(grant, access.userId, now);
       if (!ordinary && !granted) throw new ConvexError("These marks are locked or the editing permission has expired.");
@@ -78,7 +79,8 @@ export const submitGradebookToHOD = mutation({
       const mark = await ctx.db.query("studentAssessments").withIndex("by_student_course_period", q => q.eq("studentId", row.studentId).eq("courseId", args.courseId).eq("periodId", args.periodId)).unique();
       if (!mark || (mark.revision ?? 0) !== row.revision || !["draft", "returned"].includes(mark.status)) throw new ConvexError("A selected draft changed. Reload before submitting.");
       if (!entered(mark, "coursework") || !entered(mark, "exam")) throw new ConvexError("Complete both components before submitting a student. Zero is a valid mark.");
-      const ordinary = access.period.status === "active" && !mark.editPermissionId && (!access.book?.entriesCloseAt || now < access.book.entriesCloseAt);
+      const deadlineAllowsEntry = access.book?.freezeAtDeadline === false || !access.book?.entriesCloseAt || now < access.book.entriesCloseAt;
+      const ordinary = access.period.status === "active" && !mark.editPermissionId && deadlineAllowsEntry;
       const grant = await permissionForStudent(ctx, row.studentId, args.courseId, args.periodId);
       if (!ordinary && !permissionActive(grant, access.userId, now)) throw new ConvexError("The submission window or editing permission has expired.");
       await ctx.db.patch(mark._id, { departmentId: access.course.departmentId, status: "submitted", submittedBy: access.userId, submittedAt: now,

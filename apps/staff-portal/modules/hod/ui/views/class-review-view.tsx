@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "convex/react";
-import { ArrowLeft, BookOpen, CheckCheck, Clock3, MoreHorizontal, Search, Settings2, X } from "lucide-react";
+import { ArrowLeft, BookOpen, CalendarDays, CheckCheck, Clock3, MoreHorizontal, Search, X } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
@@ -60,6 +60,13 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
   const submittedCount = gradebook.students.filter(row => row.status === "submitted").length;
   const approvedCount = gradebook.students.filter(row => row.status === "approved").length;
   const missingCount = gradebook.students.filter(row => !row.courseworkEntered || !row.examEntered).length;
+  const entryDeadlinePassed = gradebook.freezeAtDeadline && !!gradebook.entriesCloseAt && Date.now() >= gradebook.entriesCloseAt;
+  const canGrantAccess = (row: (typeof gradebook.students)[number]) => gradebook.isManager
+    && (row.status === "approved" || ((row.status === "draft" || row.status === "returned")
+      && (entryDeadlinePassed || gradebook.period.status !== "active" || row.requiresPermission)));
+  const hasRowActions = (row: (typeof gradebook.students)[number]) =>
+    (gradebook.canReview && (row.status === "submitted" || (row.status === "approved" && !row.publicationWithdrawn)))
+    || canGrantAccess(row);
   const captureDecision = (action: Decision["action"]) => setDecision({ action, rows: selectedRows
     .filter(row => action === "withdraw" ? row.status === "approved" && !row.publicationWithdrawn : row.status === "submitted")
     .map(row => ({ studentId: row.studentId, revision: row.revision })) });
@@ -82,7 +89,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            {gradebook.isManager && <Button variant="outline" size="sm" onClick={() => setSettings(true)}><Settings2 className="mr-2 size-4" /><span className="hidden sm:inline">Class settings</span></Button>}
+            {gradebook.isManager && <Button variant="outline" size="sm" onClick={() => setSettings(true)}><CalendarDays className="mr-2 size-4" /><span className="hidden sm:inline">Deadline settings</span></Button>}
             <Button variant="ghost" size="icon" aria-label="Close class marks" onClick={onClose}><X className="size-5" /></Button>
           </div>
         </div>
@@ -95,9 +102,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="rounded-sm font-mono">{gradebook.course.code}</Badge>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">{gradebook.period.name} {gradebook.period.year} · Year {gradebook.course.yearOfStudy} · Semester {gradebook.course.semester}
-                {gradebook.entriesCloseAt ? ` · Entries close ${displayDeadline(gradebook.entriesCloseAt)} EAT` : ""}
-              </p>
+              <p className="mt-2 text-sm text-muted-foreground">{gradebook.period.name} {gradebook.period.year} · Year {gradebook.course.yearOfStudy} · Semester {gradebook.course.semester}</p>
               {!gradebook.canReview && <p className="mt-2 text-sm text-amber-700 dark:text-amber-400">An independent reviewer must approve marks for your own teaching course.</p>}
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -107,6 +112,13 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
               <SummaryTile label="Missing marks" value={missingCount} icon={<span className="text-sm font-bold">!</span>} />
             </div>
           </section>
+
+          {gradebook.entriesCloseAt && <section className="flex flex-wrap items-center justify-between gap-3 rounded-sm border bg-muted/25 px-4 py-3">
+            <div className="flex items-center gap-3"><span className="flex size-9 items-center justify-center rounded-sm bg-primary/10 text-primary"><CalendarDays className="size-4" /></span>
+              <div><p className="text-xs font-medium text-muted-foreground">Marks entry deadline</p><p className="text-sm font-semibold">{displayDeadline(gradebook.entriesCloseAt)} EAT</p></div>
+            </div>
+            <Badge variant={entryDeadlinePassed ? "outline" : "secondary"}>{entryDeadlinePassed ? "Entry window closed" : gradebook.freezeAtDeadline ? "Freezes at deadline" : "Deadline set"}</Badge>
+          </section>}
 
           <section className="space-y-3">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -146,7 +158,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                       <TableCell className="text-right tabular-nums">{row.examEntered ? row.examMarks : <MissingValue />}</TableCell>
                       <TableCell className="text-right font-semibold tabular-nums">{row.courseworkEntered && row.examEntered ? row.finalScore : "—"}{row.approvedSnapshot && <span className="block text-xs font-normal text-muted-foreground">Published: {row.approvedSnapshot.finalScore}</span>}</TableCell>
                       <TableCell><MarkStatus status={row.status} /></TableCell>
-                      <TableCell className="text-right">{gradebook.isManager ? <DropdownMenu>
+                      <TableCell className="text-right">{hasRowActions(row) ? <DropdownMenu>
                         <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={`Actions for ${row.studentName}`}><MoreHorizontal className="size-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-60">
                           {gradebook.canReview && row.status === "submitted" && <>
@@ -154,7 +166,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                             <DropdownMenuItem onSelect={() => captureRowDecision(row, "return")}>Return to lecturer</DropdownMenuItem>
                           </>}
                           {gradebook.canReview && row.status === "approved" && !row.publicationWithdrawn && <DropdownMenuItem onSelect={() => captureRowDecision(row, "withdraw")}>Withdraw published result</DropdownMenuItem>}
-                          {gradebook.isManager && <DropdownMenuItem disabled={!!row.permission && row.permission.expiresAt > Date.now()} onSelect={() => setGrantStudent({ id: row.studentId, name: row.studentName })}>
+                          {canGrantAccess(row) && <DropdownMenuItem disabled={!!row.permission && row.permission.expiresAt > Date.now()} onSelect={() => setGrantStudent({ id: row.studentId, name: row.studentName })}>
                             {row.permission && row.permission.expiresAt > Date.now() ? `Editing access until ${displayDeadline(row.permission.expiresAt)}` : "Grant editing access"}
                           </DropdownMenuItem>}
                         </DropdownMenuContent>
@@ -174,7 +186,8 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
       </main>
       {decision && decision.rows.length > 0 && <ReviewDecisionDialog courseId={courseId} periodId={periodId} rows={decision.rows} decision={decision.action} close={() => { setDecision(undefined); setSelected(new Set()); }} />}
       {grantStudent && <MarkPermissionDialog courseId={courseId} periodId={periodId} studentId={grantStudent.id} studentName={grantStudent.name} mode="grant" close={() => setGrantStudent(undefined)} />}
-      {settings && <GradebookSettingsDialog courseId={courseId} periodId={periodId} close={() => setSettings(false)} />}
+      {settings && <GradebookSettingsDialog courseId={courseId} periodId={periodId} entriesCloseAt={gradebook.entriesCloseAt}
+        freezeAtDeadline={gradebook.freezeAtDeadline} close={() => setSettings(false)} />}
     </div>
   );
 }

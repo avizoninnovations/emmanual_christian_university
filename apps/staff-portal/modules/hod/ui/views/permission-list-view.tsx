@@ -88,21 +88,22 @@ function PermissionRowMenu({ rowId, status, onChoose }: { rowId: Id<"markEditPer
   </DropdownMenu>;
 }
 
-const decisionSchema = z.object({ reason: z.string().trim().min(3), expiry: z.string().min(1) });
+const decisionSchema = z.object({ reason: z.string().trim(), expiry: z.string().min(1) });
 function PermissionDecisionDialog({ decision, close }: { decision: Decision; close: () => void }) {
   const decide = useMutation(api.markPermissions.decide);
   const form = useForm<z.infer<typeof decisionSchema>>({ resolver: zodResolver(decisionSchema), defaultValues: { reason: "", expiry: tomorrowNairobi() } });
   const save = form.handleSubmit(async values => {
+    if (decision.action !== "grant" && values.reason.length < 3) { form.setError("reason", { message: "Enter a reason." }); return; }
     const expiresAt = decision.action === "grant" ? parseNairobi(values.expiry) : undefined;
     if (expiresAt !== undefined && (!Number.isFinite(expiresAt) || expiresAt <= Date.now())) { form.setError("expiry", { message: "Choose a future expiry." }); return; }
-    try { await decide({ id: decision.id, decision: decision.action, reason: values.reason, expiresAt }); toast.success("Permission updated"); close(); }
+    try { await decide({ id: decision.id, decision: decision.action, reason: decision.action === "grant" ? undefined : values.reason, expiresAt }); toast.success("Permission updated"); close(); }
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not update this permission")); }
   });
   const title = decision.action === "grant" ? "Approve editing access" : decision.action === "reject" ? "Reject editing request" : "Revoke editing access";
   return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4">
       {decision.action === "grant" && <FormField control={form.control} name="expiry" render={({ field }) => <FormItem><FormLabel>Access expires</FormLabel><FormControl><NairobiDateTimePicker value={field.value} onChange={field.onChange} label="Choose access expiry" /></FormControl><FormMessage /></FormItem>} />}
-      <FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />
+      {decision.action !== "grant" && <FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />}
       <div className="flex justify-end border-t pt-4"><Button type="submit" disabled={form.formState.isSubmitting}>{title}</Button></div>
     </form></Form>
   </DialogContent></Dialog>;

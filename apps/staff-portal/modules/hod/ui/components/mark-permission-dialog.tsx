@@ -15,7 +15,7 @@ import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 import { NairobiDateTimePicker, toNairobiDateTimeInput } from "./nairobi-date-time-picker";
 
 const schema = z.object({ components: z.enum(["both", "coursework", "exam"]),
-  expiresAt: z.string().min(1, "Choose an expiry"), reason: z.string().trim().min(3, "Enter a reason").max(2000) });
+  expiresAt: z.string().min(1, "Choose an expiry"), reason: z.string().trim().max(2000) });
 export const tomorrowNairobi = () => toNairobiDateTimeInput(Date.now() + 27 * 60 * 60 * 1000);
 export const parseNairobi = (value: string) => Date.parse(`${value.length === 16 ? `${value}:00` : value}+03:00`);
 export const displayDeadline = (value: number) => new Date(value).toLocaleString("en-GB", { timeZone: "Africa/Nairobi", dateStyle: "medium", timeStyle: "short" });
@@ -28,10 +28,11 @@ export function MarkPermissionDialog({ courseId, periodId, studentId, studentNam
   const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema),
     defaultValues: { components: "both", expiresAt: tomorrowNairobi(), reason: "" } });
   const save = form.handleSubmit(async values => {
+    if (mode === "request" && values.reason.length < 3) { form.setError("reason", { message: "Enter a reason for requesting access." }); return; }
     const expiresAt = parseNairobi(values.expiresAt);
     if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) { form.setError("expiresAt", { message: "Choose a future expiry" }); return; }
     try {
-      await create({ courseId, periodId, studentId, mode, reason: values.reason, startsAt: Date.now(), expiresAt,
+      await create({ courseId, periodId, studentId, mode, reason: mode === "request" ? values.reason : undefined, startsAt: Date.now(), expiresAt,
         components: values.components === "both" ? ["coursework", "exam"] : [values.components] });
       toast.success(mode === "grant" ? "Editing permission granted" : "Editing request sent to the HOD"); close();
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not save the permission")); }
@@ -40,7 +41,7 @@ export function MarkPermissionDialog({ courseId, periodId, studentId, studentNam
     <Form {...form}><form onSubmit={save} className="space-y-4">
       <FormField control={form.control} name="components" render={({ field }) => <FormItem><FormLabel>Allowed components</FormLabel><Select value={field.value} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="both">Coursework and examination</SelectItem><SelectItem value="coursework">Coursework only</SelectItem><SelectItem value="exam">Examination only</SelectItem></SelectContent></Select><FormMessage /></FormItem>} />
       <FormField control={form.control} name="expiresAt" render={({ field }) => <FormItem><FormLabel>Expires at</FormLabel><FormControl><NairobiDateTimePicker value={field.value} onChange={field.onChange} label="Choose permission expiry" /></FormControl><FormMessage /></FormItem>} />
-      <FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />
+      {mode === "request" && <FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Why do you need access?</FormLabel><FormControl><Textarea placeholder="Explain what needs to be corrected" {...field} /></FormControl><FormMessage /></FormItem>} />}
       <Button type="submit" disabled={form.formState.isSubmitting}>{mode === "grant" ? "Grant permission" : "Send request"}</Button>
     </form></Form>
   </DialogContent></Dialog>;

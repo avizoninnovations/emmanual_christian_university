@@ -9,7 +9,7 @@ import { grantStatus, markComponent } from "./lib/academicWorkflowSchema.js";
 
 export const create = mutation({
   args: { courseId: v.id("courses"), periodId: v.id("academicPeriods"), studentId: v.id("students"),
-    components: v.array(markComponent), reason: v.string(), startsAt: v.number(), expiresAt: v.number(),
+    components: v.array(markComponent), reason: v.optional(v.string()), startsAt: v.number(), expiresAt: v.number(),
     mode: v.union(v.literal("request"), v.literal("grant")) },
   handler: async (ctx, args) => {
     const access = await classContext(ctx, args.courseId, args.periodId);
@@ -20,7 +20,8 @@ export const create = mutation({
     } else if (!access.isLecturer) throw new ConvexError("Only the allocated lecturer can request editing rights.");
     await requireEnrollment(ctx, args.studentId, args.courseId, args.periodId);
     const now = Date.now();
-    if (!args.reason.trim() || args.reason.length > 2000) throw new ConvexError("Enter a reason of up to 2,000 characters.");
+    const reason = args.reason?.trim() ?? "";
+    if ((args.mode === "request" && reason.length < 3) || reason.length > 2000) throw new ConvexError("Enter a reason of up to 2,000 characters.");
     if (!args.components.length || args.components.length > 2 || new Set(args.components).size !== args.components.length) throw new ConvexError("Choose coursework, examination, or both.");
     if (!Number.isFinite(args.startsAt) || !Number.isFinite(args.expiresAt) || args.expiresAt <= Math.max(args.startsAt, now)) throw new ConvexError("Expiry must be after the start time and in the future.");
     const existing = await ctx.db.query("markEditPermissions")
@@ -32,26 +33,28 @@ export const create = mutation({
       courseId: args.courseId, periodId: args.periodId, studentId: args.studentId,
       departmentId: access.course.departmentId, lecturerId: access.allocation.lecturerId,
       allocationId: access.allocation._id, allocationRevision: access.allocation.revision ?? 0,
-      components: args.components, reason: args.reason.trim(), startsAt: args.startsAt, expiresAt: args.expiresAt,
+      components: args.components, reason, startsAt: args.startsAt, expiresAt: args.expiresAt,
       status: args.mode === "grant" ? "granted" : "requested", requestedBy: access.userId,
       grantedBy: args.mode === "grant" ? access.userId : undefined, createdAt: now, updatedAt: now,
     });
     await ctx.scheduler.runAt(args.expiresAt, internal.markPermissions.expire, { id });
     await academicEvent(ctx, { actorId: access.userId, departmentId: access.course.departmentId,
       courseId: args.courseId, periodId: args.periodId, studentId: args.studentId, grantId: id,
-      action: args.mode === "grant" ? "GRANT_MARK_EDIT" : "REQUEST_MARK_EDIT", details: args.reason.trim() });
+      action: args.mode === "grant" ? "GRANT_MARK_EDIT" : "REQUEST_MARK_EDIT",
+      details: reason || "Granted time-limited mark editing access." });
     return id;
   },
 });
 
 export const decide = mutation({
   args: { id: v.id("markEditPermissions"), decision: v.union(v.literal("grant"), v.literal("reject"), v.literal("revoke")),
-    reason: v.string(), expiresAt: v.optional(v.number()) },
+    reason: v.optional(v.string()), expiresAt: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const grant = await ctx.db.get(args.id);
     if (!grant) throw new ConvexError("Editing permission not found.");
     const actor = await assertDepartmentManager(ctx, grant.departmentId);
-    if (!args.reason.trim()) throw new ConvexError("Enter a reason for your decision.");
+    const reason = args.reason?.trim() ?? "";
+    if (args.decision !== "grant" && !reason) throw new ConvexError("Enter a reason for your decision.");
     if (grant.lecturerId === actor.userId && args.decision === "grant") throw new ConvexError("You cannot grant yourself editing rights.");
     const now = Date.now();
     if (args.decision === "grant") {
@@ -65,11 +68,12 @@ export const decide = mutation({
     } else {
       if (!["requested", "granted"].includes(grant.status)) throw new ConvexError("This permission is already closed.");
       await ctx.db.patch(grant._id, { status: args.decision === "reject" ? "rejected" : "revoked",
-        closedBy: actor.userId, closedReason: args.reason.trim(), updatedAt: now });
+        closedBy: actor.userId, closedReason: reason, updatedAt: now });
     }
     await academicEvent(ctx, { actorId: actor.userId, departmentId: grant.departmentId, courseId: grant.courseId,
       periodId: grant.periodId, studentId: grant.studentId, grantId: grant._id,
-      action: `${args.decision.toUpperCase()}_MARK_EDIT`, details: args.reason.trim() });
+      action: `${args.decision.toUpperCase()}_MARK_EDIT`,
+      details: reason || "Approved the lecturer's time-limited mark editing request." });
   },
 });
 

@@ -1,16 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { usePaginatedQuery } from "convex/react";
 import { ClipboardCheck, ShieldCheck } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
+import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 
-export function NominatedReviews() {
+export function NominatedReviews({ onOpen }: { onOpen: (courseId: Id<"courses">, periodId: Id<"academicPeriods">) => void }) {
   const queue = usePaginatedQuery(api.hod.reviewAssignments, {}, { initialNumItems: 20 });
 
   return (
@@ -51,10 +51,8 @@ export function NominatedReviews() {
                     </Badge>
                   </TableCell>
                   <TableCell className="py-3 pr-5 text-right">
-                    <Button asChild size="sm" variant={row.hasSubmitted ? "default" : "ghost"} className="rounded-sm">
-                      <Link href={`/hod/review-queue/${row.courseId}?periodId=${row.periodId}`}>
-                        {row.hasSubmitted ? "Review marks" : "Open class"}<ClipboardCheck className="size-4" />
-                      </Link>
+                    <Button size="sm" variant={row.hasSubmitted ? "default" : "ghost"} className="rounded-sm" onClick={() => onOpen(row.courseId, row.periodId)}>
+                      {row.hasSubmitted ? "Review marks" : "Open class"}<ClipboardCheck className="size-4" />
                     </Button>
                   </TableCell>
                 </TableRow>

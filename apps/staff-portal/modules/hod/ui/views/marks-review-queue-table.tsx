@@ -1,12 +1,10 @@
-import Link from "next/link";
 import { AlertCircle, ArrowUpRight, CheckCircle2 } from "lucide-react";
-import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { MarksBreakdown } from "./marks-breakdown";
 import { getMarksReviewPresentation, type ReviewCourse } from "./marks-review-presentation";
 
-export function MarksReviewQueueTable({ courses, periodId }: { courses: ReviewCourse[]; periodId: Id<"academicPeriods"> }) {
+export function MarksReviewQueueTable({ courses, onOpen }: { courses: ReviewCourse[]; onOpen: (course: ReviewCourse) => void }) {
   return (
     <div className="w-full overflow-x-auto rounded-sm border bg-card shadow-sm">
       <Table className="min-w-[760px]">
@@ -40,15 +38,13 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: ReviewCo
                   <MarksBreakdown course={course} />
                 </TableCell>
                 <TableCell className="py-4 pr-5 text-right">
-                  <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"}
-                    className={`min-w-44 justify-between gap-2 rounded-sm shadow-sm ${presentation.buttonToneClassName}`}>
-                    <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
-                      <span className="inline-flex items-center gap-2">
-                        <ActionIcon className="size-4 shrink-0" />
-                        <span>{presentation.actionLabel}</span>
-                      </span>
-                      <ArrowUpRight className="ml-auto size-4 shrink-0" />
-                    </Link>
+                  <Button type="button" size="sm" variant={presentation.highlightAction ? "default" : "outline"}
+                    className={`min-w-44 justify-between gap-2 rounded-sm shadow-sm ${presentation.buttonToneClassName}`} onClick={() => onOpen(course)}>
+                    <span className="inline-flex items-center gap-2">
+                      <ActionIcon className="size-4 shrink-0" />
+                      <span>{presentation.actionLabel}</span>
+                    </span>
+                    <ArrowUpRight className="ml-auto size-4 shrink-0" />
                   </Button>
                 </TableCell>
               </TableRow>

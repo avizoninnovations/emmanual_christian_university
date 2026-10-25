@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { usePaginatedQuery } from "convex/react";
 import { ClipboardCheck, LayoutGrid, List, Search } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
+import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -13,6 +14,7 @@ import { HodScopePicker } from "../components/hod-scope-picker";
 import { MarksReviewQueueCard } from "./marks-review-queue-card";
 import { MarksReviewQueueTable } from "./marks-review-queue-table";
 import { NominatedReviews } from "./nominated-reviews";
+import { ClassReviewView } from "./class-review-view";
 
 type QueueFilter = "noMarks" | "hasMarks" | "approved" | "independent" | "all";
 
@@ -27,6 +29,7 @@ export function MarksReviewQueueView() {
   );
   const [filter, setFilter] = useState<QueueFilter>("all");
   const [search, setSearch] = useState("");
+  const [classView, setClassView] = useState<{ courseId: Id<"courses">; periodId: Id<"academicPeriods"> }>();
   const period = scope.context?.periods.find(item => item._id === scope.periodId);
   const noMarksCount = queue.results.filter(course => !course.hasMarks).length;
   const hasMarksCount = queue.results.filter(course => course.hasMarks && !course.fullyApproved).length;
@@ -43,6 +46,7 @@ export function MarksReviewQueueView() {
   }, [filter, queue.results, search]);
 
   return (
+    <>
     <div className="w-full space-y-5 p-4 lg:p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -97,7 +101,7 @@ export function MarksReviewQueueView() {
                 {queue.status === "LoadingFirstPage" ? <QueueGridSkeleton /> : (
                   <QueueResults courses={visibleCourses} filter={filter} search={search} clear={() => { setSearch(""); setFilter("all"); }}>
                     <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
-                      {visibleCourses.map(course => <MarksReviewQueueCard key={course._id} course={course} periodId={scope.periodId!} />)}
+                      {visibleCourses.map(course => <MarksReviewQueueCard key={course._id} course={course} onOpen={() => setClassView({ courseId: course._id, periodId: scope.periodId! })} />)}
                     </div>
                   </QueueResults>
                 )}
@@ -105,7 +109,7 @@ export function MarksReviewQueueView() {
               <TabsContent value="table" className="mt-0">
                 {queue.status === "LoadingFirstPage" ? <Skeleton className="h-72 rounded-sm" /> : (
                   <QueueResults courses={visibleCourses} filter={filter} search={search} clear={() => { setSearch(""); setFilter("all"); }}>
-                    <MarksReviewQueueTable courses={visibleCourses} periodId={scope.periodId!} />
+                    <MarksReviewQueueTable courses={visibleCourses} onOpen={course => setClassView({ courseId: course._id, periodId: scope.periodId! })} />
                   </QueueResults>
                 )}
               </TabsContent>
@@ -115,11 +119,13 @@ export function MarksReviewQueueView() {
                 </div>
               )}
               </div>
-            </> : <div className="pt-4"><NominatedReviews /></div>}
+            </> : <div className="pt-4"><NominatedReviews onOpen={(courseId, periodId) => setClassView({ courseId, periodId })} /></div>}
           </Tabs>
         </>
       )}
     </div>
+    {classView && <ClassReviewView {...classView} onClose={() => setClassView(undefined)} />}
+    </>
   );
 }
 

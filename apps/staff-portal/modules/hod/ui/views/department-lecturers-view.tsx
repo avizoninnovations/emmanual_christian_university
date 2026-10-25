@@ -53,7 +53,7 @@ export function DepartmentLecturersView() {
         <SummaryCard label="No units assigned" value={roster.unassignedCount} detail="For the selected semester" icon={UserX} />
       </section>
 
-      <section className="space-y-3 rounded-sm border bg-card p-3">
+      <section className="space-y-3">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-wrap gap-x-5">
             <FilterButton label="All lecturers" count={roster.lecturerCount} active={filter === "all"} onClick={() => setFilter("all")} />
@@ -87,7 +87,7 @@ function SummaryCard({ label, value, detail, icon: Icon }: { label: string; valu
 }
 
 function LecturerTable({ lecturers, onDetails, emptySearch, onClearSearch }: { lecturers: Lecturer[]; onDetails: (lecturer: Lecturer) => void; emptySearch: boolean; onClearSearch: () => void }) {
-  return <div className="overflow-hidden rounded-sm border">
+  return <div className="w-full overflow-x-auto">
     <Table>
       <TableHeader className="bg-muted/40"><TableRow className="hover:bg-transparent">
         <TableHead className="w-12">#</TableHead><TableHead>Lecturer</TableHead><TableHead>Staff ID</TableHead>

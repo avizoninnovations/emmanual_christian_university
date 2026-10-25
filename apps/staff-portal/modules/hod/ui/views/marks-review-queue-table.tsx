@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { BookOpen, CheckCheck, CircleAlert, CircleDot, ClipboardCheck, Eye } from "lucide-react";
+import { BookOpen, CircleAlert, ClipboardCheck, Eye } from "lucide-react";
 import type { Id } from "@workspace/backend/_generated/dataModel";
-import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
+import { MarksBreakdown } from "./marks-breakdown";
 import { getMarksReviewPresentation, type ReviewCourse } from "./marks-review-presentation";
 
 export function MarksReviewQueueTable({ courses, periodId }: { courses: ReviewCourse[]; periodId: Id<"academicPeriods"> }) {
@@ -22,10 +22,7 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: ReviewCo
         </TableHeader>
         <TableBody>
           {courses.map((course, index) => {
-            const submitted = course.hasSubmitted;
-            const approved = course.fullyApproved;
             const presentation = getMarksReviewPresentation(course);
-            const Icon = submitted ? CircleDot : approved ? CheckCheck : presentation.missingCount > 0 ? CircleAlert : course.hasMarks ? CheckCheck : BookOpen;
             const ActionIcon = presentation.actionKind === "approved" ? Eye : presentation.actionKind === "review" ? ClipboardCheck
               : presentation.actionKind === "missing" ? CircleAlert : BookOpen;
             return (
@@ -41,10 +38,7 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: ReviewCo
                 </TableCell>
                 <TableCell className="max-w-[15rem] truncate py-4">{course.lecturerName || "Unassigned"}</TableCell>
                 <TableCell className="py-4">
-                  <Badge variant={submitted || approved || presentation.missingCount > 0 ? "secondary" : "outline"}
-                    className={`max-w-full whitespace-normal rounded-sm leading-snug ${submitted || approved || presentation.missingCount > 0 ? "bg-primary/10 text-primary" : ""}`}>
-                    <Icon className="mr-1 size-3.5 shrink-0" />{presentation.statusLabel}
-                  </Badge>
+                  <MarksBreakdown course={course} />
                 </TableCell>
                 <TableCell className="py-4 pr-5 text-right">
                   <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"} className="rounded-sm shadow-sm">

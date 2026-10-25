@@ -29,13 +29,13 @@ export function MarksReviewQueueView() {
   const [search, setSearch] = useState("");
   const period = scope.context?.periods.find(item => item._id === scope.periodId);
   const noMarksCount = queue.results.filter(course => !course.hasMarks).length;
-  const hasMarksCount = queue.results.filter(course => course.hasMarks).length;
+  const hasMarksCount = queue.results.filter(course => course.hasMarks && !course.fullyApproved).length;
   const approvedCount = queue.results.filter(course => course.fullyApproved).length;
   const visibleCourses = useMemo(() => {
     const query = search.trim().toLowerCase();
     return queue.results.filter(course => {
       if (filter === "noMarks" && course.hasMarks) return false;
-      if (filter === "hasMarks" && !course.hasMarks) return false;
+      if (filter === "hasMarks" && (!course.hasMarks || course.fullyApproved)) return false;
       if (filter === "approved" && !course.fullyApproved) return false;
       return !query || [course.title, course.code, course.programName, course.lecturerName]
         .some(value => value.toLowerCase().includes(query));

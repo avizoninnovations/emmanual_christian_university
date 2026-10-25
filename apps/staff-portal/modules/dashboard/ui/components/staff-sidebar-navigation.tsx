@@ -51,48 +51,6 @@ export const staffSidebarSections: StaffSidebarSection[] = [
   { key: "staff-services", category: "HR RECORDS", title: "Staff Services", icon: BriefcaseBusiness, items: staffServiceItems },
 ];
 
-export type StaffBreadcrumb = { label: string; href?: string; icon: LucideIcon };
-
-function findBreadcrumbs(items: SidebarEntry[], pathname: string, parents: StaffBreadcrumb[] = []): StaffBreadcrumb[] | undefined {
-  for (const item of items) {
-    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)))) {
-      const routeSuffix = pathname === item.url ? [] : [{ label: routeSegmentLabel(pathname.split("/").filter(Boolean).at(-1) ?? ""), icon: item.icon }];
-      const linkCrumb = pathname === item.url ? { label: item.title, icon: item.icon } : { label: item.title, href: item.url, icon: item.icon };
-      return [...parents, linkCrumb, ...routeSuffix];
-    }
-    if (item.kind === "group") {
-      const match = findBreadcrumbs(item.items, pathname, [...parents, { label: item.title, icon: item.icon }]);
-      if (match) return match;
-    }
-  }
-  return undefined;
-}
-
-function routeSegmentLabel(segment: string): string {
-  return segment.replace(/[-_]/g, " ").replace(/\b\w/g, (character) => character.toUpperCase());
-}
-
-export function getStaffBreadcrumbs(pathname: string): StaffBreadcrumb[] {
-  for (const section of staffSidebarSections) {
-    if (section.url && (section.url === pathname || pathname.startsWith(`${section.url}/`))) {
-      return [
-        { label: section.title, icon: section.icon },
-        ...(section.url === pathname ? [] : [{ label: routeSegmentLabel(pathname.split("/").filter(Boolean).at(-1) ?? ""), icon: section.icon }]),
-      ];
-    }
-    const match = findBreadcrumbs(section.items, pathname);
-    if (match) return [{ label: section.title, icon: section.icon }, ...match];
-  }
-
-  const segments = pathname.split("/").filter(Boolean);
-  if (!segments.length) return [{ label: "Staff Dashboard", icon: Layers }];
-  return segments.map((segment, index) => ({
-    label: routeSegmentLabel(segment),
-    icon: Layers,
-    ...(index < segments.length - 1 ? { href: `/${segments.slice(0, index + 1).join("/")}` } : {}),
-  }));
-}
-
 function findActiveEntry(items: SidebarEntry[], pathname: string, parents: string[] = []): string[] | undefined {
   for (const item of items) {
     if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)))) return parents;

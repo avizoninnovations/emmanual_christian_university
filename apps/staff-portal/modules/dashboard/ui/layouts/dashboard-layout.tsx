@@ -6,7 +6,6 @@ import { ResizableSidebarProvider } from "../components/resizable-sidebar-provid
 import { Provider } from "jotai";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { DashboardSidebar } from "../components/dashboard-sidebar";
-import { StaffRouteBreadcrumbs } from "../components/staff-route-breadcrumbs";
 
 /**
  * Dashboard layout that wraps all authenticated pages.
@@ -38,7 +37,6 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
     <ResizableSidebarProvider defaultOpen defaultWidth={210}>
       <DashboardSidebar />
       <main className="portal-content-area flex flex-1 flex-col">
-        <StaffRouteBreadcrumbs />
         {children}
       </main>
     </ResizableSidebarProvider>

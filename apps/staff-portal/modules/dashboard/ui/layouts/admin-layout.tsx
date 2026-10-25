@@ -1,7 +1,6 @@
 "use client";
 
 import { AdminSidebar } from "@/modules/dashboard/ui/components/admin-sidebar";
-import { StaffRouteBreadcrumbs } from "@/modules/dashboard/ui/components/staff-route-breadcrumbs";
 import { SidebarTrigger } from "@workspace/ui/components/sidebar";
 import { ResizableSidebarProvider } from "@/modules/dashboard/ui/components/resizable-sidebar-provider";
 import Image from "next/image";
@@ -27,7 +26,6 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
           
           <div className="relative z-10 w-full min-h-full">
-            <StaffRouteBreadcrumbs />
             {children}
           </div>
         </div>

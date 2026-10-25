@@ -25,8 +25,9 @@ export function ReviewDecisionDialog({ courseId, periodId, rows, decision, close
     try { await review({ courseId, periodId, rows, decision, reason }); toast.success(`Decision saved for ${rows.length} student(s)`); close(); }
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not review these results")); }
   });
-  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle className="capitalize">{decision} {rows.length} selected result(s)</DialogTitle></DialogHeader>
-    <p className="text-sm text-muted-foreground">{decision === "approve" ? "These submitted marks will become visible to the selected students." : decision === "withdraw" ? "The published results will be hidden from the selected students." : "These drafts will be returned to the lecturer for correction."}</p>
+  const subject = rows.length === 1 ? "this result" : `${rows.length} selected results`;
+  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle className="capitalize">{decision} {subject}</DialogTitle></DialogHeader>
+    <p className="text-sm text-muted-foreground">{decision === "approve" ? "These submitted marks will become visible to the selected students." : decision === "withdraw" ? "The published results will be hidden from the selected students." : "These submitted marks will be returned to the lecturer for correction."}</p>
     <Form {...form}><form onSubmit={save} className="space-y-4"><FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason {decision === "approve" ? "(optional)" : ""}</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />
       <Button type="submit" disabled={form.formState.isSubmitting}>Confirm {decision}</Button></form></Form>
   </DialogContent></Dialog>;

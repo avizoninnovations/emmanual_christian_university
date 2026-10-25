@@ -41,8 +41,8 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
       .some(value => value.toLowerCase().includes(query))) ?? [];
   }, [gradebook?.students, search]);
   const isActionable = (row: NonNullable<typeof gradebook>['students'][number]) =>
-    row.courseworkEntered && row.examEntered && (row.status === "submitted"
-      || (row.status === "approved" && !!row.approvedSnapshot && !row.publicationWithdrawn));
+    (row.status === "submitted" && row.courseworkEntered && row.examEntered)
+    || (row.status === "approved" && !row.publicationWithdrawn);
   const contentRegionStyle = {
     left: sidebarOpen && !isMobile ? "var(--sidebar-width)" : 0,
     width: sidebarOpen && !isMobile ? "calc(100% - var(--sidebar-width))" : "100%",
@@ -61,8 +61,10 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
   const approvedCount = gradebook.students.filter(row => row.status === "approved").length;
   const missingCount = gradebook.students.filter(row => !row.courseworkEntered || !row.examEntered).length;
   const captureDecision = (action: Decision["action"]) => setDecision({ action, rows: selectedRows
-    .filter(row => action === "withdraw" ? row.status === "approved" && !!row.approvedSnapshot && !row.publicationWithdrawn : row.status === "submitted")
+    .filter(row => action === "withdraw" ? row.status === "approved" && !row.publicationWithdrawn : row.status === "submitted")
     .map(row => ({ studentId: row.studentId, revision: row.revision })) });
+  const captureRowDecision = (row: (typeof gradebook.students)[number], action: Decision["action"]) =>
+    setDecision({ action, rows: [{ studentId: row.studentId, revision: row.revision }] });
   const changePage = (next: (string | null)[]) => { setSelected(new Set()); setCursors(next); };
 
   return (
@@ -114,7 +116,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                   <Button size="sm" onClick={() => captureDecision("approve")}>Approve selected</Button>
                   <Button size="sm" variant="outline" onClick={() => captureDecision("return")}>Return selected</Button>
                 </>}
-                {gradebook.canReview && selectedRows.some(row => row.status === "approved" && !!row.approvedSnapshot && !row.publicationWithdrawn) && <Button size="sm" variant="outline" onClick={() => captureDecision("withdraw")}>Withdraw published results</Button>}
+                {gradebook.canReview && selectedRows.some(row => row.status === "approved" && !row.publicationWithdrawn) && <Button size="sm" variant="outline" onClick={() => captureDecision("withdraw")}>Withdraw published results</Button>}
               </div>}
               <div className="relative w-full lg:max-w-sm">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -143,13 +145,18 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                       <TableCell className="text-right tabular-nums">{row.courseworkEntered ? row.courseworkMarks : <MissingValue />}</TableCell>
                       <TableCell className="text-right tabular-nums">{row.examEntered ? row.examMarks : <MissingValue />}</TableCell>
                       <TableCell className="text-right font-semibold tabular-nums">{row.courseworkEntered && row.examEntered ? row.finalScore : "—"}{row.approvedSnapshot && <span className="block text-xs font-normal text-muted-foreground">Published: {row.approvedSnapshot.finalScore}</span>}</TableCell>
-                      <TableCell><MarkStatus status={row.status} reason={row.returnReason} /></TableCell>
+                      <TableCell><MarkStatus status={row.status} /></TableCell>
                       <TableCell className="text-right">{gradebook.isManager ? <DropdownMenu>
                         <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={`Actions for ${row.studentName}`}><MoreHorizontal className="size-4" /></Button></DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                          <DropdownMenuItem disabled={!!row.permission && row.permission.expiresAt > Date.now()} onSelect={() => setGrantStudent({ id: row.studentId, name: row.studentName })}>
+                        <DropdownMenuContent align="end" className="w-60">
+                          {gradebook.canReview && row.status === "submitted" && <>
+                            <DropdownMenuItem disabled={!row.courseworkEntered || !row.examEntered} onSelect={() => captureRowDecision(row, "approve")}>Approve result</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => captureRowDecision(row, "return")}>Return to lecturer</DropdownMenuItem>
+                          </>}
+                          {gradebook.canReview && row.status === "approved" && !row.publicationWithdrawn && <DropdownMenuItem onSelect={() => captureRowDecision(row, "withdraw")}>Withdraw published result</DropdownMenuItem>}
+                          {gradebook.isManager && <DropdownMenuItem disabled={!!row.permission && row.permission.expiresAt > Date.now()} onSelect={() => setGrantStudent({ id: row.studentId, name: row.studentName })}>
                             {row.permission && row.permission.expiresAt > Date.now() ? `Editing access until ${displayDeadline(row.permission.expiresAt)}` : "Grant editing access"}
-                          </DropdownMenuItem>
+                          </DropdownMenuItem>}
                         </DropdownMenuContent>
                       </DropdownMenu> : <span className="text-xs text-muted-foreground">—</span>}</TableCell>
                     </TableRow>)}
@@ -176,11 +183,11 @@ function SummaryTile({ label, value, icon }: { label: string; value: number; ico
   return <div className="min-w-28 rounded-sm border bg-card px-3 py-2.5"><div className="flex items-center gap-2 text-muted-foreground">{icon}<span className="text-[11px]">{label}</span></div><p className="mt-1 text-xl font-semibold tabular-nums">{value}</p></div>;
 }
 
-function MarkStatus({ status, reason }: { status: string; reason?: string }) {
+function MarkStatus({ status }: { status: string }) {
   const tone = status === "approved" ? "border-emerald-600/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
     : status === "submitted" ? "border-primary/20 bg-primary/10 text-primary"
       : status === "returned" ? "border-amber-600/20 bg-amber-500/10 text-amber-700 dark:text-amber-300" : "bg-muted text-muted-foreground";
-  return <div><Badge variant="outline" className={`rounded-sm capitalize ${tone}`}>{status}</Badge>{reason && <p className="mt-1 max-w-48 text-xs text-muted-foreground">{reason}</p>}</div>;
+  return <Badge variant="outline" className={`rounded-sm capitalize ${tone}`}>{status}</Badge>;
 }
 
 function MissingValue() {

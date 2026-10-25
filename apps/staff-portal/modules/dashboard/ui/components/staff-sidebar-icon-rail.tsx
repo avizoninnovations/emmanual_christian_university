@@ -10,7 +10,6 @@ import {
   FileText,
   LayoutDashboard,
   Layers,
-  Mail,
   UserRound,
   UserCheck,
   Wallet,
@@ -27,11 +26,9 @@ import {
 
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "My Memos", url: "/workspace/memos", icon: Mail },
   { title: "My Finance", url: "/workspace/finance", icon: Wallet },
   { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
   { title: "Personal Records", url: "/profile", icon: UserRound },
-  { title: "Faculty Central", url: "/workspace/faculty-central", icon: Building2 },
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
   { title: "Assessment Applications", url: "/workspace/aegrotat-units", icon: ClipboardCheck },
   { title: "Retake Approvals", url: "/workspace/retake-approvals", icon: ClipboardCheck },

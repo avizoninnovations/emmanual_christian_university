@@ -4,10 +4,6 @@ export type StaffWorkspace = {
 };
 
 export const staffWorkspaces: Record<string, StaffWorkspace> = {
-  memos: { title: "My Memos", sections: [
-    { title: "Inbox", fields: ["Reference", "Sender", "Date received", "Priority", "Read status"] },
-    { title: "Sent", fields: ["Recipients", "Subject", "Date sent", "Delivery status"] },
-  ] },
   finance: { title: "My Finance", sections: [
     { title: "Staff Finance", fields: ["Pay periods", "Salary statements", "Payroll notices"] },
   ] },
@@ -43,8 +39,5 @@ export const staffWorkspaces: Record<string, StaffWorkspace> = {
   ] },
   "aegrotat-units": { title: "Missed Assessment Applications", sections: [
     { title: "Applications", fields: ["Student", "Course unit", "Circumstance", "Supporting evidence", "Review status"] },
-  ] },
-  "faculty-central": { title: "Faculty Central", sections: [
-    { title: "Faculty Workspace", fields: ["Faculty", "Department", "Staff responsibilities"] },
   ] },
 };

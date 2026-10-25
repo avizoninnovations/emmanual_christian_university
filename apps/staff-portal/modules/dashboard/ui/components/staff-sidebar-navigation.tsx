@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   type LucideIcon,
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
-  Layers, Mail, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
+  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
   DoorOpen, MessageSquareWarning, Scale, ChartNoAxesCombined,
   Building2, BriefcaseBusiness, MonitorPlay,
   ChevronDown, ChevronRight,
@@ -44,8 +44,6 @@ export const staffSidebarSections: StaffSidebarSection[] = [
   ] },
   { key: "retake-approvals", category: "ACADEMICS", title: "Retake Approvals", icon: ClipboardCheck, url: "/workspace/retake-approvals", roles: ["hod", "registrar", "admin"], items: [] },
   { key: "timetable", category: "ACADEMICS", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
-  { key: "faculty", category: "MY WORKSPACE", title: "Faculty Central", icon: Building2, url: "/workspace/faculty-central", items: [] },
-  { key: "memos", category: "MY WORKSPACE", title: "My Memos", icon: Mail, url: "/workspace/memos", items: [] },
   { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
   { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },
   { key: "personal-records", category: "HR RECORDS", title: "Personal Records", icon: UserRound, url: "/profile", items: [] },

@@ -15,12 +15,12 @@ import { HodScopePicker } from "../components/hod-scope-picker";
 import { AcademicActivityDetails } from "./academic-activity-details";
 
 type Activity = FunctionReturnType<typeof api.hod.activity>["page"][number];
-type ActivityCategory = "all" | "marks" | "results" | "permissions" | "allocations" | "settings" | "other";
+type ActivityDateRange = "all" | "today" | "week" | "month";
 
 export function AcademicActivityView() {
   const scope = useHodScope();
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<ActivityCategory>("all");
+  const [dateRange, setDateRange] = useState<ActivityDateRange>("all");
   const [selectedEvent, setSelectedEvent] = useState<Activity | null>(null);
   const activity = usePaginatedQuery(
     api.hod.activity,
@@ -29,12 +29,16 @@ export function AcademicActivityView() {
   );
   const filteredEvents = useMemo(() => {
     const query = search.trim().toLowerCase();
+    const now = new Date();
+    const cutoff = dateRange === "today" ? startOfToday(now)
+      : dateRange === "week" ? now.getTime() - 7 * 24 * 60 * 60 * 1000
+        : dateRange === "month" ? now.getTime() - 30 * 24 * 60 * 60 * 1000 : null;
     return activity.results.filter(event => {
-      if (category !== "all" && getActivityCategory(event.action) !== category) return false;
+      if (cutoff !== null && event.createdAt < cutoff) return false;
       return !query || [event.actorName, event.action, event.studentLabel, event.courseLabel, event.periodLabel, event.details]
         .some(value => value.toLowerCase().includes(query));
     });
-  }, [activity.results, category, search]);
+  }, [activity.results, dateRange, search]);
 
   return (
     <div className="w-full space-y-5 p-4 lg:p-6">
@@ -43,13 +47,11 @@ export function AcademicActivityView() {
         <div><h1 className="text-lg font-semibold tracking-tight">Academic activity</h1>
           <p className="mt-1 text-sm text-muted-foreground">{filteredEvents.length} of {activity.results.length} loaded activities</p></div>
         <div className="flex w-full flex-wrap gap-3 sm:w-auto">
-          <Select value={category} onValueChange={value => { if (isActivityCategory(value)) setCategory(value); }}>
-            <SelectTrigger className="h-10 w-full rounded-sm sm:w-48"><SelectValue placeholder="Activity type" /></SelectTrigger>
+          <Select value={dateRange} onValueChange={value => { if (isActivityDateRange(value)) setDateRange(value); }}>
+            <SelectTrigger aria-label="Filter activity by date" className="h-10 w-full rounded-sm sm:w-48"><SelectValue placeholder="Date range" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All activity</SelectItem><SelectItem value="marks">Marks entry</SelectItem>
-              <SelectItem value="results">Results review</SelectItem><SelectItem value="permissions">Editing access</SelectItem>
-              <SelectItem value="allocations">Course allocations</SelectItem><SelectItem value="settings">Gradebook settings</SelectItem>
-              <SelectItem value="other">Other activity</SelectItem>
+              <SelectItem value="all">All dates</SelectItem><SelectItem value="today">Today</SelectItem>
+              <SelectItem value="week">Last 7 days</SelectItem><SelectItem value="month">Last 30 days</SelectItem>
             </SelectContent>
           </Select>
           <div className="relative w-full sm:w-72">
@@ -77,7 +79,7 @@ export function AcademicActivityView() {
             <TableCell className="text-right"><Button variant="ghost" size="icon" aria-label={`View details for ${formatAction(event.action)}`} onClick={() => setSelectedEvent(event)}><Eye className="size-4" /></Button></TableCell>
           </TableRow>)}
           {activity.status !== "LoadingFirstPage" && filteredEvents.length === 0 && <TableRow><TableCell colSpan={6} className="h-28 text-center text-sm text-muted-foreground">
-            {search || category !== "all" ? "No activity matches these filters." : "No academic activity has been recorded for this department yet."}
+            {search || dateRange !== "all" ? "No activity matches these filters." : "No academic activity has been recorded for this department yet."}
           </TableCell></TableRow>}
         </TableBody>
       </Table>
@@ -88,17 +90,15 @@ export function AcademicActivityView() {
   );
 }
 
-function getActivityCategory(action: string): Exclude<ActivityCategory, "all"> {
-  if (action.includes("MARK_EDIT")) return "permissions";
-  if (action.includes("ALLOCATE") || action.includes("ALLOCATION")) return "allocations";
-  if (action.includes("RESULT") || action.includes("REVIEW")) return "results";
-  if (action.includes("GRADEBOOK")) return "settings";
-  if (action.includes("MARK")) return "marks";
-  return "other";
-}
-
-function isActivityCategory(value: string): value is ActivityCategory {
-  return ["all", "marks", "results", "permissions", "allocations", "settings", "other"].includes(value);
+function isActivityDateRange(value: string): value is ActivityDateRange { return ["all", "today", "week", "month"].includes(value); }
+function startOfToday(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Africa/Nairobi", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(date);
+  const year = Number(parts.find(part => part.type === "year")?.value);
+  const month = Number(parts.find(part => part.type === "month")?.value);
+  const day = Number(parts.find(part => part.type === "day")?.value);
+  return Date.UTC(year, month - 1, day) - 3 * 60 * 60 * 1000;
 }
 
 function formatAction(action: string) { return action.toLowerCase().replaceAll("_", " ").replace(/\b\w/g, letter => letter.toUpperCase()); }

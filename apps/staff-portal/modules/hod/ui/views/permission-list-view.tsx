@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useMutation, usePaginatedQuery } from "convex/react";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, MoreHorizontal } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -37,6 +37,9 @@ export function PermissionListView({ manager = true }: { manager?: boolean }) {
   const [classView, setClassView] = useState<{ courseId: Id<"courses">; periodId: Id<"academicPeriods"> }>();
   const rows = usePaginatedQuery(api.markPermissions.list, !manager || scope.departmentId
     ? { departmentId: manager ? scope.departmentId : undefined, status } : "skip", { initialNumItems: 25 });
+  const statusCounts = useQuery(api.markPermissions.summary, manager
+    ? scope.departmentId ? { departmentId: scope.departmentId } : "skip"
+    : {});
 
   return <>
     <div className="w-full space-y-5 p-4 lg:p-6">
@@ -45,8 +48,16 @@ export function PermissionListView({ manager = true }: { manager?: boolean }) {
         <h1 className="text-lg font-semibold">Edit permissions</h1>
       </div>
       <Tabs value={status} onValueChange={value => { const next = statuses.find(item => item === value); if (next) setStatus(next); }}>
-        <TabsList className="h-auto w-full justify-start gap-5 overflow-x-auto rounded-none border-b bg-transparent p-0">
-          {statuses.map(item => <TabsTrigger key={item} value={item} className="rounded-none border-b-2 border-transparent px-1 py-2 capitalize shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none">{item === "requested" ? "Pending requests" : item}</TabsTrigger>)}
+        <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto">
+          {statuses.map(item => {
+            const count = statusCounts?.find(entry => entry.status === item);
+            return <TabsTrigger key={item} value={item} className="flex-none gap-2 capitalize">
+              {item === "requested" ? "Pending requests" : item}
+              <span className={`rounded-sm px-1.5 py-0.5 text-[11px] tabular-nums ${status === item ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                {count ? `${count.count}${count.isCapped ? "+" : ""}` : "—"}
+              </span>
+            </TabsTrigger>;
+          })}
         </TabsList>
       </Tabs>
       <Table className="min-w-[900px]">

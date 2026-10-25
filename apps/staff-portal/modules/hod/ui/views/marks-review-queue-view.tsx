@@ -132,7 +132,7 @@ export function MarksReviewQueueView() {
 function QueueFilterButton({ label, count, active, onClick }: { label: string; count?: number; active: boolean; onClick: () => void }) {
   return (
     <Button type="button" variant="ghost" aria-pressed={active} onClick={onClick}
-      className={`h-10 gap-2 rounded-none border-b-2 px-1 text-sm hover:bg-transparent ${active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground"}`}>
+      className={`h-10 gap-2 rounded-sm border-b-2 px-2 text-sm hover:bg-primary/5 ${active ? "border-primary bg-primary/5 font-semibold text-primary" : "border-transparent text-muted-foreground"}`}>
       {label}{count !== undefined && <span className={`text-xs tabular-nums ${active ? "text-primary" : "text-muted-foreground"}`}>{count}</span>}
     </Button>
   );

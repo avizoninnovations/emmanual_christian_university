@@ -7,6 +7,9 @@ import { academicActor, assertDepartmentManager, classContext, requireEnrollment
 import { academicEvent } from "./lib/academicAudit.js";
 import { grantStatus, markComponent } from "./lib/academicWorkflowSchema.js";
 
+const permissionStatuses = ["requested", "granted", "submitted", "expired", "revoked", "rejected"] as const;
+const permissionSummaryLimit = 200;
+
 export const create = mutation({
   args: { courseId: v.id("courses"), periodId: v.id("academicPeriods"), studentId: v.id("students"),
     components: v.array(markComponent), reason: v.optional(v.string()), startsAt: v.number(), expiresAt: v.number(),
@@ -103,5 +106,23 @@ export const list = query({
       return { ...grant, studentName: student ? [student.firstName, student.surname].filter(Boolean).join(" ") || student.registrationNumber : "Student",
         registrationNumber: student?.registrationNumber, courseCode: course?.code, periodName: period ? `${period.name} ${period.year}` : "", lecturerName: lecturer.name };
     })) };
+  },
+});
+
+export const summary = query({
+  args: { departmentId: v.optional(v.id("departments")) },
+  handler: async (ctx, args) => {
+    const actor = await academicActor(ctx);
+    const departmentId = args.departmentId;
+    if (departmentId) await assertDepartmentManager(ctx, departmentId);
+    const statusCounts = await Promise.all(permissionStatuses.map(async status => {
+      const records = departmentId
+        ? await ctx.db.query("markEditPermissions").withIndex("by_departmentId_and_status", q =>
+          q.eq("departmentId", departmentId).eq("status", status)).take(permissionSummaryLimit + 1)
+        : await ctx.db.query("markEditPermissions").withIndex("by_lecturerId_and_status", q =>
+          q.eq("lecturerId", actor.userId).eq("status", status)).take(permissionSummaryLimit + 1);
+      return { status, count: Math.min(records.length, permissionSummaryLimit), isCapped: records.length > permissionSummaryLimit };
+    }));
+    return statusCounts;
   },
 });

@@ -153,7 +153,7 @@ function DetailField({ label, value, icon: Icon, href }: { label: string; value:
 
 function SectionHeading({ children }: { children: React.ReactNode }) { return <h2 className="text-sm font-semibold">{children}</h2>; }
 function FilterButton({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
-  return <Button type="button" variant="ghost" aria-pressed={active} onClick={onClick} className={`h-10 gap-2 rounded-none border-b-2 px-1 text-sm hover:bg-transparent ${active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground"}`}>
+  return <Button type="button" variant="ghost" aria-pressed={active} onClick={onClick} className={`h-10 gap-2 rounded-sm border-b-2 px-2 text-sm hover:bg-primary/5 ${active ? "border-primary bg-primary/5 font-semibold text-primary" : "border-transparent text-muted-foreground"}`}>
     {label}<span className={`text-xs tabular-nums ${active ? "text-primary" : "text-muted-foreground"}`}>{count}</span></Button>;
 }
 function LecturerRosterSkeleton() { return <div className="space-y-4"><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{Array.from({ length: 4 }, (_, index) => <Skeleton key={index} className="h-28 rounded-sm" />)}</div><Skeleton className="h-96 rounded-sm" /></div>; }

@@ -177,7 +177,7 @@ function FilterButton({ label, count, active, onClick }: { label: string; count:
       variant="ghost"
       size="default"
       aria-pressed={active}
-      className={`h-10 gap-2 rounded-none border-b-2 px-1 text-sm hover:bg-transparent ${active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground"}`}
+      className={`h-10 gap-2 rounded-sm border-b-2 px-2 text-sm hover:bg-primary/5 ${active ? "border-primary bg-primary/5 font-semibold text-primary" : "border-transparent text-muted-foreground"}`}
       onClick={onClick}
     >
       {label}<span className={`text-xs tabular-nums ${active ? "text-primary" : "text-muted-foreground"}`}>{count}</span>

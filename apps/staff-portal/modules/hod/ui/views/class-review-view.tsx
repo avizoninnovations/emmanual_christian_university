@@ -142,7 +142,7 @@ export function ClassReviewView({ courseId, periodId, onClose }: Props) {
                 <p className="text-xs text-muted-foreground">Showing {visibleStudents.length} of {gradebook.students.length} students on this page · 50 per page</p>
               </div>
                 <Table className="min-w-[1000px]">
-                  <TableHeader className="sticky top-0 z-10 bg-muted/70">
+                  <TableHeader className="sticky top-0 z-10">
                     <TableRow>
                       <TableHead className="w-12 pl-4"><Checkbox aria-label="Select all eligible visible students" disabled={!selectableVisibleStudents.length || !gradebook.canReview} checked={selectableVisibleStudents.length > 0 && selectableVisibleStudents.every(row => selected.has(row.studentId))} onCheckedChange={checked => setSelected(current => { const next = new Set(current); for (const row of selectableVisibleStudents) checked ? next.add(row.studentId) : next.delete(row.studentId); return next; })} /></TableHead>
                       <TableHead className="w-12">No.</TableHead><TableHead>Student</TableHead><TableHead className="text-right">Coursework / 30</TableHead><TableHead className="text-right">Exam / 70</TableHead><TableHead className="text-right">Total / 100</TableHead><TableHead>Status</TableHead><TableHead className="w-16 text-right">Actions</TableHead>

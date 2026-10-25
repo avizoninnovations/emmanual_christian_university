@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertCircle, ArrowUpRight, BookOpen, UserRound } from "lucide-react";
+import { AlertCircle, ArrowUpRight, BookOpen, CheckCircle2, UserRound } from "lucide-react";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
@@ -9,6 +9,7 @@ import { getMarksReviewPresentation, type ReviewCourse } from "./marks-review-pr
 
 export function MarksReviewQueueCard({ course, periodId }: { course: ReviewCourse; periodId: Id<"academicPeriods"> }) {
   const presentation = getMarksReviewPresentation(course);
+  const ActionIcon = course.fullyApproved ? CheckCircle2 : AlertCircle;
   return (
     <Card className="group relative gap-0 overflow-hidden rounded-sm border-border/80 py-0 shadow-sm transition-shadow hover:shadow-md">
       <div className="absolute inset-y-0 left-0 w-1 bg-muted-foreground/30" />
@@ -34,10 +35,11 @@ export function MarksReviewQueueCard({ course, periodId }: { course: ReviewCours
           </div>
         </div>
         <MarksBreakdown course={course} />
-        <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"} className="w-full justify-between gap-2 rounded-sm shadow-sm">
+        <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"}
+          className={`w-full justify-between gap-2 rounded-sm shadow-sm ${presentation.buttonToneClassName}`}>
           <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
             <span className="flex min-w-0 items-center gap-2">
-              <AlertCircle className="size-4 shrink-0" />
+              <ActionIcon className="size-4 shrink-0" />
               <span className="truncate">{presentation.actionLabel}</span>
             </span>
             <ArrowUpRight className="ml-auto size-4 shrink-0" />

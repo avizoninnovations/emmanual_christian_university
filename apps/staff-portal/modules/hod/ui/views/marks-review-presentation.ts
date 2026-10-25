@@ -10,5 +10,8 @@ export function getMarksReviewPresentation(course: ReviewCourse) {
     missingCount,
     actionLabel: "View class marks",
     highlightAction: course.hasSubmitted || course.fullyApproved || missingCount > 0,
+    buttonToneClassName: course.fullyApproved
+      ? "border-emerald-700 bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+      : "",
   } as const;
 }

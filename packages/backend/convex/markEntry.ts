@@ -1,12 +1,42 @@
 import { ConvexError, v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
+import { query } from "./_generated/server.js";
 import { mutation } from "./lib/mutations.js";
-import { classContext, entered, requireEnrollment } from "./lib/academicAccess.js";
+import { classContext, entered, requireEnrollment, staffName } from "./lib/academicAccess.js";
 import { permissionActive, permissionForStudent } from "./lib/markPermissionAccess.js";
 import { approvedSnapshot, calculateGrade } from "./lib/academicResults.js";
 import { academicEvent } from "./lib/academicAudit.js";
 
 export const rowVersion = v.object({ studentId: v.id("students"), revision: v.number() });
 const score = v.union(v.number(), v.null());
+
+export const lecturerActivity = query({
+  args: { courseId: v.id("courses"), periodId: v.id("academicPeriods"), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const access = await classContext(ctx, args.courseId, args.periodId);
+    if (!access.isLecturer) throw new ConvexError("Only the allocated lecturer can view this class activity.");
+    const page = await ctx.db.query("academicEvents")
+      .withIndex("by_courseId_and_periodId", q => q.eq("courseId", args.courseId).eq("periodId", args.periodId))
+      .order("desc").paginate(args.paginationOpts);
+    const actorIds = [...new Set(page.page.map(event => event.actorId).filter(id => id !== "system"))];
+    const studentIds = [...new Set(page.page.flatMap(event => event.studentId ? [event.studentId] : []))];
+    const [actors, students] = await Promise.all([
+      Promise.all(actorIds.map(async id => [id, await staffName(ctx, id)] as const)),
+      Promise.all(studentIds.map(async id => [id, await ctx.db.get(id)] as const)),
+    ]);
+    const actorNames = new Map(actors);
+    const studentById = new Map(students);
+    return { ...page, page: page.page.map(event => {
+      const student = event.studentId ? studentById.get(event.studentId) : null;
+      return {
+        ...event,
+        actorName: actorNames.get(event.actorId)?.name ?? (event.actorId === "system" ? "System" : "Staff member"),
+        studentName: student ? [student.firstName, student.otherName, student.surname].filter(Boolean).join(" ") : "—",
+        registrationNumber: student?.registrationNumber ?? "—",
+      };
+    }) };
+  },
+});
 
 export const saveGradebookDraft = mutation({
   args: { courseId: v.id("courses"), periodId: v.id("academicPeriods"), marks: v.array(v.object({

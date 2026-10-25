@@ -18,6 +18,18 @@ export async function permissionForStudent(ctx: AcademicReadCtx, studentId: Id<"
   return grant;
 }
 
+export async function latestPermissionForLecturer(ctx: AcademicReadCtx, studentId: Id<"students">,
+  courseId: Id<"courses">, periodId: Id<"academicPeriods">, lecturerId: string) {
+  const grant = await ctx.db.query("markEditPermissions")
+    .withIndex("by_studentId_and_courseId_and_periodId", q => q.eq("studentId", studentId).eq("courseId", courseId).eq("periodId", periodId))
+    .order("desc").first();
+  if (!grant || grant.lecturerId !== lecturerId) return null;
+  const allocation = await ctx.db.get(grant.allocationId);
+  if (!allocation || allocation.lecturerId !== lecturerId || (allocation.revision ?? 0) !== grant.allocationRevision) return null;
+  if (grant.status === "granted" && !await permissionForStudent(ctx, studentId, courseId, periodId)) return null;
+  return grant;
+}
+
 export function permissionActive(grant: Awaited<ReturnType<typeof permissionForStudent>>, userId: string, now: number) {
-  return !!grant && grant.lecturerId === userId && grant.startsAt <= now && now < grant.expiresAt;
+  return !!grant && grant.status === "granted" && grant.lecturerId === userId && grant.startsAt <= now && now < grant.expiresAt;
 }

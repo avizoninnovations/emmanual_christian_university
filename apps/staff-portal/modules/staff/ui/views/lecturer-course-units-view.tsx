@@ -87,6 +87,7 @@ function SemesterSection({ title, periods, open, onOpenChange }: {
 }
 
 function CourseUnitCard({ course, periodId }: { course: CoursePeriod["courses"][number]; periodId: string }) {
+  const workflow = course.workflowStatus;
   return <Card className="overflow-hidden rounded-md border-0 bg-background shadow-sm transition-shadow hover:shadow-md">
     <div aria-hidden="true" className="flex h-20 items-end bg-gradient-to-br from-muted via-muted/80 to-primary/10 p-3">
       <Badge variant="secondary" className="font-mono">{course.code}</Badge>
@@ -94,7 +95,38 @@ function CourseUnitCard({ course, periodId }: { course: CoursePeriod["courses"][
     <CardContent className="space-y-3 p-4">
       <div className="min-h-12"><h3 className="line-clamp-2 text-sm font-semibold">{course.title}</h3><p className="mt-1 truncate text-xs text-muted-foreground">{course.programName} · {course.departmentName}</p></div>
       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground"><Badge variant="outline" className="rounded-sm">Year {course.yearOfStudy} · Sem {course.semester}</Badge><Badge variant="outline" className="rounded-sm">{course.creditUnits} CU</Badge></div>
-      <div className="flex items-center justify-between border-t border-border/60 pt-3"><span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Users className="size-3.5" />Teaching assignment</span><Button asChild size="sm" variant="ghost" className="h-8 gap-1 text-primary"><Link href={`/courses/${course.courseId}?periodId=${periodId}`}>Open unit <ChevronRight className="size-3.5" /></Link></Button></div>
+      <div className="space-y-2 border-t border-border/60 pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground"><Users className="size-3.5" />{course.studentCountCapped ? `${course.studentCount}+` : course.studentCount} students</span>
+          <Badge variant="secondary" className={`rounded-sm ${workflow === "returned" ? "bg-amber-500/10 text-amber-700 dark:text-amber-300" : workflow === "under-review" ? "bg-primary/10 text-primary" : workflow === "published" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300" : workflow === "withdrawn" ? "bg-destructive/10 text-destructive" : ""}`}>
+            {workflowLabel(workflow)}
+          </Badge>
+        </div>
+        {course.studentCount > 0 && <p className="text-xs text-muted-foreground">
+          {course.marksEnteredCount} with marks · {course.readyToSubmitCount} ready to submit
+          {course.awaitingReviewCount > 0 ? ` · ${course.awaitingReviewCount} awaiting HOD` : ""}
+          {course.returnedCount > 0 ? ` · ${course.returnedCount} returned` : ""}
+          {course.publishedCount > 0 ? ` · ${course.publishedCount} published` : ""}
+          {course.withdrawnCount > 0 ? ` · ${course.withdrawnCount} withdrawn` : ""}
+        </p>}
+        {course.entriesCloseAt && <p className="text-xs text-muted-foreground">Entry deadline: {formatCourseDeadline(course.entriesCloseAt)}</p>}
+        <div className="flex justify-end"><Button asChild size="sm" variant="ghost" className="h-8 gap-1 text-primary"><Link href={`/courses/${course.courseId}?periodId=${periodId}`}>Open unit <ChevronRight className="size-3.5" /></Link></Button></div>
+      </div>
     </CardContent>
   </Card>;
+}
+
+function workflowLabel(workflow: CoursePeriod["courses"][number]["workflowStatus"]) {
+  const labels: Record<typeof workflow, string> = {
+    "not-started": "Not started", draft: "In progress", returned: "Changes requested",
+    "under-review": "Under HOD review", published: "Published",
+    withdrawn: "Publication withdrawn", "no-students": "No students",
+  };
+  return labels[workflow];
+}
+
+function formatCourseDeadline(timestamp: number) {
+  return `${new Date(timestamp).toLocaleString("en-GB", {
+    timeZone: "Africa/Nairobi", dateStyle: "medium", timeStyle: "short",
+  })} EAT`;
 }

@@ -45,5 +45,6 @@ export const academicWorkflowTables = {
     after: v.optional(v.object({ courseworkMarks: v.number(), examMarks: v.number(), status: v.string() })),
     grantId: v.optional(v.id("markEditPermissions")), ...timestamps,
   }).index("by_departmentId", ["departmentId"])
-    .index("by_studentId_and_courseId_and_periodId", ["studentId", "courseId", "periodId"]),
+    .index("by_studentId_and_courseId_and_periodId", ["studentId", "courseId", "periodId"])
+    .index("by_courseId_and_periodId", ["courseId", "periodId"]),
 };

@@ -64,7 +64,7 @@ export function useClassResultsEntry(courseId: Id<"courses">) {
   const editable = (student: GradebookStudent, field?: keyof MarkEntry) => {
     if (!page?.isLecturer || page.period.status === "upcoming") return false;
     const grant = student.permission;
-    const actualGrant = !!grant && grant.startsAt <= now && now < grant.expiresAt;
+    const actualGrant = !!grant && grant.status === "granted" && grant.startsAt <= now && now < grant.expiresAt;
     const ordinary = page.period.status === "active" && (!page.entriesCloseAt || now < page.entriesCloseAt)
       && ["draft", "returned"].includes(student.status) && !student.requiresPermission;
     if (ordinary) return true;

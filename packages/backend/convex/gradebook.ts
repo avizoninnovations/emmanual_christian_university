@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server.js";
 import { classContext, entered } from "./lib/academicAccess.js";
-import { permissionForStudent } from "./lib/markPermissionAccess.js";
+import { latestPermissionForLecturer, permissionForStudent } from "./lib/markPermissionAccess.js";
 
 export const getCourseGradebook = query({
   args: { courseId: v.id("courses"), periodId: v.optional(v.id("academicPeriods")),
@@ -17,11 +17,12 @@ export const getCourseGradebook = query({
       .paginate({ cursor: args.cursor ?? null, numItems: 50 });
     const uniqueIds = [...new Set(page.page.map(row => row.studentId))];
     const students = await Promise.all(uniqueIds.map(async studentId => {
-      const [student, mark, permission] = await Promise.all([
+      const [student, mark, permission, permissionRequest] = await Promise.all([
         ctx.db.get(studentId),
         ctx.db.query("studentAssessments").withIndex("by_student_course_period", q =>
           q.eq("studentId", studentId).eq("courseId", args.courseId).eq("periodId", periodId)).unique(),
         permissionForStudent(ctx, studentId, args.courseId, periodId),
+        access.isLecturer ? latestPermissionForLecturer(ctx, studentId, args.courseId, periodId, access.userId) : null,
       ]);
       const hasCoursework = entered(mark, "coursework");
       const hasExam = entered(mark, "exam");
@@ -32,7 +33,7 @@ export const getCourseGradebook = query({
         courseworkEntered: hasCoursework, examEntered: hasExam, finalScore: mark?.finalScore ?? 0,
         grade: mark?.grade ?? "", gradePoints: mark?.gradePoints ?? 0,
         status: mark?.status ?? "draft", returnReason: mark?.returnReason, revision: mark?.revision ?? 0,
-        assessmentId: mark?._id, permission, requiresPermission: !!mark?.editPermissionId,
+        assessmentId: mark?._id, permission: permissionRequest ?? permission, requiresPermission: !!mark?.editPermissionId,
         isUnlocked: false, isSupplementary: mark?.isSupplementary ?? false,
         supplementaryScore: mark?.supplementaryScore, originalScore: mark?.originalScore, originalGrade: mark?.originalGrade,
         approvedSnapshot: mark?.approvedSnapshot,

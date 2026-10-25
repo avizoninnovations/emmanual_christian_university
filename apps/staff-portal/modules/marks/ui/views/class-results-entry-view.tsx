@@ -12,7 +12,8 @@ import { toast } from "sonner";
 import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-skeleton";
 import { useClassResultsEntry, type StudentFilter } from "@/modules/marks/hooks/use-class-results-entry";
 import { ClassResultsTable } from "@/modules/marks/ui/components/class-results-table";
-import { MarkPermissionDialog } from "@/modules/hod/ui/components/mark-permission-dialog";
+import { MarkPermissionDialog, displayDeadline } from "@/modules/hod/ui/components/mark-permission-dialog";
+import { MarkWorkflowActivity } from "@/modules/marks/ui/components/mark-workflow-activity";
 
 const filters: { key: StudentFilter; title: string }[] = [
   { key: "all", title: "All Students" },
@@ -93,8 +94,14 @@ export function ClassResultsEntryView({ courseId }: { courseId: Id<"courses"> })
       <Badge variant="secondary" className="gap-1.5 px-3 py-1.5"><Check className="size-3.5" /> Final Avg: {entry.averageFinal}</Badge>
       <Badge variant="outline" className="gap-1.5 px-3 py-1.5 capitalize"><Clock3 className="size-3.5" /> {gradebook.overallStatus}</Badge>
       {dirty && <span className="text-xs text-muted-foreground">Unsaved changes</span>}
-      {gradebook.returnReason && <span className="text-sm text-destructive">Returned: {gradebook.returnReason}</span>}
     </div>
+
+    {gradebook.entriesCloseAt && <div className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-border/70 bg-muted/20 px-4 py-3">
+      <div><p className="text-xs font-medium text-muted-foreground">Marks entry deadline</p><p className="text-sm font-semibold">{displayDeadline(gradebook.entriesCloseAt)} EAT</p></div>
+      <Badge variant="secondary" className="rounded-sm">{Date.now() >= gradebook.entriesCloseAt ? "Entry window closed" : "Editing freezes at deadline"}</Badge>
+    </div>}
+
+    <MarkWorkflowActivity courseId={courseId} periodId={gradebook.period._id} />
 
     <div className="flex flex-col gap-3 rounded-sm border border-border bg-card p-3">
       <div className="flex flex-wrap items-center gap-2">

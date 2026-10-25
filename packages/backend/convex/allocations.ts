@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import { assertAuthenticated } from "./lib/utils.js";
 import { Id } from "./_generated/dataModel.js";
 import { publishedAssessment } from "./lib/academicResults.js";
+import { entered } from "./lib/academicAccess.js";
 
 type LecturerCourseCard = {
   allocationId: Id<"courseAllocations">;
@@ -16,6 +17,15 @@ type LecturerCourseCard = {
   departmentName: string;
   programName: string;
   studentCount: number;
+  studentCountCapped: boolean;
+  marksEnteredCount: number;
+  readyToSubmitCount: number;
+  awaitingReviewCount: number;
+  returnedCount: number;
+  publishedCount: number;
+  withdrawnCount: number;
+  entriesCloseAt?: number;
+  workflowStatus: "not-started" | "draft" | "returned" | "under-review" | "published" | "withdrawn" | "no-students";
 };
 
 // ─────────────────────────────────────────────────────────
@@ -122,25 +132,60 @@ export const getLecturerCoursePeriods = query({
     const programIds = [...new Set(courses.flatMap((course) => course ? [course.programId] : []))];
     const programs = await Promise.all(programIds.map((programId) => ctx.db.get(programId)));
     const programMap = new Map(programs.filter((program) => program !== null).map((program) => [program._id, program.name]));
-    const studentCounts = await Promise.all(allocations.map(async (allocation) => {
-      const registrations = await ctx.db
-        .query("studentCourseRegistrations")
-        .withIndex("by_course_period", (q) =>
-          q.eq("courseId", allocation.courseId).eq("periodId", allocation.periodId)
-        )
-        .take(1000);
+    const courseWorkflows = await Promise.all(allocations.map(async (allocation) => {
+      const [registrations, assessments, gradebook] = await Promise.all([
+        ctx.db.query("studentCourseRegistrations")
+          .withIndex("by_course_period", q => q.eq("courseId", allocation.courseId).eq("periodId", allocation.periodId))
+          .take(1001),
+        ctx.db.query("studentAssessments")
+          .withIndex("by_course_period", q => q.eq("courseId", allocation.courseId).eq("periodId", allocation.periodId))
+          .take(1001),
+        ctx.db.query("academicGradebooks")
+          .withIndex("by_courseId_and_periodId", q => q.eq("courseId", allocation.courseId).eq("periodId", allocation.periodId))
+          .unique(),
+      ]);
       const studentIds = new Set(registrations
         .filter((registration) => registration.status === "registered" || registration.status === "completed")
         .map((registration) => registration.studentId));
-      return [String(allocation._id), studentIds.size] as const;
+      const marksByStudent = new Map(assessments.map(mark => [mark.studentId, mark]));
+      let marksEnteredCount = 0;
+      let readyToSubmitCount = 0;
+      let awaitingReviewCount = 0;
+      let returnedCount = 0;
+      let publishedCount = 0;
+      let withdrawnCount = 0;
+      for (const studentId of studentIds) {
+        const mark = marksByStudent.get(studentId);
+        const hasAnyMark = entered(mark ?? null, "coursework") || entered(mark ?? null, "exam");
+        const complete = entered(mark ?? null, "coursework") && entered(mark ?? null, "exam");
+        if (hasAnyMark) marksEnteredCount++;
+        if (complete && (mark?.status === "draft" || mark?.status === "returned")) readyToSubmitCount++;
+        if (mark?.status === "submitted") awaitingReviewCount++;
+        if (mark?.status === "returned") returnedCount++;
+        if (mark?.status === "approved" && !mark.publicationWithdrawn) publishedCount++;
+        if (mark?.status === "approved" && mark.publicationWithdrawn) withdrawnCount++;
+      }
+      const studentCountCapped = registrations.length > 1000 || assessments.length > 1000;
+      const studentCount = studentCountCapped ? Math.max(1000, studentIds.size) : studentIds.size;
+      const workflowStatus: LecturerCourseCard["workflowStatus"] = studentCount === 0 ? "no-students"
+        : returnedCount > 0 ? "returned"
+        : awaitingReviewCount > 0 ? "under-review"
+        : publishedCount === studentCount ? "published"
+        : withdrawnCount > 0 && publishedCount + withdrawnCount === studentCount ? "withdrawn"
+        : marksEnteredCount > 0 ? "draft" : "not-started";
+      return { allocationId: String(allocation._id), studentCount, studentCountCapped,
+        marksEnteredCount, readyToSubmitCount, awaitingReviewCount, returnedCount, publishedCount,
+        withdrawnCount, entriesCloseAt: gradebook?.entriesCloseAt, workflowStatus };
     }));
-    const studentCountByAllocation = new Map(studentCounts);
+    const workflowByAllocation = new Map(courseWorkflows.map(({ allocationId, ...summary }) => [allocationId, summary] as const));
     const grouped = new Map<string, { period: NonNullable<(typeof periods)[number]>; courses: LecturerCourseCard[] }>();
 
     for (const allocation of allocations) {
       const period = periodMap.get(allocation.periodId);
       const course = courseMap.get(allocation.courseId);
       if (!period || !course) continue;
+      const workflow = workflowByAllocation.get(String(allocation._id));
+      if (!workflow) continue;
       const key = String(period._id);
       const periodCourses = grouped.get(key)?.courses ?? [];
       periodCourses.push({
@@ -153,7 +198,7 @@ export const getLecturerCoursePeriods = query({
         semester: course.semester,
         departmentName: departmentMap.get(course.departmentId) ?? "—",
         programName: programMap.get(course.programId) ?? "—",
-        studentCount: studentCountByAllocation.get(String(allocation._id)) ?? 0,
+        ...workflow,
       });
       grouped.set(key, { period, courses: periodCourses });
     }

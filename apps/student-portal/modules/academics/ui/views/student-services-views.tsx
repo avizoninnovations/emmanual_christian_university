@@ -51,13 +51,13 @@ export function AegrotatView() {
       const attachmentId = file ? await uploadFile(await getUploadUrl({}), file) : undefined;
       await submit({ courseId: courseId as Id<"courses">, applicationType, reason, attachmentId });
       setReason(""); setCourseId(""); setFile(null); setApplicationType("illness");
-      toast.success("Special assessment application sent to your lecturer.");
+      toast.success("Missed assessment application sent to your lecturer.");
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not submit application.")); }
     finally { setBusy(false); }
   }
 
   return <div className={shell}>
-    <PageHeading eyebrow="Registration" title="Special Assessment Application" note="Ask your course lecturer to review an assessment affected by illness or other exceptional circumstances." />
+    <PageHeading eyebrow="Registration" title="Missed Assessment Application" note="Ask your course lecturer to review an assessment affected by illness or other exceptional circumstances." />
     {!data ? <Loading /> : <>
       <Card className="border-blue-100 bg-blue-50/70 shadow-none"><CardContent className="flex gap-3 p-4 text-sm text-blue-900"><AlertCircle className="mt-0.5 size-4 shrink-0" /><p>Select the course unit, explain what happened, and attach evidence if you have it. The lecturer assigned to that unit reviews your application; it does not go to the HOD.</p></CardContent></Card>
       <Card><CardHeader><CardTitle className="text-base">New Application</CardTitle><CardDescription>{data.period?.name ?? "Current semester"}</CardDescription></CardHeader><CardContent>

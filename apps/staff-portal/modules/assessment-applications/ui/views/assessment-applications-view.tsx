@@ -49,7 +49,7 @@ export function AssessmentApplicationsView() {
   }
 
   return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5">
-    <div className="flex items-center gap-2"><FileText className="size-5 text-primary" /><h1 className="text-xl font-semibold">Special Assessment Applications</h1></div>
+    <div className="flex items-center gap-2"><FileText className="size-5 text-primary" /><h1 className="text-xl font-semibold">Missed Assessment Applications</h1></div>
     <p className="text-sm text-muted-foreground">Review student requests for missed assessments in course units assigned to you.</p>
     <Tabs value={status} onValueChange={value => setStatus(value as Status | "all")}>
       <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
@@ -75,7 +75,7 @@ export function AssessmentApplicationsView() {
     <Sheet open={!!selected} onOpenChange={open => { if (!open) setSelected(null); }}>
       <SheetContent className="w-[94vw] gap-0 overflow-y-auto rounded-l-sm p-0 sm:w-[62.5vw] sm:max-w-none">
         {selected && <>
-          <SheetHeader className="border-b bg-muted/20 px-6 py-5 pr-14 text-left"><SheetTitle>{selected.courseCode} · {selected.courseTitle}</SheetTitle><SheetDescription>Special assessment application · {selected.periodName}</SheetDescription><ApplicationStatus status={selected.status} /></SheetHeader>
+          <SheetHeader className="border-b bg-muted/20 px-6 py-5 pr-14 text-left"><SheetTitle>{selected.courseCode} · {selected.courseTitle}</SheetTitle><SheetDescription>Missed assessment application · {selected.periodName}</SheetDescription><ApplicationStatus status={selected.status} /></SheetHeader>
           <div className="space-y-6 px-6 py-5">
             <section><h2 className="text-sm font-semibold">Student</h2><p className="mt-2 text-sm">{selected.studentName}</p><p className="font-mono text-xs text-muted-foreground">{selected.registrationNumber}</p></section>
             <section><h2 className="text-sm font-semibold">Application</h2><dl className="mt-2 grid gap-3 text-sm sm:grid-cols-2"><Detail label="Circumstance" value={(selected.applicationType ?? "other").replaceAll("_", " ")} /><Detail label="Submitted" value={new Date(selected.submittedAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })} /></dl><p className="mt-4 whitespace-pre-wrap rounded-sm bg-muted/30 p-4 text-sm leading-6">{selected.reason}</p>

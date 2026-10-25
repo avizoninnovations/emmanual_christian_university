@@ -83,9 +83,9 @@ function ExpandableNav({
       <span>{title}</span><ChevronDown className={`ml-auto size-4 transition-transform duration-[400ms] ${open ? "rotate-180" : ""}`} />
     </SidebarMenuButton>
     <div aria-hidden={!open} inert={!open} className={`grid transition-[grid-template-rows] duration-[400ms] ease-in-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-      <div className="overflow-hidden"><SidebarMenuSub className="mx-0 gap-1 border-l-0 px-0 py-1">
-        {children.map((child) => <SidebarMenuSubItem key={child.url}><SidebarMenuSubButton asChild isActive={pathname === child.url} className="h-10 gap-3 rounded-lg px-3 text-sm font-normal data-[active=true]:bg-muted data-[active=true]:font-normal data-[active=true]:text-foreground hover:bg-muted/70">
-          <Link href={child.url}><span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-medium text-sidebar-accent-foreground">{child.title.trim().charAt(0).toUpperCase()}</span><span>{child.title}</span></Link>
+      <div className="overflow-hidden"><SidebarMenuSub className="ml-5 gap-0.5 border-l border-sidebar-border/70 px-2 py-1">
+        {children.map((child) => <SidebarMenuSubItem key={child.url}><SidebarMenuSubButton asChild isActive={pathname === child.url} className="h-auto min-h-8 items-start gap-2 rounded-sm px-1.5 py-1.5 text-xs leading-tight font-normal overflow-visible data-[active=true]:bg-muted data-[active=true]:font-medium data-[active=true]:text-foreground hover:bg-muted/70 [&>span:last-child]:!overflow-visible [&>span:last-child]:!whitespace-normal [&>span:last-child]:!text-clip">
+          <Link href={child.url}><span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-sm bg-muted text-[10px] font-medium text-sidebar-accent-foreground">{child.title.trim().charAt(0).toUpperCase()}</span><span className="min-w-0 flex-1 break-words">{child.title}</span></Link>
         </SidebarMenuSubButton></SidebarMenuSubItem>)}
       </SidebarMenuSub></div>
     </div>
@@ -170,7 +170,7 @@ export const DashboardSidebar = () => {
               <IconRailLink title="Dead Year Dead Sem" url="/registration/dead-year-dead-sem" icon={CalendarDays} active={isActive("/registration/dead-year-dead-sem")} />
               <IconRailLink title="Retake Registration" url="/academics/retakes" icon={BookOpen} active={isActive("/academics/retakes")} />
               <IconRailLink title="Missed Paper Request" url="/academics/aggregated-units" icon={Layers} active={isActive("/academics/aggregated-units")} />
-              <IconRailLink title="Special Assessment" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
+              <IconRailLink title="Missed Assessment" url="/registration/aegrotat" icon={Award} active={isActive("/registration/aegrotat")} />
             </SidebarMenu></SidebarGroupContent>
           </SidebarGroup>
           <SidebarGroup className="border-b border-border px-1 py-2">
@@ -216,7 +216,7 @@ export const DashboardSidebar = () => {
             { title: "Dead Year Dead Sem", url: "/registration/dead-year-dead-sem" },
             { title: "Retake Registration", url: "/academics/retakes" },
             { title: "Missed Paper Request", url: "/academics/aggregated-units" },
-            { title: "Special Assessment", url: "/registration/aegrotat" },
+            { title: "Missed Assessment", url: "/registration/aegrotat" },
           ]} /></SidebarMenu></SidebarGroupContent>
         </SidebarGroup>
 

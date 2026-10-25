@@ -1,6 +1,6 @@
 import { AuthGuard } from "@/modules/auth/ui/components/auth-guard"
 import { DashboardSidebar } from "@/modules/dashboard/ui/components/dashboard-sidebar";
-import { SidebarProvider } from "@workspace/ui/components/sidebar";
+import { ResizableSidebarProvider } from "@workspace/ui/components/resizable-sidebar-provider";
 import { Provider } from "jotai";
 import { cookies } from "next/headers";
 import { DashboardTopbar } from "@/modules/dashboard/ui/components/dashboard-topbar";
@@ -13,17 +13,19 @@ export const DashboardLayout = async ({ children }: { children: React.ReactNode 
   return (
     <AuthGuard>
       <Provider>
-        <SidebarProvider
+        <ResizableSidebarProvider
+          defaultWidth={256}
           defaultOpen={defaultOpen}
           className="student-portal-theme"
-          style={{ "--sidebar-width-icon": "6rem" } as React.CSSProperties}
+          iconWidth="6rem"
+          storageKey="ecu-student-sidebar-width"
         >
           <DashboardSidebar />
           <main className="portal-content-area flex min-h-screen flex-1 flex-col bg-muted/40">
             <DashboardTopbar />
             {children}
           </main>
-        </SidebarProvider>
+        </ResizableSidebarProvider>
       </Provider>
     </AuthGuard>
   );

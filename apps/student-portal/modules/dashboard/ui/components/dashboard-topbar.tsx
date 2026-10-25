@@ -21,7 +21,7 @@ const routeNames: Record<string, string> = {
   registration: "Registration",
   "aggregated-units": "Missed Paper Request",
   "dead-year-dead-sem": "Dead Year / Dead Sem",
-  aegrotat: "Special Assessment",
+  aegrotat: "Missed Assessment",
   evaluation: "Evaluation",
   elections: "Elections",
   applications: "Applications",

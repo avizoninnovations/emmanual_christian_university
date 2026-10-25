@@ -13,10 +13,4 @@ export const staffWorkspaces: Record<string, StaffWorkspace> = {
   disciplinary: { title: "Staff Disciplinary", sections: [
     { title: "Case Record", fields: ["Case reference", "Notice date", "Response deadline", "Case status", "Outcome"] },
   ] },
-  "e-learning-courses": { title: "E-Learning Courses", sections: [
-    { title: "Online Courses", fields: ["Course unit", "Online course", "Enrollment", "Learning platform status"] },
-  ] },
-  "aegrotat-units": { title: "Missed Assessment Applications", sections: [
-    { title: "Applications", fields: ["Student", "Course unit", "Circumstance", "Supporting evidence", "Review status"] },
-  ] },
 };

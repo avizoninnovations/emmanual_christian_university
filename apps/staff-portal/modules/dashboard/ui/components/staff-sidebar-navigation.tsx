@@ -6,7 +6,7 @@ import {
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
   Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
   DoorOpen, MessageSquareWarning, Scale, ChartNoAxesCombined,
-  Building2, BriefcaseBusiness, MonitorPlay,
+  Building2, BriefcaseBusiness,
   ChevronDown, ChevronRight,
 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/collapsible";
@@ -36,7 +36,6 @@ export const staffSidebarSections: StaffSidebarSection[] = [
   { key: "leadership", category: "ACADEMICS", title: "Department Management", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Missed Paper Approvals", "/hod/aggregated-units", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
   { key: "lecturer-courses", category: "ACADEMICS", title: "Lecturer Courses", icon: BookOpen, items: [
     link("Missed Paper Requests", "/workspace/aggregated-units", Layers),
-    link("E-Learning Courses", "/workspace/e-learning-courses", MonitorPlay),
     link("My Course Units", "/courses", BookOpen),
     link("Assessment Applications", "/workspace/aegrotat-units", ClipboardCheck),
     link("Teaching Cover", "/cover-requests", UsersRound),

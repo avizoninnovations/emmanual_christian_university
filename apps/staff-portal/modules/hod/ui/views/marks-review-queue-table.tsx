@@ -1,15 +1,12 @@
 import Link from "next/link";
-import { BookOpen, CheckCheck, CircleDot, ClipboardCheck, Eye } from "lucide-react";
-import type { FunctionReturnType } from "convex/server";
-import { api } from "@workspace/backend/_generated/api";
+import { BookOpen, CheckCheck, CircleAlert, CircleDot, ClipboardCheck, Eye } from "lucide-react";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
+import { getMarksReviewPresentation, type ReviewCourse } from "./marks-review-presentation";
 
-type Course = FunctionReturnType<typeof api.hod.courses>["page"][number];
-
-export function MarksReviewQueueTable({ courses, periodId }: { courses: Course[]; periodId: Id<"academicPeriods"> }) {
+export function MarksReviewQueueTable({ courses, periodId }: { courses: ReviewCourse[]; periodId: Id<"academicPeriods"> }) {
   return (
     <div className="w-full overflow-x-auto rounded-sm border bg-card shadow-sm">
       <Table className="min-w-[760px]">
@@ -27,10 +24,10 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: Course[]
           {courses.map((course, index) => {
             const submitted = course.hasSubmitted;
             const approved = course.fullyApproved;
-            const Icon = submitted ? CircleDot : approved ? CheckCheck : course.hasMarks ? CheckCheck : BookOpen;
-            const ActionIcon = approved ? Eye : submitted ? ClipboardCheck : BookOpen;
-            const reviewLabel = submitted && course.approvedCount > 0 ? `Pending + approved · ${course.approvedCount}/${course.studentCount}`
-              : submitted ? "Awaiting review" : approved ? `Fully approved · ${course.approvedCount}/${course.studentCount}` : course.hasMarks ? "Marks entered" : "No marks entered";
+            const presentation = getMarksReviewPresentation(course);
+            const Icon = submitted ? CircleDot : approved ? CheckCheck : presentation.missingCount > 0 ? CircleAlert : course.hasMarks ? CheckCheck : BookOpen;
+            const ActionIcon = presentation.actionKind === "approved" ? Eye : presentation.actionKind === "review" ? ClipboardCheck
+              : presentation.actionKind === "missing" ? CircleAlert : BookOpen;
             return (
               <TableRow key={course._id} className="transition-colors hover:bg-muted/25">
                 <TableCell className="py-4 pl-5 font-mono text-xs tabular-nums text-muted-foreground">{index + 1}</TableCell>
@@ -44,14 +41,15 @@ export function MarksReviewQueueTable({ courses, periodId }: { courses: Course[]
                 </TableCell>
                 <TableCell className="max-w-[15rem] truncate py-4">{course.lecturerName || "Unassigned"}</TableCell>
                 <TableCell className="py-4">
-                  <Badge variant={submitted || approved ? "secondary" : "outline"} className={submitted || approved ? "rounded-sm bg-primary/10 text-primary" : "rounded-sm"}>
-                    <Icon className="mr-1 size-3.5" />{reviewLabel}
+                  <Badge variant={submitted || approved || presentation.missingCount > 0 ? "secondary" : "outline"}
+                    className={`max-w-full whitespace-normal rounded-sm leading-snug ${submitted || approved || presentation.missingCount > 0 ? "bg-primary/10 text-primary" : ""}`}>
+                    <Icon className="mr-1 size-3.5 shrink-0" />{presentation.statusLabel}
                   </Badge>
                 </TableCell>
                 <TableCell className="py-4 pr-5 text-right">
-                  <Button asChild size="sm" variant={submitted || approved ? "default" : "outline"} className="rounded-sm shadow-sm">
+                  <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"} className="rounded-sm shadow-sm">
                     <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
-                      <ActionIcon className="size-4" />{approved ? "View approved marks" : submitted ? "Review marks" : "Open course unit"}
+                      <ActionIcon className="size-4" />{presentation.actionLabel}
                     </Link>
                   </Button>
                 </TableCell>

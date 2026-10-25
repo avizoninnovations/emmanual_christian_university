@@ -1,34 +1,33 @@
 import Link from "next/link";
-import { BookOpen, CheckCheck, CircleDot, ClipboardCheck, Eye, UserRound } from "lucide-react";
-import type { FunctionReturnType } from "convex/server";
-import { api } from "@workspace/backend/_generated/api";
+import { BookOpen, CheckCheck, CircleAlert, CircleDot, ClipboardCheck, Eye, UserRound } from "lucide-react";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent } from "@workspace/ui/components/card";
+import { getMarksReviewPresentation, type ReviewCourse } from "./marks-review-presentation";
 
-type Course = FunctionReturnType<typeof api.hod.courses>["page"][number];
-
-export function MarksReviewQueueCard({ course, periodId }: { course: Course; periodId: Id<"academicPeriods"> }) {
+export function MarksReviewQueueCard({ course, periodId }: { course: ReviewCourse; periodId: Id<"academicPeriods"> }) {
   const submitted = course.hasSubmitted;
   const approved = course.fullyApproved;
-  const Icon = submitted ? CircleDot : approved ? CheckCheck : course.hasMarks ? CheckCheck : BookOpen;
-  const reviewLabel = submitted && course.approvedCount > 0 ? `Pending + approved · ${course.approvedCount}/${course.studentCount}`
-    : submitted ? "Awaiting review" : approved ? `Fully approved · ${course.approvedCount}/${course.studentCount}` : course.hasMarks ? "Marks entered" : "No marks entered";
-  const ActionIcon = approved ? Eye : submitted ? ClipboardCheck : BookOpen;
+  const presentation = getMarksReviewPresentation(course);
+  const hasMissingMarks = presentation.missingCount > 0;
+  const Icon = submitted ? CircleDot : approved ? CheckCheck : hasMissingMarks ? CircleAlert : course.hasMarks ? CheckCheck : BookOpen;
+  const ActionIcon = presentation.actionKind === "approved" ? Eye : presentation.actionKind === "review" ? ClipboardCheck
+    : presentation.actionKind === "missing" ? CircleAlert : BookOpen;
 
   return (
     <Card className="group relative gap-0 overflow-hidden rounded-sm border-border/80 py-0 shadow-sm transition-shadow hover:shadow-md">
-      <div className={`absolute inset-y-0 left-0 w-1 ${submitted ? "bg-primary" : "bg-muted-foreground/30"}`} />
+      <div className={`absolute inset-y-0 left-0 w-1 ${submitted || hasMissingMarks ? "bg-primary" : "bg-muted-foreground/30"}`} />
       <div className="flex items-start gap-3 border-b bg-muted/20 p-4 pl-5">
-        <span className={`flex size-10 shrink-0 items-center justify-center rounded-sm ${submitted ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+        <span className={`flex size-10 shrink-0 items-center justify-center rounded-sm ${submitted || hasMissingMarks ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
           <BookOpen className="size-5" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-center gap-1.5">
             <Badge variant="outline" className="rounded-sm bg-background font-mono text-xs">{course.code}</Badge>
-            <Badge variant={submitted || approved ? "secondary" : "outline"} className={submitted || approved ? "rounded-sm bg-primary/10 text-primary" : "rounded-sm"}>
-              <Icon className="mr-1 size-3.5" />{reviewLabel}
+            <Badge variant={submitted || approved || presentation.missingCount > 0 ? "secondary" : "outline"}
+              className={`max-w-full whitespace-normal rounded-sm leading-snug ${submitted || approved || presentation.missingCount > 0 ? "bg-primary/10 text-primary" : ""}`}>
+              <Icon className="mr-1 size-3.5 shrink-0" />{presentation.statusLabel}
             </Badge>
           </div>
           <h2 className="line-clamp-2 font-semibold leading-snug">{course.title}</h2>
@@ -50,9 +49,9 @@ export function MarksReviewQueueCard({ course, periodId }: { course: Course; per
           <span><strong className="font-semibold text-foreground">{course.draftCount}</strong> draft / returned</span>
           <span><strong className="font-semibold text-foreground">{Math.max(course.studentCount - course.marksEnteredCount, 0)}</strong> not entered</span>
         </div>
-        <Button asChild size="sm" variant={submitted || approved ? "default" : "outline"} className="w-full justify-start gap-2 rounded-sm shadow-sm">
+        <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"} className="w-full justify-start gap-2 rounded-sm shadow-sm">
           <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
-            <ActionIcon className="size-4" />{approved ? "View approved marks" : submitted ? "Review submitted marks" : "Open course unit"}
+            <ActionIcon className="size-4" />{presentation.actionLabel}
           </Link>
         </Button>
       </CardContent>

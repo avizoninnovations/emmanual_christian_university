@@ -22,6 +22,7 @@ export const academicWorkflowTables = {
   academicGradebooks: defineTable({
     courseId: v.id("courses"), periodId: v.id("academicPeriods"), departmentId: v.id("departments"),
     reviewerId: v.optional(v.string()), entriesCloseAt: v.optional(v.number()),
+    freezeAtDeadline: v.optional(v.boolean()),
     ...timestamps,
   }).index("by_courseId_and_periodId", ["courseId", "periodId"])
     .index("by_reviewerId_and_periodId", ["reviewerId", "periodId"]),

@@ -109,7 +109,9 @@ export const getAvailableCoursesForRegistration = query({
       )
       .collect();
 
-    const registeredIds = existingRegistrations.map((r) => r.courseId);
+    const registeredIds = existingRegistrations
+      .filter((registration) => registration.status === "registered")
+      .map((registration) => registration.courseId);
 
     // Enrich courses
     const enriched = targetCourses.map((c) => ({
@@ -245,6 +247,7 @@ export const getMyRegisteredCourses = query({
       .withIndex("by_student_period", (q: any) =>
         q.eq("studentId", student._id).eq("periodId", periodId!)
       )
+      .filter((q: any) => q.eq(q.field("status"), "registered"))
       .collect();
 
     const usersMap = await getUsersMap(ctx);

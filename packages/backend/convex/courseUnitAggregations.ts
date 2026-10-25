@@ -41,7 +41,7 @@ export const availableCourses = query({
     const requestMap = new Map(requests.map(request => [String(request.courseId), request]));
     const options = allocations.flatMap(allocation => {
       const course = courseMap.get(allocation.courseId);
-      if (!course || course.status !== "active" || departmentMap.get(course.departmentId)?.status !== "active" || registered.has(course._id)) return [];
+      if (!course || course.status !== "active" || course.semester !== period.term || departmentMap.get(course.departmentId)?.status !== "active" || registered.has(course._id)) return [];
       if (course.programId === student.programId && course.yearOfStudy === student.yearOfStudy && course.semester === period.term) return [];
       const existing = requestMap.get(String(course._id));
       if (existing && requestIsActive(existing.status)) return [];
@@ -61,11 +61,13 @@ export const availableCourses = query({
 });
 
 export const myRequests = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: { periodId: v.id("academicPeriods"), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
     const userId = await assertAuthenticated(ctx);
     const student = await getCurrentStudent(ctx, userId);
-    const page = await ctx.db.query("studentCourseUnitAggregations").withIndex("by_student_and_requestedAt", q => q.eq("studentId", student._id))
+    const period = await ctx.db.get(args.periodId);
+    if (!period || period.status !== "active") throw new ConvexError("Choose the active Academic Period to view aggregation requests.");
+    const page = await ctx.db.query("studentCourseUnitAggregations").withIndex("by_student_period", q => q.eq("studentId", student._id).eq("periodId", period._id))
       .order("desc").paginate(args.paginationOpts);
     return { ...page, page: await enrichAggregationRequests(ctx, page.page) };
   },
@@ -86,7 +88,7 @@ export const submitRequest = mutation({
       ctx.db.query("studentCourseUnitAggregations").withIndex("by_student_course_period", q => q.eq("studentId", student._id).eq("courseId", args.courseId).eq("periodId", period._id)).unique(),
     ]);
     const department = course ? await ctx.db.get(course.departmentId) : null;
-    if (!course || course.status !== "active" || !allocation || !department || department.status !== "active") throw new ConvexError("This course unit is not available for aggregation in the active Academic Period.");
+    if (!course || course.status !== "active" || course.semester !== period.term || !allocation || !department || department.status !== "active") throw new ConvexError("This course unit is not offered for aggregation in the active semester.");
     if (registrations.length > 100) throw new ConvexError("Your current registration list is too large to verify safely. Contact the Registrar before requesting an aggregated unit.");
     if (course.programId === student.programId && course.yearOfStudy === student.yearOfStudy && course.semester === period.term) {
       throw new ConvexError("This course belongs to your regular semester registration. Use Course Registration instead.");

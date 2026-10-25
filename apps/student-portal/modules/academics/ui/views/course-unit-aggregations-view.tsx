@@ -17,10 +17,13 @@ import { CourseAggregationRequestDialog } from "../components/course-aggregation
 
 type Candidate = FunctionReturnType<typeof api.courseUnitAggregations.availableCourses>["courses"][number];
 type StudentRequest = FunctionReturnType<typeof api.courseUnitAggregations.myRequests>["page"][number];
+type EnrolledCourse = FunctionReturnType<typeof api.student_portal.getMyRegisteredCourses>[number];
 
 export function CourseUnitAggregationsView() {
   const available = useQuery(api.courseUnitAggregations.availableCourses, {});
-  const requests = usePaginatedQuery(api.courseUnitAggregations.myRequests, {}, { initialNumItems: 20 });
+  const periodId = available?.period?._id;
+  const requests = usePaginatedQuery(api.courseUnitAggregations.myRequests, periodId ? { periodId } : "skip", { initialNumItems: 20 });
+  const enrolledCourses = useQuery(api.student_portal.getMyRegisteredCourses, periodId ? {} : "skip");
   const submitRequest = useMutation(api.courseUnitAggregations.submitRequest);
   const withdrawRequest = useMutation(api.courseUnitAggregations.withdrawRequest);
   const [selected, setSelected] = useState<Candidate | null>(null);
@@ -60,6 +63,7 @@ export function CourseUnitAggregationsView() {
     <Tabs defaultValue="available">
       <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
         <TabsTrigger value="available" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">Available units</TabsTrigger>
+        <TabsTrigger value="enrolled" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">Enrolled this semester <span className="ml-1 tabular-nums">{enrolledCourses?.length ?? 0}</span></TabsTrigger>
         <TabsTrigger value="requests" className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">My requests <span className="ml-1 tabular-nums">{requestRows.length}{requests.status === "CanLoadMore" ? "+" : ""}</span></TabsTrigger>
       </TabsList>
       <TabsContent value="available" className="space-y-4 pt-4">
@@ -75,6 +79,11 @@ export function CourseUnitAggregationsView() {
           </Card>)}</div>
           : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center"><BookOpen className="mx-auto size-8 text-muted-foreground" /><p className="mt-3 font-medium">{available?.registrationLoadCapped ? "Course load verification required." : !available?.period ? "No active Academic Period." : normalized ? "No course units match your search." : "No aggregated course units are available."}</p><p className="mt-1 text-sm text-muted-foreground">{available?.registrationLoadCapped ? "The Registrar can confirm your current registration before you submit." : !available?.period ? "Requests open when the university starts an active semester." : "Units already in your regular semester plan are handled through Course Registration."}</p></CardContent></Card>}
         {available?.capped && <p className="text-xs text-muted-foreground">Showing the first 500 currently allocated course units. Narrow your search or contact your Department.</p>}
+      </TabsContent>
+      <TabsContent value="enrolled" className="space-y-3 pt-4">
+        {enrolledCourses === undefined ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{[1, 2, 3].map(item => <Skeleton key={item} className="h-20" />)}</div>
+          : enrolledCourses.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{enrolledCourses.map((course: EnrolledCourse) => <Card key={course.registrationId} className="rounded-sm border-border/70 shadow-none"><CardContent className="flex items-start justify-between gap-3 p-4"><div className="min-w-0"><p className="font-mono text-xs text-muted-foreground">{course.code} · {course.creditUnits} CU</p><h2 className="mt-1 font-medium">{course.title}</h2><p className="mt-1 text-xs text-muted-foreground">{course.lecturerName}</p></div><Badge variant="secondary" className="shrink-0 rounded-sm">Enrolled</Badge></CardContent></Card>)}</div>
+          : <Card className="rounded-sm border-dashed shadow-none"><CardContent className="py-12 text-center text-sm text-muted-foreground">You have no enrolled course units for this semester.</CardContent></Card>}
       </TabsContent>
       <TabsContent value="requests" className="space-y-3 pt-4">
         {requests.status === "LoadingFirstPage" ? <div className="space-y-3">{[1, 2].map(item => <Skeleton key={item} className="h-28" />)}</div>

@@ -22,6 +22,7 @@ import type * as departmentAllocations from "../departmentAllocations.js";
 import type * as finance from "../finance.js";
 import type * as gradebook from "../gradebook.js";
 import type * as hod from "../hod.js";
+import type * as hodLecturers from "../hodLecturers.js";
 import type * as http from "../http.js";
 import type * as lib_academicAccess from "../lib/academicAccess.js";
 import type * as lib_academicAudit from "../lib/academicAudit.js";
@@ -77,6 +78,7 @@ declare const fullApi: ApiFromModules<{
   finance: typeof finance;
   gradebook: typeof gradebook;
   hod: typeof hod;
+  hodLecturers: typeof hodLecturers;
   http: typeof http;
   "lib/academicAccess": typeof lib_academicAccess;
   "lib/academicAudit": typeof lib_academicAudit;

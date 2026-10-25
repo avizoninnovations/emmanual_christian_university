@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, BookOpen, ClipboardCheck, UserRound } from "lucide-react";
+import { AlertCircle, ArrowUpRight, BookOpen, UserRound } from "lucide-react";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
@@ -37,7 +37,7 @@ export function MarksReviewQueueCard({ course, periodId }: { course: ReviewCours
         <Button asChild size="sm" variant={presentation.highlightAction ? "default" : "outline"} className="w-full justify-between gap-2 rounded-sm shadow-sm">
           <Link href={`/hod/review-queue/${course._id}?periodId=${periodId}`}>
             <span className="flex min-w-0 items-center gap-2">
-              {course.hasSubmitted && <ClipboardCheck className="size-4 shrink-0" />}
+              <AlertCircle className="size-4 shrink-0" />
               <span className="truncate">{presentation.actionLabel}</span>
             </span>
             <ArrowUpRight className="ml-auto size-4 shrink-0" />

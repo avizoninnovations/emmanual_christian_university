@@ -5,14 +5,10 @@ export type ReviewCourse = FunctionReturnType<typeof api.hod.courses>["page"][nu
 
 export function getMarksReviewPresentation(course: ReviewCourse) {
   const missingCount = Math.max(course.studentCount - course.marksEnteredCount, 0);
-  const actionKind = course.hasSubmitted ? "review"
-    : course.fullyApproved ? "approved"
-      : missingCount > 0 ? "missing" : "open";
 
   return {
     missingCount,
-    actionKind,
     actionLabel: "View class marks",
-    highlightAction: actionKind !== "open",
+    highlightAction: course.hasSubmitted || course.fullyApproved || missingCount > 0,
   } as const;
 }

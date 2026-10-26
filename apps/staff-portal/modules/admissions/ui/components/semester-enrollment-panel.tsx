@@ -134,8 +134,8 @@ export function SemesterEnrollmentPanel() {
     <div className="space-y-4">
       <Card className="rounded-sm border-border/70 shadow-none">
         <CardContent className="space-y-4 p-4 md:p-5">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div className="w-full max-w-sm space-y-2">
+          <div className="grid items-end gap-3 md:grid-cols-2 xl:grid-cols-[minmax(190px,1fr)_minmax(190px,1fr)_minmax(220px,1fr)_auto]">
+            <div className="min-w-0 space-y-2">
               <label
                 htmlFor="admissions-period"
                 className="text-sm font-medium"
@@ -152,7 +152,7 @@ export function SemesterEnrollmentPanel() {
                     setSelected(new Set());
                   }}
                 >
-                  <SelectTrigger id="admissions-period" className="rounded-sm">
+                  <SelectTrigger id="admissions-period" className="w-full rounded-sm">
                     <SelectValue placeholder="Choose an active or upcoming semester" />
                   </SelectTrigger>
                   <SelectContent>
@@ -165,7 +165,7 @@ export function SemesterEnrollmentPanel() {
                 </Select>
               )}
             </div>
-            <div className="w-full max-w-sm space-y-2">
+            <div className="min-w-0 space-y-2">
               <label htmlFor="admissions-program" className="text-sm font-medium">Program</label>
               {programs === undefined ? <Skeleton className="h-10 w-full" /> : (
                 <Select
@@ -175,7 +175,7 @@ export function SemesterEnrollmentPanel() {
                     setSelected(new Set());
                   }}
                 >
-                  <SelectTrigger id="admissions-program" className="rounded-sm">
+                  <SelectTrigger id="admissions-program" className="w-full rounded-sm">
                     <SelectValue placeholder="All programs" />
                   </SelectTrigger>
                   <SelectContent>
@@ -187,17 +187,22 @@ export function SemesterEnrollmentPanel() {
                 </Select>
               )}
             </div>
-            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-              <div className="relative min-w-56 flex-1 sm:flex-none">
+            <div className="relative min-w-0 space-y-2">
+              <label htmlFor="admissions-student-search" className="text-sm font-medium">Search</label>
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                  id="admissions-student-search"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search students"
-                  className="rounded-sm pl-9 sm:w-64"
+                  className="w-full rounded-sm pl-9"
                 />
               </div>
+            </div>
+            <div className="md:col-span-2 xl:col-span-1">
               <Button
+                className="w-full xl:w-auto"
                 onClick={() => void enrollSelected()}
                 disabled={
                   busy ||

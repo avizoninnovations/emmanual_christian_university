@@ -10,9 +10,10 @@ const financeSections: Record<string, FinanceOfficeSection> = {
   sponsors: "sponsors",
   reconciliation: "reconciliation",
   reports: "reports",
+  payroll: "payroll",
 };
 
-const managementSections = new Set(["fees", "sponsors", "reports"]);
+const managementSections = new Set(["fees", "sponsors", "reports", "payroll"]);
 
 export default async function FinanceOfficeSectionPage({ params }: { params: Promise<{ section: string }> }) {
   const { section } = await params;

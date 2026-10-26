@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   type LucideIcon,
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
-  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange, DollarSign, Coins, Award, UserCheck,
+  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange, DollarSign, Banknote, Coins, Award, UserCheck,
   DoorOpen, MessageSquareWarning, Scale, ChartNoAxesCombined,
   Building2, BriefcaseBusiness,
   ChevronDown, ChevronRight,
@@ -56,6 +56,7 @@ export const staffSidebarSections: StaffSidebarSection[] = [
     link("Sponsors & Assistance", "/finance-office/sponsors", Award, ["finance", "bursar", "admin"]),
     link("Cash Reconciliation", "/finance-office/reconciliation", Scale, ["finance", "bursar", "cashier", "admin"]),
     link("Financial Reports", "/finance-office/reports", FileSpreadsheet, ["finance", "bursar", "admin"]),
+    link("Staff Payroll", "/finance-office/payroll", Banknote, ["finance", "bursar", "admin"]),
   ] },
   { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
   { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },

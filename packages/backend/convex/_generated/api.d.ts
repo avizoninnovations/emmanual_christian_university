@@ -26,6 +26,7 @@ import type * as courses from "../courses.js";
 import type * as demoSeed from "../demoSeed.js";
 import type * as departmentAllocations from "../departmentAllocations.js";
 import type * as finance from "../finance.js";
+import type * as financePayroll from "../financePayroll.js";
 import type * as gradebook from "../gradebook.js";
 import type * as hod from "../hod.js";
 import type * as hodLecturers from "../hodLecturers.js";
@@ -40,6 +41,7 @@ import type * as lib_admissionsTestFixtures from "../lib/admissionsTestFixtures.
 import type * as lib_courseUnitAggregationAccess from "../lib/courseUnitAggregationAccess.js";
 import type * as lib_demoAcademicWorkflowSeed from "../lib/demoAcademicWorkflowSeed.js";
 import type * as lib_demoAgricultureMarksSeed from "../lib/demoAgricultureMarksSeed.js";
+import type * as lib_demoPayrollSeed from "../lib/demoPayrollSeed.js";
 import type * as lib_demoPortalSeed from "../lib/demoPortalSeed.js";
 import type * as lib_departmentLeadership from "../lib/departmentLeadership.js";
 import type * as lib_markPermissionAccess from "../lib/markPermissionAccess.js";
@@ -97,6 +99,7 @@ declare const fullApi: ApiFromModules<{
   demoSeed: typeof demoSeed;
   departmentAllocations: typeof departmentAllocations;
   finance: typeof finance;
+  financePayroll: typeof financePayroll;
   gradebook: typeof gradebook;
   hod: typeof hod;
   hodLecturers: typeof hodLecturers;
@@ -111,6 +114,7 @@ declare const fullApi: ApiFromModules<{
   "lib/courseUnitAggregationAccess": typeof lib_courseUnitAggregationAccess;
   "lib/demoAcademicWorkflowSeed": typeof lib_demoAcademicWorkflowSeed;
   "lib/demoAgricultureMarksSeed": typeof lib_demoAgricultureMarksSeed;
+  "lib/demoPayrollSeed": typeof lib_demoPayrollSeed;
   "lib/demoPortalSeed": typeof lib_demoPortalSeed;
   "lib/departmentLeadership": typeof lib_departmentLeadership;
   "lib/markPermissionAccess": typeof lib_markPermissionAccess;

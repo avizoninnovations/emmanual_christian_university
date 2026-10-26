@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useQuery } from "convex/react";
-import { ArrowRight, Banknote, FileSpreadsheet, Landmark, ShieldAlert, UserCheck, Wallet } from "lucide-react";
+import { ArrowRight, Banknote, FileSpreadsheet, Landmark, ShieldAlert, UserCheck, Wallet, UsersRound } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
@@ -59,6 +59,7 @@ export function FinanceDashboardView() {
           {canManageFinance && <FinanceAction href="/finance-office/sponsors" icon={Landmark} title="Sponsors and assistance" />}
           <FinanceAction href="/finance-office/reconciliation" icon={Banknote} title="Cash reconciliation" />
           {canManageFinance && <FinanceAction href="/finance-office/reports" icon={ArrowRight} title="Financial reports" />}
+          {canManageFinance && <FinanceAction href="/finance-office/payroll" icon={UsersRound} title="Staff payroll" />}
         </section>
       </div>
     </main>

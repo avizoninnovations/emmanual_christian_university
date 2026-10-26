@@ -9,6 +9,7 @@ import { logAction } from "./audit_logger.js";
 import { ConvexError } from "convex/values";
 import { seedDemoAcademicWorkflow } from "./lib/demoAcademicWorkflowSeed.js";
 import { seedDemoAgricultureMarks } from "./lib/demoAgricultureMarksSeed.js";
+import { seedDemoPayroll } from "./lib/demoPayrollSeed.js";
 
 const stamp = () => Date.now();
 
@@ -50,7 +51,7 @@ export const seedDemoData = internalAction({
       userIds[account.email] = userId;
     }
 
-    const insert = makeFunctionReference<"mutation", { userIds: Record<string, string> }, { inserted: number; workflowRecords: number; agricultureMarks: number; students: number; staff: number; courseUnits: number; authAccounts: number }>("demoSeed:insertDemoData");
+    const insert = makeFunctionReference<"mutation", { userIds: Record<string, string> }, { inserted: number; workflowRecords: number; agricultureMarks: number; payrollStatements: number; students: number; staff: number; courseUnits: number; authAccounts: number }>("demoSeed:insertDemoData");
     return await ctx.runMutation(insert, { userIds });
   },
 });
@@ -109,6 +110,7 @@ export const insertDemoData = internalMutation({
         inserted++;
       }
     }
+    const payrollStatements = await seedDemoPayroll(ctx, staffIds, now);
 
     for (const student of fixture.studentAccounts) {
       const userId = userIds[student.email]!;
@@ -213,7 +215,7 @@ export const insertDemoData = internalMutation({
     inserted += agricultureMarks;
     inserted += await seedPortalServices(ctx, { studentIds, courseIds, periodIds, staffIds, now });
     await logAction(ctx, { action: "SEED_DEMO_PORTAL", resource: "students", details: "Updated fictional demo profiles, student/access identifiers, and linked portal service fixtures." });
-    return { inserted, workflowRecords, agricultureMarks, students: fixture.studentAccounts.length, staff: fixture.staffAccounts.length, courseUnits: Object.keys(courseIds).length, authAccounts: Object.keys(userIds).length };
+    return { inserted, workflowRecords, agricultureMarks, payrollStatements, students: fixture.studentAccounts.length, staff: fixture.staffAccounts.length, courseUnits: Object.keys(courseIds).length, authAccounts: Object.keys(userIds).length };
   },
 });
 

@@ -72,9 +72,9 @@ import { CashierReconciliationView } from "./cashier-reconciliation-view";
 import { SponsorsManagerView } from "./sponsors-manager-view";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-export type FinanceOfficeSection = "overview" | "accounts" | "payments" | "fees" | "sponsors" | "reconciliation" | "reports";
+export type FinanceOfficeSection = "overview" | "accounts" | "payments" | "fees" | "sponsors" | "reconciliation" | "reports" | "payroll";
 
-const sectionTabs: Record<Exclude<FinanceOfficeSection, "reports">, string> = {
+const sectionTabs: Record<Exclude<FinanceOfficeSection, "reports" | "payroll">, string> = {
   overview: "overview",
   accounts: "ledgers",
   payments: "transactions",
@@ -83,7 +83,7 @@ const sectionTabs: Record<Exclude<FinanceOfficeSection, "reports">, string> = {
   reconciliation: "reconciliation",
 };
 
-const sectionTitles: Record<Exclude<FinanceOfficeSection, "reports">, string> = {
+const sectionTitles: Record<Exclude<FinanceOfficeSection, "reports" | "payroll">, string> = {
   overview: "Finance Office",
   accounts: "Student Accounts",
   payments: "Payments & Receipts",
@@ -94,7 +94,7 @@ const sectionTitles: Record<Exclude<FinanceOfficeSection, "reports">, string> = 
 
 export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<string>(section && section !== "reports" ? sectionTabs[section] : "overview");
+  const [activeTab, setActiveTab] = useState<string>(section && section !== "reports" && section !== "payroll" ? sectionTabs[section] : "overview");
   const { roles } = useCurrentUser();
   const roleSet = new Set(roles.map((role) => role.toLowerCase()));
   const canManageFees = ["admin", "finance", "bursar"].some((role) => roleSet.has(role));
@@ -233,7 +233,7 @@ export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight">{section && section !== "reports" ? sectionTitles[section] : "Finance Office"}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{section && section !== "reports" && section !== "payroll" ? sectionTitles[section] : "Finance Office"}</h1>
             <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/20">
               {activePeriod ? `${activePeriod.name} (${activePeriod.year})` : "All Periods"}
             </Badge>

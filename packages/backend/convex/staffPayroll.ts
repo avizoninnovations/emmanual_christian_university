@@ -28,7 +28,7 @@ export const getMyFinanceOverview = query({
           q.eq("staffProfileId", profile._id),
         )
         .order("desc")
-        .take(6),
+        .take(30),
       ctx.db
         .query("staffPayrollNotices")
         .withIndex("by_audience_publishedAt", (q) =>
@@ -44,9 +44,13 @@ export const getMyFinanceOverview = query({
         .order("desc")
         .take(10),
     ]);
-    const visibleStatements = statements.filter(
-      (statement) => statement.status !== "void",
+    const statementPeriods = await Promise.all(
+      [...new Set(statements.map((statement) => statement.payPeriodId))].map((id) => ctx.db.get(id)),
     );
+    const periodById = new Map(statementPeriods.filter(Boolean).map((period) => [period!._id, period!]));
+    const visibleStatements = statements.filter(
+      (statement) => statement.status !== "void" && ["published", "closed"].includes(periodById.get(statement.payPeriodId)?.status ?? ""),
+    ).slice(0, 6);
     const visibleNotices = [...globalNotices, ...individualNotices]
       .filter(
         (notice) =>
@@ -55,13 +59,8 @@ export const getMyFinanceOverview = query({
       )
       .sort((left, right) => right.publishedAt - left.publishedAt)
       .slice(0, 10);
-    const periods = await Promise.all(
-      [
-        ...new Set(visibleStatements.map((statement) => statement.payPeriodId)),
-      ].map((id) => ctx.db.get(id)),
-    );
     const periodLabels = new Map(
-      periods.filter(Boolean).map((period) => [period!._id, period!.label]),
+      [...periodById.values()].map((period) => [period._id, period.label]),
     );
     return {
       latestStatement: visibleStatements[0]
@@ -93,16 +92,17 @@ export const getMyPayStatements = query({
       )
       .order("desc")
       .paginate(args.paginationOpts);
-    const statements = page.page.filter(
-      (statement) => statement.status !== "void",
-    );
     const periods = await Promise.all(
-      [...new Set(statements.map((statement) => statement.payPeriodId))].map(
+      [...new Set(page.page.map((statement) => statement.payPeriodId))].map(
         (id) => ctx.db.get(id),
       ),
     );
+    const periodById = new Map(periods.filter(Boolean).map((period) => [period!._id, period!]));
+    const statements = page.page.filter(
+      (statement) => statement.status !== "void" && ["published", "closed"].includes(periodById.get(statement.payPeriodId)?.status ?? ""),
+    );
     const periodLabels = new Map(
-      periods.filter(Boolean).map((period) => [period!._id, period!.label]),
+      [...periodById.values()].map((period) => [period._id, period.label]),
     );
     return {
       ...page,
@@ -129,6 +129,9 @@ export const getMyPayStatementDetails = query({
         "This pay statement is not available to your account.",
       );
     const period = await ctx.db.get(statement.payPeriodId);
+    if (!period || period.status === "draft") {
+      throw new ConvexError("This pay statement has not been published to staff yet.");
+    }
     return { statement, period };
   },
 });

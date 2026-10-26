@@ -512,11 +512,12 @@ export const getExaminationClearanceCard = query({
       )
       .first();
 
-    const outstandingBalance = ledger?.balance ?? 0;
-    const isFinanceCleared =
-      outstandingBalance <= 0 ||
-      student.financeStatus === "cleared" ||
-      ledger?.status === "cleared";
+    const outstandingBalance = ledger
+      ? Math.max(0, ledger.balance ?? ledger.totalDue - ledger.totalPaid)
+      : undefined;
+    const isFinanceCleared = ledger
+      ? outstandingBalance === 0 && (ledger.totalDue > 0 || ledger.status === "cleared")
+      : student.financeStatus === "cleared";
 
     // Confirm current-semester course registration.
     const registrations = await ctx.db
@@ -529,9 +530,9 @@ export const getExaminationClearanceCard = query({
     const roadblocks: string[] = [];
 
     if (!isFinanceCleared) {
-      roadblocks.push(
-        `Outstanding tuition fees of SSP ${outstandingBalance.toLocaleString()} must be cleared with Finance.`
-      );
+      roadblocks.push(ledger
+        ? `Outstanding tuition fees of SSP ${(outstandingBalance ?? ledger.totalDue).toLocaleString()} must be cleared with Finance.`
+        : "Finance clearance has not been recorded for this semester. Contact Finance before sitting examinations.");
     }
 
     if (registrations.length === 0) {
@@ -573,7 +574,7 @@ export const getExaminationClearanceCard = query({
       courses,
       financialSummary: {
         totalPaid: ledger?.totalPaid ?? 0,
-        balance: outstandingBalance,
+        balance: outstandingBalance ?? 0,
         status: ledger?.status ?? student.financeStatus,
       },
     };

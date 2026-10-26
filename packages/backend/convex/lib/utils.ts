@@ -1,6 +1,7 @@
 import { ConvexError } from "convex/values";
 import { MutationCtx, QueryCtx, ActionCtx } from "../_generated/server";
 import { internal } from "../_generated/api";
+import type { Doc } from "../_generated/dataModel";
 
 /**
  * ─────────────────────────────────────────────────────────
@@ -34,10 +35,10 @@ export async function assertAuthenticated(ctx: QueryCtx | MutationCtx | ActionCt
 export async function assertRole(
   ctx: any,
   allowedRoles: string[]
-) {
+): Promise<{ userId: string; profile: Doc<"staffProfiles"> }> {
   const userId = await assertAuthenticated(ctx);
 
-  let profile;
+  let profile: Doc<"staffProfiles"> | null;
   if (ctx.db) {
     // Query or Mutation Context
     profile = await ctx.db

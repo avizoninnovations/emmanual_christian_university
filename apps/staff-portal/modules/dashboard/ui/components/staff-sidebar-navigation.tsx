@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   type LucideIcon,
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
-  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange, DollarSign,
+  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange, DollarSign, Coins, Award, UserCheck,
   DoorOpen, MessageSquareWarning, Scale, ChartNoAxesCombined,
   Building2, BriefcaseBusiness,
   ChevronDown, ChevronRight,
@@ -15,11 +15,11 @@ import {
   SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
 } from "@workspace/ui/components/sidebar";
 
-type SidebarLink = { kind: "link"; title: string; url: string; icon: LucideIcon };
+type SidebarLink = { kind: "link"; title: string; url: string; icon: LucideIcon; roles?: string[] };
 type SidebarGroupEntry = { kind: "group"; key: string; title: string; icon: LucideIcon; items: SidebarEntry[] };
 type SidebarEntry = SidebarLink | SidebarGroupEntry;
 type StaffSidebarSection = { key: string; title: string; icon: LucideIcon; items: SidebarEntry[]; url?: string; roles?: string[]; category: string };
-const link = (title: string, url: string, icon: LucideIcon): SidebarLink => ({ kind: "link", title, url, icon });
+const link = (title: string, url: string, icon: LucideIcon, roles?: string[]): SidebarLink => ({ kind: "link", title, url, icon, roles });
 const group = (key: string, title: string, icon: LucideIcon, items: SidebarEntry[]): SidebarGroupEntry => ({ kind: "group", key, title, icon, items });
 
 const staffServiceItems: SidebarEntry[] = [
@@ -48,7 +48,15 @@ export const staffSidebarSections: StaffSidebarSection[] = [
     link("Applications", "/admissions/applications", UserRound),
     link("Semester Enrollment", "/admissions/enrollment", GraduationCap),
   ] },
-  { key: "finance-office", category: "FINANCE OFFICE", title: "Finance Office", icon: DollarSign, url: "/admin/finance", roles: ["finance"], items: [] },
+  { key: "finance-office", category: "FINANCE OFFICE", title: "Finance Office", icon: DollarSign, roles: ["finance", "bursar", "cashier", "admin"], items: [
+    link("Overview", "/finance-office", ChartNoAxesCombined, ["finance", "bursar", "cashier", "admin"]),
+    link("Student Accounts", "/finance-office/accounts", UserCheck, ["finance", "bursar", "cashier", "admin"]),
+    link("Payments & Receipts", "/finance-office/payments", Wallet, ["finance", "bursar", "cashier", "admin"]),
+    link("Fees & Invoicing", "/finance-office/fees", Coins, ["finance", "bursar", "admin"]),
+    link("Sponsors & Assistance", "/finance-office/sponsors", Award, ["finance", "bursar", "admin"]),
+    link("Cash Reconciliation", "/finance-office/reconciliation", Scale, ["finance", "bursar", "cashier", "admin"]),
+    link("Financial Reports", "/finance-office/reports", FileSpreadsheet, ["finance", "bursar", "admin"]),
+  ] },
   { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
   { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },
   { key: "personal-records", category: "HR RECORDS", title: "Personal Records", icon: UserRound, url: "/profile", items: [] },
@@ -90,14 +98,24 @@ export function StaffSidebarNavigation({ pathname, query, openSection, onOpenCha
   const sections = staffSidebarSections.filter((section) => (!section.roles || section.roles.some((role) => roleSet.has(role)))
     && (!normalizedQuery || section.title.toLowerCase().includes(normalizedQuery) || (section.url ? false : filterEntries(section.items, normalizedQuery, false).length > 0)));
   const categories = [...new Set(sections.map((section) => section.category))];
-  if (roleSet.has("admissions_officer") || roleSet.has("registrar")) {
-    categories.sort((left, right) => Number(right === "ADMISSIONS") - Number(left === "ADMISSIONS"));
+  const categoryPriority = roleSet.has("finance") || roleSet.has("bursar") || roleSet.has("cashier")
+    ? ["FINANCE OFFICE", "ADMISSIONS"]
+    : roleSet.has("admissions_officer") || roleSet.has("registrar")
+      ? ["ADMISSIONS"]
+      : [];
+  if (categoryPriority.length) {
+    categories.sort((left, right) => {
+      const leftIndex = categoryPriority.indexOf(left);
+      const rightIndex = categoryPriority.indexOf(right);
+      return (leftIndex < 0 ? categoryPriority.length : leftIndex) - (rightIndex < 0 ? categoryPriority.length : rightIndex);
+    });
   }
   return <>{categories.map((category, categoryIndex) => <SidebarGroup key={category} className={`${categoryIndex === 0 ? "border-t" : ""} border-b border-sidebar-border/60 px-1 py-3`}>
     <SidebarGroupLabel className="px-4 text-xs font-bold tracking-wide text-sidebar-foreground">{category}</SidebarGroupLabel>
     <SidebarGroupContent>{sections.filter((section) => section.category === category).map((section) => {
       const sectionMatches = section.title.toLowerCase().includes(normalizedQuery);
-      const items = filterEntries(section.items, normalizedQuery, sectionMatches);
+      const roleAllowedItems = filterEntries(section.items, "", true, roleSet);
+      const items = filterEntries(roleAllowedItems, normalizedQuery, sectionMatches, roleSet);
       if (section.url) {
         const Icon = section.icon;
         return <SidebarMenu key={section.key} className="mb-0">
@@ -113,12 +131,13 @@ export function StaffSidebarNavigation({ pathname, query, openSection, onOpenCha
   </SidebarGroup>)}</>;
 }
 
-function filterEntries(items: SidebarEntry[], query: string, parentMatches: boolean): SidebarEntry[] {
-  if (!query || parentMatches) return items;
+function filterEntries(items: SidebarEntry[], query: string, parentMatches: boolean, roleSet?: Set<string>): SidebarEntry[] {
   return items.flatMap((item) => {
+    if (item.kind === "link" && item.roles && roleSet && !item.roles.some((role) => roleSet.has(role))) return [];
+    if (!query || parentMatches) return [item];
     if (item.title.toLowerCase().includes(query)) return [item];
     if (item.kind === "group") {
-      const children = filterEntries(item.items, query, false);
+      const children = filterEntries(item.items, query, false, roleSet);
       return children.length ? [{ ...item, items: children }] : [];
     }
     return [];

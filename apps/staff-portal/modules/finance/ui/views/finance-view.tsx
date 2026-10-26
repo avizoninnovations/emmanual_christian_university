@@ -2,6 +2,7 @@
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
@@ -69,9 +70,36 @@ import { FeeStructureDialog } from "../components/fee-structure-dialog";
 import { InvoiceGeneratorDialog } from "../components/invoice-generator-dialog";
 import { CashierReconciliationView } from "./cashier-reconciliation-view";
 import { SponsorsManagerView } from "./sponsors-manager-view";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
-export const FinanceView = () => {
-  const [activeTab, setActiveTab] = useState<string>("overview");
+export type FinanceOfficeSection = "overview" | "accounts" | "payments" | "fees" | "sponsors" | "reconciliation" | "reports";
+
+const sectionTabs: Record<Exclude<FinanceOfficeSection, "reports">, string> = {
+  overview: "overview",
+  accounts: "ledgers",
+  payments: "transactions",
+  fees: "structures",
+  sponsors: "sponsors",
+  reconciliation: "reconciliation",
+};
+
+const sectionTitles: Record<Exclude<FinanceOfficeSection, "reports">, string> = {
+  overview: "Finance Office",
+  accounts: "Student Accounts",
+  payments: "Payments & Receipts",
+  fees: "Fees & Invoicing",
+  sponsors: "Sponsors & Assistance",
+  reconciliation: "Cash Reconciliation",
+};
+
+export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<string>(section && section !== "reports" ? sectionTabs[section] : "overview");
+  const { roles } = useCurrentUser();
+  const roleSet = new Set(roles.map((role) => role.toLowerCase()));
+  const canManageFees = ["admin", "finance", "bursar"].some((role) => roleSet.has(role));
+  const canManageWaivers = ["admin", "finance", "bursar"].some((role) => roleSet.has(role));
+  const canExportDebtors = ["admin", "finance", "bursar"].some((role) => roleSet.has(role));
   const [search, setSearch] = useState<string>("");
   const [programFilter, setProgramFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -114,9 +142,10 @@ export const FinanceView = () => {
     search: search.trim() || undefined,
   });
 
-  const feeStructures = useQuery(api.finance.getFeeStructures, {
-    periodId: effectivePeriodId,
-  });
+  const feeStructures = useQuery(
+    api.finance.getFeeStructures,
+    canManageFees ? { periodId: effectivePeriodId } : "skip",
+  );
 
   const transactions = useQuery(api.finance.getAllTransactions, {
     periodId: effectivePeriodId,
@@ -199,12 +228,12 @@ export const FinanceView = () => {
   };
 
   return (
-    <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
+    <div className="w-full min-w-0 space-y-6 p-4 lg:p-6">
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight">University Financial Operations</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{section && section !== "reports" ? sectionTitles[section] : "Finance Office"}</h1>
             <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/20">
               {activePeriod ? `${activePeriod.name} (${activePeriod.year})` : "All Periods"}
             </Badge>
@@ -213,25 +242,25 @@ export const FinanceView = () => {
 
         {/* Global Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          <Button
+          {canExportDebtors && (!section || section === "overview" || section === "accounts" || section === "reports") && <Button
             variant="outline"
             size="sm"
             className="gap-1.5 text-xs text-emerald-700 border-emerald-200 hover:bg-emerald-50"
             onClick={handleExportDebtorsCSV}
           >
             <Download className="size-3.5 text-emerald-600" /> Export Debtors (CSV)
-          </Button>
+          </Button>}
 
-          <Button
+          {canManageFees && (!section || section === "fees") && <Button
             variant="outline"
             size="sm"
             className="gap-2"
             onClick={() => setIsInvoiceOpen(true)}
           >
             <Zap className="size-4 text-amber-600" /> Run Invoicing
-          </Button>
+          </Button>}
 
-          <Button
+          {canManageFees && (!section || section === "fees") && <Button
             variant="outline"
             size="sm"
             className="gap-2"
@@ -241,9 +270,9 @@ export const FinanceView = () => {
             }}
           >
             <Coins className="size-4 text-primary" /> New Fee Schedule
-          </Button>
+          </Button>}
 
-          <Button
+          {(!section || section === "payments") && <Button
             size="sm"
             className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
             onClick={() => {
@@ -252,14 +281,14 @@ export const FinanceView = () => {
             }}
           >
             <Banknote className="size-4" /> Record Payment
-          </Button>
+          </Button>}
         </div>
       </div>
 
       {/* ── Tabs Navigation ── */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <TabsList className="grid grid-cols-2 sm:grid-cols-6 w-full max-w-4xl">
+          {!section && <TabsList className="grid grid-cols-2 sm:grid-cols-6 w-full max-w-4xl">
             <TabsTrigger value="overview" className="gap-1.5 text-xs">
               <TrendingUp className="size-3.5" /> Overview
             </TabsTrigger>
@@ -278,7 +307,7 @@ export const FinanceView = () => {
             <TabsTrigger value="transactions" className="gap-1.5 text-xs">
               <Receipt className="size-3.5" /> Transactions
             </TabsTrigger>
-          </TabsList>
+          </TabsList>}
 
           {/* Academic Period Selector */}
           <div className="flex items-center gap-2 text-xs">
@@ -454,7 +483,7 @@ export const FinanceView = () => {
                 variant="ghost"
                 size="sm"
                 className="text-xs gap-1 text-primary"
-                onClick={() => setActiveTab("transactions")}
+                onClick={() => section ? router.push("/finance-office/payments") : setActiveTab("transactions")}
               >
                 View all transactions <ChevronRight className="size-3" />
               </Button>
@@ -593,14 +622,14 @@ export const FinanceView = () => {
                       <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                         No student billing ledgers found matching your filters.
                         <div className="mt-2">
-                          <Button
+                          {canManageFees && <Button
                             variant="outline"
                             size="sm"
                             className="gap-2 text-xs"
                             onClick={() => setIsInvoiceOpen(true)}
                           >
                             <Zap className="size-3.5 text-amber-600" /> Run Semester Invoicing
-                          </Button>
+                          </Button>}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -681,7 +710,7 @@ export const FinanceView = () => {
                               >
                                 <Banknote className="size-3.5" /> Record Payment
                               </DropdownMenuItem>
-                              <DropdownMenuItem
+                              {canManageWaivers && <DropdownMenuItem
                                 onClick={() => {
                                   setTargetStudentId(l.studentId);
                                   setIsWaiverOpen(true);
@@ -689,7 +718,7 @@ export const FinanceView = () => {
                                 className="gap-2 text-purple-600"
                               >
                                 <Award className="size-3.5" /> Apply Waiver / Aid
-                              </DropdownMenuItem>
+                              </DropdownMenuItem>}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>

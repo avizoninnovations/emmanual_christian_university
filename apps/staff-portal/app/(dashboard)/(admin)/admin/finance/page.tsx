@@ -1,12 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { AdminGuard } from "@/modules/auth/ui/components/admin-guard";
-import { FinanceView } from "@/modules/finance/ui/views/finance-view";
-
-export default function FinancePage() {
-  return (
-    <AdminGuard allowedRoles={["admin", "finance"]}>
-      <FinanceView />
-    </AdminGuard>
-  );
+export default function LegacyFinancePage() {
+  redirect("/finance-office");
 }

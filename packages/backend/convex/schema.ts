@@ -376,6 +376,7 @@ export default defineSchema({
     .index("by_date", ["date"])
     .index("by_channel", ["channel"])
     .index("by_receiptNumber", ["receiptNumber"])
+    .index("by_recordedBy_date", ["recordedBy", "date"])
     .index("by_period", ["term", "year"]),
 
   /**

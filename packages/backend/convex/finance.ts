@@ -34,7 +34,7 @@ export const getFeeStructures = query({
     periodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
     
     let structures;
     if (args.programId) {
@@ -81,7 +81,6 @@ export const getFeeStructures = query({
     return enriched;
   },
 });
-
 export const createFeeStructure = mutation({
   args: {
     programId: v.id("programs"),
@@ -97,7 +96,7 @@ export const createFeeStructure = mutation({
     currency: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     // Check if duplicate fee structure already exists for this program and period
     const existing = await ctx.db
@@ -142,7 +141,7 @@ export const updateFeeStructure = mutation({
     currency: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
 
@@ -157,7 +156,7 @@ export const updateFeeStructure = mutation({
 export const deleteFeeStructure = mutation({
   args: { id: v.id("feeStructures") },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
     const target = await ctx.db.get(args.id);
     if (!target) throw new ConvexError("Fee structure not found");
 
@@ -179,7 +178,7 @@ export const getFinancialSummary = query({
     periodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar", "cashier"]);
 
     let ledgers = await ctx.db.query("studentLedger").collect();
     if (args.periodId) {
@@ -307,7 +306,7 @@ export const getStudentLedgers = query({
     search: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar", "cashier"]);
 
     const usersMap = await getUsersMap(ctx);
 
@@ -410,7 +409,7 @@ export const getStudentFinancialProfile = query({
     studentId: v.id("students"),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar", "cashier"]);
 
     const student = await ctx.db.get(args.studentId);
     if (!student) throw new ConvexError("Student not found");
@@ -515,10 +514,18 @@ export const getAllTransactions = query({
     type: v.optional(v.union(v.literal("payment"), v.literal("charge"), v.literal("waiver"))),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    const { userId, profile } = await assertRole(ctx, ["admin", "finance", "bursar", "cashier"]);
+    const hasAllTransactionsAccess = profile.roles.some((role) => ["admin", "finance", "bursar"].includes(role));
 
     let transactions;
-    if (args.studentId) {
+    if (!hasAllTransactionsAccess) {
+      transactions = await ctx.db
+        .query("transactions")
+        .withIndex("by_recordedBy_date", (q) => q.eq("recordedBy", userId))
+        .order("desc")
+        .take(250);
+      if (args.studentId) transactions = transactions.filter((transaction) => transaction.studentId === args.studentId);
+    } else if (args.studentId) {
       transactions = await ctx.db
         .query("transactions")
         .withIndex("by_student", (q) => q.eq("studentId", args.studentId!))
@@ -587,7 +594,7 @@ export const recordPayment = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar", "cashier"]);
 
     if (args.amount <= 0) {
       throw new ConvexError("Payment amount must be greater than zero.");
@@ -749,7 +756,7 @@ export const recordWaiver = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     if (args.amount <= 0) {
       throw new ConvexError("Waiver amount must be greater than zero.");
@@ -828,7 +835,7 @@ export const applySemesterInvoices = mutation({
     programId: v.optional(v.id("programs")),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     const period = await ctx.db.get(args.periodId);
     if (!period) throw new ConvexError("Academic period not found.");
@@ -939,7 +946,7 @@ export const getSponsors = query({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     let sponsors = await ctx.db.query("sponsors").collect();
     if (args.status) {
@@ -995,7 +1002,7 @@ export const createSponsor = mutation({
     coveragePercentage: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     const existing = await ctx.db
       .query("sponsors")
@@ -1040,7 +1047,7 @@ export const updateSponsor = mutation({
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
     const { id, ...updates } = args;
 
     await ctx.db.patch(id, {
@@ -1059,7 +1066,7 @@ export const updateSponsor = mutation({
 export const deleteSponsor = mutation({
   args: { id: v.id("sponsors") },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     // Unlink any students
     const students = await ctx.db
@@ -1087,7 +1094,7 @@ export const assignStudentSponsor = mutation({
     sponsorId: v.optional(v.id("sponsors")),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     const student = await ctx.db.get(args.studentId);
     if (!student) throw new ConvexError("Student not found.");
@@ -1112,7 +1119,7 @@ export const getSponsoredStudents = query({
     periodId: v.optional(v.id("academicPeriods")),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    await assertRole(ctx, ["admin", "finance", "bursar"]);
 
     let students = await ctx.db.query("students").collect();
     if (args.sponsorId) {
@@ -1178,7 +1185,9 @@ export const getDailyCashierReconciliation = query({
     cashierId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await assertRole(ctx, ["admin", "finance"]);
+    const { userId, profile } = await assertRole(ctx, ["admin", "finance", "bursar", "cashier"]);
+    const canReviewAllCashiers = profile.roles.some((role) => ["admin", "finance", "bursar"].includes(role));
+    const cashierId = canReviewAllCashiers ? args.cashierId : userId;
 
     // Determine target day timestamps
     let startOfDay: number;
@@ -1195,21 +1204,16 @@ export const getDailyCashierReconciliation = query({
       endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
     }
 
-    let transactions = await ctx.db
-      .query("transactions")
-      .withIndex("by_date")
-      .filter((q) =>
-        q.and(
-          q.gte(q.field("date"), startOfDay),
-          q.lte(q.field("date"), endOfDay),
-          q.eq(q.field("type"), "payment")
+    const transactionRange = cashierId
+      ? ctx.db.query("transactions").withIndex("by_recordedBy_date", (q) =>
+          q.eq("recordedBy", cashierId).gte("date", startOfDay).lte("date", endOfDay),
         )
-      )
+      : ctx.db.query("transactions").withIndex("by_date", (q) =>
+          q.gte("date", startOfDay).lte("date", endOfDay),
+        );
+    const transactions = await transactionRange
+      .filter((q) => q.eq(q.field("type"), "payment"))
       .collect();
-
-    if (args.cashierId) {
-      transactions = transactions.filter((t) => t.recordedBy === args.cashierId);
-    }
 
     const usersMap = await getUsersMap(ctx);
 

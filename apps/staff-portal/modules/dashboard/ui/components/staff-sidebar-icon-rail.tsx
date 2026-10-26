@@ -33,7 +33,7 @@ const railLinks = [
   { title: "Applications", url: "/admissions/applications", icon: UserRound },
   { title: "Semester Enrollment", url: "/admissions/enrollment", icon: GraduationCap },
   { title: "My Finance", url: "/workspace/finance", icon: Wallet },
-  { title: "Finance Office", url: "/admin/finance", icon: DollarSign },
+  { title: "Finance Office", url: "/finance-office", icon: DollarSign },
   { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
   { title: "Personal Records", url: "/profile", icon: UserRound },
   { title: "Teaching Courses", url: "/courses", icon: BookOpen },
@@ -57,7 +57,7 @@ const railLinks = [
 export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes, hasFinance, hasAdmissions }: { pathname: string; hasLeadership: boolean; canReviewRetakes: boolean; hasFinance: boolean; hasAdmissions: boolean }) {
   const links = railLinks.filter((link) => (hasLeadership || !link.url.startsWith("/hod/"))
     && (canReviewRetakes || link.url !== "/workspace/retake-approvals")
-    && (hasFinance || link.url !== "/admin/finance")
+    && (hasFinance || link.url !== "/finance-office")
     && (hasAdmissions || !link.url.startsWith("/admissions")));
 
   return (

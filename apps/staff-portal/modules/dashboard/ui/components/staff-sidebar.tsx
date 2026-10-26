@@ -54,7 +54,7 @@ export const StaffSidebar = () => {
   const staffProfile = useQuery(api.staffPersonalRecords.getMyProfile);
   const hasLeadership = roles?.some((role) => ["hod", "dean", "admin"].includes(role.toLowerCase()));
   const canReviewRetakes = roles?.some((role) => ["hod", "registrar", "admin"].includes(role.toLowerCase()));
-  const hasFinance = roles?.some((role) => ["finance", "admin"].includes(role.toLowerCase()));
+  const hasFinance = roles?.some((role) => ["finance", "bursar", "cashier", "admin"].includes(role.toLowerCase()));
   const hasAdmissions = roles?.some((role) => ["admissions_officer", "registrar"].includes(role.toLowerCase()));
   const profileActive = pathname === "/profile";
 

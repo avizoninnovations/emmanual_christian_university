@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/componen
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { AdmissionsDashboardView, AdmissionsSummarySection } from "./admissions-dashboard-view";
+import { FinanceDashboardView, FinanceOfficeSummarySection } from "./finance-dashboard-view";
 
 function getSemesterProgress(startDate?: string, endDate?: string) {
   if (!startDate || !endDate) return { day: 0, total: 0, percent: 0 };
@@ -38,13 +39,15 @@ export default function StaffDashboardView() {
   const { roles } = useCurrentUser();
   const isAdmissionsStaff = roles.some((role) => ["admissions_officer", "registrar"].includes(role));
   const isLecturer = roles.some((role) => ["lecturer", "senior_lecturer", "hod"].includes(role));
+  const hasFinance = roles.some((role) => ["finance", "bursar", "cashier"].includes(role));
 
-  if (isAdmissionsStaff && !isLecturer) return <AdmissionsDashboardView />;
+  if (hasFinance && !isLecturer && !isAdmissionsStaff) return <FinanceDashboardView />;
+  if (isAdmissionsStaff && !isLecturer) return <AdmissionsDashboardView includeFinance={hasFinance} />;
 
-  return <AcademicStaffDashboard includeAdmissions={isAdmissionsStaff} />;
+  return <AcademicStaffDashboard includeAdmissions={isAdmissionsStaff} includeFinance={hasFinance} />;
 }
 
-function AcademicStaffDashboard({ includeAdmissions }: { includeAdmissions: boolean }) {
+function AcademicStaffDashboard({ includeAdmissions, includeFinance }: { includeAdmissions: boolean; includeFinance: boolean }) {
   const { user, roles, isLoading } = useCurrentUser();
   const courses = useQuery(api.allocations.getLecturerCourses, {});
   const activePeriod = useQuery(api.calendar.getActivePeriod);
@@ -74,6 +77,7 @@ function AcademicStaffDashboard({ includeAdmissions }: { includeAdmissions: bool
         </header>
 
         {includeAdmissions ? <AdmissionsSummarySection /> : null}
+        {includeFinance ? <FinanceOfficeSummarySection /> : null}
 
         <section aria-label="Academic overview" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <OverviewMetric icon={BookOpen} label="Teaching courses" value={courses === undefined ? undefined : String(courseList.length)} detail="Courses assigned to you" />

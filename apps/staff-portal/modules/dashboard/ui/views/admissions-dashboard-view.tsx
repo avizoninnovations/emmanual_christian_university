@@ -10,6 +10,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { FinanceOfficeSummarySection } from "./finance-dashboard-view";
 
 const INITIAL_APPLICATIONS = 100;
 
@@ -23,7 +24,7 @@ function useAdmissionsOverview() {
   return { applicants, counts, period };
 }
 
-export function AdmissionsDashboardView() {
+export function AdmissionsDashboardView({ includeFinance = false }: { includeFinance?: boolean }) {
   const { user } = useCurrentUser();
   const { applicants, counts, period } = useAdmissionsOverview();
   const firstName = user?.name?.split(" ")[0] ?? "there";
@@ -45,6 +46,7 @@ export function AdmissionsDashboardView() {
         </header>
 
         <AdmissionsMetrics counts={counts} loaded={applicants.status !== "LoadingFirstPage"} periodName={period?.name} periodYear={period?.year} />
+        {includeFinance ? <FinanceOfficeSummarySection /> : null}
 
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.8fr)]">
           <Card className="rounded-2xl border-0 shadow-sm">

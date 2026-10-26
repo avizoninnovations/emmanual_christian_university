@@ -189,7 +189,7 @@ const navGroups: NavGroup[] = [
       // },
       {
         title: "Finance",
-        url: "/admin/finance",
+        url: "/finance-office",
         icon: DollarSign,
       },
       // {

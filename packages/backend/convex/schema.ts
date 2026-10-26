@@ -256,6 +256,7 @@ export default defineSchema({
     .index("by_program", ["programId"])
     .index("by_sponsor", ["sponsorId"])
     .index("by_status", ["status"])
+    .index("by_status_and_program", ["status", "programId"])
     .index("by_period", ["term", "year"]),
 
   /** One clearance record per student and academic period; no campus tenancy. */

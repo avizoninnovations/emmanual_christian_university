@@ -41,14 +41,16 @@ type RosterRow = {
 
 export function SemesterEnrollmentPanel() {
   const periods = useQuery(api.admissionsEnrollment.getEnrollmentPeriods, {});
+  const programs = useQuery(api.academic.getPrograms, {});
   const enroll = useMutation(api.admissionsEnrollment.enrollStudentsForPeriod);
   const [periodId, setPeriodId] = useState<Id<"academicPeriods"> | null>(null);
+  const [programId, setProgramId] = useState<Id<"programs"> | null>(null);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<Id<"students">>>(new Set());
   const [busy, setBusy] = useState(false);
   const roster = usePaginatedQuery(
     api.admissionsEnrollment.getEnrollmentRoster,
-    periodId ? { periodId } : "skip",
+    periodId ? { periodId, programId: programId ?? undefined } : "skip",
     { initialNumItems: 30 },
   );
   const periodOptions = useMemo(
@@ -158,6 +160,28 @@ export function SemesterEnrollmentPanel() {
                       <SelectItem key={period._id} value={period._id}>
                         {period.name} {period.year} · {period.status}
                       </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+            <div className="w-full max-w-sm space-y-2">
+              <label htmlFor="admissions-program" className="text-sm font-medium">Program</label>
+              {programs === undefined ? <Skeleton className="h-10 w-full" /> : (
+                <Select
+                  value={programId ?? "all"}
+                  onValueChange={(value) => {
+                    setProgramId(value === "all" ? null : value as Id<"programs">);
+                    setSelected(new Set());
+                  }}
+                >
+                  <SelectTrigger id="admissions-program" className="rounded-sm">
+                    <SelectValue placeholder="All programs" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All programs</SelectItem>
+                    {(programs ?? []).map((program) => (
+                      <SelectItem key={program._id} value={program._id}>{program.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

@@ -23,6 +23,7 @@ export const getEnrollmentPeriods = query({
 export const getEnrollmentRoster = query({
   args: {
     periodId: v.id("academicPeriods"),
+    programId: v.optional(v.id("programs")),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
@@ -30,9 +31,13 @@ export const getEnrollmentRoster = query({
     const period = await ctx.db.get(args.periodId);
     if (!period || !["active", "upcoming"].includes(period.status))
       throw new ConvexError("Choose an active or upcoming Academic Period.");
-    const page = await ctx.db
-      .query("students")
-      .withIndex("by_status", (q) => q.eq("status", "active"))
+    const students = ctx.db.query("students");
+    const source = args.programId
+      ? students.withIndex("by_status_and_program", (q) =>
+          q.eq("status", "active").eq("programId", args.programId!),
+        )
+      : students.withIndex("by_status", (q) => q.eq("status", "active"));
+    const page = await source
       .order("asc")
       .paginate(args.paginationOpts);
     const [programs, registrations] = await Promise.all([

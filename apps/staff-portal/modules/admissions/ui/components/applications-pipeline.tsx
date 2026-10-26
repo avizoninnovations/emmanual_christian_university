@@ -13,6 +13,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@workspace/ui/components/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
+import { SearchableSelect } from "@workspace/ui/components/searchable-select";
 import {
   Tabs,
   TabsContent,
@@ -44,6 +45,15 @@ export function ApplicationsPipeline() {
   const [bulkBusy, setBulkBusy] = useState(false);
   const periods = useQuery(api.admissionsEnrollment.getEnrollmentPeriods, {});
   const programs = useQuery(api.academic.getPrograms, {});
+  const statusCounts = useQuery(
+    api.admissions.getApplicationStatusCounts,
+    periodInitialized
+      ? {
+          ...(periodId ? { periodId } : {}),
+          ...(programId ? { programId } : {}),
+        }
+      : "skip",
+  );
   const bulkUpdateStatus = useMutation(api.admissionsBulk.bulkUpdateApplicantStatus);
   useEffect(() => {
     if (periods === undefined || periodInitialized) return;
@@ -173,13 +183,22 @@ export function ApplicationsPipeline() {
         </div>
         <div className="min-w-0 space-y-2">
           <label htmlFor="applications-program" className="text-sm font-medium">Program</label>
-          <Select value={programId ?? "all"} onValueChange={(value) => { setProgramId(value === "all" ? null : value as Id<"programs">); clearSelection(); }}>
-            <SelectTrigger id="applications-program" className="rounded-sm bg-background"><SelectValue placeholder="All programs" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All programs</SelectItem>
-              {(programs ?? []).map((program) => <SelectItem key={program._id} value={program._id}>{program.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <SearchableSelect
+            id="applications-program"
+            aria-label="Program"
+            value={programId ?? "all"}
+            onValueChange={(value) => { setProgramId(value === "all" ? null : value as Id<"programs">); clearSelection(); }}
+            placeholder="All programs"
+            searchPlaceholder="Search programs…"
+            options={[
+              { value: "all", label: "All programs" },
+              ...(programs ?? []).map((program) => ({
+                value: program._id,
+                label: program.name,
+                keywords: program.code,
+              })),
+            ]}
+          />
         </div>
       </div>
       <Tabs
@@ -187,19 +206,24 @@ export function ApplicationsPipeline() {
         onValueChange={(value) => { setStatus(value as StatusFilter); clearSelection(); }}
       >
         <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
-          {filters.map((filter) => (
-            <TabsTrigger key={filter.value} value={filter.value}>
-              {filter.label}
-              {status === filter.value && (
+          {filters.map((filter) => {
+            const count = statusCounts
+              ? filter.value === "all"
+                ? statusCounts.all
+                : statusCounts.statuses[filter.value]
+              : undefined;
+            return (
+              <TabsTrigger key={filter.value} value={filter.value}>
+                {filter.label}
                 <Badge
                   variant="secondary"
                   className="ml-2 rounded-sm px-1.5 py-0 text-xs"
                 >
-                  {applicants.results.length}
+                  {formatApplicantCount(count)}
                 </Badge>
-              )}
-            </TabsTrigger>
-          ))}
+              </TabsTrigger>
+            );
+          })}
         </TabsList>
         {filters.map((filter) => (
           <TabsContent
@@ -272,4 +296,9 @@ export function ApplicationsPipeline() {
 
 function csvValue(value: string) {
   return `"${value.replaceAll('"', '""')}"`;
+}
+
+function formatApplicantCount(count: { count: number; capped: boolean } | undefined) {
+  if (!count) return "…";
+  return `${count.count.toLocaleString()}${count.capped ? "+" : ""}`;
 }

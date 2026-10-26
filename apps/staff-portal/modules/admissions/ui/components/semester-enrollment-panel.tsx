@@ -12,6 +12,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import { Input } from "@workspace/ui/components/input";
+import { SearchableSelect } from "@workspace/ui/components/searchable-select";
 import {
   Select,
   SelectContent,
@@ -168,23 +169,25 @@ export function SemesterEnrollmentPanel() {
             <div className="min-w-0 space-y-2">
               <label htmlFor="admissions-program" className="text-sm font-medium">Program</label>
               {programs === undefined ? <Skeleton className="h-10 w-full" /> : (
-                <Select
+                <SearchableSelect
+                  id="admissions-program"
+                  aria-label="Program"
                   value={programId ?? "all"}
                   onValueChange={(value) => {
                     setProgramId(value === "all" ? null : value as Id<"programs">);
                     setSelected(new Set());
                   }}
-                >
-                  <SelectTrigger id="admissions-program" className="w-full rounded-sm">
-                    <SelectValue placeholder="All programs" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All programs</SelectItem>
-                    {(programs ?? []).map((program) => (
-                      <SelectItem key={program._id} value={program._id}>{program.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  placeholder="All programs"
+                  searchPlaceholder="Search programs…"
+                  options={[
+                    { value: "all", label: "All programs" },
+                    ...(programs ?? []).map((program) => ({
+                      value: program._id,
+                      label: program.name,
+                      keywords: program.code,
+                    })),
+                  ]}
+                />
               )}
             </div>
             <div className="relative min-w-0 space-y-2">

@@ -5,6 +5,7 @@ import { mutation } from "./lib/mutations";
 import { studentPersonalFields } from "./lib/studentProfileFields";
 import { logAction } from "./audit_logger";
 import { assertRole } from "./lib/utils";
+import type { Doc } from "./_generated/dataModel.js";
 
 const admissionsRoles = ["admin", "registrar", "admissions_officer"];
 const applicantStatus = v.union(
@@ -14,6 +15,12 @@ const applicantStatus = v.union(
   v.literal("rejected"),
   v.literal("enrolled"),
 );
+const applicantStatuses = ["new", "reviewing", "accepted", "rejected", "enrolled"] as const;
+const countLimit = 1000;
+
+function boundedCount(length: number) {
+  return { count: Math.min(length, countLimit), capped: length > countLimit };
+}
 
 export const getApplicants = query({
   args: {
@@ -69,6 +76,77 @@ export const getApplicants = query({
         programName:
           programNames.get(applicant.programId) ?? "Program unavailable",
       })),
+    };
+  },
+});
+
+export const getApplicationStatusCounts = query({
+  args: {
+    periodId: v.optional(v.id("academicPeriods")),
+    programId: v.optional(v.id("programs")),
+  },
+  handler: async (ctx, args) => {
+    await assertRole(ctx, admissionsRoles);
+    const period = args.periodId ? await ctx.db.get(args.periodId) : null;
+    if (args.periodId && !period)
+      throw new ConvexError("The selected academic period could not be found.");
+
+    const countStatus = async (status: (typeof applicantStatuses)[number]) => {
+      let applicants: Doc<"applicants">[];
+      if (period && args.programId) {
+        applicants = await ctx.db
+          .query("applicants")
+          .withIndex("by_status_and_period_and_program", (q) =>
+            q
+              .eq("status", status)
+              .eq("term", period.term)
+              .eq("year", period.year)
+              .eq("programId", args.programId!),
+          )
+          .take(countLimit + 1);
+      } else if (period) {
+        applicants = await ctx.db
+          .query("applicants")
+          .withIndex("by_status_and_period", (q) =>
+            q.eq("status", status).eq("term", period.term).eq("year", period.year),
+          )
+          .take(countLimit + 1);
+      } else if (args.programId) {
+        applicants = await ctx.db
+          .query("applicants")
+          .withIndex("by_status_and_program", (q) =>
+            q.eq("status", status).eq("programId", args.programId!),
+          )
+          .take(countLimit + 1);
+      } else {
+        applicants = await ctx.db
+          .query("applicants")
+          .withIndex("by_status", (q) => q.eq("status", status))
+          .take(countLimit + 1);
+      }
+      return boundedCount(applicants.length);
+    };
+    const [newCount, reviewingCount, acceptedCount, rejectedCount, enrolledCount] =
+      await Promise.all([
+        countStatus("new"),
+        countStatus("reviewing"),
+        countStatus("accepted"),
+        countStatus("rejected"),
+        countStatus("enrolled"),
+      ]);
+    const statusCounts = {
+      new: newCount,
+      reviewing: reviewingCount,
+      accepted: acceptedCount,
+      rejected: rejectedCount,
+      enrolled: enrolledCount,
+    };
+    return {
+      statuses: statusCounts,
+      all: {
+        count: Object.values(statusCounts).reduce((total, item) => total + item.count, 0),
+        capped: Object.values(statusCounts).some((item) => item.capped),
+      },
     };
   },
 });

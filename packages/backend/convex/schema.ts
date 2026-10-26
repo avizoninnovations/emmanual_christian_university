@@ -223,6 +223,9 @@ export default defineSchema({
     .index("by_email", ["email"])
     .index("by_program", ["programId"])
     .index("by_status", ["status"])
+    .index("by_status_and_program", ["status", "programId"])
+    .index("by_status_and_period", ["status", "term", "year"])
+    .index("by_status_and_period_and_program", ["status", "term", "year", "programId"])
     .index("by_period_and_program", ["term", "year", "programId"])
     .index("by_period", ["term", "year"]),
 

@@ -16,6 +16,7 @@ import {
   ClipboardCheck,
   UsersRound,
   DollarSign,
+  ClipboardList,
 } from "lucide-react";
 import {
   SidebarGroup,
@@ -28,6 +29,7 @@ import {
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
   { title: "My Finance", url: "/workspace/finance", icon: Wallet },
+  { title: "Admissions Office", url: "/admin/admissions", icon: ClipboardList },
   { title: "Finance Office", url: "/admin/finance", icon: DollarSign },
   { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
   { title: "Personal Records", url: "/profile", icon: UserRound },
@@ -49,10 +51,11 @@ const railLinks = [
   { title: "Supplementary Exams", url: "/hod/supplementaries", icon: FileText },
 ];
 
-export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes, hasFinance }: { pathname: string; hasLeadership: boolean; canReviewRetakes: boolean; hasFinance: boolean }) {
+export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes, hasFinance, hasAdmissions }: { pathname: string; hasLeadership: boolean; canReviewRetakes: boolean; hasFinance: boolean; hasAdmissions: boolean }) {
   const links = railLinks.filter((link) => (hasLeadership || !link.url.startsWith("/hod/"))
     && (canReviewRetakes || link.url !== "/workspace/retake-approvals")
-    && (hasFinance || link.url !== "/admin/finance"));
+    && (hasFinance || link.url !== "/admin/finance")
+    && (hasAdmissions || link.url !== "/admin/admissions"));
 
   return (
     <div className="hidden group-data-[collapsible=icon]:block">

@@ -35,15 +35,16 @@ export function ApplicantDetailsSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[96vw] overflow-hidden rounded-l-sm p-0 sm:w-[72vw] sm:max-w-4xl">
+        <SheetHeader className="border-b px-6 py-5 pr-14 text-left">
+          <SheetTitle>{applicant?.name ?? "Applicant details"}</SheetTitle>
+          <SheetDescription>
+            {applicant && data
+              ? `${applicant.applicationNumber ?? String(applicant._id)} · ${data.programName} · ${applicant.term}/${applicant.year}`
+              : "Loading application details."}
+          </SheetDescription>
+        </SheetHeader>
         {applicant && data ? (
           <>
-            <SheetHeader className="border-b px-6 py-5 pr-14 text-left">
-              <SheetTitle>{applicant.name}</SheetTitle>
-              <SheetDescription>
-                {applicant.applicationNumber ?? String(applicant._id)} ·{" "}
-                {data.programName} · {applicant.term}/{applicant.year}
-              </SheetDescription>
-            </SheetHeader>
             <ScrollArea className="h-[calc(100dvh-86px)]">
               <div className="space-y-6 p-5 md:p-6">
                 <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

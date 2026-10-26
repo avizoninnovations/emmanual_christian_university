@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { Check, Clock3, Eye, FileText, Search, X } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { Alert, AlertDescription, AlertTitle } from "@workspace/ui/components/alert";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
@@ -23,13 +25,17 @@ const statusTabs: { value: Status | "all"; label: string }[] = [
 ];
 
 export function AssessmentApplicationsView() {
-  const applications = usePaginatedQuery(api.assessmentApplications.forAssignedLecturer, {}, { initialNumItems: 25 });
+  const { roles, isLoading } = useCurrentUser();
+  const canReview = roles.some((role) => ["lecturer", "senior_lecturer", "hod"].includes(role.toLowerCase()));
+  const applications = usePaginatedQuery(api.assessmentApplications.forAssignedLecturer, canReview ? {} : "skip", { initialNumItems: 25 });
   const review = useMutation(api.assessmentApplications.review);
   const [status, setStatus] = useState<Status | "all">("submitted");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Application | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  if (isLoading) return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5"><Skeleton className="h-10 w-full" /></main>;
+  if (!canReview) return <main className="min-h-full min-w-0 p-3 md:p-5"><Alert><FileText className="size-4" /><AlertTitle>Lecturer access required</AlertTitle><AlertDescription>Assessment applications are reviewed by lecturers assigned to the student’s course unit. This account does not have lecturer review access.</AlertDescription></Alert></main>;
   const normalized = search.trim().toLowerCase();
   const all = applications.results;
   const filtered = all.filter(item => (status === "all" || item.status === status)

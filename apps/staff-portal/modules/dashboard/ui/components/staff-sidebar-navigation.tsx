@@ -34,7 +34,7 @@ const staffServiceItems: SidebarEntry[] = [
 
 export const staffSidebarSections: StaffSidebarSection[] = [
   { key: "leadership", category: "ACADEMICS", title: "Department Management", icon: GraduationCap, roles: ["hod", "dean", "admin"], items: [link("Department Overview", "/hod", GraduationCap), link("Course Allocations", "/hod/allocations", Layers), link("Missed Paper Approvals", "/hod/aggregated-units", Layers), link("Marks Review Queue", "/hod/review-queue", FileSpreadsheet), link("Edit Permissions", "/hod/edit-permissions", ClipboardCheck), link("Department Lecturers", "/hod/lecturers", UsersRound), link("Academic Activity", "/hod/activity", FileText), link("Senate Broadsheet", "/hod/broadsheet", FileText), link("Supplementary Exams", "/hod/supplementaries", ClipboardCheck)] },
-  { key: "lecturer-courses", category: "ACADEMICS", title: "Lecturer Courses", icon: BookOpen, items: [
+  { key: "lecturer-courses", category: "ACADEMICS", title: "Lecturer Courses", icon: BookOpen, roles: ["lecturer", "senior_lecturer", "hod"], items: [
     link("Missed Paper Requests", "/workspace/aggregated-units", Layers),
     link("My Course Units", "/courses", BookOpen),
     link("Assessment Applications", "/workspace/aegrotat-units", ClipboardCheck),

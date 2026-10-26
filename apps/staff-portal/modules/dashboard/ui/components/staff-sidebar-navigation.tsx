@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   type LucideIcon,
   BookOpen, CalendarDays, ClipboardCheck, FileSpreadsheet, FileText, GraduationCap,
-  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange,
+  Layers, Wallet, UserRound, ClipboardList, UsersRound, CalendarRange, DollarSign,
   DoorOpen, MessageSquareWarning, Scale, ChartNoAxesCombined,
   Building2, BriefcaseBusiness,
   ChevronDown, ChevronRight,
@@ -43,6 +43,7 @@ export const staffSidebarSections: StaffSidebarSection[] = [
   ] },
   { key: "retake-approvals", category: "ACADEMICS", title: "Retake Approvals", icon: ClipboardCheck, url: "/workspace/retake-approvals", roles: ["hod", "registrar", "admin"], items: [] },
   { key: "timetable", category: "ACADEMICS", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
+  { key: "finance-office", category: "FINANCE OFFICE", title: "Finance Office", icon: DollarSign, url: "/admin/finance", roles: ["finance"], items: [] },
   { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
   { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },
   { key: "personal-records", category: "HR RECORDS", title: "Personal Records", icon: UserRound, url: "/profile", items: [] },

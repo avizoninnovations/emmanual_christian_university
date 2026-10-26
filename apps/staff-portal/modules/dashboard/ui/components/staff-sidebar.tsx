@@ -54,6 +54,7 @@ export const StaffSidebar = () => {
   const staffProfile = useQuery(api.staffPersonalRecords.getMyProfile);
   const hasLeadership = roles?.some((role) => ["hod", "dean", "admin"].includes(role.toLowerCase()));
   const canReviewRetakes = roles?.some((role) => ["hod", "registrar", "admin"].includes(role.toLowerCase()));
+  const hasFinance = roles?.some((role) => ["finance", "admin"].includes(role.toLowerCase()));
   const profileActive = pathname === "/profile";
 
   useEffect(() => {
@@ -126,7 +127,7 @@ export const StaffSidebar = () => {
         </SidebarHeader>
 
         <SidebarContent className="relative z-10 gap-0 overflow-x-hidden overflow-y-auto px-2 py-1">
-          <StaffSidebarIconRail pathname={pathname} hasLeadership={Boolean(hasLeadership)} canReviewRetakes={Boolean(canReviewRetakes)} />
+          <StaffSidebarIconRail pathname={pathname} hasLeadership={Boolean(hasLeadership)} canReviewRetakes={Boolean(canReviewRetakes)} hasFinance={Boolean(hasFinance)} />
           <div className="group-data-[collapsible=icon]:hidden">
           <SidebarGroup className="border-b border-sidebar-border/60 px-1 py-3">
             <SidebarGroupContent>

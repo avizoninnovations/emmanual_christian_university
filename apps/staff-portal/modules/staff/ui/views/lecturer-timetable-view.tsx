@@ -5,31 +5,13 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Building,
-  Plus,
-  Trash2,
-  Printer,
-  Loader2,
-  BookOpen,
-  Users,
-} from "lucide-react";
+import { Plus, Printer, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-skeleton";
 
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import {
   Dialog,
@@ -46,20 +28,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-
-const DAYS = [
-  { key: "monday", label: "Monday" },
-  { key: "tuesday", label: "Tuesday" },
-  { key: "wednesday", label: "Wednesday" },
-  { key: "thursday", label: "Thursday" },
-  { key: "friday", label: "Friday" },
-  { key: "saturday", label: "Saturday" },
-] as const;
+import { WeeklyTimetableGrid } from "@/modules/staff/ui/components/weekly-timetable-grid";
 
 export function LecturerTimetableView() {
   const { roles } = useCurrentUser();
-  const isHodOrAdmin = roles?.some((r: string) =>
-    ["admin", "hod", "dean"].includes(r.toLowerCase())
+  const isHodOrAdmin = Boolean(
+    roles?.some((role: string) =>
+      ["admin", "hod", "dean"].includes(role.toLowerCase()),
+    ),
   );
 
   const [activeTab, setActiveTab] = useState<"my" | "dept">("my");
@@ -89,7 +65,9 @@ export function LecturerTimetableView() {
       toast.error("Please select a course to schedule.");
       return;
     }
-    const activePeriod = periods?.periods.find((p: any) => p.status === "active") || periods?.periods[0];
+    const activePeriod =
+      periods?.periods.find((p: any) => p.status === "active") ||
+      periods?.periods[0];
     if (!activePeriod) {
       toast.error("No active academic period available.");
       return;
@@ -97,7 +75,9 @@ export function LecturerTimetableView() {
 
     try {
       setIsSubmitting(true);
-      const selectedCourse = allCourses?.find((c: any) => c._id === selectedCourseId);
+      const selectedCourse = allCourses?.find(
+        (c: any) => c._id === selectedCourseId,
+      );
       const lecturerId = (selectedCourse as any)?.lecturerId || "system";
 
       await createSlot({
@@ -134,12 +114,14 @@ export function LecturerTimetableView() {
   }
 
   return (
-    <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full print:p-0">
+    <div className="w-full min-w-0 space-y-5 p-4 lg:p-6 print:p-0">
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 print:hidden">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">Teaching Timetable & Schedules</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Teaching Timetable & Schedules
+            </h1>
             <Badge variant="outline" className="text-xs uppercase">
               Weekly Grid
             </Badge>
@@ -168,7 +150,12 @@ export function LecturerTimetableView() {
             </div>
           )}
 
-          <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.print()}
+            className="gap-1.5"
+          >
             <Printer className="size-3.5" /> Print Timetable
           </Button>
 
@@ -184,90 +171,22 @@ export function LecturerTimetableView() {
         </div>
       </div>
 
-      {/* ── Weekly Day Columns Grid ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {DAYS.map((day) => {
-          const daySlots = activeSlots.filter((s: any) => s.dayOfWeek === day.key);
-
-          return (
-            <Card key={day.key} className="shadow-sm border flex flex-col h-full">
-              <CardHeader className="p-3.5 border-b bg-muted/20">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm tracking-tight">{day.label}</span>
-                  <Badge variant="secondary" className="text-[10px] font-mono">
-                    {daySlots.length} Lecture{daySlots.length === 1 ? "" : "s"}
-                  </Badge>
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-3 space-y-3 flex-1">
-                {daySlots.length === 0 ? (
-                  <div className="h-28 flex flex-col items-center justify-center text-muted-foreground text-xs border border-dashed rounded-lg">
-                    <span>No lectures scheduled</span>
-                  </div>
-                ) : (
-                  daySlots.map((slot: any) => (
-                    <div
-                      key={slot._id}
-                      className="p-3 rounded-lg border bg-card hover:border-primary/50 transition-colors space-y-2 shadow-xs"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <span className="font-bold font-mono text-sm text-primary block">
-                            {slot.courseCode}
-                          </span>
-                          <span className="text-xs font-medium text-foreground line-clamp-1">
-                            {slot.courseTitle}
-                          </span>
-                        </div>
-                        {isHodOrAdmin && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteSlot(slot._id)}
-                            className="size-6 text-muted-foreground hover:text-rose-600 print:hidden"
-                          >
-                            <Trash2 className="size-3" />
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="text-[11px] space-y-1 text-muted-foreground pt-1 border-t">
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="size-3 text-muted-foreground" />
-                          <span className="font-mono font-medium text-foreground">
-                            {slot.startTime} – {slot.endTime}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="size-3 text-muted-foreground" />
-                          <span>
-                            {slot.room} {slot.building ? `(${slot.building})` : ""}
-                          </span>
-                        </div>
-                        {(slot as any).lecturerName && (
-                          <div className="flex items-center gap-1.5 text-foreground font-medium pt-0.5">
-                            <Users className="size-3 text-muted-foreground" />
-                            <span>{(slot as any).lecturerName}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      <WeeklyTimetableGrid
+        slots={activeSlots}
+        canManage={isHodOrAdmin}
+        onDelete={(slot) => void handleDeleteSlot(slot._id)}
+      />
 
       {/* ── Schedule Lecture Dialog ── */}
       <Dialog open={scheduleDialogOpen} onOpenChange={setScheduleDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold">Schedule Lecture Session</DialogTitle>
+            <DialogTitle className="text-base font-bold">
+              Schedule Lecture Session
+            </DialogTitle>
             <DialogDescription className="text-xs">
-              Assign course time and room. The system will automatically check for room and lecturer collisions.
+              Assign course time and room. The system will automatically check
+              for room and lecturer collisions.
             </DialogDescription>
           </DialogHeader>
 
@@ -275,7 +194,10 @@ export function LecturerTimetableView() {
             {/* Course Select */}
             <div className="space-y-1">
               <label className="font-semibold block text-xs">Course Unit</label>
-              <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
+              <Select
+                value={selectedCourseId}
+                onValueChange={setSelectedCourseId}
+              >
                 <SelectTrigger className="h-9 text-xs">
                   <SelectValue placeholder="Select Course" />
                 </SelectTrigger>
@@ -297,7 +219,14 @@ export function LecturerTimetableView() {
                   <SelectValue placeholder="Select Day" />
                 </SelectTrigger>
                 <SelectContent>
-                  {DAYS.map((d) => (
+                  {[
+                    { key: "monday", label: "Monday" },
+                    { key: "tuesday", label: "Tuesday" },
+                    { key: "wednesday", label: "Wednesday" },
+                    { key: "thursday", label: "Thursday" },
+                    { key: "friday", label: "Friday" },
+                    { key: "saturday", label: "Saturday" },
+                  ].map((d) => (
                     <SelectItem key={d.key} value={d.key} className="text-xs">
                       {d.label}
                     </SelectItem>
@@ -309,7 +238,9 @@ export function LecturerTimetableView() {
             {/* Time inputs */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="font-semibold block text-xs">Start Time (HH:MM)</label>
+                <label className="font-semibold block text-xs">
+                  Start Time (HH:MM)
+                </label>
                 <Input
                   type="time"
                   value={startTime}
@@ -318,7 +249,9 @@ export function LecturerTimetableView() {
                 />
               </div>
               <div className="space-y-1">
-                <label className="font-semibold block text-xs">End Time (HH:MM)</label>
+                <label className="font-semibold block text-xs">
+                  End Time (HH:MM)
+                </label>
                 <Input
                   type="time"
                   value={endTime}
@@ -331,7 +264,9 @@ export function LecturerTimetableView() {
             {/* Room & Building */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="font-semibold block text-xs">Lecture Room / Hall</label>
+                <label className="font-semibold block text-xs">
+                  Lecture Room / Hall
+                </label>
                 <Input
                   value={room}
                   placeholder="e.g. Main Hall A"
@@ -340,7 +275,9 @@ export function LecturerTimetableView() {
                 />
               </div>
               <div className="space-y-1">
-                <label className="font-semibold block text-xs">Building / Wing</label>
+                <label className="font-semibold block text-xs">
+                  Building / Wing
+                </label>
                 <Input
                   value={building}
                   placeholder="e.g. Academic Block"
@@ -366,7 +303,11 @@ export function LecturerTimetableView() {
               disabled={isSubmitting}
               className="gap-1.5 bg-primary text-primary-foreground"
             >
-              {isSubmitting ? <Loader2 className="size-3.5 animate-spin" /> : <Plus className="size-3.5" />}
+              {isSubmitting ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Plus className="size-3.5" />
+              )}
               Save Schedule Slot
             </Button>
           </DialogFooter>

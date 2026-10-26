@@ -5,6 +5,7 @@ import { studentPersonalFields } from "./lib/studentProfileFields.js";
 import { academicWorkflowTables, scoreSnapshot } from "./lib/academicWorkflowSchema.js";
 import { staffServiceTables } from "./lib/staffServiceSchema.js";
 import { admissionsTables } from "./lib/admissionsSchema.js";
+import { staffPayrollTables } from "./lib/staffPayrollSchema.js";
 
 const academicPeriodFields = {
   term: v.number(), // Semester/Term 1, 2, or 3
@@ -21,6 +22,7 @@ export default defineSchema({
   ...academicWorkflowTables,
   ...staffServiceTables,
   ...admissionsTables,
+  ...staffPayrollTables,
 
   /**
    * Extended staff profile linked to the Better Auth `user` table.

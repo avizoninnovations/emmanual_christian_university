@@ -9,6 +9,7 @@ import {
   FileSpreadsheet,
   FileText,
   LayoutDashboard,
+  GraduationCap,
   Layers,
   UserRound,
   UserCheck,
@@ -28,7 +29,9 @@ import {
 
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Admissions Office", url: "/admissions", icon: ClipboardList },
+  { title: "Admissions Overview", url: "/admissions", icon: ClipboardList },
+  { title: "Applications", url: "/admissions/applications", icon: UserRound },
+  { title: "Semester Enrollment", url: "/admissions/enrollment", icon: GraduationCap },
   { title: "My Finance", url: "/workspace/finance", icon: Wallet },
   { title: "Finance Office", url: "/admin/finance", icon: DollarSign },
   { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
@@ -55,7 +58,7 @@ export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes
   const links = railLinks.filter((link) => (hasLeadership || !link.url.startsWith("/hod/"))
     && (canReviewRetakes || link.url !== "/workspace/retake-approvals")
     && (hasFinance || link.url !== "/admin/finance")
-    && (hasAdmissions || link.url !== "/admissions"));
+    && (hasAdmissions || !link.url.startsWith("/admissions")));
 
   return (
     <div className="hidden group-data-[collapsible=icon]:block">
@@ -63,7 +66,7 @@ export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes
         <SidebarGroupContent>
           <SidebarMenu className="gap-1">
             {links.map(({ title, url, icon: Icon }) => {
-              const active = url === "/" || url === "/hod" ? pathname === url : pathname === url || pathname.startsWith(`${url}/`);
+              const active = url === "/" || url === "/hod" || url === "/admissions" ? pathname === url : pathname === url || pathname.startsWith(`${url}/`);
               return (
                 <SidebarMenuItem key={url} className="flex justify-center py-1">
                   <SidebarMenuButton asChild isActive={active} tooltip={title} aria-label={title} className="mx-auto flex size-10 justify-center rounded-lg p-0 hover:bg-sidebar-accent/80 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-0!">

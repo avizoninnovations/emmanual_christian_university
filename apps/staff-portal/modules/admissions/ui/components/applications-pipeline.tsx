@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import { Download, Search } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
@@ -35,6 +35,7 @@ type ApplicantId = Id<"applicants">;
 export function ApplicationsPipeline() {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [periodId, setPeriodId] = useState<Id<"academicPeriods"> | null>(null);
+  const [periodInitialized, setPeriodInitialized] = useState(false);
   const [programId, setProgramId] = useState<Id<"programs"> | null>(null);
   const [search, setSearch] = useState("");
   const [selectedApplicantId, setSelectedApplicantId] = useState<ApplicantId | null>(null);
@@ -44,13 +45,19 @@ export function ApplicationsPipeline() {
   const periods = useQuery(api.admissionsEnrollment.getEnrollmentPeriods, {});
   const programs = useQuery(api.academic.getPrograms, {});
   const bulkUpdateStatus = useMutation(api.admissionsBulk.bulkUpdateApplicantStatus);
+  useEffect(() => {
+    if (periods === undefined || periodInitialized) return;
+    const activePeriod = periods.find((period) => period.status === "active");
+    setPeriodId(activePeriod?._id ?? null);
+    setPeriodInitialized(true);
+  }, [periodInitialized, periods]);
   const applicants = usePaginatedQuery(
     api.admissions.getApplicants,
-    {
+    periodInitialized ? {
       ...(status === "all" ? {} : { status }),
       ...(periodId ? { periodId } : {}),
       ...(programId ? { programId } : {}),
-    },
+    } : "skip",
     { initialNumItems: 25 },
   );
   const searchValue = search.trim().toLowerCase();

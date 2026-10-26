@@ -57,7 +57,7 @@ export const staffSidebarSections: StaffSidebarSection[] = [
 
 function findActiveEntry(items: SidebarEntry[], pathname: string, parents: string[] = []): string[] | undefined {
   for (const item of items) {
-    if (item.kind === "link" && (item.url === pathname || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`)))) return parents;
+    if (item.kind === "link" && matchesSidebarPath(item.url, pathname)) return parents;
     if (item.kind === "group") {
       const match = findActiveEntry(item.items, pathname, [...parents, item.key]);
       if (match) return match;
@@ -147,8 +147,12 @@ function NavigationGroup({ section, items, pathname, open, onOpenChange, openNes
 
 function pathnameMatches(items: SidebarEntry[], pathname: string): boolean {
   return items.some((item) => item.kind === "link"
-    ? pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`))
+    ? matchesSidebarPath(item.url, pathname)
     : pathnameMatches(item.items, pathname));
+}
+
+function matchesSidebarPath(url: string, pathname: string) {
+  return pathname === url || (url !== "/" && url !== "/hod" && url !== "/admissions" && pathname.startsWith(`${url}/`));
 }
 
 function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathChange }: {
@@ -157,7 +161,7 @@ function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathCh
   return <>{items.map((item) => {
     const Icon = item.icon;
     if (item.kind === "link") {
-      const active = pathname === item.url || (item.url !== "/" && item.url !== "/hod" && pathname.startsWith(`${item.url}/`));
+      const active = matchesSidebarPath(item.url, pathname);
       return <SidebarMenuSubItem key={item.url}>
         <SidebarMenuSubButton
           asChild

@@ -43,7 +43,7 @@ export const staffSidebarSections: StaffSidebarSection[] = [
   ] },
   { key: "retake-approvals", category: "ACADEMICS", title: "Retake Approvals", icon: ClipboardCheck, url: "/workspace/retake-approvals", roles: ["hod", "registrar", "admin"], items: [] },
   { key: "timetable", category: "ACADEMICS", title: "Timetable", icon: CalendarDays, url: "/timetable", items: [] },
-  { key: "admissions-office", category: "ADMISSIONS", title: "Admissions Office", icon: ClipboardList, url: "/admin/admissions", roles: ["admissions_officer", "registrar"], items: [] },
+  { key: "admissions-office", category: "ADMISSIONS", title: "Admissions Office", icon: ClipboardList, url: "/admissions", roles: ["admissions_officer", "registrar"], items: [] },
   { key: "finance-office", category: "FINANCE OFFICE", title: "Finance Office", icon: DollarSign, url: "/admin/finance", roles: ["finance"], items: [] },
   { key: "my-finance", category: "MY FINANCE", title: "My Finance", icon: Wallet, url: "/workspace/finance", items: [] },
   { key: "salary-payslip", category: "MY FINANCE", title: "Salary Pay Slip", icon: FileText, url: "/workspace/salary-payslip", items: [] },

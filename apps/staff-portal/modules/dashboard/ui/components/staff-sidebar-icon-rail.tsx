@@ -29,7 +29,7 @@ import {
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
   { title: "My Finance", url: "/workspace/finance", icon: Wallet },
-  { title: "Admissions Office", url: "/admin/admissions", icon: ClipboardList },
+  { title: "Admissions Office", url: "/admissions", icon: ClipboardList },
   { title: "Finance Office", url: "/admin/finance", icon: DollarSign },
   { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
   { title: "Personal Records", url: "/profile", icon: UserRound },
@@ -55,7 +55,7 @@ export function StaffSidebarIconRail({ pathname, hasLeadership, canReviewRetakes
   const links = railLinks.filter((link) => (hasLeadership || !link.url.startsWith("/hod/"))
     && (canReviewRetakes || link.url !== "/workspace/retake-approvals")
     && (hasFinance || link.url !== "/admin/finance")
-    && (hasAdmissions || link.url !== "/admin/admissions"));
+    && (hasAdmissions || link.url !== "/admissions"));
 
   return (
     <div className="hidden group-data-[collapsible=icon]:block">

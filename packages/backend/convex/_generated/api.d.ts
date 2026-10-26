@@ -10,6 +10,7 @@
 
 import type * as academic from "../academic.js";
 import type * as admissions from "../admissions.js";
+import type * as admissionsBulk from "../admissionsBulk.js";
 import type * as admissionsDocuments from "../admissionsDocuments.js";
 import type * as admissionsEnrollment from "../admissionsEnrollment.js";
 import type * as admissionsTestSeed from "../admissionsTestSeed.js";
@@ -80,6 +81,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   academic: typeof academic;
   admissions: typeof admissions;
+  admissionsBulk: typeof admissionsBulk;
   admissionsDocuments: typeof admissionsDocuments;
   admissionsEnrollment: typeof admissionsEnrollment;
   admissionsTestSeed: typeof admissionsTestSeed;

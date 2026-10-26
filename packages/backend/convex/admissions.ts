@@ -19,15 +19,41 @@ export const getApplicants = query({
   args: {
     paginationOpts: paginationOptsValidator,
     status: v.optional(applicantStatus),
+    periodId: v.optional(v.id("academicPeriods")),
+    programId: v.optional(v.id("programs")),
   },
   handler: async (ctx, args) => {
     await assertRole(ctx, admissionsRoles);
-    const source = args.status
-      ? ctx.db
-          .query("applicants")
-          .withIndex("by_status", (q) => q.eq("status", args.status!))
-      : ctx.db.query("applicants");
-    const page = await source.order("desc").paginate(args.paginationOpts);
+    const period = args.periodId ? await ctx.db.get(args.periodId) : null;
+    if (args.periodId && !period)
+      throw new ConvexError("The selected academic period could not be found.");
+
+    const page = await (async () => {
+      if (period && args.programId) {
+        let source = ctx.db.query("applicants").withIndex("by_period_and_program", (q) =>
+          q.eq("term", period.term).eq("year", period.year).eq("programId", args.programId!),
+        );
+        if (args.status) source = source.filter((q) => q.eq(q.field("status"), args.status!));
+        return source.order("desc").paginate(args.paginationOpts);
+      }
+      if (period) {
+        let source = ctx.db.query("applicants").withIndex("by_period", (q) =>
+          q.eq("term", period.term).eq("year", period.year),
+        );
+        if (args.programId) source = source.filter((q) => q.eq(q.field("programId"), args.programId!));
+        if (args.status) source = source.filter((q) => q.eq(q.field("status"), args.status!));
+        return source.order("desc").paginate(args.paginationOpts);
+      }
+      if (args.programId) {
+        let source = ctx.db.query("applicants").withIndex("by_program", (q) => q.eq("programId", args.programId!));
+        if (args.status) source = source.filter((q) => q.eq(q.field("status"), args.status!));
+        return source.order("desc").paginate(args.paginationOpts);
+      }
+      if (args.status) {
+        return ctx.db.query("applicants").withIndex("by_status", (q) => q.eq("status", args.status!)).order("desc").paginate(args.paginationOpts);
+      }
+      return ctx.db.query("applicants").order("desc").paginate(args.paginationOpts);
+    })();
     const programs = await Promise.all(
       [...new Set(page.page.map((applicant) => applicant.programId))].map(
         (id) => ctx.db.get(id),

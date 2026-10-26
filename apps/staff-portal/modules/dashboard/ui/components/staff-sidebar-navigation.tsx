@@ -86,6 +86,9 @@ export function StaffSidebarNavigation({ pathname, query, openSection, onOpenCha
   const sections = staffSidebarSections.filter((section) => (!section.roles || section.roles.some((role) => roleSet.has(role)))
     && (!normalizedQuery || section.title.toLowerCase().includes(normalizedQuery) || (section.url ? false : filterEntries(section.items, normalizedQuery, false).length > 0)));
   const categories = [...new Set(sections.map((section) => section.category))];
+  if (roleSet.has("admissions_officer") || roleSet.has("registrar")) {
+    categories.sort((left, right) => Number(right === "ADMISSIONS") - Number(left === "ADMISSIONS"));
+  }
   return <>{categories.map((category, categoryIndex) => <SidebarGroup key={category} className={`${categoryIndex === 0 ? "border-t" : ""} border-b border-sidebar-border/60 px-1 py-3`}>
     <SidebarGroupLabel className="px-4 text-xs font-bold tracking-wide text-sidebar-foreground">{category}</SidebarGroupLabel>
     <SidebarGroupContent>{sections.filter((section) => section.category === category).map((section) => {

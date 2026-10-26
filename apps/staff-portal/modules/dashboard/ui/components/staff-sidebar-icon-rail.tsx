@@ -28,8 +28,8 @@ import {
 
 const railLinks = [
   { title: "Staff Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "My Finance", url: "/workspace/finance", icon: Wallet },
   { title: "Admissions Office", url: "/admissions", icon: ClipboardList },
+  { title: "My Finance", url: "/workspace/finance", icon: Wallet },
   { title: "Finance Office", url: "/admin/finance", icon: DollarSign },
   { title: "Salary Pay Slip", url: "/workspace/salary-payslip", icon: FileText },
   { title: "Personal Records", url: "/profile", icon: UserRound },

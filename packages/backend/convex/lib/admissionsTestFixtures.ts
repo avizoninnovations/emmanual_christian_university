@@ -1,0 +1,52 @@
+export const admissionsTestApplicants = [
+  {
+    firstName: "Martha",
+    surname: "Lado",
+    email: "martha.lado@applicant.example.test",
+    phone: "+211 920 000 101",
+    stage: "new",
+  },
+  {
+    firstName: "Peter",
+    otherName: "James",
+    surname: "Wani",
+    email: "peter.wani@applicant.example.test",
+    phone: "+211 920 000 102",
+    stage: "reviewing",
+  },
+  {
+    firstName: "Grace",
+    surname: "Loki",
+    email: "grace.loki@applicant.example.test",
+    phone: "+211 920 000 103",
+    stage: "accepted",
+  },
+  {
+    firstName: "Daniel",
+    surname: "Moro",
+    email: "daniel.moro@applicant.example.test",
+    phone: "+211 920 000 104",
+    stage: "offer_issued",
+  },
+  {
+    firstName: "Rebecca",
+    surname: "Taban",
+    email: "rebecca.taban@applicant.example.test",
+    phone: "+211 920 000 105",
+    stage: "offer_accepted",
+  },
+  {
+    firstName: "Samuel",
+    surname: "Jada",
+    email: "samuel.jada@applicant.example.test",
+    phone: "+211 920 000 106",
+    stage: "reported",
+  },
+  {
+    firstName: "Esther",
+    surname: "Kiden",
+    email: "esther.kiden@applicant.example.test",
+    phone: "+211 920 000 107",
+    stage: "rejected",
+  },
+] as const;

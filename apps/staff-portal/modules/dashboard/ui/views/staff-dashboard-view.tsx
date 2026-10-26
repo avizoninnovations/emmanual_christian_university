@@ -17,6 +17,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { AdmissionsDashboardView, AdmissionsSummarySection } from "./admissions-dashboard-view";
 
 function getSemesterProgress(startDate?: string, endDate?: string) {
   if (!startDate || !endDate) return { day: 0, total: 0, percent: 0 };
@@ -34,6 +35,16 @@ function getGreeting() {
 }
 
 export default function StaffDashboardView() {
+  const { roles } = useCurrentUser();
+  const isAdmissionsStaff = roles.some((role) => ["admissions_officer", "registrar"].includes(role));
+  const isLecturer = roles.some((role) => ["lecturer", "senior_lecturer", "hod"].includes(role));
+
+  if (isAdmissionsStaff && !isLecturer) return <AdmissionsDashboardView />;
+
+  return <AcademicStaffDashboard includeAdmissions={isAdmissionsStaff} />;
+}
+
+function AcademicStaffDashboard({ includeAdmissions }: { includeAdmissions: boolean }) {
   const { user, roles, isLoading } = useCurrentUser();
   const courses = useQuery(api.allocations.getLecturerCourses, {});
   const activePeriod = useQuery(api.calendar.getActivePeriod);
@@ -61,6 +72,8 @@ export default function StaffDashboardView() {
             </Button>
           </div>
         </header>
+
+        {includeAdmissions ? <AdmissionsSummarySection /> : null}
 
         <section aria-label="Academic overview" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <OverviewMetric icon={BookOpen} label="Teaching courses" value={courses === undefined ? undefined : String(courseList.length)} detail="Courses assigned to you" />

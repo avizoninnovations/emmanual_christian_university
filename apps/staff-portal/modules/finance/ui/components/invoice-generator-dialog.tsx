@@ -7,13 +7,13 @@ import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import { toast } from "sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import { Button } from "@workspace/ui/components/button";
 import { Label } from "@workspace/ui/components/label";
 import {
@@ -80,19 +80,19 @@ export const InvoiceGeneratorDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <WideSheetContent>
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2 text-xl font-bold">
             <div className="size-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
               <Zap className="size-5" />
             </div>
             Run Semester Fee Invoicing
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             Automatically apply configured program fee structures to all enrolled students for the upcoming semester.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {/* Target Academic Period */}
@@ -145,7 +145,7 @@ export const InvoiceGeneratorDialog = ({
             </p>
           </div>
 
-          <DialogFooter className="pt-3">
+          <SheetFooter className="pt-3">
             <Button
               type="button"
               variant="outline"
@@ -169,9 +169,9 @@ export const InvoiceGeneratorDialog = ({
                 </>
               )}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </WideSheetContent>
+    </Sheet>
   );
 };

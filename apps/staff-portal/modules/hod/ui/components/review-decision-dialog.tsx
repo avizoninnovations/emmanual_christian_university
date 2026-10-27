@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@workspace/ui/components/form";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { Button } from "@workspace/ui/components/button";
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
@@ -26,9 +26,9 @@ export function ReviewDecisionDialog({ courseId, periodId, rows, decision, close
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not review these results")); }
   });
   const subject = rows.length === 1 ? "this result" : `${rows.length} selected results`;
-  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle className="capitalize">{decision} {subject}</DialogTitle>
-    <DialogDescription>{decision === "approve" ? "These submitted marks will become visible to the selected students." : decision === "withdraw" ? "The published results will be hidden from the selected students." : "These submitted marks will be returned to the lecturer for correction."}</DialogDescription></DialogHeader>
+  return <Sheet open onOpenChange={open => { if (!open) close(); }}><WideSheetContent><SheetHeader><SheetTitle className="capitalize">{decision} {subject}</SheetTitle>
+    <SheetDescription>{decision === "approve" ? "These submitted marks will become visible to the selected students." : decision === "withdraw" ? "The published results will be hidden from the selected students." : "These submitted marks will be returned to the lecturer for correction."}</SheetDescription></SheetHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4"><FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason {decision === "approve" ? "(optional)" : ""}</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />
       <Button type="submit" disabled={form.formState.isSubmitting}>Confirm {decision}</Button></form></Form>
-  </DialogContent></Dialog>;
+  </WideSheetContent></Sheet>;
 }

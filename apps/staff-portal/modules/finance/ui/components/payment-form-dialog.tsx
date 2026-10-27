@@ -7,13 +7,13 @@ import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import { toast } from "sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
@@ -162,19 +162,19 @@ export const PaymentFormDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <WideSheetContent>
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2 text-xl font-bold">
             <div className="size-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
               <Banknote className="size-5" />
             </div>
             Record Student Payment
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             Enter tuition payment or fee collection details. An official receipt will be generated automatically.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           {/* Student Selector / Info */}
@@ -436,7 +436,7 @@ export const PaymentFormDialog = ({
             />
           </div>
 
-          <DialogFooter className="pt-3">
+          <SheetFooter className="pt-3">
             <Button
               type="button"
               variant="outline"
@@ -460,9 +460,9 @@ export const PaymentFormDialog = ({
                 </>
               )}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </WideSheetContent>
+    </Sheet>
   );
 };

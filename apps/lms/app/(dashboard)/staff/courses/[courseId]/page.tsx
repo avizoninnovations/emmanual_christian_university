@@ -13,13 +13,13 @@ import { useState } from "react";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import { toast } from "sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +36,7 @@ export default function StaffCourseManagement() {
   const modules = useQuery(api.lms.getCourseModules, { courseId });
   const createModule = useMutation(api.lms.createModule);
 
-  const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
+  const [isModuleSheetOpen, setIsModuleSheetOpen] = useState(false);
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const [newModuleDescription, setNewModuleDescription] = useState("");
 
@@ -51,7 +51,7 @@ export default function StaffCourseManagement() {
         year: course?.year || 2024,
         isPublished: true,
       });
-      setIsModuleDialogOpen(false);
+      setIsModuleSheetOpen(false);
       setNewModuleTitle("");
       setNewModuleDescription("");
       toast.success("Module created successfully");
@@ -85,16 +85,16 @@ export default function StaffCourseManagement() {
               <Button variant="outline" size="sm">
                  <Eye className="w-4 h-4 mr-2" /> View as Student
               </Button>
-              <Dialog open={isModuleDialogOpen} onOpenChange={setIsModuleDialogOpen}>
-                <DialogTrigger asChild>
+              <Sheet open={isModuleSheetOpen} onOpenChange={setIsModuleSheetOpen}>
+                <SheetTrigger asChild>
                   <Button size="sm">
                      <Plus className="w-4 h-4 mr-2" /> ADD MODULE
                   </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create New Course Module</DialogTitle>
-                  </DialogHeader>
+                </SheetTrigger>
+                <WideSheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Create New Course Module</SheetTitle>
+                  </SheetHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">Module Title</Label>
@@ -105,11 +105,11 @@ export default function StaffCourseManagement() {
                       <Textarea id="desc" placeholder="Briefly describe what students will learn." value={newModuleDescription} onChange={(e) => setNewModuleDescription(e.target.value)} />
                     </div>
                   </div>
-                  <DialogFooter>
+                  <SheetFooter>
                     <Button onClick={handleCreateModule}>Create Module</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                  </SheetFooter>
+                </WideSheetContent>
+              </Sheet>
            </div>
         </div>
       </div>
@@ -195,16 +195,16 @@ function StaffMaterialManager({ moduleId, courseId }: { moduleId: Id<"courseModu
     <div className="space-y-4">
        <div className="flex items-center justify-between mb-4">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Materials & Resources</p>
-          <Dialog open={isAddMatOpen} onOpenChange={setIsAddMatOpen}>
-             <DialogTrigger asChild>
+          <Sheet open={isAddMatOpen} onOpenChange={setIsAddMatOpen}>
+             <SheetTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 text-primary hover:bg-primary/5">
                    <Plus className="w-3.5 h-3.5 mr-1" /> ADD CONTENT
                 </Button>
-             </DialogTrigger>
-             <DialogContent>
-                <DialogHeader>
-                   <DialogTitle>Add Material to Module</DialogTitle>
-                </DialogHeader>
+             </SheetTrigger>
+             <WideSheetContent>
+                <SheetHeader>
+                   <SheetTitle>Add Material to Module</SheetTitle>
+                </SheetHeader>
                 <div className="space-y-4 py-4">
                    <div className="space-y-2">
                       <Label>Title</Label>
@@ -223,11 +223,11 @@ function StaffMaterialManager({ moduleId, courseId }: { moduleId: Id<"courseModu
                        </select>
                    </div>
                 </div>
-                <DialogFooter>
+                <SheetFooter>
                    <Button onClick={handleUpload}>Post Material</Button>
-                </DialogFooter>
-             </DialogContent>
-          </Dialog>
+                </SheetFooter>
+             </WideSheetContent>
+          </Sheet>
        </div>
 
        <div className="space-y-2">

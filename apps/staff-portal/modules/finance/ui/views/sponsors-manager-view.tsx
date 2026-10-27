@@ -28,13 +28,13 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import {
   Select,
   SelectContent,
@@ -391,17 +391,17 @@ export const SponsorsManagerView = () => {
         </TabsContent>
       </Tabs>
 
-      {/* ── Dialog: Create Sponsor ── */}
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold flex items-center gap-2">
+      {/* ── Sheet: Create Sponsor ── */}
+      <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-base font-bold flex items-center gap-2">
               <Building2 className="size-4 text-primary" /> Register Institutional Sponsor
-            </DialogTitle>
-            <DialogDescription className="text-xs">
+            </SheetTitle>
+            <SheetDescription className="text-xs">
               Add a church diocese, humanitarian agency, or government scholarship sponsor.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <form onSubmit={handleCreateSponsor} className="space-y-3.5 pt-2">
             <div className="space-y-1.5">
@@ -492,29 +492,29 @@ export const SponsorsManagerView = () => {
               </div>
             </div>
 
-            <DialogFooter className="pt-2">
+            <SheetFooter className="pt-2">
               <Button type="button" variant="outline" size="sm" onClick={() => setIsCreateOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" size="sm" disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
                 {isSubmitting ? "Registering..." : "Register Sponsor"}
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </WideSheetContent>
+      </Sheet>
 
-      {/* ── Dialog: Assign Student to Sponsor ── */}
-      <Dialog open={isAssignOpen} onOpenChange={setIsAssignOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold flex items-center gap-2">
+      {/* ── Sheet: Assign Student to Sponsor ── */}
+      <Sheet open={isAssignOpen} onOpenChange={setIsAssignOpen}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-base font-bold flex items-center gap-2">
               <UserCheck className="size-4 text-primary" /> Assign Student Sponsorship
-            </DialogTitle>
-            <DialogDescription className="text-xs">
+            </SheetTitle>
+            <SheetDescription className="text-xs">
               Link an enrolled student to an institutional scholarship sponsor.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <form onSubmit={handleAssignStudent} className="space-y-3.5 pt-2">
             <div className="space-y-1.5">
@@ -557,17 +557,17 @@ export const SponsorsManagerView = () => {
               </Select>
             </div>
 
-            <DialogFooter className="pt-2">
+            <SheetFooter className="pt-2">
               <Button type="button" variant="outline" size="sm" onClick={() => setIsAssignOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" size="sm" disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
                 {isSubmitting ? "Saving..." : "Save Assignment"}
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </WideSheetContent>
+      </Sheet>
     </div>
   );
 };

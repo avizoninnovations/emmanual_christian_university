@@ -4,13 +4,13 @@ import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
 import {
@@ -56,13 +56,13 @@ export const StudentStatementModal = ({
 
   if (!studentId || profile === undefined) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-3xl">
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <WideSheetContent>
           <div className="flex items-center justify-center py-16">
             <Loader2 className="size-6 animate-spin text-primary" />
           </div>
-        </DialogContent>
-      </Dialog>
+        </WideSheetContent>
+      </Sheet>
     );
   }
 
@@ -74,18 +74,18 @@ export const StudentStatementModal = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="p-6 border-b bg-muted/15">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <WideSheetContent className=" p-0">
+        <SheetHeader className="p-6 border-b bg-muted/15">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <SheetTitle className="text-xl font-bold flex items-center gap-2">
                 <FileText className="size-5 text-primary" />
                 Student Financial Statement
-              </DialogTitle>
-              <DialogDescription className="text-xs mt-1">
+              </SheetTitle>
+              <SheetDescription className="text-xs mt-1">
                 Full ledger and transaction history for official audit and examination clearance.
-              </DialogDescription>
+              </SheetDescription>
             </div>
             <Badge
               variant="outline"
@@ -120,7 +120,7 @@ export const StudentStatementModal = ({
               <span className="font-medium">Year {student.yearOfStudy} (Sem {student.term})</span>
             </div>
           </div>
-        </DialogHeader>
+        </SheetHeader>
 
         <div className="p-6 space-y-6">
           {/* Summary Balance Cards */}
@@ -283,7 +283,7 @@ export const StudentStatementModal = ({
           </div>
         </div>
 
-        <DialogFooter className="p-4 border-t bg-muted/10 flex sm:justify-between items-center">
+        <SheetFooter className="p-4 border-t bg-muted/10 flex sm:justify-between items-center">
           <Button variant="outline" className="gap-2" onClick={handlePrint}>
             <Printer className="size-4" /> Print Statement
           </Button>
@@ -303,8 +303,8 @@ export const StudentStatementModal = ({
               </Button>
             )}
           </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </WideSheetContent>
+    </Sheet>
   );
 };

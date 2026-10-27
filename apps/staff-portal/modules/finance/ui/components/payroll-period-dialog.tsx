@@ -7,7 +7,7 @@ import { z } from "zod";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { toast } from "sonner";
@@ -48,9 +48,9 @@ export function PayrollPeriodDialog({ open, onOpenChange, onCreated }: {
     }
   }
 
-  return <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="sm:max-w-md rounded-sm">
-      <DialogHeader><DialogTitle>New payroll period</DialogTitle><DialogDescription>Choose the month and scheduled pay date.</DialogDescription></DialogHeader>
+  return <Sheet open={open} onOpenChange={onOpenChange}>
+    <WideSheetContent className="rounded-sm">
+      <SheetHeader><SheetTitle>New payroll period</SheetTitle><SheetDescription>Choose the month and scheduled pay date.</SheetDescription></SheetHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(submit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -58,9 +58,9 @@ export function PayrollPeriodDialog({ open, onOpenChange, onCreated }: {
             <FormField control={form.control} name="year" render={({ field }) => <FormItem><FormLabel>Year</FormLabel><FormControl><Input type="number" min={2000} max={2100} {...field} /></FormControl><FormMessage /></FormItem>} />
           </div>
           <FormField control={form.control} name="payDate" render={({ field }) => <FormItem><FormLabel>Pay date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
-          <DialogFooter><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="submit" disabled={saving}>{saving ? "Creating…" : "Create period"}</Button></DialogFooter>
+          <SheetFooter><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="submit" disabled={saving}>{saving ? "Creating…" : "Create period"}</Button></SheetFooter>
         </form>
       </Form>
-    </DialogContent>
-  </Dialog>;
+    </WideSheetContent>
+  </Sheet>;
 }

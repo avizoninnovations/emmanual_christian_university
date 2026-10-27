@@ -3,7 +3,7 @@ name: component-reusability
 description: >-
   Standardizes component reusability guidelines across the ECU monorepo.
   Mandatory usage of shadcn primitives (Button, Input, Textarea, Select,
-  AlertDialog, Dialog, Table, Card, Tabs, Sidebar, Form, Badge) sourced
+  AlertDialog, Sheet, Table, Card, Tabs, Sidebar, Form, Badge) sourced
   from `@workspace/ui/components/*`. ECU Maroon brand colour applied via
   Tailwind theme tokens — no hardcoded hex.
 ---
@@ -173,22 +173,48 @@ import {
 
 ---
 
-## 6. Dialog (`@workspace/ui/components/dialog`) for Modal Forms
+## 6. Sheet (`@workspace/ui/components/sheet`) for Functional Workflows
 
-Use `Dialog` (not `AlertDialog`) for forms that need input — Record
-Payment, Edit Fee Structure, Assign Sponsor, Promote Semester, etc.
+Use a right-side `Sheet` for create, edit, assign, review, and other
+workflows that collect or update meaningful information. Give these
+forms room to align with the shared `WideSheetContent` primitive; it is
+responsive on small screens and expands to 60rem on larger screens.
+Do not put these workflows in a centered popup dialog.
 
 ```tsx
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  WideSheetContent,
+} from "@workspace/ui/components/sheet";
+
+<Sheet open={open} onOpenChange={setOpen}>
+  <SheetTrigger asChild><Button>Add record</Button></SheetTrigger>
+  <WideSheetContent>
+    <SheetHeader>
+      <SheetTitle>Create record</SheetTitle>
+      <SheetDescription>Enter the record details.</SheetDescription>
+    </SheetHeader>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Form fields */}
+        <SheetFooter className="flex-row justify-end border-t pt-4">
+          <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </SheetFooter>
+      </form>
+    </Form>
+  </WideSheetContent>
+</Sheet>
 ```
+
+Keep `AlertDialog` for destructive confirmations. A small `Dialog` is
+appropriate only for brief confirmations or compact, read-only notices;
+use a regular `Sheet` for read-only details that need substantial space.
 
 ---
 

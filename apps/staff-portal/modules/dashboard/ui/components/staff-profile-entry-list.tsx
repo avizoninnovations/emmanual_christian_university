@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@workspace/ui/components/alert-dialog";
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
@@ -129,20 +129,20 @@ function EntryEditor({ section, record, onClose, onSave }: { section: EntrySecti
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+    <Sheet open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <WideSheetContent>
         <Form {...form}><form onSubmit={form.handleSubmit(submit)} className="space-y-5">
-          <DialogHeader><DialogTitle>{record === "new" ? `Add ${definition.title}` : `Edit ${definition.title}`}</DialogTitle><DialogDescription>Keep these details current on your staff record.</DialogDescription></DialogHeader>
+          <SheetHeader><SheetTitle>{record === "new" ? `Add ${definition.title}` : `Edit ${definition.title}`}</SheetTitle><SheetDescription>Keep these details current on your staff record.</SheetDescription></SheetHeader>
           <div className="grid gap-4 sm:grid-cols-2">
             {definition.fields.map((label, index) => <FormField key={label} control={form.control} name={fieldKey(label)} render={({ field }) => <FormItem className={index === definition.fields.length - 1 && label.length > 24 ? "sm:col-span-2" : ""}>
               <FormLabel>{label}</FormLabel><FormControl>{label === "Responsibilities" || label === "Address" || label === "Notes" ? <Textarea {...field} /> : <Input {...field} type={inputType(label)} />}</FormControl><FormMessage />
             </FormItem>} />)}
             {(section === "document" || section === "qualification") && <div className="sm:col-span-2"><Label htmlFor="profileFile">{section === "qualification" ? "Upload an academic document" : "Upload the document"}</Label><Input ref={fileInput} id="profileFile" name="profileFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" className="mt-1" /><p className="mt-1 text-xs text-muted-foreground">PDF, image, or Word file up to 10 MB.</p></div>}
           </div>
-          <DialogFooter><Button type="button" variant="outline" onClick={onClose}>Cancel</Button><Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? "Saving…" : "Save record"}</Button></DialogFooter>
+          <SheetFooter><Button type="button" variant="outline" onClick={onClose}>Cancel</Button><Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? "Saving…" : "Save record"}</Button></SheetFooter>
         </form></Form>
-      </DialogContent>
-    </Dialog>
+      </WideSheetContent>
+    </Sheet>
   );
 }
 

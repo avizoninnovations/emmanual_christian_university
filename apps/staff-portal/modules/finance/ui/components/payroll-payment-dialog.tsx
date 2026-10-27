@@ -8,7 +8,7 @@ import { z } from "zod";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { toast } from "sonner";
@@ -42,13 +42,13 @@ export function PayrollPaymentDialog({ statementId, staffName, open, onOpenChang
     }
   }
 
-  return <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="rounded-sm sm:max-w-md">
-      <DialogHeader><DialogTitle>Record salary payment</DialogTitle><DialogDescription>{staffName} will see the paid status and reference on their salary statement.</DialogDescription></DialogHeader>
+  return <Sheet open={open} onOpenChange={onOpenChange}>
+    <WideSheetContent className="rounded-sm">
+      <SheetHeader><SheetTitle>Record salary payment</SheetTitle><SheetDescription>{staffName} will see the paid status and reference on their salary statement.</SheetDescription></SheetHeader>
       <Form {...form}><form onSubmit={form.handleSubmit(submit)} className="space-y-4">
         <FormField control={form.control} name="paymentReference" render={({ field }) => <FormItem><FormLabel>Payment reference</FormLabel><FormControl><Input placeholder="Bank transfer or transaction reference" {...field} /></FormControl><FormMessage /></FormItem>} />
-        <DialogFooter><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="submit" disabled={saving || !statementId}>{saving ? "Recording…" : "Confirm payment"}</Button></DialogFooter>
+        <SheetFooter><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="submit" disabled={saving || !statementId}>{saving ? "Recording…" : "Confirm payment"}</Button></SheetFooter>
       </form></Form>
-    </DialogContent>
-  </Dialog>;
+    </WideSheetContent>
+  </Sheet>;
 }

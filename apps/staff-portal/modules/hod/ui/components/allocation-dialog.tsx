@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { SearchableSelect, type SearchableSelectOption } from "@workspace/ui/components/searchable-select";
 import { Textarea } from "@workspace/ui/components/textarea";
@@ -92,12 +92,12 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
   });
 
   return (
-    <Dialog open onOpenChange={open => { if (!open) close(); }}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{allocationId ? "Update lecturer assignment" : "Assign lecturer"} · {title}</DialogTitle>
-          <DialogDescription>Choose a lecturer for this course unit, or leave it unassigned. Add a reason if the change needs context.</DialogDescription>
-        </DialogHeader>
+    <Sheet open onOpenChange={open => { if (!open) close(); }}>
+      <WideSheetContent>
+        <SheetHeader>
+          <SheetTitle>{allocationId ? "Update lecturer assignment" : "Assign lecturer"} · {title}</SheetTitle>
+          <SheetDescription>Choose a lecturer for this course unit, or leave it unassigned. Add a reason if the change needs context.</SheetDescription>
+        </SheetHeader>
         <Form {...form}>
           <form onSubmit={save} className="min-w-0 w-full space-y-4">
             <FormField
@@ -143,7 +143,7 @@ function AllocationForm({ courseId, periodId, title, close, staff, allocationId,
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </WideSheetContent>
+    </Sheet>
   );
 }

@@ -29,13 +29,13 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import { Separator } from "@workspace/ui/components/separator";
 
 const feeSchema = z.object({
@@ -177,17 +177,17 @@ export const FeeStructureDialog = ({
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <WideSheetContent>
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2 text-xl font-bold">
             <Coins className="size-5 text-primary" />
             {editingStructure ? "Edit Fee Structure" : "Define Program Fee Structure"}
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             Specify semester fees for an academic program. These amounts are automatically applied during semester enrollment and invoicing.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
@@ -377,7 +377,7 @@ export const FeeStructureDialog = ({
               </span>
             </div>
 
-            <DialogFooter className="pt-2">
+            <SheetFooter className="pt-2">
               <Button
                 type="button"
                 variant="outline"
@@ -397,10 +397,10 @@ export const FeeStructureDialog = ({
                   </>
                 )}
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </WideSheetContent>
+    </Sheet>
   );
 };

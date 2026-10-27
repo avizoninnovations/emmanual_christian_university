@@ -2,12 +2,12 @@
 
 import { useRef } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
 import { Printer, CheckCircle2, Building2, Calendar, User, ShieldCheck } from "lucide-react";
@@ -73,17 +73,17 @@ export const ReceiptPreviewModal = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl p-0 overflow-hidden print:border-none print:shadow-none">
-        <DialogHeader className="p-4 border-b bg-muted/20 flex flex-row items-center justify-between">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <WideSheetContent className=" p-0 overflow-hidden print:border-none print:shadow-none">
+        <SheetHeader className="p-4 border-b bg-muted/20 flex flex-row items-center justify-between">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="size-5 text-emerald-600" />
-            <DialogTitle className="text-base font-semibold">Payment Receipt</DialogTitle>
+            <SheetTitle className="text-base font-semibold">Payment Receipt</SheetTitle>
           </div>
           <Badge variant="outline" className="font-mono text-xs bg-primary/10 text-primary border-primary/20">
             {receipt.receiptNumber}
           </Badge>
-        </DialogHeader>
+        </SheetHeader>
 
         {/* ── Printable Content Area ── */}
         <div ref={printRef} className="p-6 sm:p-8 space-y-6 text-foreground bg-background relative">
@@ -213,7 +213,7 @@ export const ReceiptPreviewModal = ({
           </div>
         </div>
 
-        <DialogFooter className="p-4 border-t bg-muted/10 flex sm:justify-between items-center">
+        <SheetFooter className="p-4 border-t bg-muted/10 flex sm:justify-between items-center">
           <p className="text-xs text-muted-foreground hidden sm:block">
             Keep this receipt for semester exam clearance and audit.
           </p>
@@ -225,8 +225,8 @@ export const ReceiptPreviewModal = ({
               <Printer className="size-4" /> Print Receipt
             </Button>
           </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </WideSheetContent>
+    </Sheet>
   );
 };

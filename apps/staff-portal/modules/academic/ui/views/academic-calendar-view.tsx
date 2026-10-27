@@ -9,14 +9,14 @@ import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Separator } from "@workspace/ui/components/separator";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@workspace/ui/components/sheet";
 import {
   Select,
   SelectContent,
@@ -134,21 +134,21 @@ export const AcademicCalendarView = () => {
               )}
             </div>
 
-            <Dialog open={isAdvancing} onOpenChange={setIsAdvancing}>
-              <DialogTrigger asChild>
+            <Sheet open={isAdvancing} onOpenChange={setIsAdvancing}>
+              <SheetTrigger asChild>
                 <Button className="gap-2" variant="default">
                   <Clock className="size-4" />
                   Advance Semester
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Advance Academic Cycle</DialogTitle>
-                  <DialogDescription>
+              </SheetTrigger>
+              <WideSheetContent>
+                <SheetHeader>
+                  <SheetTitle>Advance Academic Cycle</SheetTitle>
+                  <SheetDescription>
                     Select the next academic period to activate. This will close the current period, 
                     roll over all active students, and generate new ledger entries based on fee structures.
-                  </DialogDescription>
-                </DialogHeader>
+                  </SheetDescription>
+                </SheetHeader>
                 
                 <div className="py-4 space-y-4">
                    <div className="space-y-2">
@@ -179,7 +179,7 @@ export const AcademicCalendarView = () => {
                    </div>
                 </div>
 
-                <DialogFooter>
+                <SheetFooter>
                   <Button variant="outline" onClick={() => setIsAdvancing(false)}>Cancel</Button>
                   <Button 
                     variant="default" 
@@ -188,9 +188,9 @@ export const AcademicCalendarView = () => {
                   >
                     {loading ? "Processing..." : "Confirm Advancement"}
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                </SheetFooter>
+              </WideSheetContent>
+            </Sheet>
           </div>
         </CardContent>
       </Card>
@@ -231,8 +231,8 @@ export const AcademicCalendarView = () => {
       
       {/* ── Quick Actions ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
-        <Dialog open={isCreating} onOpenChange={setIsCreating}>
-          <DialogTrigger asChild>
+        <Sheet open={isCreating} onOpenChange={setIsCreating}>
+          <SheetTrigger asChild>
             <Card className="hover:border-primary/50 transition-all cursor-pointer group">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -244,14 +244,14 @@ export const AcademicCalendarView = () => {
                 </div>
               </CardContent>
             </Card>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create Academic Period</DialogTitle>
-              <DialogDescription>
+          </SheetTrigger>
+          <WideSheetContent>
+            <SheetHeader>
+              <SheetTitle>Create Academic Period</SheetTitle>
+              <SheetDescription>
                 Define a new term or semester for the university enrollment cycle.
-              </DialogDescription>
-            </DialogHeader>
+              </SheetDescription>
+            </SheetHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="name" className="text-xs font-bold uppercase text-muted-foreground">Period Name</Label>
@@ -305,15 +305,15 @@ export const AcademicCalendarView = () => {
                 </div>
               </div>
             </div>
-            <DialogFooter>
+            <SheetFooter>
               <Button variant="outline" onClick={() => setIsCreating(false)}>Cancel</Button>
               <Button onClick={handleCreatePeriod} disabled={loading} className="gap-2">
                 {loading && <Loader2 className="size-4 animate-spin" />}
                 Create Period
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </SheetFooter>
+          </WideSheetContent>
+        </Sheet>
         
         <Card className="hover:border-primary/50 transition-all cursor-pointer group">
           <CardContent className="p-6 flex items-center gap-4">

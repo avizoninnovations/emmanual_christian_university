@@ -12,7 +12,7 @@ import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -22,7 +22,7 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 import { useHodScope } from "../../hooks/use-hod-scope";
 import { HodScopePicker } from "../components/hod-scope-picker";
-import { MarkPermissionDialog, displayDeadline, parseNairobi, tomorrowNairobi } from "../components/mark-permission-dialog";
+import { displayDeadline, parseNairobi, tomorrowNairobi } from "../components/mark-permission-dialog";
 import { NairobiDateTimePicker } from "../components/nairobi-date-time-picker";
 import { ClassReviewView } from "./class-review-view";
 
@@ -82,7 +82,7 @@ export function PermissionListView({ manager = true }: { manager?: boolean }) {
           </TableBody>
         </Table>
       {rows.status === "CanLoadMore" && <div className="flex justify-center"><Button variant="outline" onClick={() => rows.loadMore(25)}>Load more permissions</Button></div>}
-      {decision && <PermissionDecisionDialog decision={decision} close={() => setDecision(undefined)} />}
+      {decision && <PermissionDecisionSheet decision={decision} close={() => setDecision(undefined)} />}
     </div>
     {classView && <ClassReviewView {...classView} onClose={() => setClassView(undefined)} />}
   </>;
@@ -98,7 +98,7 @@ function PermissionRowMenu({ rowId, status, onChoose }: { rowId: Id<"markEditPer
 }
 
 const decisionSchema = z.object({ reason: z.string().trim(), expiry: z.string().min(1) });
-function PermissionDecisionDialog({ decision, close }: { decision: Decision; close: () => void }) {
+function PermissionDecisionSheet({ decision, close }: { decision: Decision; close: () => void }) {
   const decide = useMutation(api.markPermissions.decide);
   const form = useForm<z.infer<typeof decisionSchema>>({ resolver: zodResolver(decisionSchema), defaultValues: { reason: "", expiry: tomorrowNairobi() } });
   const save = form.handleSubmit(async values => {
@@ -109,12 +109,12 @@ function PermissionDecisionDialog({ decision, close }: { decision: Decision; clo
     catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not update this permission")); }
   });
   const title = decision.action === "grant" ? "Approve editing access" : decision.action === "reject" ? "Reject editing request" : "Revoke editing access";
-  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent><DialogHeader><DialogTitle>{title}</DialogTitle>
-    <DialogDescription>{decision.action === "grant" ? "Grant time-limited mark editing access for this request." : decision.action === "reject" ? "Provide a reason so the lecturer understands why the request was rejected." : "Provide a reason for revoking this editing access."}</DialogDescription></DialogHeader>
+  return <Sheet open onOpenChange={open => { if (!open) close(); }}><WideSheetContent><SheetHeader><SheetTitle>{title}</SheetTitle>
+    <SheetDescription>{decision.action === "grant" ? "Grant time-limited mark editing access for this request." : decision.action === "reject" ? "Provide a reason so the lecturer understands why the request was rejected." : "Provide a reason for revoking this editing access."}</SheetDescription></SheetHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4">
       {decision.action === "grant" && <FormField control={form.control} name="expiry" render={({ field }) => <FormItem><FormLabel>Access expires</FormLabel><FormControl><NairobiDateTimePicker value={field.value} onChange={field.onChange} label="Choose access expiry" /></FormControl><FormMessage /></FormItem>} />}
       {decision.action !== "grant" && <FormField control={form.control} name="reason" render={({ field }) => <FormItem><FormLabel>Reason</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>} />}
       <div className="flex justify-end border-t pt-4"><Button type="submit" disabled={form.formState.isSubmitting}>{title}</Button></div>
     </form></Form>
-  </DialogContent></Dialog>;
+  </WideSheetContent></Sheet>;
 }

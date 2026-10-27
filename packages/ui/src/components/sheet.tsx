@@ -81,6 +81,21 @@ function SheetContent({
   )
 }
 
+function WideSheetContent({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetContent>) {
+  return (
+    <SheetContent
+      className={cn(
+        "w-[min(92vw,60rem)] max-h-svh overflow-y-auto sm:max-w-[60rem]",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -132,6 +147,7 @@ export {
   SheetTrigger,
   SheetClose,
   SheetContent,
+  WideSheetContent,
   SheetHeader,
   SheetFooter,
   SheetTitle,

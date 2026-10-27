@@ -14,13 +14,13 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Badge } from "@workspace/ui/components/badge";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import {
   Select,
   SelectContent,
@@ -39,7 +39,7 @@ export function LecturerTimetableView() {
   );
 
   const [activeTab, setActiveTab] = useState<"my" | "dept">("my");
-  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+  const [scheduleSheetOpen, setScheduleSheetOpen] = useState(false);
 
   // Form states
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
@@ -92,7 +92,7 @@ export function LecturerTimetableView() {
       });
 
       toast.success("Timetable slot scheduled successfully");
-      setScheduleDialogOpen(false);
+      setScheduleSheetOpen(false);
     } catch (err: any) {
       toast.error(getUserFacingErrorMessage(err, "Failed to schedule slot"));
     } finally {
@@ -162,7 +162,7 @@ export function LecturerTimetableView() {
           {isHodOrAdmin && (
             <Button
               size="sm"
-              onClick={() => setScheduleDialogOpen(true)}
+              onClick={() => setScheduleSheetOpen(true)}
               className="gap-1.5 bg-primary text-primary-foreground"
             >
               <Plus className="size-3.5" /> Schedule Class
@@ -177,18 +177,18 @@ export function LecturerTimetableView() {
         onDelete={(slot) => void handleDeleteSlot(slot._id)}
       />
 
-      {/* ── Schedule Lecture Dialog ── */}
-      <Dialog open={scheduleDialogOpen} onOpenChange={setScheduleDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold">
+      {/* ── Schedule Lecture Sheet ── */}
+      <Sheet open={scheduleSheetOpen} onOpenChange={setScheduleSheetOpen}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-base font-bold">
               Schedule Lecture Session
-            </DialogTitle>
-            <DialogDescription className="text-xs">
+            </SheetTitle>
+            <SheetDescription className="text-xs">
               Assign course time and room. The system will automatically check
               for room and lecturer collisions.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <div className="space-y-3 py-2 text-xs">
             {/* Course Select */}
@@ -288,11 +288,11 @@ export function LecturerTimetableView() {
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
+          <SheetFooter className="gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setScheduleDialogOpen(false)}
+              onClick={() => setScheduleSheetOpen(false)}
               disabled={isSubmitting}
             >
               Cancel
@@ -310,9 +310,9 @@ export function LecturerTimetableView() {
               )}
               Save Schedule Slot
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </WideSheetContent>
+      </Sheet>
     </div>
   );
 }

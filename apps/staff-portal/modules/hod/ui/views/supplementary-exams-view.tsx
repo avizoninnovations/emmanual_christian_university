@@ -35,13 +35,13 @@ import {
   TableRow,
 } from "@workspace/ui/components/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 
 export function SupplementaryExamsView() {
   const candidates = usePaginatedQuery(api.marks.getSupplementaryCandidates, {}, { initialNumItems: 50 });
@@ -52,7 +52,7 @@ export function SupplementaryExamsView() {
 
   const recordSupplementary = useMutation(api.marks.recordSupplementaryMark);
 
-  const handleOpenRecordDialog = (c: (typeof candidates.results)[number]) => {
+  const handleOpenRecordSheet = (c: (typeof candidates.results)[number]) => {
     setSelectedCandidate(c);
     setRawScoreInput(c.supplementaryScore ? String(c.supplementaryScore) : "");
   };
@@ -217,7 +217,7 @@ export function SupplementaryExamsView() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleOpenRecordDialog(c)}
+                        onClick={() => handleOpenRecordSheet(c)}
                         className="h-8 text-xs gap-1.5"
                       >
                         <Edit className="size-3" />
@@ -232,17 +232,17 @@ export function SupplementaryExamsView() {
           {candidates.status === "CanLoadMore" && <div className="pt-3"><Button variant="outline" onClick={() => candidates.loadMore(50)}>Load more candidates</Button></div>}
       </section>
 
-      {/* ── Record Supplementary Dialog ── */}
-      <Dialog open={!!selectedCandidate} onOpenChange={(o) => !o && setSelectedCandidate(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold">
+      {/* ── Record Supplementary Sheet ── */}
+      <Sheet open={!!selectedCandidate} onOpenChange={(o) => !o && setSelectedCandidate(null)}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-base font-bold">
               Record Supplementary Examination Mark
-            </DialogTitle>
-            <DialogDescription className="text-xs">
+            </SheetTitle>
+            <SheetDescription className="text-xs">
               Enter the student&apos;s score out of 100 on the supplementary examination paper.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           {selectedCandidate && (
             <div className="space-y-4 py-2 text-xs">
@@ -304,7 +304,7 @@ export function SupplementaryExamsView() {
             </div>
           )}
 
-          <DialogFooter className="gap-2">
+          <SheetFooter className="gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -322,9 +322,9 @@ export function SupplementaryExamsView() {
               {isSubmitting ? <Loader2 className="size-3.5 animate-spin" /> : <CheckCircle2 className="size-3.5" />}
               Save Official Result
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </WideSheetContent>
+      </Sheet>
     </div>
   );
 }

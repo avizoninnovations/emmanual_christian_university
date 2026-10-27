@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Info } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 
 export function AssignmentLockInfo({ submittedMarks, periodLocked, periodStatus }: {
   submittedMarks: boolean;
@@ -26,12 +26,12 @@ export function AssignmentLockInfo({ submittedMarks, periodLocked, periodStatus 
       >
         <Info className="size-4" />
       </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reassignment unavailable</DialogTitle>
-            <DialogDescription>Here is what needs to happen before this course unit can be reassigned.</DialogDescription>
-          </DialogHeader>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle>Reassignment unavailable</SheetTitle>
+            <SheetDescription>Here is what needs to happen before this course unit can be reassigned.</SheetDescription>
+          </SheetHeader>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
             {submittedMarks && (
               <li>Marks have been submitted for HOD review. Approve or return the submissions in Marks Review; reassignment becomes available when no marks remain pending review.</li>
@@ -42,8 +42,8 @@ export function AssignmentLockInfo({ submittedMarks, periodLocked, periodStatus 
                 : `Assignments are locked while this semester is ${periodStatus ?? "unavailable"}; an administrator can make changes.`}</li>
             )}
           </ul>
-        </DialogContent>
-      </Dialog>
+        </WideSheetContent>
+      </Sheet>
     </>
   );
 }

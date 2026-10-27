@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { api } from "@workspace/backend/_generated/api";
 import { Button } from "@workspace/ui/components/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 import { parseNairobi } from "./mark-permission-dialog";
@@ -38,8 +38,8 @@ export function GradebookSettingsDialog({ courseId, periodId, entriesCloseAt, cl
       toast.success("Marks entry settings saved"); close();
     } catch (error) { toast.error(getUserFacingErrorMessage(error, "Could not update marks entry settings")); }
   });
-  return <Dialog open onOpenChange={open => { if (!open) close(); }}><DialogContent>
-    <DialogHeader><DialogTitle>Marks entry settings</DialogTitle><DialogDescription>Set the marks entry deadline and choose who reviews submitted marks.</DialogDescription></DialogHeader>
+  return <Sheet open onOpenChange={open => { if (!open) close(); }}><WideSheetContent>
+    <SheetHeader><SheetTitle>Marks entry settings</SheetTitle><SheetDescription>Set the marks entry deadline and choose who reviews submitted marks.</SheetDescription></SheetHeader>
     <Form {...form}><form onSubmit={save} className="space-y-4">
       <FormField control={form.control} name="deadline" render={({ field }) => <FormItem>
         <FormLabel>Marks entry deadline (East Africa Time)</FormLabel>
@@ -58,5 +58,5 @@ export function GradebookSettingsDialog({ courseId, periodId, entriesCloseAt, cl
       {staff.status === "CanLoadMore" && <Button type="button" variant="ghost" onClick={() => staff.loadMore(50)}>Load more reviewers</Button>}
       <div className="flex justify-end border-t pt-4"><Button type="submit" disabled={form.formState.isSubmitting}>Save settings</Button></div>
     </form></Form>
-  </DialogContent></Dialog>;
+  </WideSheetContent></Sheet>;
 }

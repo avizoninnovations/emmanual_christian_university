@@ -48,13 +48,13 @@ import {
   TableRow,
 } from "@workspace/ui/components/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from "@workspace/ui/components/sheet";
 import {
   Select,
   SelectContent,
@@ -69,8 +69,8 @@ export function TeachingCoverView() {
     ["admin", "hod", "dean"].includes(r.toLowerCase())
   );
 
-  const [requestDialogOpen, setRequestDialogOpen] = useState(false);
-  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [requestSheetOpen, setRequestSheetOpen] = useState(false);
+  const [reviewSheetOpen, setReviewSheetOpen] = useState(false);
   const [selectedRequestToReview, setSelectedRequestToReview] = useState<any | null>(null);
   const [reviewNotes, setReviewNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,7 +122,7 @@ export function TeachingCoverView() {
       });
 
       toast.success("Teaching cover request submitted to HOD");
-      setRequestDialogOpen(false);
+      setRequestSheetOpen(false);
       setTopic("");
       setReason("");
     } catch (err: any) {
@@ -143,7 +143,7 @@ export function TeachingCoverView() {
       });
 
       toast.success(`Teaching cover request ${action}`);
-      setReviewDialogOpen(false);
+      setReviewSheetOpen(false);
       setSelectedRequestToReview(null);
       setReviewNotes("");
     } catch (err: any) {
@@ -178,7 +178,7 @@ export function TeachingCoverView() {
 
         <Button
           size="sm"
-          onClick={() => setRequestDialogOpen(true)}
+          onClick={() => setRequestSheetOpen(true)}
           className="gap-1.5 bg-primary text-primary-foreground"
         >
           <Plus className="size-3.5" /> Request Teaching Cover
@@ -395,7 +395,7 @@ export function TeachingCoverView() {
                               variant="outline"
                               onClick={() => {
                                 setSelectedRequestToReview(r);
-                                setReviewDialogOpen(true);
+                                setReviewSheetOpen(true);
                               }}
                               className="h-7 text-xs gap-1 text-primary"
                             >
@@ -413,15 +413,15 @@ export function TeachingCoverView() {
         )}
       </Tabs>
 
-      {/* ── Request Cover Dialog ── */}
-      <Dialog open={requestDialogOpen} onOpenChange={setRequestDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold">Request Teaching Cover</DialogTitle>
-            <DialogDescription className="text-xs">
+      {/* ── Request Cover Sheet ── */}
+      <Sheet open={requestSheetOpen} onOpenChange={setRequestSheetOpen}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-base font-bold">Request Teaching Cover</SheetTitle>
+            <SheetDescription className="text-xs">
               Nominate a qualified faculty colleague to cover your scheduled lecture.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <div className="space-y-3 py-2 text-xs">
             {/* Course Select */}
@@ -512,11 +512,11 @@ export function TeachingCoverView() {
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
+          <SheetFooter className="gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setRequestDialogOpen(false)}
+              onClick={() => setRequestSheetOpen(false)}
               disabled={isSubmitting}
             >
               Cancel
@@ -530,19 +530,19 @@ export function TeachingCoverView() {
               {isSubmitting ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
               Submit Request
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </WideSheetContent>
+      </Sheet>
 
-      {/* ── Review Cover Dialog ── */}
-      <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold">HOD Review: Teaching Cover</DialogTitle>
-            <DialogDescription className="text-xs">
+      {/* ── Review Cover Sheet ── */}
+      <Sheet open={reviewSheetOpen} onOpenChange={setReviewSheetOpen}>
+        <WideSheetContent>
+          <SheetHeader>
+            <SheetTitle className="text-base font-bold">HOD Review: Teaching Cover</SheetTitle>
+            <SheetDescription className="text-xs">
               Authorize or decline the faculty coverage request.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           {selectedRequestToReview && (
             <div className="space-y-3 py-2 text-xs">
@@ -567,7 +567,7 @@ export function TeachingCoverView() {
             </div>
           )}
 
-          <DialogFooter className="gap-2">
+          <SheetFooter className="gap-2">
             <Button
               variant="destructive"
               size="sm"
@@ -585,9 +585,9 @@ export function TeachingCoverView() {
             >
               <CheckCircle2 className="size-3.5" /> Authorize Cover
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </WideSheetContent>
+      </Sheet>
     </div>
   );
 }

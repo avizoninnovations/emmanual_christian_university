@@ -11,13 +11,13 @@ import { toast } from "sonner";
 import { Id } from "@workspace/backend/_generated/dataModel";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@workspace/ui/components/dialog";
+  Sheet,
+  WideSheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@workspace/ui/components/sheet";
 import {
   Form,
   FormControl,
@@ -148,16 +148,16 @@ export function CourseFormDialog({
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <WideSheetContent>
+        <SheetHeader>
+          <SheetTitle>
             {courseToEdit ? "Edit Course" : "Add New Course"}
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             Configure course curriculum details, credit load, and academic department.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
@@ -352,7 +352,7 @@ export function CourseFormDialog({
               )}
             />
 
-            <DialogFooter className="pt-2">
+            <SheetFooter className="pt-2">
               <Button
                 type="button"
                 variant="outline"
@@ -365,10 +365,10 @@ export function CourseFormDialog({
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {courseToEdit ? "Update Course" : "Create Course"}
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </WideSheetContent>
+    </Sheet>
   );
 }

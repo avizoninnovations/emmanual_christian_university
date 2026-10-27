@@ -237,11 +237,43 @@ export const phoneSchema = z
 5. **Loading state**: bind to `form.formState.isSubmitting`; never to
    a separate `useState` flag.
 6. **Errors**: surface server `ConvexError.message` via a toast at the
-   top of the dialog using `sonner`.
+   top of the form using `sonner`.
 
 ---
 
-## 5. Money & Date Conventions
+## 5. Form Presentation: Wide Side Sheets
+
+Create, edit, assignment, review, and other substantial input workflows
+MUST use the shared `Sheet` primitive with `WideSheetContent` from
+`@workspace/ui/components/sheet`. Do not place these workflows in a
+centered popup dialog. A wide sheet gives multi-field forms room to align
+and keeps the underlying page context beside the overlay.
+
+```tsx
+import {
+  Sheet,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  WideSheetContent,
+} from "@workspace/ui/components/sheet";
+
+<Sheet open={open} onOpenChange={setOpen}>
+  <WideSheetContent>
+    <SheetHeader>
+      <SheetTitle>Edit record</SheetTitle>
+      <SheetDescription>Update the record details.</SheetDescription>
+    </SheetHeader>
+    {/* validated form fields and actions */}
+  </WideSheetContent>
+</Sheet>
+```
+
+Use `AlertDialog` for destructive confirmations. A small `Dialog` is
+appropriate for brief confirmations or compact notices; substantial
+read-only details belong in a side sheet.
+
+## 6. Money & Date Conventions
 
 - **Currency display**: `value.toLocaleString()` (locale-aware
   thousand separators) + currency code suffix, e.g. `1,250,000 SSP`.

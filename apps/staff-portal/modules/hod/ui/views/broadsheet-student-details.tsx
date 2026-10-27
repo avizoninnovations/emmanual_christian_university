@@ -3,7 +3,7 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import {
   Sheet,
-  SheetContent,
+  WideSheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
@@ -31,7 +31,7 @@ export function BroadsheetStudentDetails({ data, student, onOpenChange }: Studen
 
   return (
     <Sheet open={student !== null} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[92vw] gap-0 overflow-hidden rounded-none p-0 sm:w-[62.5vw] sm:max-w-none">
+      <WideSheetContent side="right" className="gap-0 overflow-hidden rounded-none p-0">
         {student && (
           <>
             <SheetHeader className="border-b px-6 py-5 pr-14 text-left">
@@ -48,7 +48,7 @@ export function BroadsheetStudentDetails({ data, student, onOpenChange }: Studen
               </div>
             </SheetHeader>
             <Tabs value={tab} onValueChange={setTab} className="min-h-0 flex-1 overflow-hidden gap-0">
-              <TabsList className="w-full justify-start px-6">
+              <TabsList className="justify-start px-6">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="course-units">Course units ({data.courses.length})</TabsTrigger>
               </TabsList>
@@ -120,7 +120,7 @@ export function BroadsheetStudentDetails({ data, student, onOpenChange }: Studen
             </Tabs>
           </>
         )}
-      </SheetContent>
+      </WideSheetContent>
     </Sheet>
   );
 }

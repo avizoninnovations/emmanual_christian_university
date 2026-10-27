@@ -22,7 +22,7 @@ import {
 } from "@workspace/ui/components/table";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
+  Sheet, WideSheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@workspace/ui/components/sheet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import {
@@ -232,7 +232,7 @@ export function DepartmentsManager() {
       </Card>
 
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent>
+        <WideSheetContent>
           <SheetHeader>
             <SheetTitle>{editing ? "Edit Department" : "New Department"}</SheetTitle>
             <SheetDescription>
@@ -301,18 +301,18 @@ export function DepartmentsManager() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <Button type="submit" className="w-full mt-2" disabled={form.formState.isSubmitting}>
+              <Button type="submit" className="mt-2" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {editing ? "Save Changes" : "Create Department"}
               </Button>
             </form>
           </Form>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
 
       {/* ── View Details Sheet ── */}
       <Sheet open={viewOpen} onOpenChange={setViewOpen}>
-        <SheetContent className="sm:max-w-xl">
+        <WideSheetContent >
            <SheetHeader className="pb-4">
               <SheetTitle className="flex items-center gap-2">
                  <Building2 className="size-5 text-primary" />
@@ -426,7 +426,7 @@ export function DepartmentsManager() {
                  </div>
               </ScrollArea>
            )}
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
 
       <AlertDialog open={!!deleteTarget} onOpenChange={open => !open && setDeleteTarget(null)}>
@@ -434,7 +434,7 @@ export function DepartmentsManager() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Department?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deleteTarget?.name}" will be permanently deleted. Departments with programs cannot be deleted.
+            "{deleteTarget?.name}" will be permanently deleted. Departments with programs cannot be deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

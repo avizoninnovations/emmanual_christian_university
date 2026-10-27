@@ -5,7 +5,7 @@ import type { FunctionReturnType } from "convex/server";
 import { Activity, BookOpen, CalendarClock, GraduationCap, UserRound } from "lucide-react";
 import { api } from "@workspace/backend/_generated/api";
 import { Badge } from "@workspace/ui/components/badge";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 
 type ActivityEvent = FunctionReturnType<typeof api.hod.activity>["page"][number];
@@ -13,7 +13,7 @@ type ActivityEvent = FunctionReturnType<typeof api.hod.activity>["page"][number]
 export function AcademicActivityDetails({ event, onClose }: { event: ActivityEvent | null; onClose: () => void }) {
   const [tab, setTab] = useState("overview");
   return <Sheet open={!!event} onOpenChange={open => !open && onClose()}>
-    <SheetContent className="w-[92vw] overflow-y-auto rounded-l-sm p-0 sm:w-[62.5vw] sm:max-w-none">
+    <WideSheetContent className="overflow-y-auto rounded-l-sm p-0">
       {event && <>
         <SheetHeader className="border-b bg-muted/20 px-6 py-6 pr-14">
           <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"><Activity className="size-5" /></span>
@@ -42,7 +42,7 @@ export function AcademicActivityDetails({ event, onClose }: { event: ActivityEve
           </Tabs>
         </div>
       </>}
-    </SheetContent>
+    </WideSheetContent>
   </Sheet>;
 }
 

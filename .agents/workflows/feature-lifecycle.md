@@ -46,7 +46,7 @@ Generation**, **Online Payments (m-Gurush)**, or **Lesson Plans**.
 ## 3. Atomic UI Components
 
 - Check `packages/ui/src/components` for existing shadcn primitives
-  (Button, Input, Select, Dialog, AlertDialog, Table, Tabs, Card,
+  (Button, Input, Select, Sheet, AlertDialog, Table, Tabs, Card,
   Badge, Sidebar, Form).
 - If a new generic primitive is needed (e.g. a specialized date picker
   for the academic calendar), build it in `packages/ui` first.
@@ -59,7 +59,10 @@ Generation**, **Online Payments (m-Gurush)**, or **Lesson Plans**.
   - Admin-facing: `apps/staff-portal/modules/<feature>/`
   - Student-facing: `apps/student-portal/modules/<feature>/`
 - Build the **View** in `ui/views/<feature>-view.tsx`.
-- Build **dialogs** and **tables** in `ui/components/`.
+- Build wide **side sheets** for substantial create/edit/detail workflows
+  and reusable **tables** in `ui/components/`. Keep `AlertDialog` for
+  destructive confirmations and use compact `Dialog` only for utilities
+  such as command palettes.
 - Extract custom hooks into `hooks/use<Feature>View.ts` for clean
   separation.
 - Connect to the backend using `useQuery` / `useMutation` from

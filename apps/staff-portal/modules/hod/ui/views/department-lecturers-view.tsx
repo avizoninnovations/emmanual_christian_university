@@ -8,7 +8,7 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Input } from "@workspace/ui/components/input";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -37,7 +37,7 @@ export function DepartmentLecturersView() {
     });
   }, [filter, roster?.lecturers, search]);
 
-  return <div className="w-full space-y-5 p-4 lg:p-6">
+  return <div className="space-y-5 p-4 lg:p-6">
     <HodScopePicker scope={scope} />
     {roster ? <>
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -60,7 +60,7 @@ export function DepartmentLecturersView() {
             <FilterButton label="Teaching" count={roster.teachingCount} active={filter === "teaching"} onClick={() => setFilter("teaching")} />
             <FilterButton label="Unassigned" count={roster.unassignedCount} active={filter === "unassigned"} onClick={() => setFilter("unassigned")} />
           </div>
-          <div className="w-full sm:max-w-sm">
+          <div className="sm:max-w-sm">
             <label htmlFor="lecturer-search" className="mb-1.5 block text-xs font-medium">Search lecturers or course units</label>
             <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input id="lecturer-search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Name, staff ID, email, or course" className="h-10 rounded-sm bg-background pl-9" /></div>
@@ -71,9 +71,9 @@ export function DepartmentLecturersView() {
       </section>
 
       <Sheet open={!!selectedLecturer} onOpenChange={open => !open && setSelectedLecturer(null)}>
-        <SheetContent className="w-[92vw] overflow-y-auto rounded-l-sm p-0 sm:w-[62.5vw] sm:max-w-none">
+        <WideSheetContent className="overflow-y-auto rounded-l-sm p-0">
           {selectedLecturer && <LecturerDetails lecturer={selectedLecturer} departmentName={roster.departmentName} periodName={roster.periodName} />}
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
     </> : <LecturerRosterSkeleton />}
   </div>;
@@ -87,7 +87,7 @@ function SummaryCard({ label, value, detail, icon: Icon }: { label: string; valu
 }
 
 function LecturerTable({ lecturers, onDetails, emptySearch, onClearSearch }: { lecturers: Lecturer[]; onDetails: (lecturer: Lecturer) => void; emptySearch: boolean; onClearSearch: () => void }) {
-  return <div className="w-full overflow-x-auto">
+  return <div className="overflow-x-auto">
     <Table>
       <TableHeader><TableRow className="hover:bg-transparent">
         <TableHead className="w-12">#</TableHead><TableHead>Lecturer</TableHead><TableHead>Staff ID</TableHead>
@@ -122,7 +122,7 @@ function LecturerDetails({ lecturer, departmentName, periodName }: { lecturer: L
     </SheetHeader>
     <div className="px-6 py-5">
       <Tabs defaultValue="overview">
-        <TabsList className="w-full"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="courses">Course units ({lecturer.courseCount})</TabsTrigger></TabsList>
+        <TabsList ><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="courses">Course units ({lecturer.courseCount})</TabsTrigger></TabsList>
         <TabsContent value="overview" className="space-y-6 pt-4">
           <section><SectionHeading>Academic assignment</SectionHeading><div className="mt-3 grid gap-3 sm:grid-cols-2">
             <DetailField label="Department" value={departmentName} /><DetailField label="Semester" value={periodName} />

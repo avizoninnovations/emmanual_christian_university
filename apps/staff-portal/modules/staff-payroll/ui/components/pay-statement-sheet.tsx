@@ -7,7 +7,7 @@ import { Badge } from "@workspace/ui/components/badge";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import {
   Sheet,
-  SheetContent,
+  WideSheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
@@ -31,7 +31,7 @@ export function PayStatementSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[96vw] overflow-hidden rounded-l-sm p-0 sm:w-[60vw] sm:max-w-2xl">
+      <WideSheetContent className="overflow-hidden rounded-l-sm p-0">
         {statement && data ? (
           <>
             <SheetHeader className="border-b px-6 py-5 pr-14 text-left">
@@ -49,7 +49,7 @@ export function PayStatementSheet({
                     </p>
                     <p className="mt-1 font-medium">
                       {new Date(statement.statementDate).toLocaleDateString(
-                        "en-GB",
+                      "en-GB",
                         { dateStyle: "long" },
                       )}
                     </p>
@@ -59,7 +59,7 @@ export function PayStatementSheet({
                       statement.status === "paid" ? "secondary" : "outline"
                     }
                     className="rounded-sm capitalize"
-                  >
+                >
                     {statement.status}
                   </Badge>
                 </div>
@@ -117,7 +117,7 @@ export function PayStatementSheet({
                       <p className="mt-1 text-sm">
                         {statement.paidAt
                           ? new Date(statement.paidAt).toLocaleDateString(
-                              "en-GB",
+                            "en-GB",
                               { dateStyle: "medium" },
                             )
                           : "Not recorded"}
@@ -140,11 +140,11 @@ export function PayStatementSheet({
           <div className="space-y-4 p-6">
             <Skeleton className="h-8 w-2/3" />
             <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="mt-8 h-48 w-full" />
-            <Skeleton className="h-32 w-full" />
+            <Skeleton className="mt-8 h-48 " />
+            <Skeleton className="h-32 " />
           </div>
         ) : null}
-      </SheetContent>
+      </WideSheetContent>
     </Sheet>
   );
 }
@@ -168,7 +168,7 @@ function MoneyRow({
   return (
     <div
       className={`flex items-center justify-between gap-4 text-sm ${strong ? "border-t pt-3 font-semibold" : ""}`}
-    >
+  >
       <span>{label}</span>
       <span className="tabular-nums">{value}</span>
     </div>

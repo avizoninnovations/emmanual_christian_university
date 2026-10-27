@@ -74,7 +74,7 @@ export const ReceiptPreviewModal = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <WideSheetContent className=" p-0 overflow-hidden print:border-none print:shadow-none">
+      <WideSheetContent className="p-0 overflow-hidden print:border-none print:shadow-none">
         <SheetHeader className="p-4 border-b bg-muted/20 flex flex-row items-center justify-between">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="size-5 text-emerald-600" />

@@ -75,8 +75,12 @@ Operations must be decomposed into 4 distinct layers:
   or critical confirmations (deletions, bans, void receipts). Never use
   `window.confirm()`.
 - **Table (`@workspace/ui/components/table`)** — all data listings.
-- **Dialog (`@workspace/ui/components/dialog`)** — modal forms,
-  detail sheets.
+- **Sheet (`@workspace/ui/components/sheet`)** — all substantial
+  create, edit, assignment, review, and detail workflows. Use the shared
+  `WideSheetContent` primitive so forms and details have consistent room.
+- **Dialog (`@workspace/ui/components/dialog`)** — compact utilities
+  such as the command palette; do not use centered dialogs for business
+  forms or substantial detail views.
 - **Card (`@workspace/ui/components/card`)** — section containment.
 - **Tabs (`@workspace/ui/components/tabs`)** — section switching inside
   a view (Finance: Overview / Ledgers / Reconciliation / Sponsors /
@@ -223,6 +227,8 @@ Before declaring any coding or refactoring task complete, verify:
 - [ ] Are all buttons using shadcn `<Button>` from `@workspace/ui`?
 - [ ] Are all dropdowns using shadcn `<Select>` from `@workspace/ui`?
 - [ ] Are all destructive confirms using `<AlertDialog>`?
+- [ ] Are substantial create/edit/review/detail workflows in
+      `<WideSheetContent>` rather than centered dialogs?
 - [ ] Are all forms built with `react-hook-form` + `zod` + `<Form>`?
 - [ ] Are business calculations isolated as pure functions in
       `apps/<portal>/lib/calculators/`?

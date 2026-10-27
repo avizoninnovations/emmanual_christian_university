@@ -9,7 +9,7 @@ import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 
@@ -64,7 +64,7 @@ export function StaffServiceRequestSheet({ requestId, mode, open, onOpenChange }
 
   const request = data?.request;
   return <Sheet open={open} onOpenChange={onOpenChange}>
-    <SheetContent className="w-[94vw] overflow-hidden rounded-l-sm p-0 sm:w-[62vw] sm:max-w-none">
+    <WideSheetContent className="overflow-hidden rounded-l-sm p-0">
       {request && <>
         <SheetHeader className="border-b px-6 py-5 pr-14 text-left"><SheetTitle>{request.subject}</SheetTitle><SheetDescription className="capitalize">{request.type === "exit" ? "Exit application" : request.type} · {request.caseReference ?? request.status.replaceAll("_", " ")}</SheetDescription><Badge variant="outline" className="w-fit rounded-sm">{request.status.replaceAll("_", " ")}</Badge></SheetHeader>
         <ScrollArea className="h-[calc(100dvh-100px)]"><div className="space-y-6 p-6">
@@ -91,7 +91,7 @@ export function StaffServiceRequestSheet({ requestId, mode, open, onOpenChange }
         </div></ScrollArea>
       </>}
       {!request && open && <p className="p-6 text-sm text-muted-foreground">Loading request details…</p>}
-    </SheetContent>
+    </WideSheetContent>
   </Sheet>;
 }
 

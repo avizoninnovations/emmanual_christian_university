@@ -8,7 +8,7 @@ import { BookOpen, Check, Clock3, GraduationCap, Loader2, UserRound, X } from "l
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { AggregationRequest, RequestStatus } from "./aggregation-request-table";
 
@@ -32,7 +32,7 @@ export function AggregationRequestDetails({ request, mode, busy, onClose, onDeci
   }
 
   return <Sheet open={!!request} onOpenChange={open => !open && onClose()}>
-    <SheetContent className="w-[94vw] gap-0 overflow-y-auto rounded-l-sm p-0 sm:w-[62.5vw] sm:max-w-none">
+    <WideSheetContent className="gap-0 overflow-y-auto rounded-l-sm p-0">
       {request && <>
         <SheetHeader className="border-b bg-muted/20 px-6 py-6 pr-14 text-left">
           <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"><BookOpen className="size-5" /></span>
@@ -75,7 +75,7 @@ export function AggregationRequestDetails({ request, mode, busy, onClose, onDeci
           </form></Form>}
         </div>
       </>}
-    </SheetContent>
+    </WideSheetContent>
   </Sheet>;
 }
 

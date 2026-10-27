@@ -21,7 +21,7 @@ import {
   Table, TableHead, TableHeader, TableRow, TableCell, TableBody 
 } from "@workspace/ui/components/table";
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
+  Sheet, SheetContent, WideSheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@workspace/ui/components/sheet";
 import {
   Popover, PopoverContent, PopoverTrigger,
@@ -153,9 +153,9 @@ export const AuditLogsView = () => {
 
   // ── Options ──
   const ACTION_OPTIONS = [
-    "SIGN_IN", "SIGN_OUT", "SIGN_UP", 
-    "CREATE_STAFF", "UPDATE_STAFF", "DELETE_STAFF", 
-    "BAN_STAFF", "UNBAN_STAFF"
+  "SIGN_IN", "SIGN_OUT", "SIGN_UP",
+  "CREATE_STAFF", "UPDATE_STAFF", "DELETE_STAFF",
+  "BAN_STAFF", "UNBAN_STAFF"
   ];
   const RESOURCE_OPTIONS = ["auth", "staff", "system", "academic"];
   const PAGE_SIZE_OPTIONS = [10, 25, 50, 75, 100];
@@ -286,7 +286,7 @@ export const AuditLogsView = () => {
                    size="icon" 
                    className="h-10 w-10 shrink-0 shadow-sm"
                    onClick={() => setIsFilterSheetOpen(true)}
-                >
+              >
                   <SlidersHorizontal className="size-4" />
                 </Button>
                 <SheetContent className="sm:max-w-md overflow-y-auto">
@@ -512,7 +512,7 @@ export const AuditLogsView = () => {
                     </TableCell>
                     <TableCell className="py-4">
                       <Badge variant="outline" className={cn(
-                        "font-mono text-[10px] tracking-tight py-0.5 border-muted-foreground/10",
+                      "font-mono text-[10px] tracking-tight py-0.5 border-muted-foreground/10",
                         log.action.includes("CREATE") && "bg-emerald-500/5 text-emerald-600 border-emerald-500/10",
                         log.action.includes("DELETE") && "bg-rose-500/5 text-rose-600 border-rose-500/10",
                         log.action.includes("SIGN") && "bg-blue-500/5 text-blue-600 border-blue-500/10"
@@ -558,7 +558,7 @@ export const AuditLogsView = () => {
                   setLimit(parseInt(v));
                   resetPaging();
                 }}
-              >
+            >
                 <SelectTrigger className="h-8 w-20 text-xs font-bold" id="select-rows-per-page">
                   <SelectValue />
                 </SelectTrigger>
@@ -594,7 +594,7 @@ export const AuditLogsView = () => {
                         handlePrevPage();
                       }}
                       className={cn(
-                        "h-8 text-xs font-bold",
+                      "h-8 text-xs font-bold",
                         history.length === 0 && "opacity-30 cursor-not-allowed pointer-events-none"
                       )}
                     />
@@ -607,7 +607,7 @@ export const AuditLogsView = () => {
                         handleNextPage();
                       }}
                       className={cn(
-                        "h-8 text-xs font-bold",
+                      "h-8 text-xs font-bold",
                         (!results || results.isDone || !results.continueCursor) && "opacity-30 cursor-not-allowed pointer-events-none"
                       )}
                     />
@@ -621,14 +621,14 @@ export const AuditLogsView = () => {
       
       {/* ── View Detail Sheet ── */}
       <Sheet open={!!viewTarget} onOpenChange={(open: boolean) => !open && setViewTarget(null)}>
-        <SheetContent className="sm:max-w-lg overflow-y-auto">
+        <WideSheetContent className="overflow-y-auto">
           <SheetHeader className="pb-6">
             <div className="flex items-center gap-3">
               <div className={cn(
-                "size-12 rounded-xl flex items-center justify-center border",
+              "size-12 rounded-xl flex items-center justify-center border",
                 viewTarget?.action?.includes("DELETE") ? "bg-rose-500/10 text-rose-600 border-rose-200" :
                 viewTarget?.action?.includes("CREATE") ? "bg-emerald-500/10 text-emerald-600 border-emerald-200" :
-                "bg-blue-500/10 text-blue-600 border-blue-200"
+              "bg-blue-500/10 text-blue-600 border-blue-200"
               )}>
                 <Shield className="size-6" />
               </div>
@@ -736,7 +736,7 @@ export const AuditLogsView = () => {
                          onClick={() => {
                            if (viewTarget?.ipAddress) navigator.clipboard.writeText(viewTarget.ipAddress);
                          }}
-                       >
+                     >
                          <Copy className="size-3" />
                        </Button>
                      </div>
@@ -794,7 +794,7 @@ export const AuditLogsView = () => {
                <Button variant="outline" onClick={() => setViewTarget(null)}>Close Inspector</Button>
             </div>
           </div>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
     </div>
   );

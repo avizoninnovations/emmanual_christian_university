@@ -21,7 +21,7 @@ import {
   TableHeader, TableRow,
 } from "@workspace/ui/components/table";
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
+  Sheet, WideSheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@workspace/ui/components/sheet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import {
@@ -197,7 +197,7 @@ export function RolesManager() {
       </Card>
 
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent>
+        <WideSheetContent>
           <SheetHeader>
             <SheetTitle>{editing ? "Edit Role" : "New System Role"}</SheetTitle>
             <SheetDescription>
@@ -227,13 +227,13 @@ export function RolesManager() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <Button type="submit" className="w-full mt-2" disabled={form.formState.isSubmitting}>
+              <Button type="submit" className="mt-2" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {editing ? "Save Changes" : "Create Role"}
               </Button>
             </form>
           </Form>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
 
       <AlertDialog open={!!deleteTarget} onOpenChange={open => !open && setDeleteTarget(null)}>
@@ -241,7 +241,7 @@ export function RolesManager() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Role?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deleteTarget?.name}" will be permanently removed. Staff members currently assigned to this role will lose its associated permissions.
+            "{deleteTarget?.name}" will be permanently removed. Staff members currently assigned to this role will lose its associated permissions.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -253,7 +253,7 @@ export function RolesManager() {
 
       {/* ── View Members Sheet ── */}
       <Sheet open={!!viewMembersTarget} onOpenChange={open => !open && setViewMembersTarget(null)}>
-        <SheetContent className="sm:max-w-md">
+        <WideSheetContent>
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
               <Eye className="size-5 text-primary" /> {viewMembersTarget?.name} Members
@@ -293,7 +293,7 @@ export function RolesManager() {
               );
             })()}
           </div>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
     </div>
   );

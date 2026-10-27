@@ -20,7 +20,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@workspace/ui/components/table";
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
+  Sheet, WideSheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from "@workspace/ui/components/sheet";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -80,12 +80,12 @@ type EditFormValues  = z.infer<typeof editSchema>;
 type BanFormValues  = z.infer<typeof banSchema>;
 
 const ROLE_BADGE: Record<string, string> = {
-  admin:     "bg-primary/10 text-primary border-primary/20",
-  staff:     "bg-sky-500/10 text-sky-600 border-sky-200",
+  admin:   "bg-primary/10 text-primary border-primary/20",
+  staff:   "bg-sky-500/10 text-sky-600 border-sky-200",
   registrar: "bg-emerald-500/10 text-emerald-600 border-emerald-200",
-  finance:   "bg-amber-500/10 text-amber-600 border-amber-200",
-  hod:       "bg-rose-500/10 text-rose-600 border-rose-200",
-  dean:      "bg-indigo-500/10 text-indigo-600 border-indigo-200",
+  finance: "bg-amber-500/10 text-amber-600 border-amber-200",
+  hod:     "bg-rose-500/10 text-rose-600 border-rose-200",
+  dean:    "bg-indigo-500/10 text-indigo-600 border-indigo-200",
 };
 
 interface StaffListManagerProps {
@@ -414,7 +414,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
 
       {/* ── Create Sheet ── */}
       <Sheet open={createOpen} onOpenChange={setCreateOpen}>
-        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+        <WideSheetContent className="overflow-y-auto">
           <SheetHeader>
             <SheetTitle>Add Staff Member</SheetTitle>
             <SheetDescription>Create a new account for university personnel.</SheetDescription>
@@ -449,7 +449,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <FormControl>
-                        <Button variant="outline" role="combobox" className={cn("w-full justify-between font-normal", !field.value?.length && "text-muted-foreground")}>
+                        <Button variant="outline" role="combobox" className={cn(" justify-between font-normal", !field.value?.length && "text-muted-foreground")}>
                           {field.value?.length > 0 ? `${field.value.length} Role(s) Selected` : "Select roles"}
                           <MoreHorizontal className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -467,7 +467,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                                const cur = field.value || [];
                                field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
                             }}
-                          >
+                        >
                             <div className="flex flex-col gap-0.5 max-w-[250px]">
                               <span>{role.name}</span>
                               {role.description && <span className="text-[10px] text-muted-foreground leading-tight truncate overflow-hidden">{role.description}</span>}
@@ -487,18 +487,18 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <FormMessage />
                 </FormItem>
               )} />
-              <Button type="submit" className="w-full" disabled={createForm.formState.isSubmitting}>
+              <Button type="submit"  disabled={createForm.formState.isSubmitting}>
                 {createForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create Account
               </Button>
             </form>
           </Form>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
 
       {/* ── Edit Sheet ── */}
       <Sheet open={!!editTarget} onOpenChange={open => !open && setEditTarget(null)}>
-        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+        <WideSheetContent className="overflow-y-auto">
           <SheetHeader>
             <SheetTitle>Edit Staff Member</SheetTitle>
             <SheetDescription>{editTarget?.name}</SheetDescription>
@@ -546,7 +546,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <FormControl>
-                        <Button variant="outline" role="combobox" className={cn("w-full justify-between font-normal", !field.value?.length && "text-muted-foreground")}>
+                        <Button variant="outline" role="combobox" className={cn(" justify-between font-normal", !field.value?.length && "text-muted-foreground")}>
                           {field.value?.length > 0 ? `${field.value.length} Role(s) Selected` : "Select roles"}
                           <MoreHorizontal className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -564,7 +564,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                                const cur = field.value || [];
                                field.onChange(checked ? [...cur, role.code] : cur.filter(v => v !== role.code));
                             }}
-                          >
+                        >
                             <div className="flex flex-col gap-0.5 max-w-[250px]">
                               <span>{role.name}</span>
                               {role.description && <span className="text-[10px] text-muted-foreground leading-tight truncate overflow-hidden">{role.description}</span>}
@@ -577,13 +577,13 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <FormMessage />
                 </FormItem>
               )} />
-              <Button type="submit" className="w-full" disabled={editForm.formState.isSubmitting}>
+              <Button type="submit"  disabled={editForm.formState.isSubmitting}>
                 {editForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save Changes
               </Button>
             </form>
           </Form>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
 
       {/* ── Delete Dialog ── */}
@@ -592,7 +592,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Staff Member?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deleteTarget?.name}" will be permanently removed. This cannot be undone.
+            "{deleteTarget?.name}" will be permanently removed. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -606,7 +606,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
 
       {/* ── Ban Sheet ── */}
       <Sheet open={!!banTarget} onOpenChange={open => !open && setBanTarget(null)}>
-        <SheetContent>
+        <WideSheetContent>
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
               <Gavel className="size-5 text-destructive" /> Ban Personnel
@@ -624,7 +624,7 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                   <FormControl>
                     <textarea 
                       {...field}
-                      className="w-full h-24 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      className="h-24 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                       placeholder="e.g. Violation of security protocols, Misconduct..."
                     />
                   </FormControl>
@@ -659,18 +659,18 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
                  </p>
               </div>
 
-              <Button type="submit" variant="destructive" className="w-full flex gap-2" disabled={banForm.formState.isSubmitting}>
+              <Button type="submit" variant="destructive" className="flex gap-2" disabled={banForm.formState.isSubmitting}>
                 {banForm.formState.isSubmitting && <Loader2 className="size-4 animate-spin" />}
                 Execute Ban
               </Button>
             </form>
           </Form>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
 
       {/* ── View Details Sheet ── */}
       <Sheet open={!!viewTarget} onOpenChange={open => !open && setViewTarget(null)}>
-        <SheetContent className="overflow-y-auto w-full sm:max-w-lg">
+        <WideSheetContent className="overflow-y-auto">
           <SheetHeader className="pb-6">
             <div className="flex items-center gap-4">
               <div className="size-16 rounded-full bg-primary/10 text-primary font-bold text-xl flex items-center justify-center shrink-0 border-4 border-background shadow-sm">
@@ -787,12 +787,12 @@ export function StaffListManager({ statusFilter }: StaffListManagerProps) {
             </div>
 
             <div className="pt-4">
-              <Button variant="outline" className="w-full" onClick={() => { setViewTarget(null); openEdit(viewTarget); }}>
+              <Button variant="outline"  onClick={() => { setViewTarget(null); openEdit(viewTarget); }}>
                 <Pencil className="mr-2 size-3.5" /> Modify Information
               </Button>
             </div>
           </div>
-        </SheetContent>
+        </WideSheetContent>
       </Sheet>
     </div>
   );

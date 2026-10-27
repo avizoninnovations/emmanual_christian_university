@@ -6,7 +6,7 @@ import type { Id } from "@workspace/backend/_generated/dataModel";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import {
   Sheet,
-  SheetContent,
+  WideSheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
@@ -34,7 +34,7 @@ export function ApplicantDetailsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[96vw] overflow-hidden rounded-l-sm p-0 sm:w-[72vw] sm:max-w-4xl">
+      <WideSheetContent className="overflow-hidden rounded-l-sm p-0">
         <SheetHeader className="border-b px-6 py-5 pr-14 text-left">
           <SheetTitle>{applicant?.name ?? "Applicant details"}</SheetTitle>
           <SheetDescription>
@@ -90,7 +90,7 @@ export function ApplicantDetailsSheet({
                     <div
                       key={event._id}
                       className="border-l-2 border-primary/20 pl-3"
-                    >
+                  >
                       <p className="text-sm font-medium capitalize">
                         {event.action.replaceAll("_", " ")}
                       </p>
@@ -115,11 +115,11 @@ export function ApplicantDetailsSheet({
           <div className="space-y-4 p-6">
             <Skeleton className="h-8 w-2/3" />
             <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="mt-8 h-28 w-full" />
-            <Skeleton className="h-48 w-full" />
+            <Skeleton className="mt-8 h-28 " />
+            <Skeleton className="h-48 " />
           </div>
         ) : null}
-      </SheetContent>
+      </WideSheetContent>
     </Sheet>
   );
 }

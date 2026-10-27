@@ -15,7 +15,7 @@ import { Input } from "@workspace/ui/components/input";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 
 type Application = FunctionReturnType<typeof api.assessmentApplications.forAssignedLecturer>["page"][number];
 type Status = Application["status"];
@@ -34,7 +34,7 @@ export function AssessmentApplicationsView() {
   const [selected, setSelected] = useState<Application | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-  if (isLoading) return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5"><Skeleton className="h-10 w-full" /></main>;
+  if (isLoading) return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5"><Skeleton className="h-10 " /></main>;
   if (!canReview) return <main className="min-h-full min-w-0 p-3 md:p-5"><Alert><FileText className="size-4" /><AlertTitle>Lecturer access required</AlertTitle><AlertDescription>Assessment applications are reviewed by lecturers assigned to the student’s course unit. This account does not have lecturer review access.</AlertDescription></Alert></main>;
   const normalized = search.trim().toLowerCase();
   const all = applications.results;
@@ -58,13 +58,13 @@ export function AssessmentApplicationsView() {
     <div className="flex items-center gap-2"><FileText className="size-5 text-primary" /><h1 className="text-xl font-semibold">Missed Assessment Applications</h1></div>
     <p className="text-sm text-muted-foreground">Review student requests for missed assessments in course units assigned to you.</p>
     <Tabs value={status} onValueChange={value => setStatus(value as Status | "all")}>
-      <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
+      <TabsList className="h-auto  justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
         {statusTabs.map(tab => <TabsTrigger key={tab.value} value={tab.value} className="rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary">{tab.label}<span className="ml-1 tabular-nums">{tab.value === "all" ? all.length : all.filter(item => item.status === tab.value).length}</span></TabsTrigger>)}
       </TabsList>
     </Tabs>
     <div className="relative max-w-md"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input className="pl-9" placeholder="Search student or course unit" value={search} onChange={event => setSearch(event.target.value)} /></div>
-    {applications.status === "LoadingFirstPage" ? <div className="space-y-2">{[1, 2, 3].map(row => <Skeleton key={row} className="h-12 w-full" />)}</div>
-      : <div className="w-full overflow-x-auto"><Table>
+    {applications.status === "LoadingFirstPage" ? <div className="space-y-2">{[1, 2, 3].map(row => <Skeleton key={row} className="h-12 " />)}</div>
+      : <div className="overflow-x-auto"><Table>
         <TableHeader><TableRow className="bg-primary/5 hover:bg-primary/5"><TableHead className="w-14 text-center">#</TableHead><TableHead>Student</TableHead><TableHead>Course unit</TableHead><TableHead>Circumstance</TableHead><TableHead>Submitted</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
         <TableBody>{filtered.map((item, index) => <TableRow key={item._id}>
           <TableCell className="text-center tabular-nums text-muted-foreground">{index + 1}</TableCell>
@@ -79,7 +79,7 @@ export function AssessmentApplicationsView() {
       </Table></div>}
     {applications.status === "CanLoadMore" && <div className="flex justify-center"><Button variant="outline" onClick={() => applications.loadMore(25)}>Load more applications</Button></div>}
     <Sheet open={!!selected} onOpenChange={open => { if (!open) setSelected(null); }}>
-      <SheetContent className="w-[94vw] gap-0 overflow-y-auto rounded-l-sm p-0 sm:w-[62.5vw] sm:max-w-none">
+      <WideSheetContent className="gap-0 overflow-y-auto rounded-l-sm p-0">
         {selected && <>
           <SheetHeader className="border-b bg-muted/20 px-6 py-5 pr-14 text-left"><SheetTitle>{selected.courseCode} · {selected.courseTitle}</SheetTitle><SheetDescription>Missed assessment application · {selected.periodName}</SheetDescription><ApplicationStatus status={selected.status} /></SheetHeader>
           <div className="space-y-6 px-6 py-5">
@@ -88,12 +88,12 @@ export function AssessmentApplicationsView() {
               {selected.attachmentUrl && <a href={selected.attachmentUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm text-primary underline"><FileText className="size-4" />Open supporting evidence</a>}
             </section>
             {selected.reviewNote && <section><h2 className="text-sm font-semibold">Decision note</h2><p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">{selected.reviewNote}</p></section>}
-            {(selected.status === "submitted" || selected.status === "under_review") && <section className="space-y-3 border-t pt-4"><label className="block text-sm font-medium" htmlFor="assessment-review-note">Note <span className="font-normal text-muted-foreground">(required to decline)</span></label><textarea id="assessment-review-note" rows={3} value={note} onChange={event => setNote(event.target.value)} className="w-full rounded-sm border bg-background p-3 text-sm outline-none focus:border-primary" placeholder="Add a note for the student" />
+            {(selected.status === "submitted" || selected.status === "under_review") && <section className="space-y-3 border-t pt-4"><label className="block text-sm font-medium" htmlFor="assessment-review-note">Note <span className="font-normal text-muted-foreground">(required to decline)</span></label><textarea id="assessment-review-note" rows={3} value={note} onChange={event => setNote(event.target.value)} className="rounded-sm border bg-background p-3 text-sm outline-none focus:border-primary" placeholder="Add a note for the student" />
               <div className="flex flex-wrap justify-end gap-2">{selected.status === "submitted" && <Button variant="outline" disabled={busy} onClick={() => decide("under_review")}><Clock3 className="mr-1.5 size-4" />Start review</Button>}<Button variant="outline" disabled={busy} onClick={() => decide("rejected")}><X className="mr-1.5 size-4" />Decline</Button><Button disabled={busy} onClick={() => decide("approved")}><Check className="mr-1.5 size-4" />Approve</Button></div>
             </section>}
           </div>
         </>}
-      </SheetContent>
+      </WideSheetContent>
     </Sheet>
   </main>;
 }

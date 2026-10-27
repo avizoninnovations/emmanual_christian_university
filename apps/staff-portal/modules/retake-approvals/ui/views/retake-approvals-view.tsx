@@ -12,7 +12,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Textarea } from "@workspace/ui/components/textarea";
 
 type PendingReview = FunctionReturnType<typeof api.retakeRegistrations.pendingReviews>["page"][number];
@@ -43,8 +43,8 @@ export function RetakeApprovalsView() {
   return <main className="min-h-full min-w-0 space-y-4 p-3 md:p-5">
     <div className="flex items-center gap-2"><GraduationCap className="size-5 text-primary" /><h1 className="text-xl font-semibold">Retake Approvals</h1><Badge variant="secondary" className="ml-auto rounded-sm">{page.results.length}{page.status === "CanLoadMore" ? "+" : ""} pending</Badge></div>
     <div className="relative max-w-md"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input className="pl-9" placeholder="Search student or course unit" value={search} onChange={event => setSearch(event.target.value)} /></div>
-    {page.status === "LoadingFirstPage" ? <div className="space-y-2">{[1, 2, 3].map(item => <Skeleton key={item} className="h-12 w-full" />)}</div>
-      : <div className="w-full overflow-x-auto"><Table>
+    {page.status === "LoadingFirstPage" ? <div className="space-y-2">{[1, 2, 3].map(item => <Skeleton key={item} className="h-12 " />)}</div>
+      : <div className="overflow-x-auto"><Table>
         <TableHeader><TableRow className="bg-primary/5 hover:bg-primary/5"><TableHead className="w-14 text-center">#</TableHead><TableHead>Student</TableHead><TableHead>Course unit</TableHead><TableHead>Failed in</TableHead><TableHead>Requested for</TableHead><TableHead>Action</TableHead></TableRow></TableHeader>
         <TableBody>{rows.map((item, index) => <TableRow key={item._id}>
           <TableCell className="text-center tabular-nums text-muted-foreground">{index + 1}</TableCell>
@@ -57,7 +57,7 @@ export function RetakeApprovalsView() {
       </Table></div>}
     {page.status === "CanLoadMore" && <div className="flex justify-center"><Button variant="outline" onClick={() => page.loadMore(25)}>Load more requests</Button></div>}
     <Sheet open={!!selected} onOpenChange={open => { if (!open) setSelected(null); }}>
-      <SheetContent className="w-[94vw] gap-0 overflow-y-auto rounded-l-sm p-0 sm:w-[55vw] sm:max-w-none">
+      <WideSheetContent className="gap-0 overflow-y-auto rounded-l-sm p-0">
         {selected && <>
           <SheetHeader className="border-b bg-muted/20 px-6 py-5 pr-14 text-left"><SheetTitle>{selected.courseCode} · {selected.courseTitle}</SheetTitle><SheetDescription>Off-semester retake request · {selected.periodName}</SheetDescription><Badge variant="secondary" className="w-fit rounded-sm bg-amber-500/10 text-amber-700">Awaiting review</Badge></SheetHeader>
           <div className="space-y-5 px-6 py-5"><section><h2 className="text-sm font-semibold">Student</h2><p className="mt-2 text-sm">{selected.studentName}</p><p className="font-mono text-xs text-muted-foreground">{selected.registrationNumber}</p></section>
@@ -66,7 +66,7 @@ export function RetakeApprovalsView() {
             <div className="flex flex-wrap justify-end gap-2 border-t pt-4"><Button variant="outline" disabled={busy} onClick={() => decide("decline")}><X className="mr-1.5 size-4" />Decline</Button><Button disabled={busy} onClick={() => decide("approve")}><Check className="mr-1.5 size-4" />Approve retake</Button></div>
           </div>
         </>}
-      </SheetContent>
+      </WideSheetContent>
     </Sheet>
   </main>;
 }

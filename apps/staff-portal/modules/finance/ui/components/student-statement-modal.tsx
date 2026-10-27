@@ -75,7 +75,7 @@ export const StudentStatementModal = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <WideSheetContent className=" p-0">
+      <WideSheetContent className="p-0">
         <SheetHeader className="p-6 border-b bg-muted/15">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>

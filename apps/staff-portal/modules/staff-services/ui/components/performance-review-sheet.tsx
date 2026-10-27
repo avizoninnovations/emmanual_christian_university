@@ -13,7 +13,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 
@@ -26,7 +26,7 @@ type DecisionValues = z.infer<typeof decisionSchema>;
 export function PerformanceReviewSheet({ reviewId, mode, open, onOpenChange }: { reviewId: Id<"staffPerformanceReviews"> | null; mode: ReviewMode; open: boolean; onOpenChange: (open: boolean) => void }) {
   const data = useQuery(api.staffReviews.getPerformanceReviewDetails, reviewId ? { reviewId } : "skip");
   const acknowledgeReview = useMutation(api.staffReviews.acknowledgePerformanceReview);
-  return <Sheet open={open} onOpenChange={onOpenChange}><SheetContent className="w-[94vw] overflow-hidden rounded-l-sm p-0 sm:w-[62vw] sm:max-w-none">
+  return <Sheet open={open} onOpenChange={onOpenChange}><WideSheetContent className="overflow-hidden rounded-l-sm p-0">
     {data && <>
       <SheetHeader className="border-b px-6 py-5 pr-14 text-left"><SheetTitle>{data.review.cycleTitle}</SheetTitle><SheetDescription>{data.review.staffName} · {data.review.status.replaceAll("_", " ")}</SheetDescription></SheetHeader>
       <ScrollArea className="h-[calc(100dvh-84px)]"><div className="space-y-5 p-6">
@@ -41,7 +41,7 @@ export function PerformanceReviewSheet({ reviewId, mode, open, onOpenChange }: {
       </div></ScrollArea>
     </>}
     {!data && open && <p className="p-6 text-sm text-muted-foreground">Loading review…</p>}
-  </SheetContent></Sheet>;
+  </WideSheetContent></Sheet>;
 }
 
 function SelfReviewForm({ reviewId, values, onComplete }: { reviewId: Id<"staffPerformanceReviews">; values: { selfSummary?: string; achievements?: string; developmentGoals?: string }; onComplete: () => void }) {

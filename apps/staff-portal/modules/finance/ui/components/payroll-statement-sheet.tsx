@@ -9,7 +9,7 @@ import { api } from "@workspace/backend/_generated/api";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
+import { Sheet, WideSheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@workspace/ui/components/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { toast } from "sonner";
@@ -84,7 +84,7 @@ export function PayrollStatementSheet({ open, onOpenChange, periodId, person }: 
   }
 
   return <Sheet open={open} onOpenChange={onOpenChange}>
-    <SheetContent side="right" className="w-full overflow-y-auto rounded-sm sm:max-w-xl">
+    <WideSheetContent side="right" className="overflow-y-auto rounded-sm ">
       <SheetHeader><SheetTitle>{person ? `Pay statement · ${person.name}` : "Pay statement"}</SheetTitle><SheetDescription>{person?.staffId} · The published statement appears in this employee’s Salary Pay Slip.</SheetDescription></SheetHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(submit)} className="space-y-5 py-4">
@@ -95,7 +95,7 @@ export function PayrollStatementSheet({ open, onOpenChange, periodId, person }: 
           <SheetFooter><Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="submit" disabled={saving || !person}>{saving ? "Saving…" : "Save statement"}</Button></SheetFooter>
         </form>
       </Form>
-    </SheetContent>
+    </WideSheetContent>
   </Sheet>;
 }
 

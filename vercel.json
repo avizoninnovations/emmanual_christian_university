@@ -1,0 +1,47 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "library": {
+      "root": "apps/library",
+      "framework": "nextjs"
+    },
+    "lms": {
+      "root": "apps/lms",
+      "framework": "nextjs"
+    },
+    "staff-portal": {
+      "root": "apps/staff-portal",
+      "framework": "nextjs"
+    },
+    "student-portal": {
+      "root": "apps/student-portal",
+      "framework": "nextjs"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": { "pre": "library." } }],
+      "destination": { "service": "library" }
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": { "pre": "lms." } }],
+      "destination": { "service": "lms" }
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": { "pre": "student." } }],
+      "destination": { "service": "student-portal" }
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": { "pre": "staff." } }],
+      "destination": { "service": "staff-portal" }
+    },
+    {
+      "source": "/(.*)",
+      "destination": { "service": "staff-portal" }
+    }
+  ]
+}

@@ -169,7 +169,6 @@ emmanual_christian_university1/
 │   │   │           └── views/         # <feature>-view.tsx
 │   │   └── lib/                       # App-level helpers, calculators
 │   ├── student-portal/                # Student self-service
-│   ├── finance/                       # Cashier portal (planned)
 │   ├── inventory/                     # Asset tracking (planned)
 │   ├── library/                       # Library catalog (planned)
 │   └── lms/                           # LMS — courses, assignments

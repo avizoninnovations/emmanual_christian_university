@@ -31,7 +31,6 @@ Our monorepo is divided into three distinct layers:
 Each portal is a deployable target with a focused UX:
 - `staff-portal` — Admin + Lecturer + HOD + Finance
 - `student-portal` — Student self-service
-- `finance` — Cashier portal (planned)
 - `inventory` — Asset tracking (planned)
 - `library` — Library catalog (planned)
 - `lms` — LMS — courses, assignments

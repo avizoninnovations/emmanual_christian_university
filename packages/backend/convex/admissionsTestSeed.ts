@@ -60,6 +60,36 @@ export const seedAdmissionsTestData = internalAction({
         "The Admissions Officer test account could not be created.",
       );
 
+    const applicantLogins: Array<{ email: string; password: string | null }> = [];
+    for (const applicant of admissionsTestApplicants) {
+      const existingApplicantUser = await ctx.runQuery(
+        components.betterAuth.adapter.findOne,
+        { model: "user", where: [{ field: "email", value: applicant.email, operator: "eq" }] },
+      );
+      if (existingApplicantUser?._id) {
+        applicantLogins.push({ email: applicant.email, password: null });
+        continue;
+      }
+      const password = TEST_ACCOUNT_PASSWORD;
+      const createUser = (auth.api as unknown as {
+        createUser: (input: {
+          body: { email: string; password: string; name: string; role: "user"; data: { emailVerified: boolean } };
+        }) => Promise<{ user?: { id?: string } }>;
+      }).createUser;
+      const createdApplicant = await createUser({
+        body: {
+          email: applicant.email,
+          password,
+          name: [applicant.firstName, "otherName" in applicant ? applicant.otherName : undefined, applicant.surname].filter(Boolean).join(" "),
+          role: "user",
+          data: { emailVerified: true },
+        },
+      });
+      if (!createdApplicant.user?.id)
+        throw new ConvexError(`The applicant account for ${applicant.email} could not be created.`);
+      applicantLogins.push({ email: applicant.email, password });
+    }
+
     const counts: SeedCounts = await ctx.runMutation(
       internal.admissionsTestSeed.insertAdmissionsFixtures,
       { staffUserId: userId },
@@ -72,6 +102,7 @@ export const seedAdmissionsTestData = internalAction({
         staffId,
         initialPassword,
       },
+      applicantLogins,
       note: initialPassword
         ? "Save the initial password now; it is only returned during account creation."
         : "This account already existed, so its existing password was left unchanged.",
@@ -116,9 +147,10 @@ export const insertAdmissionsFixtures = internalMutation({
         .unique(),
     ]);
 
-    const program = programs[0];
-    const period = activePeriods[0] ?? upcomingPeriods[0];
-    if (!program || !period)
+    const period = activePeriods.find((row) => row.term === 2 && row.year === 2026)
+      ?? activePeriods[0]
+      ?? upcomingPeriods[0];
+    if (programs.length === 0 || !period)
       throw new ConvexError(
         "Create an active program and an active or upcoming Academic Period before seeding admissions records.",
       );
@@ -185,6 +217,7 @@ export const insertAdmissionsFixtures = internalMutation({
               ? "rejected"
               : "accepted";
       const applicationNumber = `ECU/ADM/${period.year}/${period.term}/T${String(index + 1).padStart(3, "0")}`;
+      const program = programs[index % programs.length]!;
       const applicantId = await ctx.db.insert("applicants", {
         firstName: fixture.firstName,
         surname: fixture.surname,
@@ -245,6 +278,8 @@ export const insertAdmissionsFixtures = internalMutation({
     };
   },
 });
+
+const TEST_ACCOUNT_PASSWORD = "UniSystem2026!";
 
 function createInitialPassword() {
   const bytes = new Uint8Array(24);

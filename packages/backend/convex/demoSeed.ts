@@ -64,6 +64,10 @@ export const insertDemoData = internalMutation({
     const departmentIds: Record<string, import("./_generated/dataModel.js").Id<"departments">> = {};
     const programIds: Record<string, import("./_generated/dataModel.js").Id<"programs">> = {};
     const courseIds: Record<string, import("./_generated/dataModel.js").Id<"courses">> = {};
+    const courseSemesterByCode = new Map(
+      fixture.faculties.flatMap((faculty) => faculty.programs.flatMap((program) =>
+        program.courseUnits.map((course) => [course.code, course.semester] as const))),
+    );
     const periodIds: Record<string, import("./_generated/dataModel.js").Id<"academicPeriods">> = {};
     const studentIds: Record<string, import("./_generated/dataModel.js").Id<"students">> = {};
     const staffIds: Record<string, string> = {};
@@ -77,23 +81,27 @@ export const insertDemoData = internalMutation({
 
     for (const faculty of fixture.faculties) {
       const current = await ctx.db.query("faculties").withIndex("by_code", (q) => q.eq("code", faculty.code)).first();
-      facultyIds[faculty.key] = current?._id ?? await ctx.db.insert("faculties", { name: faculty.name, code: faculty.code, description: "Demo seed based on the public faculty catalog.", status: "active", createdAt: now, updatedAt: now });
+      facultyIds[faculty.key] = current?._id ?? await ctx.db.insert("faculties", { name: faculty.name, code: faculty.code, description: "Based on the public faculty catalog.", status: "active", createdAt: now, updatedAt: now });
+      if (current) await ctx.db.patch(current._id, { name: faculty.name, description: "Based on the public faculty catalog.", updatedAt: now });
       if (!current) inserted++;
       for (const department of faculty.departments) {
         const facultyId = facultyIds[faculty.key]!;
         const existingDepartment = await ctx.db.query("departments").withIndex("by_faculty", (q) => q.eq("facultyId", facultyId)).filter((q) => q.eq(q.field("code"), department.code)).first();
         departmentIds[department.key] = existingDepartment?._id ?? await ctx.db.insert("departments", { name: department.name, code: department.code, facultyId, status: "active", createdAt: now, updatedAt: now });
+        if (existingDepartment) await ctx.db.patch(existingDepartment._id, { name: department.name, updatedAt: now });
         if (!existingDepartment) inserted++;
       }
       for (const program of faculty.programs) {
         const departmentId = departmentIds[program.departmentKey]!;
         const existingProgram = await ctx.db.query("programs").withIndex("by_department", (q) => q.eq("departmentId", departmentId)).filter((q) => q.eq(q.field("code"), program.code)).first();
         programIds[program.code] = existingProgram?._id ?? await ctx.db.insert("programs", { name: program.name, code: program.code, departmentId, level: program.level as "Certificate" | "Diploma" | "Bachelor" | "Master", durationYears: program.durationYears, status: "active", createdAt: now, updatedAt: now });
+        if (existingProgram) await ctx.db.patch(existingProgram._id, { name: program.name, updatedAt: now });
         if (!existingProgram) inserted++;
         await ctx.db.patch(programIds[program.code]!, { onSemesterRetakeLimit: program.onSemesterRetakeLimit, offSemesterRetakeLimit: program.offSemesterRetakeLimit, updatedAt: now });
         for (const course of program.courseUnits) {
           const existingCourse = await ctx.db.query("courses").withIndex("by_code", (q) => q.eq("code", course.code)).first();
           courseIds[course.code] = existingCourse?._id ?? await ctx.db.insert("courses", { code: course.code, title: course.title, creditUnits: course.creditUnits, departmentId, programId: programIds[program.code]!, yearOfStudy: course.yearOfStudy, semester: course.semester, status: "active", createdAt: now, updatedAt: now });
+          if (existingCourse) await ctx.db.patch(existingCourse._id, { title: course.title, updatedAt: now });
           if (!existingCourse) inserted++;
           const category = course.category === "elective" ? "elective" : course.category === "foundation" ? "foundation" : "core";
           await ctx.db.patch(courseIds[course.code]!, { category, shortName: course.shortName, updatedAt: now });
@@ -108,6 +116,8 @@ export const insertDemoData = internalMutation({
       if (!existing) {
         await ctx.db.insert("staffProfiles", { userId, staffId: staff.staffId, roles: staff.roles, title: staff.title, departmentId: departmentIds[staff.departmentKey]!, status: "active", createdAt: now, updatedAt: now });
         inserted++;
+      } else {
+        await ctx.db.patch(existing._id, { title: staff.title, roles: staff.roles, departmentId: departmentIds[staff.departmentKey]!, updatedAt: now });
       }
     }
     const payrollStatements = await seedDemoPayroll(ctx, staffIds, now);
@@ -130,7 +140,8 @@ export const insertDemoData = internalMutation({
 
     for (const allocation of fixture.courseAllocations) {
       const courseId = courseIds[allocation.courseCode]!;
-      const periodId = periodIds[allocation.periodKey]!;
+      const periodKey = `2026-term-${courseSemesterByCode.get(allocation.courseCode) ?? 2}`;
+      const periodId = periodIds[periodKey] ?? periodIds[allocation.periodKey]!;
       const lecturerId = staffIds[allocation.lecturerEmail]!;
       const existing = await ctx.db.query("courseAllocations").withIndex("by_course_period", (q) => q.eq("courseId", courseId).eq("periodId", periodId)).first();
       if (!existing) {
@@ -214,7 +225,7 @@ export const insertDemoData = internalMutation({
     const agricultureMarks = await seedDemoAgricultureMarks(ctx, { courseIds, departmentIds, periodIds, staffIds });
     inserted += agricultureMarks;
     inserted += await seedPortalServices(ctx, { studentIds, courseIds, periodIds, staffIds, now });
-    await logAction(ctx, { action: "SEED_DEMO_PORTAL", resource: "students", details: "Updated fictional demo profiles, student/access identifiers, and linked portal service fixtures." });
+    await logAction(ctx, { action: "SEED_SHOWCASE_PORTAL", resource: "students", details: "Updated showcase profiles, student/access identifiers, and linked portal service fixtures." });
     return { inserted, workflowRecords, agricultureMarks, payrollStatements, students: fixture.studentAccounts.length, staff: fixture.staffAccounts.length, courseUnits: Object.keys(courseIds).length, authAccounts: Object.keys(userIds).length };
   },
 });

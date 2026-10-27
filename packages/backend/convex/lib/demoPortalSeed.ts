@@ -41,8 +41,8 @@ export async function seedPortalServices(ctx: MutationCtx, refs: SeedReferences)
         await ctx.db.insert("studentSemesterRegistrations", {
           studentId, periodId, yearOfStudy: student.yearOfStudy, semester: period.term,
           status: "registered", registeredAt: Date.parse(`${period.startDate}T00:00:00Z`),
-          registeredBy: "Demo Academic Registrar", academicClearedBy: "Demo Academic Registrar",
-          accountsClearedBy: cleared ? "Demo Finance Officer" : undefined,
+          registeredBy: "Academic Registrar", academicClearedBy: "Academic Registrar",
+          accountsClearedBy: cleared ? "Finance Officer" : undefined,
           accountsClearedAt: cleared ? now : undefined,
           cafeteriaStatus: "Non-resident", mealPlan: "No meal", residenceStatus: "Non-resident",
           accommodationType: "None", ...timestamps,

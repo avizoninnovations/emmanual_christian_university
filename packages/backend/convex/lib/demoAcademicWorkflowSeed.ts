@@ -36,7 +36,7 @@ export async function seedDemoAcademicWorkflow(ctx: MutationCtx, refs: DemoRefer
     if (!activeLeadership) {
       await ctx.db.insert("departmentLeadershipAssignments", {
         departmentId, staffUserId: hodId, appointedBy: refs.staffIds["admin.demo@ecu-ssd.org"] ?? "system",
-        startsAt: now, reason: "Demo appointment for HOD workflow testing", status: "active",
+        startsAt: now, reason: "Department leadership test assignment", status: "active",
         createdAt: now, updatedAt: now,
       });
       inserted++;
@@ -133,7 +133,7 @@ export async function seedDemoAcademicWorkflow(ctx: MutationCtx, refs: DemoRefer
       await ctx.db.insert("markEditPermissions", {
         courseId, periodId: currentPeriodId, studentId: permissionStudent, departmentId,
         lecturerId, allocationId: currentAllocation._id, allocationRevision: currentAllocation.revision ?? 0,
-        components: ["exam"], reason: "Demo request to enter a missing examination mark.",
+        components: ["exam"], reason: "Request to enter a missing examination mark.",
         status: "requested", requestedBy: lecturerId, startsAt: now - 60_000,
         expiresAt: now + 7 * 24 * 60 * 60 * 1000, createdAt: now, updatedAt: now,
       });

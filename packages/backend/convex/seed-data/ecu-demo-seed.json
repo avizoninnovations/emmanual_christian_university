@@ -1,7 +1,7 @@
 {
   "formatVersion": 1,
   "metadata": {
-    "name": "ECU Student Portal Demo Seed Fixture",
+    "name": "ECU Student Portal Seed Fixture",
     "generatedAt": "2026-10-16",
     "officialCatalogSource": "https://ecu-ssd.org/faculties.html",
     "officialFacultyCount": 4,
@@ -66,7 +66,7 @@
         {
           "key": "dept-theology",
           "code": "DEMO-DEPT-THEO",
-          "name": "Demo Department of theology",
+          "name": "Department of Theology",
           "syntheticName": true
         }
       ],
@@ -300,7 +300,7 @@
         {
           "key": "dept-education",
           "code": "DEMO-DEPT-EDU",
-          "name": "Demo Department of Education and Community Development",
+          "name": "Department of Education and Community Development",
           "syntheticName": true
         }
       ],
@@ -750,7 +750,7 @@
         {
           "key": "dept-business",
           "code": "DEMO-DEPT-BUS",
-          "name": "Demo Department of Business and Leadership Development",
+          "name": "Department of Business and Leadership Development",
           "hodStaffEmail": "hod.demo@ecu-ssd.org",
           "syntheticName": true
         }
@@ -1273,7 +1273,7 @@
         {
           "key": "dept-agriculture",
           "code": "DEMO-DEPT-AGR",
-          "name": "Demo Department of Agriculture",
+          "name": "Department of Agriculture",
           "syntheticName": true
         }
       ],
@@ -1500,7 +1500,7 @@
   "staffAccounts": [
     {
       "email": "admin.demo@ecu-ssd.org",
-      "name": "Demo System Administrator",
+      "name": "James Wani",
       "password": "UniSystem2026!",
       "authRole": "admin",
       "roles": [
@@ -1509,7 +1509,7 @@
       ],
       "staffId": "DEMO-STAFF-ADMIN",
       "departmentKey": "dept-business",
-      "title": "Demo Administrator"
+      "title": "Administrator"
     },
     {
       "email": "esther.wani@ecu-ssd.org",
@@ -1526,7 +1526,7 @@
     },
     {
       "email": "hod.demo@ecu-ssd.org",
-      "name": "Demo Head of Department",
+      "name": "Peter Ladu",
       "password": "UniSystem2026!",
       "authRole": "user",
       "roles": [
@@ -1535,11 +1535,11 @@
       ],
       "staffId": "DEMO-STAFF-HOD",
       "departmentKey": "dept-business",
-      "title": "Demo HOD"
+      "title": "HOD"
     },
     {
       "email": "lecturer.theology.demo@ecu-ssd.org",
-      "name": "Demo theology Lecturer",
+      "name": "Grace Achieng",
       "password": "UniSystem2026!",
       "authRole": "user",
       "roles": [
@@ -1548,11 +1548,11 @@
       ],
       "staffId": "DEMO-LECT-THEO",
       "departmentKey": "dept-theology",
-      "title": "Demo Lecturer"
+      "title": "Lecturer"
     },
     {
       "email": "lecturer.education.demo@ecu-ssd.org",
-      "name": "Demo Education and Community Development Lecturer",
+      "name": "Robert Kato",
       "password": "UniSystem2026!",
       "authRole": "user",
       "roles": [
@@ -1561,11 +1561,11 @@
       ],
       "staffId": "DEMO-LECT-EDU",
       "departmentKey": "dept-education",
-      "title": "Demo Lecturer"
+      "title": "Lecturer"
     },
     {
       "email": "lecturer.business.demo@ecu-ssd.org",
-      "name": "Demo Business and Leadership Development Lecturer",
+      "name": "Daniel Juma",
       "password": "UniSystem2026!",
       "authRole": "user",
       "roles": [
@@ -1574,11 +1574,11 @@
       ],
       "staffId": "DEMO-LECT-BUS",
       "departmentKey": "dept-business",
-      "title": "Demo Lecturer"
+      "title": "Lecturer"
     },
     {
       "email": "lecturer.agriculture.demo@ecu-ssd.org",
-      "name": "Demo Agriculture Lecturer",
+      "name": "Mary Atem",
       "password": "UniSystem2026!",
       "authRole": "user",
       "roles": [
@@ -1587,7 +1587,7 @@
       ],
       "staffId": "DEMO-LECT-AGR",
       "departmentKey": "dept-agriculture",
-      "title": "Demo Lecturer"
+      "title": "Lecturer"
     }
   ],
   "studentAccounts": [
@@ -1616,11 +1616,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000001",
       "contactEmail": "student01.demo@example.invalid",
-      "address": "Demo household 1, Yei River County, South Sudan",
+      "address": "household 1, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 01",
+        "name": "Guardian 01",
         "relationship": "Guardian",
         "phone": "+211900000101",
         "email": "guardian01.demo@example.invalid"
@@ -1651,11 +1651,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000002",
       "contactEmail": "student02.demo@example.invalid",
-      "address": "Demo household 2, Yei River County, South Sudan",
+      "address": "household 2, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 02",
+        "name": "Guardian 02",
         "relationship": "Guardian",
         "phone": "+211900000102",
         "email": "guardian02.demo@example.invalid"
@@ -1686,11 +1686,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000003",
       "contactEmail": "student03.demo@example.invalid",
-      "address": "Demo household 3, Yei River County, South Sudan",
+      "address": "household 3, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 03",
+        "name": "Guardian 03",
         "relationship": "Guardian",
         "phone": "+211900000103",
         "email": "guardian03.demo@example.invalid"
@@ -1721,11 +1721,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000004",
       "contactEmail": "student04.demo@example.invalid",
-      "address": "Demo household 4, Yei River County, South Sudan",
+      "address": "household 4, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 04",
+        "name": "Guardian 04",
         "relationship": "Guardian",
         "phone": "+211900000104",
         "email": "guardian04.demo@example.invalid"
@@ -1756,11 +1756,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000005",
       "contactEmail": "student05.demo@example.invalid",
-      "address": "Demo household 5, Yei River County, South Sudan",
+      "address": "household 5, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 05",
+        "name": "Guardian 05",
         "relationship": "Guardian",
         "phone": "+211900000105",
         "email": "guardian05.demo@example.invalid"
@@ -1791,11 +1791,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000006",
       "contactEmail": "student06.demo@example.invalid",
-      "address": "Demo household 6, Yei River County, South Sudan",
+      "address": "household 6, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 06",
+        "name": "Guardian 06",
         "relationship": "Guardian",
         "phone": "+211900000106",
         "email": "guardian06.demo@example.invalid"
@@ -1826,11 +1826,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000007",
       "contactEmail": "student07.demo@example.invalid",
-      "address": "Demo household 7, Yei River County, South Sudan",
+      "address": "household 7, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 07",
+        "name": "Guardian 07",
         "relationship": "Guardian",
         "phone": "+211900000107",
         "email": "guardian07.demo@example.invalid"
@@ -1861,11 +1861,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000008",
       "contactEmail": "student08.demo@example.invalid",
-      "address": "Demo household 8, Yei River County, South Sudan",
+      "address": "household 8, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 08",
+        "name": "Guardian 08",
         "relationship": "Guardian",
         "phone": "+211900000108",
         "email": "guardian08.demo@example.invalid"
@@ -1896,11 +1896,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000101",
       "contactEmail": "agri.student101@example.invalid",
-      "address": "Demo household 101, Yei River County, South Sudan",
+      "address": "household 101, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 101",
+        "name": "Guardian 101",
         "relationship": "Guardian",
         "phone": "+211910000101",
         "email": "guardian101@example.invalid"
@@ -1931,11 +1931,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000102",
       "contactEmail": "agri.student102@example.invalid",
-      "address": "Demo household 102, Yei River County, South Sudan",
+      "address": "household 102, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 102",
+        "name": "Guardian 102",
         "relationship": "Guardian",
         "phone": "+211910000102",
         "email": "guardian102@example.invalid"
@@ -1966,11 +1966,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000103",
       "contactEmail": "agri.student103@example.invalid",
-      "address": "Demo household 103, Yei River County, South Sudan",
+      "address": "household 103, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 103",
+        "name": "Guardian 103",
         "relationship": "Guardian",
         "phone": "+211910000103",
         "email": "guardian103@example.invalid"
@@ -2001,11 +2001,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000104",
       "contactEmail": "agri.student104@example.invalid",
-      "address": "Demo household 104, Yei River County, South Sudan",
+      "address": "household 104, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 104",
+        "name": "Guardian 104",
         "relationship": "Guardian",
         "phone": "+211910000104",
         "email": "guardian104@example.invalid"
@@ -2036,11 +2036,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000105",
       "contactEmail": "agri.student105@example.invalid",
-      "address": "Demo household 105, Yei River County, South Sudan",
+      "address": "household 105, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 105",
+        "name": "Guardian 105",
         "relationship": "Guardian",
         "phone": "+211910000105",
         "email": "guardian105@example.invalid"
@@ -2071,11 +2071,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000106",
       "contactEmail": "agri.student106@example.invalid",
-      "address": "Demo household 106, Yei River County, South Sudan",
+      "address": "household 106, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 106",
+        "name": "Guardian 106",
         "relationship": "Guardian",
         "phone": "+211910000106",
         "email": "guardian106@example.invalid"
@@ -2106,11 +2106,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000107",
       "contactEmail": "agri.student107@example.invalid",
-      "address": "Demo household 107, Yei River County, South Sudan",
+      "address": "household 107, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 107",
+        "name": "Guardian 107",
         "relationship": "Guardian",
         "phone": "+211910000107",
         "email": "guardian107@example.invalid"
@@ -2141,11 +2141,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000108",
       "contactEmail": "agri.student108@example.invalid",
-      "address": "Demo household 108, Yei River County, South Sudan",
+      "address": "household 108, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 108",
+        "name": "Guardian 108",
         "relationship": "Guardian",
         "phone": "+211910000108",
         "email": "guardian108@example.invalid"
@@ -2176,11 +2176,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000109",
       "contactEmail": "agri.student109@example.invalid",
-      "address": "Demo household 109, Yei River County, South Sudan",
+      "address": "household 109, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 109",
+        "name": "Guardian 109",
         "relationship": "Guardian",
         "phone": "+211910000109",
         "email": "guardian109@example.invalid"
@@ -2211,11 +2211,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000110",
       "contactEmail": "agri.student110@example.invalid",
-      "address": "Demo household 110, Yei River County, South Sudan",
+      "address": "household 110, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 110",
+        "name": "Guardian 110",
         "relationship": "Guardian",
         "phone": "+211910000110",
         "email": "guardian110@example.invalid"
@@ -2246,11 +2246,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000111",
       "contactEmail": "agri.student111@example.invalid",
-      "address": "Demo household 111, Yei River County, South Sudan",
+      "address": "household 111, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 111",
+        "name": "Guardian 111",
         "relationship": "Guardian",
         "phone": "+211910000111",
         "email": "guardian111@example.invalid"
@@ -2281,11 +2281,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000112",
       "contactEmail": "agri.student112@example.invalid",
-      "address": "Demo household 112, Yei River County, South Sudan",
+      "address": "household 112, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 112",
+        "name": "Guardian 112",
         "relationship": "Guardian",
         "phone": "+211910000112",
         "email": "guardian112@example.invalid"
@@ -2316,11 +2316,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000113",
       "contactEmail": "agri.student113@example.invalid",
-      "address": "Demo household 113, Yei River County, South Sudan",
+      "address": "household 113, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 113",
+        "name": "Guardian 113",
         "relationship": "Guardian",
         "phone": "+211910000113",
         "email": "guardian113@example.invalid"
@@ -2351,11 +2351,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000114",
       "contactEmail": "agri.student114@example.invalid",
-      "address": "Demo household 114, Yei River County, South Sudan",
+      "address": "household 114, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 114",
+        "name": "Guardian 114",
         "relationship": "Guardian",
         "phone": "+211910000114",
         "email": "guardian114@example.invalid"
@@ -2386,11 +2386,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000115",
       "contactEmail": "agri.student115@example.invalid",
-      "address": "Demo household 115, Yei River County, South Sudan",
+      "address": "household 115, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 115",
+        "name": "Guardian 115",
         "relationship": "Guardian",
         "phone": "+211910000115",
         "email": "guardian115@example.invalid"
@@ -2421,11 +2421,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000116",
       "contactEmail": "agri.student116@example.invalid",
-      "address": "Demo household 116, Yei River County, South Sudan",
+      "address": "household 116, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 116",
+        "name": "Guardian 116",
         "relationship": "Guardian",
         "phone": "+211910000116",
         "email": "guardian116@example.invalid"
@@ -2456,11 +2456,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000117",
       "contactEmail": "agri.student117@example.invalid",
-      "address": "Demo household 117, Yei River County, South Sudan",
+      "address": "household 117, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 117",
+        "name": "Guardian 117",
         "relationship": "Guardian",
         "phone": "+211910000117",
         "email": "guardian117@example.invalid"
@@ -2491,11 +2491,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000118",
       "contactEmail": "agri.student118@example.invalid",
-      "address": "Demo household 118, Yei River County, South Sudan",
+      "address": "household 118, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 118",
+        "name": "Guardian 118",
         "relationship": "Guardian",
         "phone": "+211910000118",
         "email": "guardian118@example.invalid"
@@ -2526,11 +2526,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000119",
       "contactEmail": "agri.student119@example.invalid",
-      "address": "Demo household 119, Yei River County, South Sudan",
+      "address": "household 119, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 119",
+        "name": "Guardian 119",
         "relationship": "Guardian",
         "phone": "+211910000119",
         "email": "guardian119@example.invalid"
@@ -2561,11 +2561,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000120",
       "contactEmail": "agri.student120@example.invalid",
-      "address": "Demo household 120, Yei River County, South Sudan",
+      "address": "household 120, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian 120",
+        "name": "Guardian 120",
         "relationship": "Guardian",
         "phone": "+211910000120",
         "email": "guardian120@example.invalid"
@@ -2573,7 +2573,7 @@
     },
     {
       "email": "demo20261001@students.ecu-ssd.org",
-      "name": "Demo Diploma 001 Agriculture Student",
+      "name": "Diploma 001 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/001",
@@ -2587,7 +2587,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/001",
       "accessNumber": "ECU0301",
-      "firstName": "Demo Diploma 001",
+      "firstName": "Diploma 001",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -2595,11 +2595,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000301",
       "contactEmail": "learner301.demo@example.invalid",
-      "address": "Demo household DIP 001, Yei River County, South Sudan",
+      "address": "household DIP 001, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 001",
+        "name": "Guardian DIP 001",
         "relationship": "Guardian",
         "phone": "+211901000301",
         "email": "guardian301.demo@example.invalid"
@@ -2607,7 +2607,7 @@
     },
     {
       "email": "demo20261002@students.ecu-ssd.org",
-      "name": "Demo Diploma 002 Agriculture Student",
+      "name": "Diploma 002 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/002",
@@ -2621,7 +2621,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/002",
       "accessNumber": "ECU0302",
-      "firstName": "Demo Diploma 002",
+      "firstName": "Diploma 002",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -2629,11 +2629,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000302",
       "contactEmail": "learner302.demo@example.invalid",
-      "address": "Demo household DIP 002, Yei River County, South Sudan",
+      "address": "household DIP 002, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 002",
+        "name": "Guardian DIP 002",
         "relationship": "Guardian",
         "phone": "+211901000302",
         "email": "guardian302.demo@example.invalid"
@@ -2641,7 +2641,7 @@
     },
     {
       "email": "demo20261003@students.ecu-ssd.org",
-      "name": "Demo Diploma 003 Agriculture Student",
+      "name": "Diploma 003 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/003",
@@ -2655,7 +2655,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/003",
       "accessNumber": "ECU0303",
-      "firstName": "Demo Diploma 003",
+      "firstName": "Diploma 003",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -2663,11 +2663,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000303",
       "contactEmail": "learner303.demo@example.invalid",
-      "address": "Demo household DIP 003, Yei River County, South Sudan",
+      "address": "household DIP 003, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 003",
+        "name": "Guardian DIP 003",
         "relationship": "Guardian",
         "phone": "+211901000303",
         "email": "guardian303.demo@example.invalid"
@@ -2675,7 +2675,7 @@
     },
     {
       "email": "demo20261004@students.ecu-ssd.org",
-      "name": "Demo Diploma 004 Agriculture Student",
+      "name": "Diploma 004 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/004",
@@ -2689,7 +2689,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/004",
       "accessNumber": "ECU0304",
-      "firstName": "Demo Diploma 004",
+      "firstName": "Diploma 004",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -2697,11 +2697,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000304",
       "contactEmail": "learner304.demo@example.invalid",
-      "address": "Demo household DIP 004, Yei River County, South Sudan",
+      "address": "household DIP 004, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 004",
+        "name": "Guardian DIP 004",
         "relationship": "Guardian",
         "phone": "+211901000304",
         "email": "guardian304.demo@example.invalid"
@@ -2709,7 +2709,7 @@
     },
     {
       "email": "demo20261005@students.ecu-ssd.org",
-      "name": "Demo Diploma 005 Agriculture Student",
+      "name": "Diploma 005 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/005",
@@ -2723,7 +2723,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/005",
       "accessNumber": "ECU0305",
-      "firstName": "Demo Diploma 005",
+      "firstName": "Diploma 005",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -2731,11 +2731,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000305",
       "contactEmail": "learner305.demo@example.invalid",
-      "address": "Demo household DIP 005, Yei River County, South Sudan",
+      "address": "household DIP 005, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 005",
+        "name": "Guardian DIP 005",
         "relationship": "Guardian",
         "phone": "+211901000305",
         "email": "guardian305.demo@example.invalid"
@@ -2743,7 +2743,7 @@
     },
     {
       "email": "demo20261006@students.ecu-ssd.org",
-      "name": "Demo Diploma 006 Agriculture Student",
+      "name": "Diploma 006 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/006",
@@ -2757,7 +2757,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/006",
       "accessNumber": "ECU0306",
-      "firstName": "Demo Diploma 006",
+      "firstName": "Diploma 006",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -2765,11 +2765,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000306",
       "contactEmail": "learner306.demo@example.invalid",
-      "address": "Demo household DIP 006, Yei River County, South Sudan",
+      "address": "household DIP 006, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 006",
+        "name": "Guardian DIP 006",
         "relationship": "Guardian",
         "phone": "+211901000306",
         "email": "guardian306.demo@example.invalid"
@@ -2777,7 +2777,7 @@
     },
     {
       "email": "demo20261007@students.ecu-ssd.org",
-      "name": "Demo Diploma 007 Agriculture Student",
+      "name": "Diploma 007 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/007",
@@ -2791,7 +2791,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/007",
       "accessNumber": "ECU0307",
-      "firstName": "Demo Diploma 007",
+      "firstName": "Diploma 007",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -2799,11 +2799,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000307",
       "contactEmail": "learner307.demo@example.invalid",
-      "address": "Demo household DIP 007, Yei River County, South Sudan",
+      "address": "household DIP 007, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 007",
+        "name": "Guardian DIP 007",
         "relationship": "Guardian",
         "phone": "+211901000307",
         "email": "guardian307.demo@example.invalid"
@@ -2811,7 +2811,7 @@
     },
     {
       "email": "demo20261008@students.ecu-ssd.org",
-      "name": "Demo Diploma 008 Agriculture Student",
+      "name": "Diploma 008 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/008",
@@ -2825,7 +2825,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/008",
       "accessNumber": "ECU0308",
-      "firstName": "Demo Diploma 008",
+      "firstName": "Diploma 008",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -2833,11 +2833,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000308",
       "contactEmail": "learner308.demo@example.invalid",
-      "address": "Demo household DIP 008, Yei River County, South Sudan",
+      "address": "household DIP 008, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 008",
+        "name": "Guardian DIP 008",
         "relationship": "Guardian",
         "phone": "+211901000308",
         "email": "guardian308.demo@example.invalid"
@@ -2845,7 +2845,7 @@
     },
     {
       "email": "demo20261009@students.ecu-ssd.org",
-      "name": "Demo Diploma 009 Agriculture Student",
+      "name": "Diploma 009 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/009",
@@ -2859,7 +2859,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/009",
       "accessNumber": "ECU0309",
-      "firstName": "Demo Diploma 009",
+      "firstName": "Diploma 009",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -2867,11 +2867,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000309",
       "contactEmail": "learner309.demo@example.invalid",
-      "address": "Demo household DIP 009, Yei River County, South Sudan",
+      "address": "household DIP 009, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 009",
+        "name": "Guardian DIP 009",
         "relationship": "Guardian",
         "phone": "+211901000309",
         "email": "guardian309.demo@example.invalid"
@@ -2879,7 +2879,7 @@
     },
     {
       "email": "demo20261010@students.ecu-ssd.org",
-      "name": "Demo Diploma 010 Agriculture Student",
+      "name": "Diploma 010 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/010",
@@ -2893,7 +2893,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/010",
       "accessNumber": "ECU0310",
-      "firstName": "Demo Diploma 010",
+      "firstName": "Diploma 010",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -2901,11 +2901,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000310",
       "contactEmail": "learner310.demo@example.invalid",
-      "address": "Demo household DIP 010, Yei River County, South Sudan",
+      "address": "household DIP 010, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 010",
+        "name": "Guardian DIP 010",
         "relationship": "Guardian",
         "phone": "+211901000310",
         "email": "guardian310.demo@example.invalid"
@@ -2913,7 +2913,7 @@
     },
     {
       "email": "demo20261011@students.ecu-ssd.org",
-      "name": "Demo Diploma 011 Agriculture Student",
+      "name": "Diploma 011 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/011",
@@ -2927,7 +2927,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/011",
       "accessNumber": "ECU0311",
-      "firstName": "Demo Diploma 011",
+      "firstName": "Diploma 011",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -2935,11 +2935,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000311",
       "contactEmail": "learner311.demo@example.invalid",
-      "address": "Demo household DIP 011, Yei River County, South Sudan",
+      "address": "household DIP 011, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 011",
+        "name": "Guardian DIP 011",
         "relationship": "Guardian",
         "phone": "+211901000311",
         "email": "guardian311.demo@example.invalid"
@@ -2947,7 +2947,7 @@
     },
     {
       "email": "demo20261012@students.ecu-ssd.org",
-      "name": "Demo Diploma 012 Agriculture Student",
+      "name": "Diploma 012 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/012",
@@ -2961,7 +2961,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/012",
       "accessNumber": "ECU0312",
-      "firstName": "Demo Diploma 012",
+      "firstName": "Diploma 012",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -2969,11 +2969,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000312",
       "contactEmail": "learner312.demo@example.invalid",
-      "address": "Demo household DIP 012, Yei River County, South Sudan",
+      "address": "household DIP 012, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 012",
+        "name": "Guardian DIP 012",
         "relationship": "Guardian",
         "phone": "+211901000312",
         "email": "guardian312.demo@example.invalid"
@@ -2981,7 +2981,7 @@
     },
     {
       "email": "demo20261013@students.ecu-ssd.org",
-      "name": "Demo Diploma 013 Agriculture Student",
+      "name": "Diploma 013 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/013",
@@ -2995,7 +2995,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/013",
       "accessNumber": "ECU0313",
-      "firstName": "Demo Diploma 013",
+      "firstName": "Diploma 013",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3003,11 +3003,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000313",
       "contactEmail": "learner313.demo@example.invalid",
-      "address": "Demo household DIP 013, Yei River County, South Sudan",
+      "address": "household DIP 013, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 013",
+        "name": "Guardian DIP 013",
         "relationship": "Guardian",
         "phone": "+211901000313",
         "email": "guardian313.demo@example.invalid"
@@ -3015,7 +3015,7 @@
     },
     {
       "email": "demo20261014@students.ecu-ssd.org",
-      "name": "Demo Diploma 014 Agriculture Student",
+      "name": "Diploma 014 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/014",
@@ -3029,7 +3029,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/014",
       "accessNumber": "ECU0314",
-      "firstName": "Demo Diploma 014",
+      "firstName": "Diploma 014",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3037,11 +3037,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000314",
       "contactEmail": "learner314.demo@example.invalid",
-      "address": "Demo household DIP 014, Yei River County, South Sudan",
+      "address": "household DIP 014, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 014",
+        "name": "Guardian DIP 014",
         "relationship": "Guardian",
         "phone": "+211901000314",
         "email": "guardian314.demo@example.invalid"
@@ -3049,7 +3049,7 @@
     },
     {
       "email": "demo20261015@students.ecu-ssd.org",
-      "name": "Demo Diploma 015 Agriculture Student",
+      "name": "Diploma 015 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/015",
@@ -3063,7 +3063,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/015",
       "accessNumber": "ECU0315",
-      "firstName": "Demo Diploma 015",
+      "firstName": "Diploma 015",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3071,11 +3071,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000315",
       "contactEmail": "learner315.demo@example.invalid",
-      "address": "Demo household DIP 015, Yei River County, South Sudan",
+      "address": "household DIP 015, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 015",
+        "name": "Guardian DIP 015",
         "relationship": "Guardian",
         "phone": "+211901000315",
         "email": "guardian315.demo@example.invalid"
@@ -3083,7 +3083,7 @@
     },
     {
       "email": "demo20261016@students.ecu-ssd.org",
-      "name": "Demo Diploma 016 Agriculture Student",
+      "name": "Diploma 016 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/016",
@@ -3097,7 +3097,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/016",
       "accessNumber": "ECU0316",
-      "firstName": "Demo Diploma 016",
+      "firstName": "Diploma 016",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3105,11 +3105,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000316",
       "contactEmail": "learner316.demo@example.invalid",
-      "address": "Demo household DIP 016, Yei River County, South Sudan",
+      "address": "household DIP 016, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 016",
+        "name": "Guardian DIP 016",
         "relationship": "Guardian",
         "phone": "+211901000316",
         "email": "guardian316.demo@example.invalid"
@@ -3117,7 +3117,7 @@
     },
     {
       "email": "demo20261017@students.ecu-ssd.org",
-      "name": "Demo Diploma 017 Agriculture Student",
+      "name": "Diploma 017 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/017",
@@ -3131,7 +3131,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/017",
       "accessNumber": "ECU0317",
-      "firstName": "Demo Diploma 017",
+      "firstName": "Diploma 017",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3139,11 +3139,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000317",
       "contactEmail": "learner317.demo@example.invalid",
-      "address": "Demo household DIP 017, Yei River County, South Sudan",
+      "address": "household DIP 017, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 017",
+        "name": "Guardian DIP 017",
         "relationship": "Guardian",
         "phone": "+211901000317",
         "email": "guardian317.demo@example.invalid"
@@ -3151,7 +3151,7 @@
     },
     {
       "email": "demo20261018@students.ecu-ssd.org",
-      "name": "Demo Diploma 018 Agriculture Student",
+      "name": "Diploma 018 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/018",
@@ -3165,7 +3165,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/018",
       "accessNumber": "ECU0318",
-      "firstName": "Demo Diploma 018",
+      "firstName": "Diploma 018",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3173,11 +3173,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000318",
       "contactEmail": "learner318.demo@example.invalid",
-      "address": "Demo household DIP 018, Yei River County, South Sudan",
+      "address": "household DIP 018, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 018",
+        "name": "Guardian DIP 018",
         "relationship": "Guardian",
         "phone": "+211901000318",
         "email": "guardian318.demo@example.invalid"
@@ -3185,7 +3185,7 @@
     },
     {
       "email": "demo20261019@students.ecu-ssd.org",
-      "name": "Demo Diploma 019 Agriculture Student",
+      "name": "Diploma 019 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/019",
@@ -3199,7 +3199,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/019",
       "accessNumber": "ECU0319",
-      "firstName": "Demo Diploma 019",
+      "firstName": "Diploma 019",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3207,11 +3207,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000319",
       "contactEmail": "learner319.demo@example.invalid",
-      "address": "Demo household DIP 019, Yei River County, South Sudan",
+      "address": "household DIP 019, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 019",
+        "name": "Guardian DIP 019",
         "relationship": "Guardian",
         "phone": "+211901000319",
         "email": "guardian319.demo@example.invalid"
@@ -3219,7 +3219,7 @@
     },
     {
       "email": "demo20261020@students.ecu-ssd.org",
-      "name": "Demo Diploma 020 Agriculture Student",
+      "name": "Diploma 020 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/020",
@@ -3233,7 +3233,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/020",
       "accessNumber": "ECU0320",
-      "firstName": "Demo Diploma 020",
+      "firstName": "Diploma 020",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3241,11 +3241,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000320",
       "contactEmail": "learner320.demo@example.invalid",
-      "address": "Demo household DIP 020, Yei River County, South Sudan",
+      "address": "household DIP 020, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 020",
+        "name": "Guardian DIP 020",
         "relationship": "Guardian",
         "phone": "+211901000320",
         "email": "guardian320.demo@example.invalid"
@@ -3253,7 +3253,7 @@
     },
     {
       "email": "demo20261021@students.ecu-ssd.org",
-      "name": "Demo Diploma 021 Agriculture Student",
+      "name": "Diploma 021 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/021",
@@ -3267,7 +3267,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/021",
       "accessNumber": "ECU0321",
-      "firstName": "Demo Diploma 021",
+      "firstName": "Diploma 021",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3275,11 +3275,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000321",
       "contactEmail": "learner321.demo@example.invalid",
-      "address": "Demo household DIP 021, Yei River County, South Sudan",
+      "address": "household DIP 021, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 021",
+        "name": "Guardian DIP 021",
         "relationship": "Guardian",
         "phone": "+211901000321",
         "email": "guardian321.demo@example.invalid"
@@ -3287,7 +3287,7 @@
     },
     {
       "email": "demo20261022@students.ecu-ssd.org",
-      "name": "Demo Diploma 022 Agriculture Student",
+      "name": "Diploma 022 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/BDAG/022",
@@ -3301,7 +3301,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/BDAG/022",
       "accessNumber": "ECU0322",
-      "firstName": "Demo Diploma 022",
+      "firstName": "Diploma 022",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3309,11 +3309,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000322",
       "contactEmail": "learner322.demo@example.invalid",
-      "address": "Demo household DIP 022, Yei River County, South Sudan",
+      "address": "household DIP 022, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian DIP 022",
+        "name": "Guardian DIP 022",
         "relationship": "Guardian",
         "phone": "+211901000322",
         "email": "guardian322.demo@example.invalid"
@@ -3321,7 +3321,7 @@
     },
     {
       "email": "demo20262001@students.ecu-ssd.org",
-      "name": "Demo Certificate 001 Agriculture Student",
+      "name": "Certificate 001 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/001",
@@ -3335,7 +3335,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/001",
       "accessNumber": "ECU0401",
-      "firstName": "Demo Certificate 001",
+      "firstName": "Certificate 001",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3343,11 +3343,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000401",
       "contactEmail": "learner401.demo@example.invalid",
-      "address": "Demo household CERT 001, Yei River County, South Sudan",
+      "address": "household CERT 001, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 001",
+        "name": "Guardian CERT 001",
         "relationship": "Guardian",
         "phone": "+211901000401",
         "email": "guardian401.demo@example.invalid"
@@ -3355,7 +3355,7 @@
     },
     {
       "email": "demo20262002@students.ecu-ssd.org",
-      "name": "Demo Certificate 002 Agriculture Student",
+      "name": "Certificate 002 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/002",
@@ -3369,7 +3369,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/002",
       "accessNumber": "ECU0402",
-      "firstName": "Demo Certificate 002",
+      "firstName": "Certificate 002",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3377,11 +3377,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000402",
       "contactEmail": "learner402.demo@example.invalid",
-      "address": "Demo household CERT 002, Yei River County, South Sudan",
+      "address": "household CERT 002, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 002",
+        "name": "Guardian CERT 002",
         "relationship": "Guardian",
         "phone": "+211901000402",
         "email": "guardian402.demo@example.invalid"
@@ -3389,7 +3389,7 @@
     },
     {
       "email": "demo20262003@students.ecu-ssd.org",
-      "name": "Demo Certificate 003 Agriculture Student",
+      "name": "Certificate 003 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/003",
@@ -3403,7 +3403,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/003",
       "accessNumber": "ECU0403",
-      "firstName": "Demo Certificate 003",
+      "firstName": "Certificate 003",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3411,11 +3411,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000403",
       "contactEmail": "learner403.demo@example.invalid",
-      "address": "Demo household CERT 003, Yei River County, South Sudan",
+      "address": "household CERT 003, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 003",
+        "name": "Guardian CERT 003",
         "relationship": "Guardian",
         "phone": "+211901000403",
         "email": "guardian403.demo@example.invalid"
@@ -3423,7 +3423,7 @@
     },
     {
       "email": "demo20262004@students.ecu-ssd.org",
-      "name": "Demo Certificate 004 Agriculture Student",
+      "name": "Certificate 004 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/004",
@@ -3437,7 +3437,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/004",
       "accessNumber": "ECU0404",
-      "firstName": "Demo Certificate 004",
+      "firstName": "Certificate 004",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3445,11 +3445,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000404",
       "contactEmail": "learner404.demo@example.invalid",
-      "address": "Demo household CERT 004, Yei River County, South Sudan",
+      "address": "household CERT 004, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 004",
+        "name": "Guardian CERT 004",
         "relationship": "Guardian",
         "phone": "+211901000404",
         "email": "guardian404.demo@example.invalid"
@@ -3457,7 +3457,7 @@
     },
     {
       "email": "demo20262005@students.ecu-ssd.org",
-      "name": "Demo Certificate 005 Agriculture Student",
+      "name": "Certificate 005 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/005",
@@ -3471,7 +3471,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/005",
       "accessNumber": "ECU0405",
-      "firstName": "Demo Certificate 005",
+      "firstName": "Certificate 005",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3479,11 +3479,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000405",
       "contactEmail": "learner405.demo@example.invalid",
-      "address": "Demo household CERT 005, Yei River County, South Sudan",
+      "address": "household CERT 005, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 005",
+        "name": "Guardian CERT 005",
         "relationship": "Guardian",
         "phone": "+211901000405",
         "email": "guardian405.demo@example.invalid"
@@ -3491,7 +3491,7 @@
     },
     {
       "email": "demo20262006@students.ecu-ssd.org",
-      "name": "Demo Certificate 006 Agriculture Student",
+      "name": "Certificate 006 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/006",
@@ -3505,7 +3505,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/006",
       "accessNumber": "ECU0406",
-      "firstName": "Demo Certificate 006",
+      "firstName": "Certificate 006",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3513,11 +3513,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000406",
       "contactEmail": "learner406.demo@example.invalid",
-      "address": "Demo household CERT 006, Yei River County, South Sudan",
+      "address": "household CERT 006, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 006",
+        "name": "Guardian CERT 006",
         "relationship": "Guardian",
         "phone": "+211901000406",
         "email": "guardian406.demo@example.invalid"
@@ -3525,7 +3525,7 @@
     },
     {
       "email": "demo20262007@students.ecu-ssd.org",
-      "name": "Demo Certificate 007 Agriculture Student",
+      "name": "Certificate 007 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/007",
@@ -3539,7 +3539,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/007",
       "accessNumber": "ECU0407",
-      "firstName": "Demo Certificate 007",
+      "firstName": "Certificate 007",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3547,11 +3547,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000407",
       "contactEmail": "learner407.demo@example.invalid",
-      "address": "Demo household CERT 007, Yei River County, South Sudan",
+      "address": "household CERT 007, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 007",
+        "name": "Guardian CERT 007",
         "relationship": "Guardian",
         "phone": "+211901000407",
         "email": "guardian407.demo@example.invalid"
@@ -3559,7 +3559,7 @@
     },
     {
       "email": "demo20262008@students.ecu-ssd.org",
-      "name": "Demo Certificate 008 Agriculture Student",
+      "name": "Certificate 008 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/008",
@@ -3573,7 +3573,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/008",
       "accessNumber": "ECU0408",
-      "firstName": "Demo Certificate 008",
+      "firstName": "Certificate 008",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3581,11 +3581,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000408",
       "contactEmail": "learner408.demo@example.invalid",
-      "address": "Demo household CERT 008, Yei River County, South Sudan",
+      "address": "household CERT 008, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 008",
+        "name": "Guardian CERT 008",
         "relationship": "Guardian",
         "phone": "+211901000408",
         "email": "guardian408.demo@example.invalid"
@@ -3593,7 +3593,7 @@
     },
     {
       "email": "demo20262009@students.ecu-ssd.org",
-      "name": "Demo Certificate 009 Agriculture Student",
+      "name": "Certificate 009 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/009",
@@ -3607,7 +3607,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/009",
       "accessNumber": "ECU0409",
-      "firstName": "Demo Certificate 009",
+      "firstName": "Certificate 009",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3615,11 +3615,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000409",
       "contactEmail": "learner409.demo@example.invalid",
-      "address": "Demo household CERT 009, Yei River County, South Sudan",
+      "address": "household CERT 009, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 009",
+        "name": "Guardian CERT 009",
         "relationship": "Guardian",
         "phone": "+211901000409",
         "email": "guardian409.demo@example.invalid"
@@ -3627,7 +3627,7 @@
     },
     {
       "email": "demo20262010@students.ecu-ssd.org",
-      "name": "Demo Certificate 010 Agriculture Student",
+      "name": "Certificate 010 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/010",
@@ -3641,7 +3641,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/010",
       "accessNumber": "ECU0410",
-      "firstName": "Demo Certificate 010",
+      "firstName": "Certificate 010",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3649,11 +3649,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000410",
       "contactEmail": "learner410.demo@example.invalid",
-      "address": "Demo household CERT 010, Yei River County, South Sudan",
+      "address": "household CERT 010, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 010",
+        "name": "Guardian CERT 010",
         "relationship": "Guardian",
         "phone": "+211901000410",
         "email": "guardian410.demo@example.invalid"
@@ -3661,7 +3661,7 @@
     },
     {
       "email": "demo20262011@students.ecu-ssd.org",
-      "name": "Demo Certificate 011 Agriculture Student",
+      "name": "Certificate 011 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/011",
@@ -3675,7 +3675,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/011",
       "accessNumber": "ECU0411",
-      "firstName": "Demo Certificate 011",
+      "firstName": "Certificate 011",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3683,11 +3683,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000411",
       "contactEmail": "learner411.demo@example.invalid",
-      "address": "Demo household CERT 011, Yei River County, South Sudan",
+      "address": "household CERT 011, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 011",
+        "name": "Guardian CERT 011",
         "relationship": "Guardian",
         "phone": "+211901000411",
         "email": "guardian411.demo@example.invalid"
@@ -3695,7 +3695,7 @@
     },
     {
       "email": "demo20262012@students.ecu-ssd.org",
-      "name": "Demo Certificate 012 Agriculture Student",
+      "name": "Certificate 012 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/012",
@@ -3709,7 +3709,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/012",
       "accessNumber": "ECU0412",
-      "firstName": "Demo Certificate 012",
+      "firstName": "Certificate 012",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3717,11 +3717,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000412",
       "contactEmail": "learner412.demo@example.invalid",
-      "address": "Demo household CERT 012, Yei River County, South Sudan",
+      "address": "household CERT 012, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 012",
+        "name": "Guardian CERT 012",
         "relationship": "Guardian",
         "phone": "+211901000412",
         "email": "guardian412.demo@example.invalid"
@@ -3729,7 +3729,7 @@
     },
     {
       "email": "demo20262013@students.ecu-ssd.org",
-      "name": "Demo Certificate 013 Agriculture Student",
+      "name": "Certificate 013 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/013",
@@ -3743,7 +3743,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/013",
       "accessNumber": "ECU0413",
-      "firstName": "Demo Certificate 013",
+      "firstName": "Certificate 013",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3751,11 +3751,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000413",
       "contactEmail": "learner413.demo@example.invalid",
-      "address": "Demo household CERT 013, Yei River County, South Sudan",
+      "address": "household CERT 013, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 013",
+        "name": "Guardian CERT 013",
         "relationship": "Guardian",
         "phone": "+211901000413",
         "email": "guardian413.demo@example.invalid"
@@ -3763,7 +3763,7 @@
     },
     {
       "email": "demo20262014@students.ecu-ssd.org",
-      "name": "Demo Certificate 014 Agriculture Student",
+      "name": "Certificate 014 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/014",
@@ -3777,7 +3777,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/014",
       "accessNumber": "ECU0414",
-      "firstName": "Demo Certificate 014",
+      "firstName": "Certificate 014",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3785,11 +3785,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000414",
       "contactEmail": "learner414.demo@example.invalid",
-      "address": "Demo household CERT 014, Yei River County, South Sudan",
+      "address": "household CERT 014, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 014",
+        "name": "Guardian CERT 014",
         "relationship": "Guardian",
         "phone": "+211901000414",
         "email": "guardian414.demo@example.invalid"
@@ -3797,7 +3797,7 @@
     },
     {
       "email": "demo20262015@students.ecu-ssd.org",
-      "name": "Demo Certificate 015 Agriculture Student",
+      "name": "Certificate 015 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/015",
@@ -3811,7 +3811,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/015",
       "accessNumber": "ECU0415",
-      "firstName": "Demo Certificate 015",
+      "firstName": "Certificate 015",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3819,11 +3819,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000415",
       "contactEmail": "learner415.demo@example.invalid",
-      "address": "Demo household CERT 015, Yei River County, South Sudan",
+      "address": "household CERT 015, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 015",
+        "name": "Guardian CERT 015",
         "relationship": "Guardian",
         "phone": "+211901000415",
         "email": "guardian415.demo@example.invalid"
@@ -3831,7 +3831,7 @@
     },
     {
       "email": "demo20262016@students.ecu-ssd.org",
-      "name": "Demo Certificate 016 Agriculture Student",
+      "name": "Certificate 016 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/016",
@@ -3845,7 +3845,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/016",
       "accessNumber": "ECU0416",
-      "firstName": "Demo Certificate 016",
+      "firstName": "Certificate 016",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3853,11 +3853,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000416",
       "contactEmail": "learner416.demo@example.invalid",
-      "address": "Demo household CERT 016, Yei River County, South Sudan",
+      "address": "household CERT 016, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 016",
+        "name": "Guardian CERT 016",
         "relationship": "Guardian",
         "phone": "+211901000416",
         "email": "guardian416.demo@example.invalid"
@@ -3865,7 +3865,7 @@
     },
     {
       "email": "demo20262017@students.ecu-ssd.org",
-      "name": "Demo Certificate 017 Agriculture Student",
+      "name": "Certificate 017 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/017",
@@ -3879,7 +3879,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/017",
       "accessNumber": "ECU0417",
-      "firstName": "Demo Certificate 017",
+      "firstName": "Certificate 017",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3887,11 +3887,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000417",
       "contactEmail": "learner417.demo@example.invalid",
-      "address": "Demo household CERT 017, Yei River County, South Sudan",
+      "address": "household CERT 017, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 017",
+        "name": "Guardian CERT 017",
         "relationship": "Guardian",
         "phone": "+211901000417",
         "email": "guardian417.demo@example.invalid"
@@ -3899,7 +3899,7 @@
     },
     {
       "email": "demo20262018@students.ecu-ssd.org",
-      "name": "Demo Certificate 018 Agriculture Student",
+      "name": "Certificate 018 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/018",
@@ -3913,7 +3913,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/018",
       "accessNumber": "ECU0418",
-      "firstName": "Demo Certificate 018",
+      "firstName": "Certificate 018",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3921,11 +3921,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000418",
       "contactEmail": "learner418.demo@example.invalid",
-      "address": "Demo household CERT 018, Yei River County, South Sudan",
+      "address": "household CERT 018, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 018",
+        "name": "Guardian CERT 018",
         "relationship": "Guardian",
         "phone": "+211901000418",
         "email": "guardian418.demo@example.invalid"
@@ -3933,7 +3933,7 @@
     },
     {
       "email": "demo20262019@students.ecu-ssd.org",
-      "name": "Demo Certificate 019 Agriculture Student",
+      "name": "Certificate 019 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/019",
@@ -3947,7 +3947,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/019",
       "accessNumber": "ECU0419",
-      "firstName": "Demo Certificate 019",
+      "firstName": "Certificate 019",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -3955,11 +3955,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000419",
       "contactEmail": "learner419.demo@example.invalid",
-      "address": "Demo household CERT 019, Yei River County, South Sudan",
+      "address": "household CERT 019, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 019",
+        "name": "Guardian CERT 019",
         "relationship": "Guardian",
         "phone": "+211901000419",
         "email": "guardian419.demo@example.invalid"
@@ -3967,7 +3967,7 @@
     },
     {
       "email": "demo20262020@students.ecu-ssd.org",
-      "name": "Demo Certificate 020 Agriculture Student",
+      "name": "Certificate 020 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/020",
@@ -3981,7 +3981,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/020",
       "accessNumber": "ECU0420",
-      "firstName": "Demo Certificate 020",
+      "firstName": "Certificate 020",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -3989,11 +3989,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000420",
       "contactEmail": "learner420.demo@example.invalid",
-      "address": "Demo household CERT 020, Yei River County, South Sudan",
+      "address": "household CERT 020, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 020",
+        "name": "Guardian CERT 020",
         "relationship": "Guardian",
         "phone": "+211901000420",
         "email": "guardian420.demo@example.invalid"
@@ -4001,7 +4001,7 @@
     },
     {
       "email": "demo20262021@students.ecu-ssd.org",
-      "name": "Demo Certificate 021 Agriculture Student",
+      "name": "Certificate 021 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/021",
@@ -4015,7 +4015,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/021",
       "accessNumber": "ECU0421",
-      "firstName": "Demo Certificate 021",
+      "firstName": "Certificate 021",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "male",
@@ -4023,11 +4023,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000421",
       "contactEmail": "learner421.demo@example.invalid",
-      "address": "Demo household CERT 021, Yei River County, South Sudan",
+      "address": "household CERT 021, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 021",
+        "name": "Guardian CERT 021",
         "relationship": "Guardian",
         "phone": "+211901000421",
         "email": "guardian421.demo@example.invalid"
@@ -4035,7 +4035,7 @@
     },
     {
       "email": "demo20262022@students.ecu-ssd.org",
-      "name": "Demo Certificate 022 Agriculture Student",
+      "name": "Certificate 022 Agriculture Student",
       "password": "UniSystem2026!",
       "authRole": "user",
       "registrationNumber": "S26/ECU/CAG/022",
@@ -4049,7 +4049,7 @@
       "syntheticAccount": true,
       "legacyRegistrationNumber": "DEMO/AGR/CAG/022",
       "accessNumber": "ECU0422",
-      "firstName": "Demo Certificate 022",
+      "firstName": "Certificate 022",
       "surname": "Agriculture Student",
       "otherName": "",
       "gender": "female",
@@ -4057,11 +4057,11 @@
       "nationality": "South Sudanese",
       "phone": "+211900000422",
       "contactEmail": "learner422.demo@example.invalid",
-      "address": "Demo household CERT 022, Yei River County, South Sudan",
+      "address": "household CERT 022, Yei River County, South Sudan",
       "yearOfEntry": 2026,
       "programType": "Day",
       "emergencyContact": {
-        "name": "Demo Guardian CERT 022",
+        "name": "Guardian CERT 022",
         "relationship": "Guardian",
         "phone": "+211901000422",
         "email": "guardian422.demo@example.invalid"
@@ -6724,8 +6724,8 @@
       "dayOfWeek": "monday",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "theology Demo Room 1",
-      "building": "Demo Academic Block"
+      "room": "theology Room 1",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-THEO-0104",
@@ -6734,8 +6734,8 @@
       "dayOfWeek": "tuesday",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "theology Demo Room 2",
-      "building": "Demo Academic Block"
+      "room": "theology Room 2",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-EDU-0103",
@@ -6744,8 +6744,8 @@
       "dayOfWeek": "monday",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Education and Community Development Demo Room 1",
-      "building": "Demo Academic Block"
+      "room": "Education and Community Development Room 1",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-EDU-0104",
@@ -6754,8 +6754,8 @@
       "dayOfWeek": "tuesday",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Education and Community Development Demo Room 2",
-      "building": "Demo Academic Block"
+      "room": "Education and Community Development Room 2",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-BUS-0103",
@@ -6764,8 +6764,8 @@
       "dayOfWeek": "monday",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Business and Leadership Development Demo Room 1",
-      "building": "Demo Academic Block"
+      "room": "Business and Leadership Development Room 1",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-BUS-0104",
@@ -6774,8 +6774,8 @@
       "dayOfWeek": "tuesday",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Business and Leadership Development Demo Room 2",
-      "building": "Demo Academic Block"
+      "room": "Business and Leadership Development Room 2",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-AGR-0103",
@@ -6784,8 +6784,8 @@
       "dayOfWeek": "monday",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Agriculture Demo Room 1",
-      "building": "Demo Academic Block"
+      "room": "Agriculture Room 1",
+      "building": "Academic Block"
     },
     {
       "courseCode": "D-AGR-0104",
@@ -6794,8 +6794,8 @@
       "dayOfWeek": "tuesday",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Agriculture Demo Room 2",
-      "building": "Demo Academic Block"
+      "room": "Agriculture Room 2",
+      "building": "Academic Block"
     }
   ],
   "examTimetables": [
@@ -6805,8 +6805,8 @@
       "examDate": "2026-11-02",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Demo Examination Hall 1",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 1",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-THEO-0104",
@@ -6814,8 +6814,8 @@
       "examDate": "2026-11-03",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Demo Examination Hall 2",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 2",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-EDU-0103",
@@ -6823,8 +6823,8 @@
       "examDate": "2026-11-02",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Demo Examination Hall 1",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 1",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-EDU-0104",
@@ -6832,8 +6832,8 @@
       "examDate": "2026-11-03",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Demo Examination Hall 2",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 2",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-BUS-0103",
@@ -6841,8 +6841,8 @@
       "examDate": "2026-11-02",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Demo Examination Hall 1",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 1",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-BUS-0104",
@@ -6850,8 +6850,8 @@
       "examDate": "2026-11-03",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Demo Examination Hall 2",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 2",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-AGR-0103",
@@ -6859,8 +6859,8 @@
       "examDate": "2026-11-02",
       "startTime": "08:00",
       "endTime": "10:00",
-      "room": "Demo Examination Hall 1",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 1",
+      "venue": "Main Campus"
     },
     {
       "courseCode": "D-AGR-0104",
@@ -6868,8 +6868,8 @@
       "examDate": "2026-11-03",
       "startTime": "10:00",
       "endTime": "12:00",
-      "room": "Demo Examination Hall 2",
-      "venue": "Demo Main Campus"
+      "room": "Examination Hall 2",
+      "venue": "Main Campus"
     }
   ],
   "feeStructures": [
@@ -7046,7 +7046,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0001-FULL",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0001-FULL",
@@ -7063,7 +7063,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0002",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0002",
@@ -7080,7 +7080,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0003-FULL",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0003-FULL",
@@ -7097,7 +7097,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0004",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0004",
@@ -7114,7 +7114,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0005-FULL",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0005-FULL",
@@ -7131,7 +7131,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0006",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0006",
@@ -7148,7 +7148,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0007-FULL",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0007-FULL",
@@ -7165,7 +7165,7 @@
       "type": "payment",
       "method": "bank",
       "channel": "bank_deposit",
-      "bankBranch": "Demo ECU Finance Office",
+      "bankBranch": "ECU Finance Office",
       "slipNumber": "DEMO-SLIP-0008",
       "depositDate": "2026-09-10",
       "receiptNumber": "DEMO-RCPT-0008",
@@ -7273,7 +7273,7 @@
       {
         "studentRegistrationNumber": "S26/ECU/BEDMIT/003",
         "periodKey": "2026-term-2",
-        "organization": "Demo Community Learning Centre",
+        "organization": "Community Learning Centre",
         "country": "South Sudan",
         "district": "Yei River County",
         "location": "Yei",
@@ -7281,7 +7281,7 @@
         "endDate": "2026-11-30",
         "phone": "+211900000001",
         "email": "placement.demo@example.invalid",
-        "supervisorName": "Demo Supervisor",
+        "supervisorName": "Supervisor",
         "supervisorPhone": "+211900000002",
         "supervisorEmail": "supervisor.demo@example.invalid",
         "status": "submitted",
@@ -7296,13 +7296,13 @@
         ],
         "contacts": [
           {
-            "name": "Demo Agency Contact",
+            "name": "Agency Contact",
             "title": "Placement Coordinator",
             "phone": "+211900000003",
             "email": "contact.demo@example.invalid"
           }
         ],
-        "academicSupervisorName": "Demo Academic Supervisor",
+        "academicSupervisorName": "Academic Supervisor",
         "academicSupervisorPhone": "+211900000020",
         "academicSupervisorEmail": "academic.supervisor.demo@example.invalid",
         "reviewComment": "Awaiting placement review."
@@ -7311,7 +7311,7 @@
     "elections": [
       {
         "key": "student-council-2026",
-        "title": "Demo Student Council Election",
+        "title": "Student Council Election",
         "description": "Synthetic election record for portal testing.",
         "opensAt": 1792454400000,
         "closesAt": 1795219140000,
@@ -7328,21 +7328,21 @@
     ],
     "electoralCommitteeMembers": [
       {
-        "name": "Demo Committee Member One",
+        "name": "Committee Member One",
         "role": "Chairperson",
         "email": "committee1.demo@example.invalid",
         "phone": "+211900000010",
         "status": "active"
       },
       {
-        "name": "Demo Committee Member Two",
+        "name": "Committee Member Two",
         "role": "Secretary",
         "email": "committee2.demo@example.invalid",
         "phone": "+211900000011",
         "status": "active"
       },
       {
-        "name": "Demo Committee Member Three",
+        "name": "Committee Member Three",
         "role": "Member",
         "email": "committee3.demo@example.invalid",
         "phone": "+211900000012",
@@ -7355,7 +7355,7 @@
     "staff": [
       {
         "email": "admin.demo@ecu-ssd.org",
-        "name": "Demo System Administrator",
+        "name": "James Wani",
         "roles": [
           "admin",
           "staff"
@@ -7363,7 +7363,7 @@
       },
       {
         "email": "hod.demo@ecu-ssd.org",
-        "name": "Demo Head of Department",
+        "name": "Peter Ladu",
         "roles": [
           "hod",
           "staff"
@@ -7371,7 +7371,7 @@
       },
       {
         "email": "lecturer.theology.demo@ecu-ssd.org",
-        "name": "Demo theology Lecturer",
+        "name": "Grace Achieng",
         "roles": [
           "lecturer",
           "staff"
@@ -7379,7 +7379,7 @@
       },
       {
         "email": "lecturer.education.demo@ecu-ssd.org",
-        "name": "Demo Education and Community Development Lecturer",
+        "name": "Robert Kato",
         "roles": [
           "lecturer",
           "staff"
@@ -7387,7 +7387,7 @@
       },
       {
         "email": "lecturer.business.demo@ecu-ssd.org",
-        "name": "Demo Business and Leadership Development Lecturer",
+        "name": "Daniel Juma",
         "roles": [
           "lecturer",
           "staff"
@@ -7395,7 +7395,7 @@
       },
       {
         "email": "lecturer.agriculture.demo@ecu-ssd.org",
-        "name": "Demo Agriculture Lecturer",
+        "name": "Mary Atem",
         "roles": [
           "lecturer",
           "staff"
@@ -7405,49 +7405,49 @@
     "students": [
       {
         "email": "demo20260001@students.ecu-ssd.org",
-        "name": "Demo Student 01",
+        "name": "Student 01",
         "registrationNumber": "S26/ECU/BAT/001",
         "programCode": "DEMO-THEO-BA"
       },
       {
         "email": "demo20260002@students.ecu-ssd.org",
-        "name": "Demo Student 02",
+        "name": "Student 02",
         "registrationNumber": "S26/ECU/BAT/002",
         "programCode": "DEMO-THEO-BA"
       },
       {
         "email": "demo20260003@students.ecu-ssd.org",
-        "name": "Demo Student 03",
+        "name": "Student 03",
         "registrationNumber": "S26/ECU/BEDMIT/003",
         "programCode": "DEMO-EDU-MATH-IT"
       },
       {
         "email": "demo20260004@students.ecu-ssd.org",
-        "name": "Demo Student 04",
+        "name": "Student 04",
         "registrationNumber": "S26/ECU/BEDMIT/004",
         "programCode": "DEMO-EDU-MATH-IT"
       },
       {
         "email": "demo20260005@students.ecu-ssd.org",
-        "name": "Demo Student 05",
+        "name": "Student 05",
         "registrationNumber": "S26/ECU/BBA/005",
         "programCode": "DEMO-BUS-BBA"
       },
       {
         "email": "demo20260006@students.ecu-ssd.org",
-        "name": "Demo Student 06",
+        "name": "Student 06",
         "registrationNumber": "S26/ECU/BBA/006",
         "programCode": "DEMO-BUS-BBA"
       },
       {
         "email": "demo20260007@students.ecu-ssd.org",
-        "name": "Demo Student 07",
+        "name": "Student 07",
         "registrationNumber": "S26/ECU/BAGR/007",
         "programCode": "DEMO-AGR-BSC"
       },
       {
         "email": "demo20260008@students.ecu-ssd.org",
-        "name": "Demo Student 08",
+        "name": "Student 08",
         "registrationNumber": "S26/ECU/BAGR/008",
         "programCode": "DEMO-AGR-BSC"
       }

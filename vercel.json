@@ -3,19 +3,23 @@
   "services": {
     "library": {
       "root": "apps/library",
-      "framework": "nextjs"
+      "framework": "nextjs",
+      "buildCommand": "pnpm --dir ../../packages/backend exec convex deploy --cmd \"pnpm --dir ../.. exec turbo run build --filter=library\" --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL"
     },
     "lms": {
       "root": "apps/lms",
-      "framework": "nextjs"
+      "framework": "nextjs",
+      "buildCommand": "pnpm --dir ../../packages/backend exec convex deploy --cmd \"pnpm --dir ../.. exec turbo run build --filter=lms\" --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL"
     },
     "staff-portal": {
       "root": "apps/staff-portal",
-      "framework": "nextjs"
+      "framework": "nextjs",
+      "buildCommand": "pnpm --dir ../../packages/backend exec convex deploy --cmd \"pnpm --dir ../.. exec turbo run build --filter=staff-portal\" --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL"
     },
     "student-portal": {
       "root": "apps/student-portal",
-      "framework": "nextjs"
+      "framework": "nextjs",
+      "buildCommand": "pnpm --dir ../../packages/backend exec convex deploy --cmd \"pnpm --dir ../.. exec turbo run build --filter=student-portal\" --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL"
     }
   },
   "rewrites": [

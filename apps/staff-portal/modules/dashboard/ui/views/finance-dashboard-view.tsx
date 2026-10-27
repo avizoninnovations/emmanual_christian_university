@@ -12,9 +12,10 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 
 export function FinanceOfficeSummarySection() {
   const period = useQuery(api.calendar.getActivePeriod);
-  const summary = useQuery(api.finance.getFinancialSummary, {
-    periodId: period?._id,
-  });
+  const summary = useQuery(
+    api.finance.getFinancialSummary,
+    period?._id ? { periodId: period._id } : "skip",
+  );
 
   return (
     <section aria-label="Finance overview" className="space-y-3">
@@ -22,7 +23,7 @@ export function FinanceOfficeSummarySection() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Finance Office</p>
         </div>
-        <Badge variant="outline">{period ? `Semester ${period.term} · ${period.year}` : "All periods"}</Badge>
+        <Badge variant="outline">{period ? `Semester ${period.term} · ${period.year}` : "Current semester unavailable"}</Badge>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <FinanceMetric icon={FileSpreadsheet} label="Invoiced" amount={summary?.totalExpected} detail={`${summary?.totalStudentsInvoiced ?? 0} student accounts`} />
@@ -47,7 +48,7 @@ export function FinanceDashboardView() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">ECU · Finance Office</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight">Finance overview</h1>
           </div>
-          <Badge variant="outline">{period ? `${period.name} · Semester ${period.term}, ${period.year}` : "All academic periods"}</Badge>
+          <Badge variant="outline">{period ? `${period.name} · Semester ${period.term}, ${period.year}` : "Current semester unavailable"}</Badge>
         </header>
 
         <FinanceOfficeSummarySection />

@@ -67,6 +67,8 @@ export const FeeStructureDialog = ({
 }: FeeStructureDialogProps) => {
   const programs = useQuery(api.academic.getPrograms, {});
   const periods = useQuery(api.academic.getPeriods);
+  const orderedPeriods = [...(periods ?? [])].sort((left, right) => right.year - left.year || right.term - left.term);
+  const currentPeriodId = orderedPeriods.find((period) => period.status === "active")?._id ?? orderedPeriods[0]?._id;
   const createFeeStructure = useMutation(api.finance.createFeeStructure);
   const updateFeeStructure = useMutation(api.finance.updateFeeStructure);
 
@@ -112,6 +114,12 @@ export const FeeStructureDialog = ({
       });
     }
   }, [editingStructure, form, open]);
+
+  useEffect(() => {
+    if (open && !editingStructure && !form.getValues("periodId") && currentPeriodId) {
+      form.setValue("periodId", currentPeriodId);
+    }
+  }, [currentPeriodId, editingStructure, form, open]);
 
   const watchAll = form.watch();
   const calculatedTotal =
@@ -260,9 +268,9 @@ export const FeeStructureDialog = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {periods?.map((p) => (
+                      {orderedPeriods.map((p) => (
                         <SelectItem key={p._id} value={p._id}>
-                          {p.name} ({p.year}) — Semester {p.term}
+                          {p.name} ({p.year}) — Semester {p.term}{p.status === "active" ? " · Current" : ""}
                         </SelectItem>
                       ))}
                     </SelectContent>

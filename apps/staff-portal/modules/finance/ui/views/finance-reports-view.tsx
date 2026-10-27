@@ -14,11 +14,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export function FinanceReportsView() {
   const periods = useQuery(api.academic.getPeriods);
-  const activePeriod = periods?.find((period) => period.status === "active");
-  const [periodId, setPeriodId] = useState<Id<"academicPeriods"> | "all" | null>(null);
-  const effectivePeriodId = periodId === "all" ? undefined : periodId ?? activePeriod?._id;
-  const summary = useQuery(api.finance.getFinancialSummary, { periodId: effectivePeriodId });
-  const ledgers = useQuery(api.finance.getStudentLedgers, { periodId: effectivePeriodId });
+  const orderedPeriods = [...(periods ?? [])].sort((left, right) => right.year - left.year || right.term - left.term);
+  const activePeriod = orderedPeriods.find((period) => period.status === "active") ?? orderedPeriods[0];
+  const [periodId, setPeriodId] = useState<Id<"academicPeriods"> | undefined>();
+  const effectivePeriodId = periodId ?? activePeriod?._id;
+  const summary = useQuery(api.finance.getFinancialSummary, effectivePeriodId ? { periodId: effectivePeriodId } : "skip");
+  const ledgers = useQuery(api.finance.getStudentLedgers, effectivePeriodId ? { periodId: effectivePeriodId } : "skip");
   const debtors = (ledgers ?? []).filter((ledger) => ledger.balance > 0).sort((left, right) => right.balance - left.balance);
 
   function exportDebtors() {
@@ -36,9 +37,9 @@ export function FinanceReportsView() {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <h1 className="text-2xl font-semibold tracking-tight">Financial Reports</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={periodId ?? "active"} onValueChange={(value) => setPeriodId(value === "active" ? null : value === "all" ? "all" : value as Id<"academicPeriods">)}>
-            <SelectTrigger className="w-56 rounded-sm"><SelectValue placeholder="Academic period" /></SelectTrigger>
-            <SelectContent><SelectItem value="active">Current academic period</SelectItem><SelectItem value="all">All periods</SelectItem>{(periods ?? []).map((period) => <SelectItem key={period._id} value={period._id}>{period.name} · {period.year}</SelectItem>)}</SelectContent>
+          <Select value={effectivePeriodId ?? ""} onValueChange={(value) => setPeriodId(value as Id<"academicPeriods">)}>
+            <SelectTrigger className="w-56 rounded-sm"><SelectValue placeholder="Current semester unavailable" /></SelectTrigger>
+            <SelectContent>{orderedPeriods.map((period) => <SelectItem key={period._id} value={period._id}>{period.name} · Semester {period.term}, {period.year}{period.status === "active" ? " · Current" : ""}</SelectItem>)}</SelectContent>
           </Select>
           <Button variant="outline" className="rounded-sm" onClick={() => window.print()}><Printer className="mr-2 size-4" />Print</Button>
           <Button className="rounded-sm" onClick={exportDebtors} disabled={!debtors.length}><Download className="mr-2 size-4" />Export debtors</Button>

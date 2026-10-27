@@ -103,7 +103,7 @@ export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => 
   const [search, setSearch] = useState<string>("");
   const [programFilter, setProgramFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [periodFilter, setPeriodFilter] = useState<string>("ALL");
+  const [periodFilter, setPeriodFilter] = useState<Id<"academicPeriods"> | undefined>();
 
   // Dialog State
   const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(false);
@@ -121,35 +121,37 @@ export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => 
   // Queries
   const periods = useQuery(api.academic.getPeriods);
   const programs = useQuery(api.academic.getPrograms, {});
-  const activePeriod = periods?.find((p) => p.status === "active");
+  const orderedPeriods = [...(periods ?? [])].sort((left, right) => right.year - left.year || right.term - left.term);
+  const activePeriod = orderedPeriods.find((period) => period.status === "active") ?? orderedPeriods[0];
+  const effectivePeriodId = periodFilter ?? activePeriod?._id;
+  const selectedPeriod = orderedPeriods.find((period) => period._id === effectivePeriodId);
 
-  const effectivePeriodId =
-    periodFilter !== "ALL"
-      ? (periodFilter as Id<"academicPeriods">)
-      : activePeriod?._id;
+  const summary = useQuery(
+    api.finance.getFinancialSummary,
+    effectivePeriodId ? { periodId: effectivePeriodId } : "skip",
+  );
 
-  const summary = useQuery(api.finance.getFinancialSummary, {
-    periodId: effectivePeriodId,
-  });
-
-  const studentLedgers = useQuery(api.finance.getStudentLedgers, {
-    periodId: effectivePeriodId,
-    programId: programFilter !== "ALL" ? (programFilter as Id<"programs">) : undefined,
-    status:
-      statusFilter !== "ALL"
-        ? (statusFilter as "cleared" | "partial" | "pending")
-        : undefined,
-    search: search.trim() || undefined,
-  });
+  const studentLedgers = useQuery(
+    api.finance.getStudentLedgers,
+    effectivePeriodId
+      ? {
+          periodId: effectivePeriodId,
+          programId: programFilter !== "ALL" ? (programFilter as Id<"programs">) : undefined,
+          status: statusFilter !== "ALL" ? (statusFilter as "cleared" | "partial" | "pending") : undefined,
+          search: search.trim() || undefined,
+        }
+      : "skip",
+  );
 
   const feeStructures = useQuery(
     api.finance.getFeeStructures,
-    canManageFees ? { periodId: effectivePeriodId } : "skip",
+    canManageFees && effectivePeriodId ? { periodId: effectivePeriodId } : "skip",
   );
 
-  const transactions = useQuery(api.finance.getAllTransactions, {
-    periodId: effectivePeriodId,
-  });
+  const transactions = useQuery(
+    api.finance.getAllTransactions,
+    effectivePeriodId ? { periodId: effectivePeriodId } : "skip",
+  );
 
   const deleteFeeStructure = useMutation(api.finance.deleteFeeStructure);
 
@@ -235,7 +237,7 @@ export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => 
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-bold tracking-tight">{section && section !== "reports" && section !== "payroll" ? sectionTitles[section] : "Finance Office"}</h1>
             <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/20">
-              {activePeriod ? `${activePeriod.name} (${activePeriod.year})` : "All Periods"}
+              {selectedPeriod ? `${selectedPeriod.name} · Semester ${selectedPeriod.term}, ${selectedPeriod.year}` : "Current semester unavailable"}
             </Badge>
           </div>
         </div>
@@ -311,16 +313,15 @@ export const FinanceView = ({ section }: { section?: FinanceOfficeSection }) => 
 
           {/* Academic Period Selector */}
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-muted-foreground hidden sm:inline">Period:</span>
-            <Select value={periodFilter} onValueChange={setPeriodFilter}>
+            <span className="text-muted-foreground hidden sm:inline">Semester:</span>
+            <Select value={effectivePeriodId ?? ""} onValueChange={(value) => setPeriodFilter(value as Id<"academicPeriods">)}>
               <SelectTrigger className="h-8 w-44 text-xs">
-                <SelectValue placeholder="Period Filter" />
+                <SelectValue placeholder="Current semester unavailable" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">All Academic Periods</SelectItem>
-                {periods?.map((p) => (
+                {orderedPeriods.map((p) => (
                   <SelectItem key={p._id} value={p._id}>
-                    {p.name} ({p.year})
+                    {p.name} · Semester {p.term}, {p.year}{p.status === "active" ? " · Current" : ""}
                   </SelectItem>
                 ))}
               </SelectContent>

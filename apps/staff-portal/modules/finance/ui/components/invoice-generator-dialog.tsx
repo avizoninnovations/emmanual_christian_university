@@ -41,11 +41,12 @@ export const InvoiceGeneratorDialog = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const periods = useQuery(api.academic.getPeriods);
+  const orderedPeriods = [...(periods ?? [])].sort((left, right) => right.year - left.year || right.term - left.term);
   const programs = useQuery(api.academic.getPrograms, {});
   const applySemesterInvoices = useMutation(api.finance.applySemesterInvoices);
 
   // Default to the first active period if available
-  const activePeriod = periods?.find((p) => p.status === "active");
+  const activePeriod = orderedPeriods.find((period) => period.status === "active") ?? orderedPeriods[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,7 +106,7 @@ export const InvoiceGeneratorDialog = ({
                 <SelectValue placeholder="Select period to invoice..." />
               </SelectTrigger>
               <SelectContent>
-                {periods?.map((p) => (
+                {orderedPeriods.map((p) => (
                   <SelectItem key={p._id} value={p._id}>
                     {p.name} ({p.year}) — Semester {p.term} {p.status === "active" ? "(Current Active)" : ""}
                   </SelectItem>

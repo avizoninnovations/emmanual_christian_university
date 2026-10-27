@@ -172,7 +172,8 @@ function pathnameMatches(items: SidebarEntry[], pathname: string): boolean {
 }
 
 function matchesSidebarPath(url: string, pathname: string) {
-  return pathname === url || (url !== "/" && url !== "/hod" && url !== "/admissions" && pathname.startsWith(`${url}/`));
+  const exactOnlyRoutes = ["/", "/hod", "/admissions", "/finance-office"];
+  return pathname === url || (!exactOnlyRoutes.includes(url) && pathname.startsWith(`${url}/`));
 }
 
 function EntryList({ items, pathname, parentPath, openNestedPath, onNestedPathChange }: {

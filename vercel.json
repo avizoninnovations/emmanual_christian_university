@@ -41,7 +41,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": { "service": "staff-portal" }
+      "destination": { "service": "student-portal" }
     }
   ]
 }

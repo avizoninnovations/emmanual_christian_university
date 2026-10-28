@@ -16,6 +16,21 @@ export const context = query({
   },
 });
 
+export const hasDepartmentManagementAccess = query({
+  args: {},
+  handler: async (ctx) => {
+    const actor = await academicActor(ctx);
+    if (actor.isAdmin) return true;
+    if (!actor.profile.roles.includes("hod")) return false;
+    const department = await ctx.db
+      .query("departments")
+      .withIndex("by_hodId", (q) => q.eq("hodId", actor.userId))
+      .filter((q) => q.eq(q.field("status"), "active"))
+      .first();
+    return Boolean(department);
+  },
+});
+
 export const appointHead = mutation({
   args: { departmentId: v.id("departments"), staffUserId: v.union(v.string(), v.null()), reason: v.string() },
   handler: async (ctx, args) => appointDepartmentHead(ctx, args.departmentId, args.staffUserId, args.reason),

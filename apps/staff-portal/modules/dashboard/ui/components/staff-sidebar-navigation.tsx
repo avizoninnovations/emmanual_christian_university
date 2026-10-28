@@ -90,13 +90,16 @@ export function findStaffSidebarSection(pathname: string): string | undefined {
   return findStaffSidebarNavigation(pathname)?.sectionKey;
 }
 
-export function StaffSidebarNavigation({ pathname, query, openSection, onOpenChange, openNestedPath, onNestedPathChange, roles }: {
+export function StaffSidebarNavigation({ pathname, query, openSection, onOpenChange, openNestedPath, onNestedPathChange, roles, canManageDepartment, canReviewRetakes }: {
   pathname: string; query: string; openSection: string | null; onOpenChange: (key: string, open: boolean) => void;
   openNestedPath: string | null; onNestedPathChange: (path: string, open: boolean) => void; roles: string[];
+  canManageDepartment: boolean; canReviewRetakes: boolean;
 }) {
   const normalizedQuery = query.trim().toLowerCase();
   const roleSet = new Set(roles.map((role) => role.toLowerCase()));
   const sections = staffSidebarSections.filter((section) => (!section.roles || section.roles.some((role) => roleSet.has(role)))
+    && (section.key !== "leadership" || canManageDepartment)
+    && (section.key !== "retake-approvals" || canReviewRetakes)
     && (!normalizedQuery || section.title.toLowerCase().includes(normalizedQuery) || (section.url ? false : filterEntries(section.items, normalizedQuery, false).length > 0)));
   const categories = [...new Set(sections.map((section) => section.category))];
   const categoryPriority = roleSet.has("finance") || roleSet.has("bursar") || roleSet.has("cashier")

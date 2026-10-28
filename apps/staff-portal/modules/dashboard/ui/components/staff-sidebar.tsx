@@ -52,8 +52,13 @@ export const StaffSidebar = () => {
   const hoverExpanded = useRef(false);
   const { user, roles, isMultiRole, clearActiveRole } = useCurrentUser();
   const staffProfile = useQuery(api.staffPersonalRecords.getMyProfile);
-  const hasLeadership = roles?.some((role) => ["hod", "dean", "admin"].includes(role.toLowerCase()));
-  const canReviewRetakes = roles?.some((role) => ["hod", "registrar", "admin"].includes(role.toLowerCase()));
+  const canCheckDepartmentAccess = roles?.some((role) => ["hod", "admin"].includes(role.toLowerCase())) ?? false;
+  const departmentManagementAccess = useQuery(
+    api.hod.hasDepartmentManagementAccess,
+    canCheckDepartmentAccess ? {} : "skip",
+  );
+  const hasLeadership = departmentManagementAccess === true;
+  const canReviewRetakes = hasLeadership || Boolean(roles?.some((role) => ["registrar", "admin"].includes(role.toLowerCase())));
   const hasFinance = roles?.some((role) => ["finance", "bursar", "cashier", "admin"].includes(role.toLowerCase()));
   const hasAdmissions = roles?.some((role) => ["admissions_officer", "registrar"].includes(role.toLowerCase()));
   const profileActive = pathname === "/profile";
@@ -153,6 +158,8 @@ export const StaffSidebar = () => {
               return current === path || current?.startsWith(`${path}/`) ? null : current;
             })}
             roles={roles ?? []}
+            canManageDepartment={hasLeadership}
+            canReviewRetakes={canReviewRetakes}
           />
           </div>
         </SidebarContent>

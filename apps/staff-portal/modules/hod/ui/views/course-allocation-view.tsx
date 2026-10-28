@@ -21,10 +21,12 @@ import { AllocationDialog } from "../components/allocation-dialog";
 import { HodScopePicker } from "../components/hod-scope-picker";
 import { CourseAllocationCard, type Course } from "./course-allocation-card";
 import { CourseAllocationTable } from "./course-allocation-table";
+import { usePersistedViewMode } from "@/hooks/use-persisted-view-mode";
 
 type CourseFilter = "all" | "assigned" | "unassigned";
 
 export function CourseAllocationView() {
+  const { viewMode, setViewMode } = usePersistedViewMode("course-allocations");
   const scope = useHodScope();
   const courses = usePaginatedQuery(
     api.hod.courses,
@@ -79,7 +81,7 @@ export function CourseAllocationView() {
       <HodScopePicker scope={scope} />
       {scope.departmentId && scope.periodId && (
         <>
-          <Tabs defaultValue="grid" className="w-full">
+          <Tabs value={viewMode} onValueChange={setViewMode} className="w-full">
             <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
               <div className="flex items-center gap-3">
                 <span className="flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">

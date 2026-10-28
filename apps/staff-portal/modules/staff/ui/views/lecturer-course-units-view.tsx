@@ -13,10 +13,12 @@ import { StaffDataSkeleton } from "@/modules/dashboard/ui/components/staff-data-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 import { LecturerCourseHistoryTable } from "@/modules/staff/ui/components/lecturer-course-history-table";
+import { usePersistedViewMode } from "@/hooks/use-persisted-view-mode";
 
 type CoursePeriod = NonNullable<ReturnType<typeof useQuery<typeof api.allocations.getLecturerCoursePeriods>>>[number];
 
 export function LecturerCourseUnitsView() {
+  const { viewMode, setViewMode } = usePersistedViewMode("lecturer-course-units");
   const [openSection, setOpenSection] = useState<string | null>("current");
   const [selectedPeriodId, setSelectedPeriodId] = useState("all");
   const periods = useQuery(api.allocations.getLecturerCoursePeriods, {});
@@ -33,7 +35,7 @@ export function LecturerCourseUnitsView() {
       <p className="max-w-lg text-sm text-muted-foreground">When your Head of Department assigns you course units, they will appear here under the semester they belong to.</p>
     </CardContent></Card>}
 
-    <Tabs defaultValue="grid" className="min-w-0 space-y-4">
+    <Tabs value={viewMode} onValueChange={setViewMode} className="min-w-0 space-y-4">
       <div className="min-w-0 overflow-x-auto overflow-y-hidden overscroll-x-contain">
         <TabsList aria-label="Course view" className="w-max min-w-full justify-start">
           <TabsTrigger value="grid" className="flex-none">Grid View</TabsTrigger>

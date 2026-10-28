@@ -15,10 +15,12 @@ import { MarksReviewQueueCard } from "./marks-review-queue-card";
 import { MarksReviewQueueTable } from "./marks-review-queue-table";
 import { NominatedReviews } from "./nominated-reviews";
 import { ClassReviewView } from "./class-review-view";
+import { usePersistedViewMode } from "@/hooks/use-persisted-view-mode";
 
 type QueueFilter = "noMarks" | "hasMarks" | "approved" | "independent" | "all";
 
 export function MarksReviewQueueView() {
+  const { viewMode, setViewMode } = usePersistedViewMode("marks-review-queue");
   const scope = useHodScope();
   const queue = usePaginatedQuery(
     api.hod.courses,
@@ -63,7 +65,7 @@ export function MarksReviewQueueView() {
 
       {scope.departmentId && scope.periodId && (
         <>
-          <Tabs defaultValue="grid" className="w-full">
+          <Tabs value={viewMode} onValueChange={setViewMode} className="w-full">
             <div className="flex flex-wrap items-end justify-between gap-3 border-b">
               <div className="flex flex-wrap gap-x-5">
                 <QueueFilterButton label="All" count={queue.results.length} active={filter === "all"} onClick={() => setFilter("all")} />

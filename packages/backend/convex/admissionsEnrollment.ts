@@ -24,6 +24,9 @@ export const getEnrollmentRoster = query({
   args: {
     periodId: v.id("academicPeriods"),
     programId: v.optional(v.id("programs")),
+    enrollmentStatus: v.optional(
+      v.union(v.literal("enrolled"), v.literal("not_enrolled")),
+    ),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
@@ -60,22 +63,27 @@ export const getEnrollmentRoster = query({
     const programNames = new Map(
       programs.filter(Boolean).map((program) => [program!._id, program!.name]),
     );
-    return {
-      ...page,
-      page: page.page.map((student, index) => ({
-        id: student._id,
-        name:
-          [student.firstName, student.otherName, student.surname]
-            .filter(Boolean)
-            .join(" ") || student.registrationNumber,
-        registrationNumber: student.registrationNumber,
-        accessNumber: student.accessNumber ?? "—",
-        yearOfStudy: student.yearOfStudy,
-        programName:
-          programNames.get(student.programId) ?? "Program unavailable",
-        registration: registrations[index],
-      })),
-    };
+    const rosterRows = page.page.map((student, index) => ({
+      id: student._id,
+      name:
+        [student.firstName, student.otherName, student.surname]
+          .filter(Boolean)
+          .join(" ") || student.registrationNumber,
+      registrationNumber: student.registrationNumber,
+      accessNumber: student.accessNumber ?? "—",
+      yearOfStudy: student.yearOfStudy,
+      programName:
+        programNames.get(student.programId) ?? "Program unavailable",
+      registration: registrations[index],
+    }));
+    const filteredRows = args.enrollmentStatus
+      ? rosterRows.filter((student) =>
+          args.enrollmentStatus === "enrolled"
+            ? student.registration?.status === "registered"
+            : student.registration?.status !== "registered",
+        )
+      : rosterRows;
+    return { ...page, page: filteredRows };
   },
 });
 

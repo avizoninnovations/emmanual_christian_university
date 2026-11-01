@@ -39,6 +39,7 @@ type RosterRow = {
   yearOfStudy: number;
   registration: Doc<"studentSemesterRegistrations"> | null | undefined;
 };
+type EnrollmentStatusFilter = "all" | "enrolled" | "not_enrolled";
 
 export function SemesterEnrollmentPanel() {
   const periods = useQuery(api.admissionsEnrollment.getEnrollmentPeriods, {});
@@ -46,12 +47,20 @@ export function SemesterEnrollmentPanel() {
   const enroll = useMutation(api.admissionsEnrollment.enrollStudentsForPeriod);
   const [periodId, setPeriodId] = useState<Id<"academicPeriods"> | null>(null);
   const [programId, setProgramId] = useState<Id<"programs"> | null>(null);
+  const [enrollmentStatus, setEnrollmentStatus] =
+    useState<EnrollmentStatusFilter>("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<Id<"students">>>(new Set());
   const [busy, setBusy] = useState(false);
   const roster = usePaginatedQuery(
     api.admissionsEnrollment.getEnrollmentRoster,
-    periodId ? { periodId, programId: programId ?? undefined } : "skip",
+    periodId
+      ? {
+          periodId,
+          programId: programId ?? undefined,
+          ...(enrollmentStatus === "all" ? {} : { enrollmentStatus }),
+        }
+      : "skip",
     { initialNumItems: 30 },
   );
   const periodOptions = useMemo(
@@ -135,7 +144,7 @@ export function SemesterEnrollmentPanel() {
     <div className="space-y-4">
       <Card className="rounded-sm border-border/70 shadow-none">
         <CardContent className="space-y-4 p-4 md:p-5">
-          <div className="grid items-end gap-3 md:grid-cols-2 xl:grid-cols-[minmax(190px,1fr)_minmax(190px,1fr)_minmax(220px,1fr)_auto]">
+          <div className="grid items-end gap-3 md:grid-cols-2 xl:grid-cols-[minmax(190px,1fr)_minmax(190px,1fr)_minmax(170px,.8fr)_minmax(220px,1fr)_auto]">
             <div className="min-w-0 space-y-2">
               <label
                 htmlFor="admissions-period"
@@ -189,6 +198,27 @@ export function SemesterEnrollmentPanel() {
                   ]}
                 />
               )}
+            </div>
+            <div className="min-w-0 space-y-2">
+              <label htmlFor="admissions-enrollment-status" className="text-sm font-medium">
+                Student enrollment
+              </label>
+              <Select
+                value={enrollmentStatus}
+                onValueChange={(value) => {
+                  setEnrollmentStatus(value as EnrollmentStatusFilter);
+                  setSelected(new Set());
+                }}
+              >
+                <SelectTrigger id="admissions-enrollment-status" className="w-full rounded-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All students</SelectItem>
+                  <SelectItem value="enrolled">Enrolled</SelectItem>
+                  <SelectItem value="not_enrolled">Not enrolled</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="relative min-w-0 space-y-2">
               <label htmlFor="admissions-student-search" className="text-sm font-medium">Search</label>
@@ -353,7 +383,9 @@ export function SemesterEnrollmentPanel() {
                   >
                     {search
                       ? "No students match your search on this page."
-                      : "No active students found for this period."}
+                      : roster.status === "CanLoadMore"
+                        ? "No matching students in this batch. Load more to continue."
+                        : "No active students found for this period."}
                   </TableCell>
                 </TableRow>
               )}

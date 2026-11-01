@@ -12,6 +12,8 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@workspace/ui/components/alert-dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
+import { SearchableSelect } from "@workspace/ui/components/searchable-select";
 import {
   Tabs,
   TabsContent,
@@ -19,10 +21,6 @@ import {
   TabsTrigger,
 } from "@workspace/ui/components/tabs";
 import { ApplicantDetailsSheet } from "./applicant-details-sheet";
-import {
-  ApplicationsListFilters,
-  type ApplicantEnrollmentFilter,
-} from "./applications-list-filters";
 
 const filters = [
   { value: "all", label: "All applications" },
@@ -40,8 +38,6 @@ export function ApplicationsPipeline() {
   const [periodId, setPeriodId] = useState<Id<"academicPeriods"> | null>(null);
   const [periodInitialized, setPeriodInitialized] = useState(false);
   const [programId, setProgramId] = useState<Id<"programs"> | null>(null);
-  const [enrollmentStatus, setEnrollmentStatus] =
-    useState<ApplicantEnrollmentFilter>("all");
   const [search, setSearch] = useState("");
   const [selectedApplicantId, setSelectedApplicantId] = useState<ApplicantId | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<ApplicantId>>(new Set());
@@ -55,7 +51,6 @@ export function ApplicationsPipeline() {
       ? {
           ...(periodId ? { periodId } : {}),
           ...(programId ? { programId } : {}),
-          ...(enrollmentStatus === "all" ? {} : { enrollmentStatus }),
         }
       : "skip",
   );
@@ -72,7 +67,6 @@ export function ApplicationsPipeline() {
       ...(status === "all" ? {} : { status }),
       ...(periodId ? { periodId } : {}),
       ...(programId ? { programId } : {}),
-      ...(enrollmentStatus === "all" ? {} : { enrollmentStatus }),
     } : "skip",
     { initialNumItems: 25 },
   );
@@ -176,25 +170,37 @@ export function ApplicationsPipeline() {
 
   return (
     <div className="space-y-4">
-      <ApplicationsListFilters
-        periods={periods}
-        programs={programs}
-        periodId={periodId}
-        programId={programId}
-        enrollmentStatus={enrollmentStatus}
-        onPeriodChange={(value) => {
-          setPeriodId(value === "all" ? null : value as Id<"academicPeriods">);
-          clearSelection();
-        }}
-        onProgramChange={(value) => {
-          setProgramId(value === "all" ? null : value as Id<"programs">);
-          clearSelection();
-        }}
-        onEnrollmentStatusChange={(value) => {
-          setEnrollmentStatus(value);
-          clearSelection();
-        }}
-      />
+      <div className="grid items-end gap-3 rounded-sm bg-muted/20 p-3 md:grid-cols-2 xl:grid-cols-[minmax(220px,1fr)_minmax(240px,1fr)]">
+        <div className="min-w-0 space-y-2">
+          <label htmlFor="applications-period" className="text-sm font-medium">Academic Period</label>
+          <Select value={periodId ?? "all"} onValueChange={(value) => { setPeriodId(value === "all" ? null : value as Id<"academicPeriods">); clearSelection(); }}>
+            <SelectTrigger id="applications-period" className="rounded-sm bg-background"><SelectValue placeholder="All semesters" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All semesters</SelectItem>
+              {(periods ?? []).map((period) => <SelectItem key={period._id} value={period._id}>{period.name} · Semester {period.term}, {period.year}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <label htmlFor="applications-program" className="text-sm font-medium">Program</label>
+          <SearchableSelect
+            id="applications-program"
+            aria-label="Program"
+            value={programId ?? "all"}
+            onValueChange={(value) => { setProgramId(value === "all" ? null : value as Id<"programs">); clearSelection(); }}
+            placeholder="All programs"
+            searchPlaceholder="Search programs…"
+            options={[
+              { value: "all", label: "All programs" },
+              ...(programs ?? []).map((program) => ({
+                value: program._id,
+                label: program.name,
+                keywords: program.code,
+              })),
+            ]}
+          />
+        </div>
+      </div>
       <Tabs
         value={status}
         onValueChange={(value) => { setStatus(value as StatusFilter); clearSelection(); }}

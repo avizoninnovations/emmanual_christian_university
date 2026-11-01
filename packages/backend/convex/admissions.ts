@@ -15,6 +15,10 @@ const applicantStatus = v.union(
   v.literal("rejected"),
   v.literal("enrolled"),
 );
+const applicantEnrollmentStatus = v.union(
+  v.literal("enrolled"),
+  v.literal("not_enrolled"),
+);
 const applicantStatuses = ["new", "reviewing", "accepted", "rejected", "enrolled"] as const;
 const countLimit = 1000;
 
@@ -28,6 +32,7 @@ export const getApplicants = query({
     status: v.optional(applicantStatus),
     periodId: v.optional(v.id("academicPeriods")),
     programId: v.optional(v.id("programs")),
+    enrollmentStatus: v.optional(applicantEnrollmentStatus),
   },
   handler: async (ctx, args) => {
     await assertRole(ctx, admissionsRoles);
@@ -41,6 +46,8 @@ export const getApplicants = query({
           q.eq("term", period.term).eq("year", period.year).eq("programId", args.programId!),
         );
         if (args.status) source = source.filter((q) => q.eq(q.field("status"), args.status!));
+        if (args.enrollmentStatus === "enrolled") source = source.filter((q) => q.eq(q.field("status"), "enrolled"));
+        if (args.enrollmentStatus === "not_enrolled") source = source.filter((q) => q.neq(q.field("status"), "enrolled"));
         return source.order("desc").paginate(args.paginationOpts);
       }
       if (period) {
@@ -49,17 +56,27 @@ export const getApplicants = query({
         );
         if (args.programId) source = source.filter((q) => q.eq(q.field("programId"), args.programId!));
         if (args.status) source = source.filter((q) => q.eq(q.field("status"), args.status!));
+        if (args.enrollmentStatus === "enrolled") source = source.filter((q) => q.eq(q.field("status"), "enrolled"));
+        if (args.enrollmentStatus === "not_enrolled") source = source.filter((q) => q.neq(q.field("status"), "enrolled"));
         return source.order("desc").paginate(args.paginationOpts);
       }
       if (args.programId) {
         let source = ctx.db.query("applicants").withIndex("by_program", (q) => q.eq("programId", args.programId!));
         if (args.status) source = source.filter((q) => q.eq(q.field("status"), args.status!));
+        if (args.enrollmentStatus === "enrolled") source = source.filter((q) => q.eq(q.field("status"), "enrolled"));
+        if (args.enrollmentStatus === "not_enrolled") source = source.filter((q) => q.neq(q.field("status"), "enrolled"));
         return source.order("desc").paginate(args.paginationOpts);
       }
       if (args.status) {
-        return ctx.db.query("applicants").withIndex("by_status", (q) => q.eq("status", args.status!)).order("desc").paginate(args.paginationOpts);
+        let source = ctx.db.query("applicants").withIndex("by_status", (q) => q.eq("status", args.status!));
+        if (args.enrollmentStatus === "enrolled") source = source.filter((q) => q.eq(q.field("status"), "enrolled"));
+        if (args.enrollmentStatus === "not_enrolled") source = source.filter((q) => q.neq(q.field("status"), "enrolled"));
+        return source.order("desc").paginate(args.paginationOpts);
       }
-      return ctx.db.query("applicants").order("desc").paginate(args.paginationOpts);
+      let source = ctx.db.query("applicants");
+      if (args.enrollmentStatus === "enrolled") source = source.filter((q) => q.eq(q.field("status"), "enrolled"));
+      if (args.enrollmentStatus === "not_enrolled") source = source.filter((q) => q.neq(q.field("status"), "enrolled"));
+      return source.order("desc").paginate(args.paginationOpts);
     })();
     const programs = await Promise.all(
       [...new Set(page.page.map((applicant) => applicant.programId))].map(
@@ -84,6 +101,7 @@ export const getApplicationStatusCounts = query({
   args: {
     periodId: v.optional(v.id("academicPeriods")),
     programId: v.optional(v.id("programs")),
+    enrollmentStatus: v.optional(applicantEnrollmentStatus),
   },
   handler: async (ctx, args) => {
     await assertRole(ctx, admissionsRoles);
@@ -92,6 +110,12 @@ export const getApplicationStatusCounts = query({
       throw new ConvexError("The selected academic period could not be found.");
 
     const countStatus = async (status: (typeof applicantStatuses)[number]) => {
+      if (
+        (args.enrollmentStatus === "enrolled" && status !== "enrolled") ||
+        (args.enrollmentStatus === "not_enrolled" && status === "enrolled")
+      ) {
+        return boundedCount(0);
+      }
       let applicants: Doc<"applicants">[];
       if (period && args.programId) {
         applicants = await ctx.db

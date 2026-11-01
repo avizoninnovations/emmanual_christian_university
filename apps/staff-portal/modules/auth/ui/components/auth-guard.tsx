@@ -61,7 +61,7 @@ function isMissingStaffProfileError(error: Error) {
 const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
   const redirectingStudent = useRef(false);
-  const isStudentOnly = user?.roles?.length === 1 && user.roles[0] === "student";
+  const isStudentOnly = Boolean(user?.roles?.length && user.roles.every((role: string) => role === "student"));
 
   useEffect(() => {
     if (user?.banned || user?.profileStatus === "inactive") {

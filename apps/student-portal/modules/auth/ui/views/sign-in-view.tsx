@@ -52,7 +52,7 @@ export const SignInView = () => {
       if (error) {
         toast.error(getUserFacingErrorMessage(error, "Sign-in failed. Check your university account details."));
       } else {
-        toast.success("Welcome to the student portal.");
+        toast.success("Sign-in successful.");
         router.push("/");
       }
     } catch {

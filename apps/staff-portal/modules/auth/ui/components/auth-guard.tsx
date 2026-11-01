@@ -5,11 +5,17 @@ import { AuthLayout } from "../layouts/auth-layout";
 import { SignInView } from "../views/sign-in-view";
 import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { AuthLoadingSkeleton } from "./auth-loading-skeleton";
+
+const STUDENT_PORTAL_URL = process.env.NODE_ENV === "development"
+  ? "http://localhost:3005/"
+  : "https://student-ecu.vercel.app/";
 
 const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
+  const redirectingStudent = useRef(false);
+  const isStudentOnly = user?.roles?.length === 1 && user.roles[0] === "student";
 
   useEffect(() => {
     if (user?.banned || user?.profileStatus === "inactive") {
@@ -21,6 +27,14 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!isStudentOnly || redirectingStudent.current) return;
+    redirectingStudent.current = true;
+    void authClient.signOut().catch(() => undefined).finally(() => {
+      window.location.replace(STUDENT_PORTAL_URL);
+    });
+  }, [isStudentOnly]);
+
   // Intercept render if they are strictly banned so they don't see brief protected UI flashes
   if (user?.banned || user?.profileStatus === "inactive") {
     return (
@@ -30,6 +44,22 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
           <p className="text-foreground font-semibold text-sm animate-pulse">Session invalidated. Logging out...</p>
         </div>
       </div>
+    );
+  }
+
+  if (user === undefined) return <AuthLoadingSkeleton />;
+
+  if (isStudentOnly) {
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-background px-5 text-center">
+        <div className="max-w-md space-y-3">
+          <h1 className="text-xl font-semibold">This is a student account</h1>
+          <p className="text-sm text-muted-foreground">Taking you to the ECU Student Portal. You may need to sign in there.</p>
+          <a className="inline-flex font-medium text-primary underline underline-offset-4" href={STUDENT_PORTAL_URL}>
+            Continue to Student Portal
+          </a>
+        </div>
+      </main>
     );
   }
 

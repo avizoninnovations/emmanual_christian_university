@@ -53,7 +53,7 @@ export const SignInView = () => {
         toast.error(getUserFacingErrorMessage(error, "Sign-in failed. Check your staff account details."));
         return;
       }
-      toast.success("Welcome to the staff portal.");
+      toast.success("Sign-in successful.");
       router.push("/");
     } catch (error) {
       toast.error(getUserFacingErrorMessage(error, "Unable to sign in right now. Please try again."));

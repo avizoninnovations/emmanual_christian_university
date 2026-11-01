@@ -46,7 +46,11 @@ export const getCurrentUser = query({
       image: authUser.image,
       createdAt: authUser.createdAt,
       // Merge in the staff profile data
-      roles: staffProfile?.roles ?? ["staff"],
+      roles: staffProfile?.roles ?? (
+        authUser.role === "student"
+          ? ["student"]
+          : authUser.role === "admin" ? ["admin", "staff"] : ["staff"]
+      ),
       title: staffProfile?.title,
       phone: staffProfile?.phone,
       departmentId: staffProfile?.departmentId,

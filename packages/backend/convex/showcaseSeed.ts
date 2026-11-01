@@ -24,7 +24,7 @@ type AdmissionsSeedResult = {
   applicantRecordsCreated: number;
   applicantRecordsAlreadyPresent: number;
   staffProfileCreated: boolean;
-  staffAccount: { email: string; name: string; staffId: string; initialPassword: string | null };
+  staffAccount: { email: string; name: string; staffId: string; password: string };
   applicantLogins: Array<{ email: string; password: string | null }>;
   note: string;
 };

@@ -11,6 +11,7 @@ import { admissionsTestApplicants } from "./lib/admissionsTestFixtures.js";
 const accountEmail = "admissions.officer@example.test";
 const accountName = "Daniel Wani";
 const staffId = "ECU-TEST-ADM-001";
+const TEST_ACCOUNT_PASSWORD = "UniSystem2026!";
 
 type SeedCounts = {
   applicantRecordsCreated: number;
@@ -28,9 +29,8 @@ export const seedAdmissionsTestData = internalAction({
     });
 
     let userId = existing?._id;
-    let initialPassword: string | null = null;
+    let passwordWasReset = false;
     if (!userId) {
-      initialPassword = createInitialPassword();
       const createUser = (
         auth.api as unknown as {
           createUser: (input: {
@@ -47,13 +47,23 @@ export const seedAdmissionsTestData = internalAction({
       const created = await createUser({
         body: {
           email: accountEmail,
-          password: initialPassword,
+          password: TEST_ACCOUNT_PASSWORD,
           name: accountName,
           role: "user",
           data: { emailVerified: true },
         },
       });
       userId = created.user?.id;
+    } else {
+      const authContext = (await auth.$context) as unknown as {
+        password: { hash: (password: string) => Promise<string> };
+        internalAdapter: {
+          updatePassword: (targetUserId: string, hashedPassword: string) => Promise<void>;
+        };
+      };
+      const hashedPassword = await authContext.password.hash(TEST_ACCOUNT_PASSWORD);
+      await authContext.internalAdapter.updatePassword(userId, hashedPassword);
+      passwordWasReset = true;
     }
     if (!userId)
       throw new ConvexError(
@@ -100,12 +110,12 @@ export const seedAdmissionsTestData = internalAction({
         email: accountEmail,
         name: accountName,
         staffId,
-        initialPassword,
+        password: TEST_ACCOUNT_PASSWORD,
       },
       applicantLogins,
-      note: initialPassword
-        ? "Save the initial password now; it is only returned during account creation."
-        : "This account already existed, so its existing password was left unchanged.",
+      note: passwordWasReset
+        ? "The existing Admissions Officer test account password was reset to the shared test password."
+        : "The Admissions Officer test account was created with the shared test password.",
     };
   },
 });
@@ -278,14 +288,6 @@ export const insertAdmissionsFixtures = internalMutation({
     };
   },
 });
-
-const TEST_ACCOUNT_PASSWORD = "UniSystem2026!";
-
-function createInitialPassword() {
-  const bytes = new Uint8Array(24);
-  crypto.getRandomValues(bytes);
-  return `Ecu!${Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")}`;
-}
 
 function fixtureTimes(now: number, index: number, stage: string) {
   const day = 24 * 60 * 60 * 1000;

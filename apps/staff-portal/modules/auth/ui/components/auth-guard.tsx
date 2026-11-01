@@ -5,12 +5,58 @@ import { AuthLayout } from "../layouts/auth-layout";
 import { SignInView } from "../views/sign-in-view";
 import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { useEffect, useRef } from "react";
+import { Component, useEffect, useRef, type ErrorInfo, type ReactNode } from "react";
 import { AuthLoadingSkeleton } from "./auth-loading-skeleton";
 
 const STUDENT_PORTAL_URL = process.env.NODE_ENV === "development"
   ? "http://localhost:3005/"
   : "https://student-ecu.vercel.app/";
+
+type PortalErrorState = { error: Error | null };
+
+class PortalQueryErrorBoundary extends Component<{ children: ReactNode }, PortalErrorState> {
+  state: PortalErrorState = { error: null };
+
+  static getDerivedStateFromError(error: Error): PortalErrorState {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, _errorInfo: ErrorInfo) {
+    if (!isMissingStaffProfileError(error)) return;
+    void authClient.signOut().catch(() => undefined).finally(() => {
+      window.location.replace(STUDENT_PORTAL_URL);
+    });
+  }
+
+  render() {
+    const { error } = this.state;
+    if (!error) return this.props.children;
+
+    const isStudentError = isMissingStaffProfileError(error);
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-background px-5 text-center">
+        <div className="max-w-md space-y-3">
+          <h1 className="text-xl font-semibold">{isStudentError ? "This is a student account" : "The staff portal could not load"}</h1>
+          <p className="text-sm text-muted-foreground">
+            {isStudentError
+              ? "Taking you to the ECU Student Portal. You may need to sign in there."
+              : "Please return to sign-in and try again."}
+          </p>
+          <a
+            className="inline-flex font-medium text-primary underline underline-offset-4"
+            href={isStudentError ? STUDENT_PORTAL_URL : "/sign-in"}
+          >
+            {isStudentError ? "Continue to Student Portal" : "Go to staff sign-in"}
+          </a>
+        </div>
+      </main>
+    );
+  }
+}
+
+function isMissingStaffProfileError(error: Error) {
+  return error.message.toLowerCase().includes("staff profile not found");
+}
 
 const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
@@ -63,7 +109,7 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  return <>{children}</>;
+  return <PortalQueryErrorBoundary>{children}</PortalQueryErrorBoundary>;
 };
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {

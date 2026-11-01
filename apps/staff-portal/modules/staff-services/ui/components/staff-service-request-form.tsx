@@ -47,7 +47,13 @@ const requestLabels: Record<StaffRequestType, string> = {
   complaint: "Complaint",
 };
 
-export function StaffServiceRequestForm({ type }: { type: StaffRequestType }) {
+export function StaffServiceRequestForm({
+  type,
+  onSubmitted,
+}: {
+  type: StaffRequestType;
+  onSubmitted?: () => void;
+}) {
   const createDraft = useMutation(api.staffServices.createRequestDraft);
   const generateUploadUrl = useMutation(api.staffServices.generateServiceUploadUrl);
   const attachFile = useMutation(api.staffServices.attachRequestFile);
@@ -73,6 +79,7 @@ export function StaffServiceRequestForm({ type }: { type: StaffRequestType }) {
       form.reset();
       setFiles([]);
       toast.success(`${requestLabels[type]} submitted.`);
+      onSubmitted?.();
     } catch (error) {
       toast.error(getUserFacingErrorMessage(error, `Could not submit your ${requestLabels[type].toLowerCase()}.`));
     }

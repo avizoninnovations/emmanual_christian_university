@@ -4,17 +4,29 @@ import { useState } from "react";
 import { usePaginatedQuery } from "convex/react";
 import type { Id } from "@workspace/backend/_generated/dataModel";
 import { api } from "@workspace/backend/_generated/api";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, Plus } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 import { Button } from "@workspace/ui/components/button";
+import {
+  Sheet,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  WideSheetContent,
+} from "@workspace/ui/components/sheet";
 import { StaffServiceRequestForm, type StaffRequestType } from "../components/staff-service-request-form";
 import { StaffServiceRequestList } from "../components/staff-service-request-list";
 import { StaffServiceRequestSheet } from "../components/staff-service-request-sheet";
 
 const titles: Record<StaffRequestType, string> = { leave: "Leave Application", exit: "Exit Application", complaint: "My Complaints" };
+const actionLabels: Record<StaffRequestType, string> = {
+  leave: "Apply for leave",
+  exit: "Submit exit application",
+  complaint: "New complaint",
+};
 
 export function StaffServiceRequestView({ type }: { type: StaffRequestType }) {
   const { roles } = useCurrentUser();
@@ -23,6 +35,7 @@ export function StaffServiceRequestView({ type }: { type: StaffRequestType }) {
   const supervisor = usePaginatedQuery(api.staffServices.getSupervisorQueue, {}, { initialNumItems: 20 });
   const hr = usePaginatedQuery(api.staffServices.getHrQueue, isHr ? {} : "skip", { initialNumItems: 20 });
   const [tab, setTab] = useState("new");
+  const [formOpen, setFormOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState<Id<"staffServiceRequests"> | null>(null);
   const [mode, setMode] = useState<"own" | "supervisor" | "hr">("own");
   const requestRows = (rows: typeof own.results, loading: boolean, rowMode: typeof mode) => <StaffServiceRequestList rows={rows.filter(row => row.type === type)} isLoading={loading} emptyLabel="No requests to display." onDetails={row => { setSelectedRequestId(row._id); setMode(rowMode); }} />;
@@ -30,8 +43,16 @@ export function StaffServiceRequestView({ type }: { type: StaffRequestType }) {
   const hrRows = (hr.results ?? []).filter(row => row.type === type);
 
   return <main className="min-h-full min-w-0 w-full space-y-5 p-4 md:p-6">
-    <div className="flex items-center gap-3"><span className="flex size-9 items-center justify-center rounded-sm bg-primary/10 text-primary"><ClipboardList className="size-4" /></span><h1 className="text-xl font-semibold">{titles[type]}</h1></div>
-    <StaffServiceRequestForm type={type} />
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center gap-3"><span className="flex size-9 items-center justify-center rounded-sm bg-primary/10 text-primary"><ClipboardList className="size-4" /></span><h1 className="text-xl font-semibold">{titles[type]}</h1></div>
+      {type === "leave" && (
+        <Button onClick={() => setFormOpen(true)}>
+          <Plus className="mr-2 size-4" />
+          {actionLabels[type]}
+        </Button>
+      )}
+    </div>
+    {type !== "leave" && <StaffServiceRequestForm type={type} />}
     <Card className="rounded-sm border-border/70 shadow-none"><CardContent className="p-4 md:p-5">
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-transparent p-0">
@@ -47,6 +68,22 @@ export function StaffServiceRequestView({ type }: { type: StaffRequestType }) {
         {isHr && <TabsContent value="hr" className="mt-4">{requestRows(hr.results ?? [], hr.status === "LoadingFirstPage", "hr")}</TabsContent>}
       </Tabs>
     </CardContent></Card>
+    {type === "leave" && (
+      <Sheet open={formOpen} onOpenChange={setFormOpen}>
+        <WideSheetContent className="overflow-y-auto rounded-l-sm">
+          <SheetHeader className="text-left">
+            <SheetTitle>{actionLabels[type]}</SheetTitle>
+            <SheetDescription>
+              Complete the details below and submit your request for review.
+            </SheetDescription>
+          </SheetHeader>
+          <StaffServiceRequestForm
+            type={type}
+            onSubmitted={() => setFormOpen(false)}
+          />
+        </WideSheetContent>
+      </Sheet>
+    )}
     <StaffServiceRequestSheet requestId={selectedRequestId} mode={mode} open={!!selectedRequestId} onOpenChange={open => !open && setSelectedRequestId(null)} />
   </main>;
 }

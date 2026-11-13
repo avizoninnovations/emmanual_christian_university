@@ -3,7 +3,7 @@ import { getAuthenticationErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Eye, EyeOff, LockKeyhole, Mail, LoaderCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, EyeOff, IdCard, LockKeyhole, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useConvex } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
@@ -13,25 +13,27 @@ import { Input } from "@workspace/ui/components/input";
 
 export const SignInView = () => {
   const convex = useConvex();
-  const [identifier, setIdentifier] = useState("");
+  const [accessNumber, setAccessNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState<"identifier" | "password">("identifier");
+  const [step, setStep] = useState<"accessNumber" | "password">("accessNumber");
   const [isLoading, setIsLoading] = useState(false);
 
   const continueToPassword = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!identifier.trim()) {
-      toast.error("Enter your university email or access number.");
+    const normalized = accessNumber.trim().toUpperCase();
+    if (!/^ECU\d{4,8}$/.test(normalized)) {
+      toast.error("Enter your ECU access number, for example ECU0001.");
       return;
     }
+    setAccessNumber(normalized);
     setStep("password");
   };
 
   const handleSignIn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!identifier.trim()) {
-      toast.error("Enter a valid university email or registration number.");
+    if (!/^ECU\d{4,8}$/.test(accessNumber.trim().toUpperCase())) {
+      toast.error("Enter your ECU access number, for example ECU0001.");
       return;
     }
     if (!password) {
@@ -41,16 +43,16 @@ export const SignInView = () => {
 
     setIsLoading(true);
     try {
-      const accountEmail = await convex.query(api.student_identity.resolveLoginIdentifier, { identifier });
+      const accountEmail = await convex.query(api.student_identity.resolveAccessNumber, { accessNumber });
       const { error } = await authClient.signIn.email({
         email: accountEmail,
         password,
       });
 
       if (error) {
-        toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again."));
+        toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again.", "Access number or password is incorrect."));
       } else {
-        setStep("identifier");
+        setStep("accessNumber");
         setPassword("");
       }
     } catch {
@@ -89,18 +91,18 @@ export const SignInView = () => {
         </div>
 
         <div className="border-y border-border bg-muted/30 px-3 py-6 sm:px-4 sm:py-7">
-          {step === "identifier" ? (
+          {step === "accessNumber" ? (
             <form onSubmit={continueToPassword} className="flex flex-col gap-3 sm:flex-row">
               <label className="relative flex min-h-[50px] flex-1 items-center rounded-md border border-input bg-background text-foreground focus-within:ring-2 focus-within:ring-primary">
-                <Mail className="ml-4 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-                <span className="sr-only">University email or access number</span>
+                <IdCard className="ml-4 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <span className="sr-only">Student access number</span>
                 <Input
                   autoComplete="username"
                   autoFocus
                   className="h-full min-w-0 flex-1 border-0 bg-transparent px-4 shadow-none outline-none ring-0 placeholder:text-muted-foreground focus-visible:ring-0"
-                  onChange={(event) => setIdentifier(event.target.value)}
-                  placeholder="Email, registration number, or access number"
-                  value={identifier}
+                  onChange={(event) => setAccessNumber(event.target.value)}
+                  placeholder="ECU access number (e.g. ECU0001)"
+                  value={accessNumber}
                 />
               </label>
               <Button className="h-[50px] min-w-[132px] gap-3 px-6 text-sm font-bold" type="submit">
@@ -110,10 +112,10 @@ export const SignInView = () => {
           ) : (
             <form onSubmit={handleSignIn} className="space-y-3">
               <div className="flex items-center gap-3 rounded-md border border-border bg-card px-4 py-3 text-foreground">
-                <Button type="button" onClick={() => setStep("identifier")} className="size-8 p-0 text-muted-foreground" variant="ghost" aria-label="Change username or access number">
+                <Button type="button" onClick={() => setStep("accessNumber")} className="size-8 p-0 text-muted-foreground" variant="ghost" aria-label="Change access number">
                   <ArrowLeft className="size-4" />
                 </Button>
-                <span className="min-w-0 flex-1 truncate text-sm">{identifier}</span>
+                <span className="min-w-0 flex-1 truncate text-sm">{accessNumber}</span>
               </div>
               <label className="flex min-h-[50px] items-center rounded-md border border-input bg-background text-foreground focus-within:ring-2 focus-within:ring-primary">
                 <LockKeyhole className="ml-4 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -139,7 +141,7 @@ export const SignInView = () => {
                 </Button>
               </label>
               <p className="px-1 text-xs text-muted-foreground">
-                Enter your account password here. Your student or access number goes in the previous field.
+                Enter your account password here. Your access number goes in the previous field.
               </p>
               <Button className="h-[50px] w-full gap-3 px-6 text-sm font-bold" disabled={isLoading} type="submit">
                 {isLoading ? <LoaderCircle className="size-5 animate-spin" /> : <>SIGN IN <ArrowRight className="size-[18px]" /></>}

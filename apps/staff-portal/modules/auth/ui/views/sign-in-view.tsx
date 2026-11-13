@@ -48,11 +48,11 @@ export const SignInView = () => {
     try {
       const { error } = await authClient.signIn.email({ email: values.email, password: values.password });
       if (error) {
-        toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again."));
+        toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again.", "Staff email or password is incorrect."));
         return;
       }
     } catch (error) {
-      toast.error(getAuthenticationErrorMessage(error, "Unable to sign in right now. Please try again."));
+      toast.error(getAuthenticationErrorMessage(error, "Unable to sign in right now. Please try again.", "Staff email or password is incorrect."));
     }
   };
 

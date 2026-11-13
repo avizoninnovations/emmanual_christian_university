@@ -74,7 +74,11 @@ export function getUserFacingErrorMessage(error: unknown, fallback: string): str
 }
 
 /** Use a non-enumerating message for email/password authentication failures. */
-export function getAuthenticationErrorMessage(error: unknown, fallback: string): string {
+export function getAuthenticationErrorMessage(
+  error: unknown,
+  fallback: string,
+  invalidCredentialsMessage = "Email, username, or password is incorrect.",
+): string {
   const message = readMessage(error).toLowerCase();
   const code = readErrorCode(error);
   const invalidCredentials =
@@ -85,6 +89,6 @@ export function getAuthenticationErrorMessage(error: unknown, fallback: string):
     /user (?:was )?not found/i.test(message);
 
   return invalidCredentials
-    ? "Email, username, or password is incorrect."
+    ? invalidCredentialsMessage
     : getUserFacingErrorMessage(error, fallback);
 }

@@ -4,7 +4,6 @@ import { Authenticated, AuthLoading, Unauthenticated, useQuery } from "convex/re
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { api } from "@workspace/backend/_generated/api";
-import { authClient } from "@/lib/auth-client";
 
 const STAFF_PORTAL_URL = process.env.NODE_ENV === "development"
   ? "http://localhost:3004/"
@@ -30,16 +29,21 @@ function SignedInRedirect() {
 
   useEffect(() => {
     if (user === undefined || user === null) return;
+    if (isStaffAccount) return;
     if (redirecting.current) return;
     redirecting.current = true;
-    if (isStaffAccount) {
-      void authClient.signOut().catch(() => undefined).finally(() => {
-        window.location.replace(STAFF_PORTAL_URL);
-      });
-      return;
-    }
     router.replace("/");
   }, [isStaffAccount, router, user]);
+
+  if (isStaffAccount) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 px-5 text-center">
+        <h1 className="text-xl font-semibold">This is a staff account</h1>
+        <p className="text-sm text-muted-foreground">Please use the ECU Staff Portal to sign in with this account.</p>
+        <a className="font-medium text-primary underline underline-offset-4" href={STAFF_PORTAL_URL}>Go to Staff Portal</a>
+      </div>
+    );
+  }
 
   return <SessionCheck />;
 }

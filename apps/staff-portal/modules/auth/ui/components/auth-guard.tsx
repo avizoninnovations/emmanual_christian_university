@@ -5,7 +5,7 @@ import { AuthLayout } from "../layouts/auth-layout";
 import { SignInView } from "../views/sign-in-view";
 import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { Component, useEffect, useRef, type ErrorInfo, type ReactNode } from "react";
+import { Component, useEffect, type ReactNode } from "react";
 import { AuthLoadingSkeleton } from "./auth-loading-skeleton";
 
 const STUDENT_PORTAL_URL = process.env.NODE_ENV === "development"
@@ -21,13 +21,6 @@ class PortalQueryErrorBoundary extends Component<{ children: ReactNode }, Portal
     return { error };
   }
 
-  componentDidCatch(error: Error, _errorInfo: ErrorInfo) {
-    if (!isMissingStaffProfileError(error)) return;
-    void authClient.signOut().catch(() => undefined).finally(() => {
-      window.location.replace(STUDENT_PORTAL_URL);
-    });
-  }
-
   render() {
     const { error } = this.state;
     if (!error) return this.props.children;
@@ -39,7 +32,7 @@ class PortalQueryErrorBoundary extends Component<{ children: ReactNode }, Portal
           <h1 className="text-xl font-semibold">{isStudentError ? "This is a student account" : "The staff portal could not load"}</h1>
           <p className="text-sm text-muted-foreground">
             {isStudentError
-              ? "Taking you to the ECU Student Portal. You may need to sign in there."
+              ? "Please use the ECU Student Portal to sign in with this account."
               : "Please return to sign-in and try again."}
           </p>
           <a
@@ -60,7 +53,6 @@ function isMissingStaffProfileError(error: Error) {
 
 const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
-  const redirectingStudent = useRef(false);
   const isStudentOnly = Boolean(user?.roles?.length && user.roles.every((role: string) => role === "student"));
 
   useEffect(() => {
@@ -72,14 +64,6 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [user]);
-
-  useEffect(() => {
-    if (!isStudentOnly || redirectingStudent.current) return;
-    redirectingStudent.current = true;
-    void authClient.signOut().catch(() => undefined).finally(() => {
-      window.location.replace(STUDENT_PORTAL_URL);
-    });
-  }, [isStudentOnly]);
 
   // Intercept render if they are strictly banned so they don't see brief protected UI flashes
   if (user?.banned || user?.profileStatus === "inactive") {
@@ -100,7 +84,7 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
       <main className="flex min-h-dvh items-center justify-center bg-background px-5 text-center">
         <div className="max-w-md space-y-3">
           <h1 className="text-xl font-semibold">This is a student account</h1>
-          <p className="text-sm text-muted-foreground">Taking you to the ECU Student Portal. You may need to sign in there.</p>
+          <p className="text-sm text-muted-foreground">Please use the ECU Student Portal to sign in with this account.</p>
           <a className="inline-flex font-medium text-primary underline underline-offset-4" href={STUDENT_PORTAL_URL}>
             Continue to Student Portal
           </a>

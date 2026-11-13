@@ -34,17 +34,21 @@ export const getCurrentUser = query({
     if (!authUser) return null;
 
     // Fetch the staff profile (with roles array)
-    const staffProfile = await ctx.db
-      .query("staffProfiles")
-      .withIndex("by_userId", (q) => q.eq("userId", userId))
-      .unique();
+    const [staffProfile, studentByUser, studentByEmail] = await Promise.all([
+      ctx.db.query("staffProfiles")
+        .withIndex("by_userId", (q) => q.eq("userId", userId))
+        .unique(),
+      ctx.db.query("students")
+        .withIndex("by_userId", (q) => q.eq("userId", userId))
+        .unique(),
+      ctx.db.query("students")
+        .withIndex("by_loginEmail", (q) => q.eq("loginEmail", authUser.email))
+        .first(),
+    ]);
 
-    // Student accounts use Better Auth's standard "user" role. Resolve the
-    // ECU student role from the linked student record, not Better Auth's role.
-    const studentProfile = await ctx.db
-      .query("students")
-      .withIndex("by_userId", (q) => q.eq("userId", userId))
-      .unique();
+    // Student accounts use Better Auth's standard "user" role. Resolve their
+    // ECU role from the student record, with email as a fallback for legacy links.
+    const studentProfile = studentByUser ?? studentByEmail;
 
     const fallbackRoles = authUser.role === "admin"
       ? ["admin", "staff"]

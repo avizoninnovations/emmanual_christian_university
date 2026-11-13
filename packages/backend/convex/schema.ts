@@ -253,6 +253,7 @@ export default defineSchema({
     ...timestamps,
   })
     .index("by_userId", ["userId"])
+    .index("by_loginEmail", ["loginEmail"])
     .index("by_regNumber", ["registrationNumber"])
     .index("by_accessNumber", ["accessNumber"])
     .index("by_legacyRegistrationNumber", ["legacyRegistrationNumber"])

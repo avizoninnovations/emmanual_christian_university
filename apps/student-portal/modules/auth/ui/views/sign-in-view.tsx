@@ -99,7 +99,7 @@ export const SignInView = () => {
                   autoFocus
                   className="h-full min-w-0 flex-1 border-0 bg-transparent px-4 shadow-none outline-none ring-0 placeholder:text-muted-foreground focus-visible:ring-0"
                   onChange={(event) => setIdentifier(event.target.value)}
-                  placeholder="Username or access number"
+                  placeholder="Email, registration number, or access number"
                   value={identifier}
                 />
               </label>
@@ -138,6 +138,9 @@ export const SignInView = () => {
                   {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                 </Button>
               </label>
+              <p className="px-1 text-xs text-muted-foreground">
+                Enter your account password here. Your student or access number goes in the previous field.
+              </p>
               <Button className="h-[50px] w-full gap-3 px-6 text-sm font-bold" disabled={isLoading} type="submit">
                 {isLoading ? <LoaderCircle className="size-5 animate-spin" /> : <>SIGN IN <ArrowRight className="size-[18px]" /></>}
               </Button>

@@ -14,7 +14,7 @@ const STAFF_PORTAL_URL = process.env.NODE_ENV === "development"
 const StudentPortalRoleGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
   const redirectingStaff = useRef(false);
-  const isStaffAccount = Boolean(user?.roles?.some((role: string) => role !== "student"));
+  const isStaffAccount = Boolean(user?.roles?.length && user.roles.every((role: string) => role !== "student"));
 
   useEffect(() => {
     if (!isStaffAccount || redirectingStaff.current) return;

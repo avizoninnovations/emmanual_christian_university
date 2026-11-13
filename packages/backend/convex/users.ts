@@ -39,6 +39,22 @@ export const getCurrentUser = query({
       .withIndex("by_userId", (q) => q.eq("userId", userId))
       .unique();
 
+    // Student accounts use Better Auth's standard "user" role. Resolve the
+    // ECU student role from the linked student record, not Better Auth's role.
+    const studentProfile = await ctx.db
+      .query("students")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .unique();
+
+    const fallbackRoles = authUser.role === "admin"
+      ? ["admin", "staff"]
+      : authUser.role === "student"
+        ? ["student"]
+        : ["staff"];
+    const roles = studentProfile
+      ? [...new Set([...(staffProfile?.roles ?? []), "student"])]
+      : staffProfile?.roles ?? fallbackRoles;
+
     return {
       _id: authUser._id,
       name: authUser.name,
@@ -46,11 +62,7 @@ export const getCurrentUser = query({
       image: authUser.image,
       createdAt: authUser.createdAt,
       // Merge in the staff profile data
-      roles: staffProfile?.roles ?? (
-        authUser.role === "student"
-          ? ["student"]
-          : authUser.role === "admin" ? ["admin", "staff"] : ["staff"]
-      ),
+      roles,
       title: staffProfile?.title,
       phone: staffProfile?.phone,
       departmentId: staffProfile?.departmentId,

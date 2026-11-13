@@ -26,7 +26,7 @@ function SignedInRedirect() {
   const router = useRouter();
   const user = useQuery(api.users.getCurrentUser);
   const redirecting = useRef(false);
-  const isStaffAccount = Boolean(user?.roles?.some((role: string) => role !== "student"));
+  const isStaffAccount = Boolean(user?.roles?.length && user.roles.every((role: string) => role !== "student"));
 
   useEffect(() => {
     if (user === undefined || user === null) return;

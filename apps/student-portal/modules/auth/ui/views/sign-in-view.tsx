@@ -3,6 +3,7 @@ import { getAuthenticationErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, IdCard, LockKeyhole, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useConvex } from "convex/react";
@@ -13,6 +14,7 @@ import { Input } from "@workspace/ui/components/input";
 
 export const SignInView = () => {
   const convex = useConvex();
+  const router = useRouter();
   const [accessNumber, setAccessNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -52,8 +54,8 @@ export const SignInView = () => {
       if (error) {
         toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again.", "Access number or password is incorrect."));
       } else {
-        setStep("accessNumber");
-        setPassword("");
+        toast.success("Signed in successfully.");
+        router.replace("/");
       }
     } catch {
       toast.error("Unable to sign in right now. Please try again.");

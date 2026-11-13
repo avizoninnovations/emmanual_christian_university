@@ -55,7 +55,7 @@ export const SignInView = () => {
         toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again.", "Access number or password is incorrect."));
       } else {
         toast.success("Signed in successfully.");
-        router.replace("/");
+        router.replace("/dashboard");
       }
     } catch {
       toast.error("Unable to sign in right now. Please try again.");

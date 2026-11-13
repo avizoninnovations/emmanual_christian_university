@@ -43,7 +43,7 @@ export const SignInView = () => {
 
     setIsLoading(true);
     try {
-      const accountEmail = await convex.query(api.student_identity.resolveAccessNumber, { accessNumber });
+      const accountEmail = await convex.query(api.student_identity.resolveLoginIdentifier, { identifier: accessNumber });
       const { error } = await authClient.signIn.email({
         email: accountEmail,
         password,

@@ -2,12 +2,12 @@ import { components } from "./_generated/api.js";
 import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server.js";
 
-/** Public sign-in lookup returns only an opaque authentication alias, never personal details. */
-export const resolveAccessNumber = query({
-  args: { accessNumber: v.string() },
+/** Keep the existing function contract during deployment; the value is now access-number-only. */
+export const resolveLoginIdentifier = query({
+  args: { identifier: v.string() },
   returns: v.string(),
-  handler: async (ctx, { accessNumber }) => {
-    const normalized = accessNumber.trim().slice(0, 32).toUpperCase();
+  handler: async (ctx, { identifier }) => {
+    const normalized = identifier.trim().slice(0, 32).toUpperCase();
     if (!/^ECU\d{4,8}$/.test(normalized)) {
       throw new ConvexError("Enter your ECU access number, for example ECU0001.");
     }

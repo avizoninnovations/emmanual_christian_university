@@ -9,24 +9,29 @@ import { authClient } from "@/lib/auth-client";
 
 export function GuestOnlyGuard({ children }: { children: React.ReactNode }) {
   return <>
-    <AuthLoading><SessionCheck /></AuthLoading>
+    <AuthLoading>{children}</AuthLoading>
     <Authenticated><SignedInRedirect>{children}</SignedInRedirect></Authenticated>
     <Unauthenticated>{children}</Unauthenticated>
   </>;
-}
-
-function SessionCheck() {
-  return <p className="text-sm text-muted-foreground">Checking your session…</p>;
 }
 
 function SignedInRedirect({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const user = useQuery(api.users.getCurrentUser);
   const redirecting = useRef(false);
-  const isStaffAccount = Boolean(user?.roles?.length && user.roles.every((role: string) => role !== "student"));
+  const roles = user?.roles ?? [];
+  const isStaffAccount = Boolean(roles.length && roles.every((role: string) => role !== "student"));
+  const hasStudentAccount = roles.includes("student");
+  const isUnassignedAccount = user !== undefined && (!user || roles.length === 0);
 
   useEffect(() => {
-    if (user === undefined || user === null) return;
+    if (user === undefined || redirecting.current) return;
+    if (isUnassignedAccount) {
+      redirecting.current = true;
+      toast.error("This account is not linked to a student or staff profile. Contact the university ICT office.", { id: "unassigned-portal-account" });
+      void authClient.signOut().catch(() => undefined);
+      return;
+    }
     if (redirecting.current) return;
     redirecting.current = true;
     if (isStaffAccount) {
@@ -34,12 +39,12 @@ function SignedInRedirect({ children }: { children: React.ReactNode }) {
       void authClient.signOut().catch(() => undefined);
       return;
     }
-    router.replace("/");
-  }, [isStaffAccount, router, user]);
+    if (hasStudentAccount) router.replace("/");
+  }, [hasStudentAccount, isStaffAccount, isUnassignedAccount, router, user]);
 
-  if (isStaffAccount) {
+  if (isStaffAccount || isUnassignedAccount || user === undefined) {
     return <>{children}</>;
   }
 
-  return <SessionCheck />;
+  return <>{children}</>;
 }

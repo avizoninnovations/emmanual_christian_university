@@ -27,6 +27,12 @@ function readMessage(error: unknown): string {
   return "";
 }
 
+function readErrorCode(error: unknown): string {
+  if (!error || typeof error !== "object" || !("code" in error)) return "";
+  const { code } = error as { code?: unknown };
+  return typeof code === "string" ? code.toLowerCase() : "";
+}
+
 function removeConvexEnvelope(message: string): string {
   const uncaught = message.match(/Uncaught Error:\s*([\s\S]*?)(?=\s+at\s+handler\b|\s+Called by client\b|$)/i);
   if (uncaught?.[1]) return uncaught[1].trim();
@@ -65,4 +71,20 @@ export function getUserFacingErrorMessage(error: unknown, fallback: string): str
     return message;
   }
   return fallback;
+}
+
+/** Use a non-enumerating message for email/password authentication failures. */
+export function getAuthenticationErrorMessage(error: unknown, fallback: string): string {
+  const message = readMessage(error).toLowerCase();
+  const code = readErrorCode(error);
+  const invalidCredentials =
+    code.includes("invalid_email_or_password") ||
+    code.includes("invalid_credentials") ||
+    /invalid (?:email|username|credentials|password)/i.test(message) ||
+    /incorrect (?:email|username|password|credentials)/i.test(message) ||
+    /user (?:was )?not found/i.test(message);
+
+  return invalidCredentials
+    ? "Email, username, or password is incorrect."
+    : getUserFacingErrorMessage(error, fallback);
 }

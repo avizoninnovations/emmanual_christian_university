@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,7 +10,7 @@ import { ArrowLeft, ArrowRight, Eye, EyeOff, LockKeyhole, Mail, LoaderCircle } f
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
-import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
+import { getAuthenticationErrorMessage } from "@workspace/ui/lib/error-message";
 import { authClient } from "@/lib/auth-client";
 
 const signInSchema = z.object({
@@ -22,7 +21,6 @@ const signInSchema = z.object({
 type SignInValues = z.infer<typeof signInSchema>;
 
 export const SignInView = () => {
-  const router = useRouter();
   const [step, setStep] = useState<"email" | "password">("email");
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<SignInValues>({
@@ -50,13 +48,11 @@ export const SignInView = () => {
     try {
       const { error } = await authClient.signIn.email({ email: values.email, password: values.password });
       if (error) {
-        toast.error(getUserFacingErrorMessage(error, "Sign-in failed. Check your staff account details."));
+        toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again."));
         return;
       }
-      toast.success("Sign-in successful.");
-      router.push("/");
     } catch (error) {
-      toast.error(getUserFacingErrorMessage(error, "Unable to sign in right now. Please try again."));
+      toast.error(getAuthenticationErrorMessage(error, "Unable to sign in right now. Please try again."));
     }
   };
 

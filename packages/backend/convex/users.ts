@@ -50,7 +50,7 @@ export const getCurrentUser = query({
       ? ["admin", "staff"]
       : authUser.role === "student"
         ? ["student"]
-        : ["staff"];
+        : [];
     const roles = studentProfile
       ? [...new Set([...(staffProfile?.roles ?? []), "student"])]
       : staffProfile?.roles ?? fallbackRoles;

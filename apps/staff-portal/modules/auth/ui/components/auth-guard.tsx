@@ -55,40 +55,38 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
   const router = useRouter();
   const clearingWrongPortalSession = useRef(false);
-  const isStudentOnly = Boolean(user?.roles?.length && user.roles.every((role: string) => role === "student"));
+  const roles = user?.roles ?? [];
+  const isStudentOnly = Boolean(roles.length && roles.every((role: string) => role === "student"));
+  const isUnassignedAccount = user !== undefined && (!user || roles.length === 0);
 
   useEffect(() => {
-    if (user?.banned || user?.profileStatus === "inactive") {
-      // Force an immediate local log out and redirect with an error flag
-      authClient.signOut().then(() => {
-        const errorType = user.banned ? "banned" : "inactive";
-        window.location.href = `/sign-in?error=${errorType}`;
-      });
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!isStudentOnly || clearingWrongPortalSession.current) return;
-    clearingWrongPortalSession.current = true;
-    toast.error("This is a student account. Please sign in through the Student Portal.", { id: "wrong-portal-student-account" });
+    if (!user?.banned && user?.profileStatus !== "inactive") return;
+    toast.error(user?.banned ? "Account suspended. Contact the university ICT office." : "Account inactive. Contact an administrator to restore access.", {
+      id: user?.banned ? "staff-account-suspended" : "staff-account-inactive",
+    });
     void authClient.signOut().catch(() => undefined).finally(() => router.replace("/sign-in"));
-  }, [isStudentOnly, router]);
+  }, [router, user]);
+
+  useEffect(() => {
+    if ((!isStudentOnly && !isUnassignedAccount) || clearingWrongPortalSession.current) return;
+    clearingWrongPortalSession.current = true;
+    toast.error(
+      isStudentOnly
+        ? "This is a student account. Please sign in through the Student Portal."
+        : "This account is not linked to a student or staff profile. Contact the university ICT office.",
+      { id: isStudentOnly ? "wrong-portal-student-account" : "unassigned-portal-account" },
+    );
+    void authClient.signOut().catch(() => undefined).finally(() => router.replace("/sign-in"));
+  }, [isStudentOnly, isUnassignedAccount, router]);
 
   // Intercept render if they are strictly banned so they don't see brief protected UI flashes
   if (user?.banned || user?.profileStatus === "inactive") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background relative z-50">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-          <p className="text-foreground font-semibold text-sm animate-pulse">Session invalidated. Logging out...</p>
-        </div>
-      </div>
-    );
+    return <AuthLayout><SignInView /></AuthLayout>;
   }
 
   if (user === undefined) return <AuthLoadingSkeleton />;
 
-  if (isStudentOnly) {
+  if (isStudentOnly || isUnassignedAccount) {
     return <AuthLayout><SignInView /></AuthLayout>;
   }
 

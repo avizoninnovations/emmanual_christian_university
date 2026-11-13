@@ -1,9 +1,8 @@
 "use client";
-import { getUserFacingErrorMessage } from "@workspace/ui/lib/error-message";
+import { getAuthenticationErrorMessage } from "@workspace/ui/lib/error-message";
 
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, LockKeyhole, Mail, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useConvex } from "convex/react";
@@ -13,7 +12,6 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 
 export const SignInView = () => {
-  const router = useRouter();
   const convex = useConvex();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -50,10 +48,10 @@ export const SignInView = () => {
       });
 
       if (error) {
-        toast.error(getUserFacingErrorMessage(error, "Sign-in failed. Check your university account details."));
+        toast.error(getAuthenticationErrorMessage(error, "Unable to sign in. Please try again."));
       } else {
-        toast.success("Sign-in successful.");
-        router.push("/");
+        setStep("identifier");
+        setPassword("");
       }
     } catch {
       toast.error("Unable to sign in right now. Please try again.");

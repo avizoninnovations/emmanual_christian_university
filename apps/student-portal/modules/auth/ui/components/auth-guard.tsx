@@ -13,20 +13,27 @@ const StudentPortalRoleGuard = ({ children }: { children: React.ReactNode }) => 
   const user = useQuery(api.users.getCurrentUser);
   const router = useRouter();
   const clearingWrongPortalSession = useRef(false);
-  const isStaffAccount = Boolean(user?.roles?.length && user.roles.every((role: string) => role !== "student"));
+  const roles = user?.roles ?? [];
+  const isStaffAccount = Boolean(roles.length && roles.every((role: string) => role !== "student"));
+  const isUnassignedAccount = user !== undefined && (!user || roles.length === 0);
 
   useEffect(() => {
-    if (!isStaffAccount || clearingWrongPortalSession.current) return;
+    if ((!isStaffAccount && !isUnassignedAccount) || clearingWrongPortalSession.current) return;
     clearingWrongPortalSession.current = true;
-    toast.error("This is a staff account. Please sign in through the Staff Portal.", { id: "wrong-portal-staff-account" });
+    toast.error(
+      isStaffAccount
+        ? "This is a staff account. Please sign in through the Staff Portal."
+        : "This account is not linked to a student or staff profile. Contact the university ICT office.",
+      { id: isStaffAccount ? "wrong-portal-staff-account" : "unassigned-portal-account" },
+    );
     void authClient.signOut().catch(() => undefined).finally(() => router.replace("/sign-in"));
-  }, [isStaffAccount, router]);
+  }, [isStaffAccount, isUnassignedAccount, router]);
 
   if (user === undefined) {
     return <AuthLayout><p className="text-sm text-muted-foreground">Checking account access…</p></AuthLayout>;
   }
 
-  if (isStaffAccount) {
+  if (isStaffAccount || isUnassignedAccount) {
     return <AuthLayout><SignInView /></AuthLayout>;
   }
 
@@ -38,7 +45,10 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     <>
       <AuthLoading>
         <AuthLayout>
-          <p>Loading...</p>
+          <div aria-label="Checking session" aria-busy="true" className="w-full max-w-[600px] animate-pulse space-y-4 rounded-lg border border-border bg-card p-8">
+            <div className="h-12 w-2/3 rounded bg-muted" />
+            <div className="h-12 w-full rounded bg-muted" />
+          </div>
         </AuthLayout>
       </AuthLoading>
       <Authenticated>

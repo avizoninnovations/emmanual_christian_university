@@ -7,10 +7,9 @@ import { api } from "@workspace/backend/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Component, useEffect, type ReactNode } from "react";
 import { AuthLoadingSkeleton } from "./auth-loading-skeleton";
-
-const STUDENT_PORTAL_URL = process.env.NODE_ENV === "development"
-  ? "http://localhost:3005/"
-  : "https://student-ecu.vercel.app/";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import { toast } from "sonner";
 
 type PortalErrorState = { error: Error | null };
 
@@ -21,25 +20,26 @@ class PortalQueryErrorBoundary extends Component<{ children: ReactNode }, Portal
     return { error };
   }
 
+  componentDidCatch(error: Error) {
+    if (!isMissingStaffProfileError(error)) return;
+    toast.error("This is a student account. Please sign in through the Student Portal.", { id: "wrong-portal-student-account" });
+    void authClient.signOut().catch(() => undefined);
+  }
+
   render() {
     const { error } = this.state;
     if (!error) return this.props.children;
 
     const isStudentError = isMissingStaffProfileError(error);
+    if (isStudentError) return <AuthLayout><SignInView /></AuthLayout>;
+
     return (
       <main className="flex min-h-dvh items-center justify-center bg-background px-5 text-center">
         <div className="max-w-md space-y-3">
-          <h1 className="text-xl font-semibold">{isStudentError ? "This is a student account" : "The staff portal could not load"}</h1>
-          <p className="text-sm text-muted-foreground">
-            {isStudentError
-              ? "Please use the ECU Student Portal to sign in with this account."
-              : "Please return to sign-in and try again."}
-          </p>
-          <a
-            className="inline-flex font-medium text-primary underline underline-offset-4"
-            href={isStudentError ? STUDENT_PORTAL_URL : "/sign-in"}
-          >
-            {isStudentError ? "Continue to Student Portal" : "Go to staff sign-in"}
+          <h1 className="text-xl font-semibold">The staff portal could not load</h1>
+          <p className="text-sm text-muted-foreground">Please return to sign-in and try again.</p>
+          <a className="inline-flex font-medium text-primary underline underline-offset-4" href="/sign-in">
+            Go to staff sign-in
           </a>
         </div>
       </main>
@@ -53,6 +53,8 @@ function isMissingStaffProfileError(error: Error) {
 
 const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   const user = useQuery(api.users.getCurrentUser);
+  const router = useRouter();
+  const clearingWrongPortalSession = useRef(false);
   const isStudentOnly = Boolean(user?.roles?.length && user.roles.every((role: string) => role === "student"));
 
   useEffect(() => {
@@ -64,6 +66,13 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!isStudentOnly || clearingWrongPortalSession.current) return;
+    clearingWrongPortalSession.current = true;
+    toast.error("This is a student account. Please sign in through the Student Portal.", { id: "wrong-portal-student-account" });
+    void authClient.signOut().catch(() => undefined).finally(() => router.replace("/sign-in"));
+  }, [isStudentOnly, router]);
 
   // Intercept render if they are strictly banned so they don't see brief protected UI flashes
   if (user?.banned || user?.profileStatus === "inactive") {
@@ -80,17 +89,7 @@ const LiveBanGuard = ({ children }: { children: React.ReactNode }) => {
   if (user === undefined) return <AuthLoadingSkeleton />;
 
   if (isStudentOnly) {
-    return (
-      <main className="flex min-h-dvh items-center justify-center bg-background px-5 text-center">
-        <div className="max-w-md space-y-3">
-          <h1 className="text-xl font-semibold">This is a student account</h1>
-          <p className="text-sm text-muted-foreground">Please use the ECU Student Portal to sign in with this account.</p>
-          <a className="inline-flex font-medium text-primary underline underline-offset-4" href={STUDENT_PORTAL_URL}>
-            Continue to Student Portal
-          </a>
-        </div>
-      </main>
-    );
+    return <AuthLayout><SignInView /></AuthLayout>;
   }
 
   return <PortalQueryErrorBoundary>{children}</PortalQueryErrorBoundary>;
